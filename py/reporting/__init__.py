@@ -6,51 +6,70 @@ import operator
 import json
 import redis
 from ..loading import load
-from ..settings import lookup
+from helpers.from_here import here
+import mako.lookup
 from .table_defs import tables
 
+
+mako_dirs = (here(__file__)("../../mako"),
+             here(__file__)("../../js"))
+lookup = mako.lookup.TemplateLookup(directories=mako_dirs,
+                                    output_encoding='utf-8',
+                                    input_encoding='utf-8')
+
 js_root = '/home/andrew/Projects/media/js'
-js_files = ['00-jquery-1.7.2.js',
+js_files = ['00-jquery-1.8.0.js',
             '01-underscore-min.js',
             '02-backbone.js',
-            'jquery-ui-1.8.18.custom.min.js',
-            'jshashtable-2.1.js',
+            '03-jshashtable-2.1.js',
+            'bootstrap.js',
+            'jquery-ui-1.8.22.custom.min.js',
             'jquery.numberformatter-1.2.3.js',
             "jquery.dataTables.min.js"
            ]
 
 css_root = '/home/andrew/Projects/media/css'
-css_files = ['base.css',
-             'ui-darkness/jquery-ui-1.8.18.custom.css']
+css_files = ['bootstrap.min.css',
+             'jquery-ui-1.8.22.custom.css']
 
 opn = functools.partial(codecs.open,encoding='utf-8')
 
-def transform_data(departments,data):
-  # d is a dict which index departmental data
-  try:
-    d = departments
-    for table in data:
-      rows = data[table]
-      tdef = tables[table]
-      for row in rows[tdef['start_row']:]:
-        extract = functools.partial(operator.getitem,row)
-        #clean = lambda x : int(x) if isinstance(x,float)  else x
-        f = extract
-        dept = extract(tdef['dept_field'])
-        d[dept].setdefault(table,[]).append(map(f,tdef['keep_fields']))
-  except Exception,e:
-    import pdb
-    pdb.set_trace()
-    pass
 
-def remove_vote_0_lines(data):
-  for dept in data:
-    for table in data[dept]:
-      if table not in ('DATA2A',):
-        data[dept][table] = filter(lambda x : x[0] != 0 and dept != 52,
-                                   data[dept][table])
-        if not data[dept][table]:
-          pass
+def make_after_check(lookups):
+  def _(row,table):
+    if table in ('Table1','Table2','Table2a','Table2b','Table3'):
+      lookups['depts'][row[0]].setdefault('tables',{}).setdefault(table,[]).append(row)
+    else:
+      lookups['depts'][row[0]].setdefault('tables',{}).setdefault(table,[]).append(row[1:])
+  return _
+
+def check(data,lookups,after_check=lambda x:x):
+  errors = set()
+  for table in data:
+    table_def = tables[table]
+    historical = table_def['coverage']
+    for row in data[table]:
+      try:
+        # make sure rows are correct lenght
+        if table in ('Table4', 'Table5'  'Table6'  'Table7'):
+          assert len(table_def['col_defs']) == len(row)-1
+        elif table in ('Table2','Table2b','Table3'):
+          assert len(table_def['col_defs']) == len(row)
+        elif table ==  'Table2a':
+          assert len(table_def['col_defs']) == len(row)-2
+        # find acronym
+        assert row[0] in lookups['depts']
+        # perform lookup on rows
+        if row[2] and row[1] != '(S)' and historical == 'historical':
+          assert row[2] in lookups['votes'][historical]
+        if historical == 'in_year' and table != 'Table2a':
+          assert lookups['votes'][historical][row[0]][row[1]]
+        after_check(row,table)
+      except Exception,e:
+        errors.add( (table,) + tuple(row[:2]) )
+  for row in errors:
+    print(*row,sep="\t")
+
 
 def html_les():
   r = redis.Redis()
