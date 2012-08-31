@@ -104,6 +104,10 @@ def html_les():
 
   t = lookup.get_template('les.html')
   with open("les.html",'w') as leshtml:
-    leshtml.write(t.render(full_js = full_js, full_css = full_css))
+    leshtml.write(t.render(full_js = full_js,
+                           #js_root = './',
+                           full_css = full_css,
+                           no_auto_js = True,
+                           no_auto_css = True))
 
 
