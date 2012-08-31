@@ -1,0 +1,162 @@
+<%inherit file="mako/base.html"/>
+
+  <%block name='extracss'>
+  body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+  }
+  .sidebar-nav { padding: 9px 0; }
+
+  ${ full_css }
+
+  .sidescroll { overflow-x: auto;}
+
+  th {text-align: center;}
+
+  div.int{width: 80px;}
+  div.float{width: 80px;}
+  div.str{width: 150px;}
+  div.wide-str{width: 200px;}
+  div.percentage{width: 60px;}
+  div.date{width: 60px;}
+
+  table{ font-size: 0.9em;}
+
+  .print_view alert{ font-size: 1.2em;}
+  .print_view table caption{ font-size: 1em;}
+  @page
+  {
+    size: landscape;
+    margin: 2cm;
+  }
+  </%block>
+
+  <%block name='extrajs'>
+
+    <%include file='sandbox.js'/>
+    ${ full_js }
+    <%include file='text.js'/>
+    <%include file='les.js'/>
+    <%include file='base_table_view.js'/>
+    <%include file='table_views.js'/>
+  </%block>
+
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container-fluid" id='navbar'>
+        <span class="brand" id='title'>Lapse and Expenditure Statistics</span>
+        <ul class='nav' id='navbar_ul'>
+          <li>
+          <form class="navbar-search pull-left">
+            <input type="text" id='type_ahead'/>
+          </form>
+          </li>
+        </ul>
+      </div><!-- .container-fluid --!>
+    </div><!-- .navbar-inner --!>
+  </div><!-- .navbar --!>
+
+  <div id='app'>
+    <h3 class='alert alert-info well' id='welcome'>
+      Select a Department to get started
+    </h3>
+  </div>
+
+  <div class="modal hide fade" id="modal_skeleton">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      <h3></h3>
+    </div>
+    <div class="modal-body">
+      <p></p>
+    </div>
+    <div class="modal-footer">
+      <a href="#" class="btn" class="close" data-dismiss="modal"></a>
+    </div>
+  </div>
+
+<%text filter="n">
+<script type='text/plain' id='main'>
+  <div class='container-fluid'>
+    <div class="row-fluid">
+      <div class="span3 bs-docs-sidebar">
+        <ul class="nav nav-list bs-docs-sidenav affix" id='sidebar'>
+        </ul>
+      </div>
+
+      <div class="span9 main">
+        <h3><%=txt%></h3>
+      </div>
+    </div>
+  </div>
+</script>
+<script type='text/plain' id='print_view_t'>
+  <div class='print_view'>
+    <div class="alert fade in">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      <%=help_text%>
+    </div>
+    <div class='btn-group'> 
+      <button class='btn btn-primary print_view_print'>
+        <%=print_text%>
+      </button>
+      <button class='btn btn-danger print_view_close'>
+        <%=close_text%>
+      </button>
+    </div>
+    <div class='table_area'>
+    </div>
+  </div>
+</script>
+<script type='text/plain' id='lang_change_btn'>
+  <a href='#' class='pull-right'></a>
+</script>
+<script type='text/plain' id='nav_li'>
+  <li>
+  <a href='#<%=href%>'
+    data-placement="top" rel="tooltip" title="<%=tooltip%>" >
+    <%=text%>
+  </a>
+  </li>
+</script>
+<script type='text/plain' id='table_item'>
+  <div id='<%=href%>'>
+    <h4><%=title%></h4>
+    <div class='well sidescroll'>
+    </div>
+  </div>
+</script>
+<script type='text/plain' id='list_t'>
+  <div class='table_container'>
+    <div class='btn-group' > 
+      <button class='btn btn-info details'>
+        <%=details_txt%>
+      </button>
+      <button class='btn btn-info full_screen'>
+        <%=fs_txt%>
+      </button>
+      <button class='btn copy' data-placement="top" rel="tooltip" title="<%=tooltip%>" >
+        <%=copy_txt%>
+      </button>
+      <button class='btn info print'>
+        <%=print_txt%>
+      </button>
+      <button class='btn btn-info about'>
+        ?
+      </button>
+    </div>
+    <table class='datatable table table-striped table-condensed table-bordered'>
+      <caption><%=title%></caption>
+      <thead></thead>
+      <tfoot></tfoot>
+      <tbody></tbody>
+    </table>
+  </div>
+</script>
+<script type='text/plain' id='header_t'>
+  <th colspan='<%=colspan%>'><div class='<%=class_%>' > <%=header%> </div></th>
+</script>
+</%text>
+<%include file='help_text.html'/>
+
+
