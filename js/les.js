@@ -1,32 +1,26 @@
 (function() {
   $(function() {
-    var APP,TABLES;
-    APP = ns('APP');
-    TABLES = ns('TABLES');
-    LANG = ns('LANG');
+    var APP = ns('APP');
+    var TABLES = ns('TABLES');
+    var LANG = ns('LANG');
 
     /************Auto Complete View********/
-    switchLangView = Backbone.View.extend({
-      template: _.template($("#lang_change_btn").html())
+    var switchLangView = Backbone.View.extend({
+      el : $("#lang_change")
       ,initialize: function(){
         _.bindAll(this);
-        this.state = this.options['state'];
+        this.app = this.options["app"];
+        this.state = this.app.state;
         this.state.bind('change:lang', this.render);// re-render on change in language
-        this.$el = $(this.template()).appendTo($('#navbar'));
       }
     ,render:function () {			
-      if (this.state.get('lang') == 'en') { 
-        this.$el.html('Français'); //change html of button element
-      }
-      else {
-        this.$el.html('English');
-      }
-    return this;
+      this.$el.html(this.app.get_text("lang"));
+      return this;
     }
     }); 
 
     /************AUTOCOMPLETE VIEW***********/
-    autocompleteView = Backbone.View.extend({
+    var autocompleteView = Backbone.View.extend({
       el : ('#type_ahead')
       ,text : {
         en: 'Department Search',
@@ -106,30 +100,133 @@
           .show();
         return false;
       }
-    })
-
-    /************STATE MODEL********/
-    stateModel = Backbone.Model.extend({});
-
-    /************APP VIEW***********/
-    appView = Backbone.View.extend({
-      el:$('body')
-      
-      ,modal : $('.modal')
-
-      ,template : _.template($('#main').html())
-
-      ,nav_li_t : _.template($('#nav_li').html())
-
-      ,table_item_t : _.template($('#table_item').html())
-
+    });
+    /************Data View********/
+    var dataView = Backbone.View.extend({
+      template : _.template($('#dataview_t').html())
       ,initialize: function(){
         _.bindAll(this);
-        //initialize models
+        // retrieve passed in data
+        this.app = this.options["app"];
+        this.key = this.options["key"];
+        this.dept = this.options["dept"];
+        this.drop_zone = this.options["drop_zone"];
+        // set some useful state based on these inputs
+        this.lang = this.app.lang;
+        this.def = les_tables[this.key];
+        this.data = this.dept["tables"][this.key];
+      }
+      ,render: function(){
+
+        this.$el = $(this.template({
+          "gt" : this.app.get_text,
+          "key" : this.key,
+          "title" : this.def['title'][this.lang]
+        }));
+        this.$el.find('.nav-pills a:first').tab("show");
+
+        this.setup_useful_this_links();
+        this.about_btn.click(this.on_about_click);
+        this.table_view = new TABLES.views[this.key]({
+          key : this.key,
+          rows : this.data,
+          app : this.app,
+          def : this.def,
+          print_btn : this.print_btn,
+          details_btn : this.details_btn,
+          copy_btn : this.copy_btn,
+          fs_btn : this.fs_btn
+        });
+        this.table_payload.append(this.table_view.render().$el);
+
+        return this;
+      }
+      ,setup_useful_this_links : function() {
+        this.modal = $("#modal_skeleton");
+        this.modal_header = this.modal.find(".modal-header h3");
+        this.modal_body = this.modal.find(".modal-body p");
+        this.modal_footer = this.modal.find(".modal-footer a");
+
+        this.table_payload = this.$el.find('.table_payload');
+        this.graph_payload = this.$el.find('.graph_payload');
+
+        this.about_btn = this.$el.find('button.about');
+        this.details_btn = this.$el.find('button.details');
+        this.fs_btn = this.$el.find('button.full_screen');
+        this.copy_btn = this.$el.find('button.copy');
+        this.print_btn = this.$el.find('button.print');
+      }
+      ,on_about_click : function () {
+        var gt = this.app.get_text;
+        var help_key = "#" + this.key + "_help_" + this.lang;
+        var help_text = $(help_key).html();
+        this.modal_header
+          .html(gt("about"));
+        this.modal_body
+          .html(help_text);
+        this.modal_footer
+          .html(gt("close"));
+        this.modal.modal();
+      }
+      ,activate : function(){
+        this.drop_zone.children().detach();
+        this.drop_zone.append(this.$el);
+      }
+    });
+
+    /************Menu View********/
+    var menuView = Backbone.View.extend({
+      template : _.template($('#nav_li').html())
+      ,initialize: function(){
+        _.bindAll(this);
+        // retrieve passed in data
+        this.app = this.options["app"];
+        this.key = this.options["key"];
+        this.dept = this.options["dept"];
+        this.drop_zone = this.options["drop_zone"];
+        // set some useful state based on these inputs
+        this.state = this.app.state;
+        this.lang = this.state.get('lang');
+        this.def = les_tables[this.key];
+      }
+      ,render: function(){
+        this.$el =  $(this.template({
+          key: this.key,
+          text: this.def["name"][this.lang]
+        })).on('click','a',this.on_click);
+        return this;
+      }
+      ,on_click: function(){
+        var self = this;
+        window.setTimeout(function(){
+          self._on_click()},100);
+      }
+      , setup_dataView : function(){
+        if (_.isUndefined(this.table_view)){
+          this.data_view = new dataView(this.options);
+          this.data_view.render();
+        }
+      }
+      ,_on_click: function(){
+        this.setup_dataView();
+        this.data_view.activate();
+      }
+    })
+    /************STATE MODEL********/
+    var stateModel = Backbone.Model.extend({});
+
+    /************APP VIEW***********/
+    var appView = Backbone.View.extend({
+       el:$('body')
+      ,modal : $('.modal')
+      ,template : _.template($('#main_t').html())
+      ,menu_t : _.template($('#table_menu_t').html())
+      ,initialize: function(){
+        _.bindAll(this);
         this.lookup = this.options['lookup'];
         this.state = new stateModel({})
         //initialize views
-        this.switchLangv = new switchLangView({state: this.state});
+        this.switchLangv = new switchLangView({app: this});
         this.switchLangv.$el.bind('click', this.set_lang) //lang chg => chg state: lang variable
         //// this.DMenu = new deptView({state: this.state});
         this.acv = new autocompleteView({
@@ -141,11 +238,14 @@
 
         this.setup_useful_this_links();
     }
-
     ,setup_useful_this_links : function(){
       this.title = $('#title');
       this.welcome = $('#welcome');
+      this.nav_bar_ul = $('#navbar_ul');
       this.app = $('#app');
+
+      this.modal = $("#loading_modal");
+      this.modal_body = this.modal.find(".modal-body p");
     }
     ,get_text : function(txt){
         return LANG.l(txt,this.state.get('lang'));
@@ -160,58 +260,66 @@
       var gt = this.get_text;
       this.title.html(gt("title"));
       this.welcome.html(gt("welcome"));
+      // if a department has already been picked
+      // remake all the tables in the new language
       if (this.state.get('dept')){
         this.dept_change(this.state,this.state.get('dept'));
        }
     }
-    ,set_lang: function(event){
-      var lang = this.state.get('lang');
-      this.state.set({lang: lang == 'en' ? 'fr' : 'en'});
+    ,set_lang: function(){
+      this.lang = this.state.get("lang") == "en" ? "fr" : "en";
+      this.state.set({lang: this.lang});
     }
     ,dept_change : function(model,org){
-      var lang = this.state.get('lang');
+      var self = this;
+      window.setTimeout(function(){
+        self._dept_change(model,org)},1);
+    }
+    ,loading_on : function(){
+      this.app.html($('#loading_t').html());
+    }
+    ,loading_off : function(){
+      this.app.html("");
+    }
+    ,_dept_change : function(model,org){
 
-      this.app
-        .html(this.template({
-          txt: org['dept'][lang]   
-        }));
+      this.app.html(this.template({
+        txt: org['dept'][this.lang]   
+      }));
 
-      var nav_list = this.app.find('.nav-list');
-      var main = this.app.find('.span9');
+      var main = this.app.find('.main');
+      // remove any previous table menu
+      this.nav_bar_ul.find('li#table_dropdown').remove();
+      //add new, empty table list
+      var new_table_menu = $(this.menu_t({
+        get_text : this.get_text
+      }));
+      this.nav_bar_ul.append(new_table_menu);
+      var menu_append_el = new_table_menu.find('.dropdown-menu');
+
+      var loading = $('<p>Loading...</p>');
+      main.append(loading);
 
       _.each(_.keys(org['tables']).sort(),
              function(key){
-                var def = les_tables[key];
                 // add sidebar nav
-                var new_el = $(this.nav_li_t({
-                  href:key,
-                  text:def['name'][lang],
-                  tooltip:def['title'][lang]
-                }));
-                $('#sidebar').append(new_el);
-                // add table
-                new_el = $(this.table_item_t({
-                  title:def['title'][lang],
-                  href:key
-                }));
-                var new_table = this.add_table(key,def,org)
-                $('.well', new_el).append(new_table);
-                main.append(new_el);
+                var mv = new menuView({
+                      app : this,
+                      key : key,
+                      dept : org,
+                      drop_zone : main
+                });
+                mv.setup_dataView();
+                menu_append_el
+                  .append(mv.render().$el);
              },this);
-      $('#sidebar').affix({offset: -200});
-      $('body').scrollspy('refresh');
-    }
-    ,add_table: function(key,table_def,org){
-      var rows = org['tables'][key];
-      var view = new TABLES.views[key]({
-        rows:rows,
-        key:key,
-        state : this.state
-      });
-      return view.render().$el;
+      loading.remove();
+       new_table_menu.find('.dropdown-toggle').dropdown();
+       //activate the first table
+       menu_append_el.find('li:first a').trigger("click");
     }
     });
-    APP.app = new appView({lookup:depts}); //INITIALIZE APP!
-    APP.app.state.set({lang: 'en'});	
+    APP.app = new appView({lookup:depts});
+    APP.app.set_lang();	
   });
 })();

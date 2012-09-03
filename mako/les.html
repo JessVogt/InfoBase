@@ -13,12 +13,12 @@
 
   th {text-align: center;}
 
-  div.int{width: 80px;}
-  div.float{width: 80px;}
+  div.int{width: 90px;}
+  div.float{width: 90px;}
   div.str{width: 150px;}
-  div.wide-str{width: 200px;}
-  div.percentage{width: 60px;}
-  div.date{width: 60px;}
+  div.wide-str{width: 300px;}
+  div.percentage{width: 90px;}
+  div.date{width: 90px;}
 
   table{ font-size: 0.9em;}
 
@@ -39,9 +39,11 @@
     <%include file='les.js'/>
     <%include file='base_table_view.js'/>
     <%include file='table_views.js'/>
+    <%include file='base_graph_view.js'/>
+    <%include file='graph_views.js'/>
   </%block>
 
-  <div class="navbar navbar-fixed-top">
+  <div class="navbar navbar-fixed-top navbar-inverse">
     <div class="navbar-inner">
       <div class="container-fluid" id='navbar'>
         <span class="brand" id='title'>Lapse and Expenditure Statistics</span>
@@ -52,6 +54,10 @@
           </form>
           </li>
         </ul>
+        <ul class='nav pull-right'>
+          <li><a href="#" id="lang_change"></a> </li>
+        </ul>
+
       </div><!-- .container-fluid --!>
     </div><!-- .navbar-inner --!>
   </div><!-- .navbar --!>
@@ -76,19 +82,34 @@
   </div>
 
 <%text filter="n">
-<script type='text/plain' id='main'>
+<script type='text/plain' id='main_t'>
   <div class='container-fluid'>
     <div class="row-fluid">
-      <div class="span3 bs-docs-sidebar">
-        <ul class="nav nav-list bs-docs-sidenav affix" id='sidebar'>
-        </ul>
-      </div>
-
-      <div class="span9 main">
+      <div class="span12">
         <h3><%=txt%></h3>
+        <div class="main">
+          </di>
       </div>
     </div>
   </div>
+</script>
+<script type='text/plain' id='loading_t'>
+  <h3 class='alert alert-info '>
+    Loading Department 
+  </h3>
+</script>
+<script type='text/plain' id='table_menu_t'>
+  <li class="dropdown" id='table_dropdown'>
+    <a class="dropdown-toggle" href="#">
+      <%= get_text("tables")%>
+      <b class="caret"></b>
+    </a>
+    <ul class="dropdown-menu">
+    </ul>
+  </li>
+</script>
+<script type='text/plain' id='nav_li'>
+  <li> <a > <%=text%> </a> </li>
 </script>
 <script type='text/plain' id='print_view_t'>
   <div class='print_view'>
@@ -108,44 +129,49 @@
     </div>
   </div>
 </script>
-<script type='text/plain' id='lang_change_btn'>
-  <a href='#' class='pull-right'></a>
-</script>
-<script type='text/plain' id='nav_li'>
-  <li>
-  <a href='#<%=href%>'
-    data-placement="top" rel="tooltip" title="<%=tooltip%>" >
-    <%=text%>
-  </a>
-  </li>
-</script>
-<script type='text/plain' id='table_item'>
-  <div id='<%=href%>'>
-    <h4><%=title%></h4>
-    <div class='well sidescroll'>
+<script type='text/plain' id='dataview_t'>
+  <div>
+    <ul class="nav nav-pills">
+      <li><a href="#<%=key%>_tables" data-toggle="pill"><%=gt("table")%></a></li>
+      <li><a href="#<%=key%>_graphs" data-toggle="pill"><%=gt("graphs")%></a></li>
+    </ul>
+
+    <div class='tab-content'>
+      <div class='tab-pane fade in well active' id='<%=key%>_tables'>
+        <h5><%=title%></h5>
+        <div class='btn-group' > 
+          <button class='btn btn-info details'>
+            <%=gt("details")%>
+          </button>
+          <button class='btn btn-info full_screen'>
+            <%=gt("full_screen")%>
+          </button>
+          <button class='btn btn-info copy' data-placement="top" rel="tooltip" title='<%=gt("copy_tooltip")%>' >
+            <%=gt("copy")%>
+          </button>
+          <button class='btn btn-info print'>
+            <%=gt("print")%>
+          </button>
+          <button class='btn btn-info about'>
+            ?
+          </button>
+        </div>
+        <div class='table_payload'>
+
+        </div>
+      </div>
+      <div class='tab-pane fade in well' id='<%=key%>_graphs'>
+        hello
+        <div class='graph_payload'>
+
+        </div>
+      </div>
     </div>
   </div>
 </script>
 <script type='text/plain' id='list_t'>
-  <div class='table_container'>
-    <div class='btn-group' > 
-      <button class='btn btn-info details'>
-        <%=details_txt%>
-      </button>
-      <button class='btn btn-info full_screen'>
-        <%=fs_txt%>
-      </button>
-      <button class='btn copy' data-placement="top" rel="tooltip" title="<%=tooltip%>" >
-        <%=copy_txt%>
-      </button>
-      <button class='btn info print'>
-        <%=print_txt%>
-      </button>
-      <button class='btn btn-info about'>
-        ?
-      </button>
-    </div>
-    <table class='datatable table table-striped table-condensed table-bordered'>
+  <div class='table_container sidescroll'>
+    <table class='datatable table table-striped table-condensed'>
       <caption><%=title%></caption>
       <thead></thead>
       <tfoot></tfoot>
