@@ -3,7 +3,7 @@ $(function () {
   var APP = ns('APP');
 
   /***********HEADER VIEW*************/
-  headerView = Backbone.View.extend({
+  var headerView = Backbone.View.extend({
     template: _.template($('#header_t').html()),
     tagName: "tr",
     initialize: function () {
@@ -33,42 +33,8 @@ $(function () {
       return this;
     }
   });
-  /***********FOOTER VIEW**************/
-  footerView = Backbone.View.extend({
-    tagName: "tr",
-    initialize: function () {
-      _.bindAll(this);
-      this.footer = this.options['footer']; //read argument [object w/ only one key,val pair] to get footers
-      this.render(); //self-rendering
-    },
-    render: function () {
-      //append each data value to tr to make a footer that is ready to be appended to tbody, later
-      return _.map(
-      this.footer,
-
-      function (f) {
-        if (_.isString(f)) {
-          var data = APP.app.write_html('#tbl_data_t', {
-            data: f
-          }); //create data
-          $(this.el).append(data); //append data
-        } else {
-          f = $.formatNumber(f, {
-            format: "#,##0",
-            locale: APP.app.state.get('lang')
-          });
-          var data = APP.app.write_html('#tbl_data_t', {
-            data: f
-          }); //create data
-          $(this.el).append(data); //append data
-        }
-      },
-      this //scope of map is footerView
-      );
-    }
-  });
   /*************ROW VIEW***************/
-  rowView = Backbone.View.extend({
+  var rowView = Backbone.View.extend({
     tagName: "tr",
     initialize: function () {
       _.bindAll(this);
@@ -87,18 +53,29 @@ $(function () {
       function (data_type) {
         var data = data_type.shift();
         var type = data_type.shift();
-        if (type == 'float') {
+        var el = $('<td><div>');
+        this.$el.append(el);
+        var div = el.find('div')
+        div.addClass(type);
+        if (_.isString(data) && data.length > 80){
+          el.attr("title", data);
+          el.attr("data-placement", "top");
+          el.attr("rel", "tooltip");
+          data = data.substring(0,77) + "...";
+        }
+        else  if (type == 'float') {
           data = $.formatNumber(data, {
             format: "#,##0",
             locale: APP.app.state.get('lang')
           });
-        }else if (type == 'percentage'){
+        }
+        else if (type == 'percentage'){
           data = $.formatNumber(data, {
             format: "0%",
             locale: APP.app.state.get('lang')
           });
         }
-        $(this.$el).append("<td><div class='" + type + "'>" + data + "</div></td>")
+        div.html(data);
       },
       this //scope of map is rowView
       );
@@ -107,7 +84,7 @@ $(function () {
   });
 
   /***********BASE TBL VIEW************/
-  BaseTableView = Backbone.View.extend({
+  TABLES.BaseTableView = Backbone.View.extend({
     data_table_args : {
         "bAutoWidth" : false,
         "bFilter": false,
@@ -115,21 +92,31 @@ $(function () {
         "bPaginate" : false,
         "bSort" : false
     }
+    ,width_map : {
+      "int" : 90,
+      "float" : 90,
+      "str" : 150,
+      "wide-str" : 300,
+      "percentage" : 90,
+      "date" : 90
+    }
     ,template: _.template($('#list_t').html())
     ,hide_col_ids: []
     ,initialize: function () {
       _.bindAll(this);
+      // retrieve passed in data
       this.key = this.options["key"];
-      this.def = les_tables[this.key];
-      //
+      this.rows = this.options["rows"];
+      this.app = this.options["app"];
+      this.def = this.options["def"];
+      this.print_btn =this.options["print_btn"] ;
+      this.details_btn =this.options["details_btn"] ;
+      this.copy_btn =this.options["copy_btn"];
+      this.fs_btn =this.options["fs_btn"];
+      // set some useful state based on these inputs
+      this.state = this.app.state;
       this.gt = APP.app.get_text;
-      //
-      this.rows = this.options["rows"]; //local var declared to store rows: a listof lists
-      //
-      this.state = this.options["state"];
-       //
       this.lang = this.state.get('lang');
-      //
       this.col_defs = this.def['col_defs'];
        //
       this.info_rows = [];
@@ -139,14 +126,7 @@ $(function () {
       //
       this.headers = this.def['headers'][this.lang];
       this.$el = $(this.template({
-        col_defs: this.col_defs,
-        title: this.def['title'][this.lang],
-        tooltip : this.gt("copy_tooltip"),
-        details_txt:  this.gt("details"),
-        copy_txt: this.gt("copy"),
-        print_txt: this.gt("print"),
-        fs_txt : this.gt("full_screen"),
-        about_txt : this.gt("about")
+        title: this.def['title'][this.lang]
       }));
        //
       this.setup_useful_this_links();
@@ -154,21 +134,11 @@ $(function () {
     }
     ,setup_useful_this_links : function(){
       //
-      this.modal = $("#modal_skeleton");
-      this.modal_header = this.modal.find(".modal-header h3");
-      this.modal_body = this.modal.find(".modal-body p");
-      this.modal_footer = this.modal.find(".modal-footer a");
       this.header = this.$el.find('thead');
       this.body = this.$el.find('tbody');
       this.footer = this.$el.find('tfoot');
-      this.about_btn = this.$el.find('button.about');
-      this.details_btn = this.$el.find('button.details');
-      this.fs_btn = this.$el.find('button.full_screen');
-      this.copy_btn = this.$el.find('button.copy');
-      this.print_btn = this.$el.find('button.print');
     }
     ,setup_event_listeners : function(){
-      //
       if ( this.hide_col_ids.length > 0){
         this.details_btn.click(this.on_details_click);
       }
@@ -178,19 +148,6 @@ $(function () {
       this.fs_btn.click(this.on_fs_click);
       this.copy_btn.click(this.on_copy_click);
       this.print_btn.click(this.on_print_click);
-      this.about_btn.click(this.on_about_click);
-    }
-    ,on_about_click : function () {
-      var gt = APP.app.get_text;
-      var help_key = "#" + this.key + "_help_" + this.lang;
-      var help_text = $(help_key).html();
-      this.modal_header
-        .html(gt("about"));
-      this.modal_body
-        .html(help_text);
-      this.modal_footer
-        .html(gt("close"));
-      this.modal.modal();
     }
     ,on_fs_click : function(){
       var self = this;
@@ -256,16 +213,20 @@ $(function () {
       this)
     }
     , make_footers: function () {
-      _.each(_.map(lof, function (f) {
-        return new footerView({
-          footer: f
-        })
-      }),
-
-      function (footerview) {
-        this.footer.append(footerview.$el)
-      },
-      this)
+      if (_.size(this.row_data) > 15 ) {
+        var views = _.map(this.headers, function (h) {
+          return new headerView({
+            types : this.col_defs,
+            header: h
+          });
+        },this)
+        views.reverse();
+        _.each(views,
+        function (fv) {
+          this.footer.append(fv.$el)
+        },
+        this)
+      }
     }
     ,make_body: function () {
       _.each(_.map(this.row_data,
@@ -288,13 +249,27 @@ $(function () {
         this.details = false;
       }
       var options  = _.extend({},this.data_table_args);
+      var showing_defs  = this.col_defs;
       if (!this.details && this.hide_col_ids.length > 0){
+        showing_defs = _.map(_.filter(_.range(_.size(this.col_defs)),
+              function(i){
+                return _.indexOf(this.hide_col_ids,i) == -1},this),
+            function(i){
+              return this.col_defs[i]},this);
+
         options["aoColumnDefs"]  = [{
           "bVisible" : false,
           "aTargets" : this.hide_col_ids
-        }]
+        }];
       }
       this.datatable = $('table',this.$el).dataTable(options);
+      
+      var tables_width = _.reduce(_.map(showing_defs,
+            function(def){
+               return this.width_map[def]},this),
+          function(x,y){
+            return x+y});
+      this.datatable.css({"width" : tables_width+"px"});
     },
     perform_fnc_on_group : function(group,txt,fnc,impacted_cols){
       var cols = _.range(0, group[0].length);
