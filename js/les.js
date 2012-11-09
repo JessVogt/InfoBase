@@ -288,7 +288,6 @@
           this.setup_useful_this_links();
 
           this.about_btn.click(this.on_about_click);
-          this.fs_btn.click(this.on_fs_click);
 
 
           // create the table view
@@ -357,28 +356,9 @@
 
         this.about_btn = this.$el.find('button.about');
         this.details_btn = this.$el.find('button.details');
-        this.fs_btn = this.$el.find('button.full_screen');
         this.copy_btn = this.$el.find('button.copy');
         this.print_btn = this.$el.find('button.print');
         this.fn_btn = this.$el.find('button.fn');
-      }
-      ,on_fs_click : function(){
-         var self = this;
-         var home = this.tabs;
-         var txt =  this.app.get_text("full_screen");
-         this.print_btn.hide();
-         APP.app.hide();
-         this.table_area.detach().appendTo("body");
-         this.fs_btn.html("Return")
-           .unbind('click')
-           .click(function(){
-             APP.app.show();
-             self.table_area.detach().appendTo(home);
-             self.print_btn.show();
-             self.fs_btn.html(txt)
-               .unbind("click")
-               .click(self.on_fs_click)
-           });
       }
       ,on_about_click : function () {
         var gt = this.app.get_text;
