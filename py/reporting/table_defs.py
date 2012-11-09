@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
+f = {
+  "month_en" : "September",
+  "month_fr" : "september",
+  "p" : 6
+}
 tables =  { 
-  "Table1" : { "col_defs" : [ "float",
+  "Table1" : { "col_defs" : [ "int",
           "str",
           "float",
           "float",
@@ -14,22 +19,22 @@ tables =  {
         ],
       "coverage" : "in_year",
       "headers" : { "en" : [ [ { "colspan" : 2,
-                  "header" : "Vote"
+                  "header" : ""
                 },
                 { "colspan" : 5,
-                  "header" : "2011-12"
+                  "header" : "2012-13"
                 },
                 { "colspan" : 2,
-                  "header" : "2012-13"
+                  "header" : "2011-12"
                 },
                 { "colspan" : 2,
                   "header" : "5 Year Average**"
                 }
               ],
-              [ "Vote Number",
-                "Vote Description",
+              [ "Vote",
+                "Description",
                 "Authority",
-                "Expenditures at Period 9",
+                "Expenditures at Period {p}".format(**f),
                 "Forecast Exenditures at year end",
                 "Forecast Lapse (by EACPD*)",
                 "Forecast Lapse (by EACPD*)",
@@ -40,22 +45,22 @@ tables =  {
               ]
             ],
           "fr" : [ [ { "colspan" : 2,
-                  "header" : "Vote"
+                  "header" : ""
                 },
                 { "colspan" : 5,
-                  "header" : "2011-12"
+                  "header" : "2012-13"
                 },
                 { "colspan" : 2,
-                  "header" : "2012-13"
+                  "header" : "2011-12"
                 },
                 { "colspan" : 2,
                   "header" : "Moyenne sur cinq ans** "
                 }
               ],
-              [ "Numéro de crédit",
-                "Nom du crédit",
+              [ "Crédit",
+                "Nom",
                 "Autorité",
-                "Budgets Dépenses à la période 9",
+                "Budgets Dépenses à la période {p}".format(**f),
                 "Dépenses prévues à la fin de l'année",
                 "Fonds inutilisés estimés par la DADPR*",
                 "Fonds inutilisés estimés par la DADPR*",
@@ -66,15 +71,15 @@ tables =  {
               ]
             ]
         },
-      "name" : { "en" : "Lapse Forecast",
-          "fr" : "Prévision des fonds inutilisés"
+      "name" : { "en" : "1 - Lapse Forecast",
+                "fr" : "1 - Prévision des fonds inutilisés"
         },
-      "title" : { "en" : "Table 1 - Lapse Forecast for 2011-12 based on December data (P9) ($000)",
-          "fr" : "Tableau 1 - Prévision des fonds inutilisés basée sur les dépenses de Décembre 2011 (P9)"
+      "title" : { "en" : "Table 1 - Lapse Forecast for 2011-12 based on {month_en} data (P{p}) ($000)".format(**f),
+          "fr" : "Tableau 1 - Prévision des fonds inutilisés basée sur les dépenses d'{month_fr} 2011 (P{p}) ($000)".format(**f)
         }
     },
   "Table2" : { "col_defs" : [ "int",
-          "str",
+          "wide-str",
           "float",
           "float",
           "float",
@@ -83,30 +88,52 @@ tables =  {
           "float"
         ],
       "coverage" : "in_year",
-      "headers" : { "en" : [ [ "Vote Number / Stat Item",
-                "Vote / Statutory Description",
-                "Gross Appropriations",
+      "headers" : { "en" : [ [
+                { "colspan" : 2,
+                  "header" : ""
+                },
+                { "colspan" : 3,
+                  "header" : "Authorities"
+                },
+                { "colspan" : 3,
+                  "header" : "Expenditures"
+                }
+        ],
+        [ "Vote / Stat",
+                "Description",
+                "Gross",
                 "Revenues",
-                "Net Appropriations",
-                "Gross Expenditures",
+                "Net",
+                "Gross",
                 "Revenues",
-                "Net Expenditures"
+                "Net"
               ] ],
-          "fr" : [ [ "Numéro de Crédit / Statutaire",
-                "Description des dépenses votées et statutaires",
-                "Crédits bruts",
+          "fr" : [[
+                { "colspan" : 2,
+                  "header" : ""
+                },
+                { "colspan" : 3,
+                  "header" : "Crédits"
+                },
+                { "colspan" : 3,
+                  "header" : "Dépenses"
+                }
+            ],  
+            [ "Crédit / Statutaire",
+                "Description",
+                "Bruts",
                 "Recettes",
-                "Crédits Net",
-                "Dépenses brutes",
+                "Net",
+                "Brutes",
                 "Recettes",
-                "Dépenses nettes"
+                "Nettes"
               ] ]
         },
-      "name" : { "en" : "Authority and Expenditure",
-          "fr" : "Crédits et dépenses"
+      "name" : { "en" : "2 - Authority and Expenditure",
+          "fr" : "2 - Crédits et dépenses"
         },
-      "title" : { "en" : "Table 2 - Authority and Expenditure based on August data (P5) ($000)",
-          "fr" : "Tableau 2 - Crédits et dépenses à la fin de Août 2011 (P5) ($000)"
+      "title" : { "en" : "Table 2 - Authority and Expenditure based on {month_en} data (P{p}) ($000)".format(**f),
+          "fr" : "Tableau 2 - Crédits et dépenses à la fin de {month_fr} (P{p}) ($000)".format(**f)
         }
     },
   "Table2a" : { "col_defs" : [ "wide-str",
@@ -134,13 +161,13 @@ tables =  {
                   "header" : ""
                 },
                 { "colspan" : 6,
-                  "header" : "2011 - 12 Period 5"
+                  "header" : "2012-13 Period {p}".format(**f)
                 },
                 { "colspan" : 6,
-                  "header" : "2010 - 11"
+                  "header" : "2011-12 Period {p}".format(**f)
                 },
                 { "colspan" : 6,
-                  "header" : "2009 - 10"
+                  "header" : "2010-11 Period {p}".format(**f)
                 }
               ],
               [ "Program Activity",
@@ -168,13 +195,13 @@ tables =  {
                   "header" : ""
                 },
                 { "colspan" : 6,
-                  "header" : "2011 - 12 Période 5"
+                  "header" : "2012 - 13 Période {p}".format(**f)
                 },
                 { "colspan" : 6,
-                  "header" : "2010 - 11"
+                  "header" : "2011 - 12 Période {p}".format(**f)
                 },
                 { "colspan" : 6,
-                  "header" : "2009 - 10"
+                  "header" : "2010 - 11 Période {p}".format(**f)
                 }
               ],
               [ "Activites de programme",
@@ -199,14 +226,14 @@ tables =  {
               ]
             ]
         },
-      "name" : { "en" : "Expenditures by Program",
-          "fr" : "Dépenses par Activité"
+      "name" : { "en" : "2a - Expenditures by Program",
+          "fr" : "2a - Dépenses par Activité"
         },
       "title" : { "en" : "Table 2A - Expenditures by Program Activity ($000)",
           "fr" : "Tableau 2A - Dépenses par Activité de programme ($000)"
         }
     },
-  "Table2b" : { "col_defs" : [ "float",
+  "Table2b" : { "col_defs" : [ "int",
           "str",
           "float",
           "float",
@@ -216,21 +243,18 @@ tables =  {
           "percentage"
         ],
       "coverage" : "in_year",
-      "headers" : { "en" : [ [ { "colspan" : 1,
-                  "header" : "Vote Number"
-                },
-                { "colspan" : 1,
-                  "header" : "Vote Description"
+      "headers" : { "en" : [ [ { "colspan" : 2,
+                  "header" : ""
                 },
                 { "colspan" : 3,
-                  "header" : "2011 - 12 Period 9"
+                  "header" : "2012-13 Period {p}".format(**f)
                 },
                 { "colspan" : 3,
-                  "header" : "2010 - 11 Period 9"
+                  "header" : "2011-12 Period {p}".format(**f)
                 }
               ],
-              [ "",
-                "",
+              [ "Vote",
+                "Description",
                 "Net Authority",
                 "Net Expenditures",
                 "Spending Rate",
@@ -239,21 +263,18 @@ tables =  {
                 "Spending Rate"
               ]
             ],
-          "fr" : [ [ { "colspan" : 1,
-                  "header" : "Numéro de Crédit"
-                },
-                { "colspan" : 1,
-                  "header" : "Description du Crédit"
+          "fr" : [ [ { "colspan" : 2,
+                  "header" : ""
                 },
                 { "colspan" : 3,
-                  "header" : "2011-12  Période 9"
+                  "header" : "2012-13  Période {p}".format(**f)
                 },
                 { "colspan" : 3,
-                  "header" : "2010-11  Période 9"
+                  "header" : "2011-12  Période {p}".format(**f)
                 }
               ],
-              [ "",
-                "",
+              [ "Crédit",
+                "Description",
                 "Budgets nets",
                 "Dépenses nettes",
                 "Niveau de dépense",
@@ -263,15 +284,15 @@ tables =  {
               ]
             ]
         },
-      "name" : { "en" : "Spending Rate Comparison",
-          "fr" : "Niveau de dépense"
+      "name" : { "en" : "2b - Spending Rate Comparison",
+          "fr" : "2b - Niveau de dépense"
         },
-      "title" : { "en" : "Table 2B - Spending Rate Comparison (2011-12 vs 2010-11)",
-          "fr" : "Tableau 2B - Niveau de dépense (2011-12 vs 2010-11)"
+      "title" : { "en" : "Table 2B - Spending Rate Comparison (2012-13 vs 2011-12)",
+          "fr" : "Tableau 2B - Niveau de dépense (2012-13 vs 2011-12)"
         }
     },
   "Table3" : { "col_defs" : [ "int",
-          "str",
+          "wide-str",
           "float",
           "float",
           "float",
@@ -291,29 +312,26 @@ tables =  {
           "float"
         ],
       "coverage" : "in_year",
-      "headers" : { "en" : [ [ { "colspan" : 1,
-                  "header" : "Vote Number"
+      "headers" : { "en" : [ [ { "colspan" : 2,
+                  "header" : ""
                 },
                 { "colspan" : 1,
-                  "header" : "Vote Description"
-                },
-                { "colspan" : 1,
-                  "header" : "Gross Appropriations"
+                  "header" : "Gross Authorities"
                 },
                 { "colspan" : 3,
                   "header" : "Revenues Credited to the Vote"
                 },
                 { "colspan" : 12,
-                  "header" : "Net Appropriations"
+                  "header" : "Net Authorities"
                 }
               ],
-              [ "",
-                "",
+              [ "Vote",
+                "Description",
                 "Gross Total",
                 "Main Estimates",
                 "Treasury Board Authorities",
                 "Total Revenues",
-                "Multi-year appropriations",
+                "Multi-year Authorities",
                 "Main Estimates",
                 "SE(A)",
                 "SE(B)",
@@ -328,11 +346,8 @@ tables =  {
                 "Net Total"
               ]
             ],
-          "fr" : [ [ { "colspan" : 1,
-                  "header" : "Numéro de crédit"
-                },
-                { "colspan" : 1,
-                  "header" : "Description du Crédit"
+          "fr" : [ [ { "colspan" : 2,
+                  "header" : ""
                 },
                 { "colspan" : 1,
                   "header" : "Imputations brutes"
@@ -344,13 +359,13 @@ tables =  {
                   "header" : "Imputations nettes"
                 }
               ],
-              [ "",
-                "",
+              [ "Crédit",
+                "Description",
                 "Total Brut",
                 "Budget Principal",
                 "Autorité du Conseil du du Trésor",
                 "Total des Revenus",
-                "Crédits pluri-annluels",
+                "Crédits pluri-annuels",
                 "Budget principal",
                 "Supp. A",
                 "Supp. B",
@@ -366,11 +381,11 @@ tables =  {
               ]
             ]
         },
-      "name" : { "en" : "Appropriation by Authority",
-          "fr" : "Appropriations par autorité"
+      "name" : { "en" : "3 - Authorities",
+          "fr" : "3 - Autorités"
         },
-      "title" : { "en" : " Table 3 - Appropriation by Authority ($000)",
-          "fr" : "Tableau 3 - Appropriations par autorité   ($000)"
+      "title" : { "en" : " Table 3 - Authorities ($000)",
+          "fr" : "Tableau 3 - Autorités ($000)"
         }
     },
   "Table4" : { "col_defs" : [ "int",
@@ -380,7 +395,7 @@ tables =  {
           "float",
           "float",
           "float",
-          "percentage",
+          "float",
           "float",
           "percentage",
           "float",
@@ -394,28 +409,28 @@ tables =  {
                   "header" : ""
                 },
                 { "colspan" : 5,
-                  "header" : "Gross Lapse"
+                  "header" : "Gross"
                 },
                 { "colspan" : 2,
-                  "header" : "Forecast"
+                  "header" : "Public Accounts"
                 },
                 { "colspan" : 3,
                   "header" : "Gross Lapse Components"
                 },
                 { "colspan" : 2,
-                  "header" : "Net Lapse"
+                  "header" : "Net Lapse*"
                 }
               ],
-              [ "Vote Number 2010-11",
-                "Vote Description",
+              [ "Vote (2011-12)",
+                "Description",
                 "Year",
                 "Net Authority",
                 "Net Expenditures",
-                "Available next year",
-                "Gross Lapse (Public Accounts)",
-                "Gross Lapse Percentage (Public Accounts)(%)",
-                "Department Forecast at P9",
-                "Department Forecast at P9 (%)",
+                "Gross Lapse",
+                "Multi-Year Authorities",
+                "Over Expenditure",
+                "Lapse**",
+                "Lapse Percentage (%)",
                 "Frozen Allotment",
                 "Special Purpose Allotment",
                 "OBCF & CBCF Allowed",
@@ -427,10 +442,10 @@ tables =  {
                   "header" : ""
                 },
                 { "colspan" : 5,
-                  "header" : "Fonds inutilisés bruts"
+                  "header" : "Bruts"
                 },
                 { "colspan" : 2,
-                  "header" : "Prévisions"
+                  "header" : "Comptes publics"
                 },
                 { "colspan" : 3,
                   "header" : "Ajustements aux fonds inutilisés bruts"
@@ -439,29 +454,29 @@ tables =  {
                   "header" : "Fonds inutilisés"
                 }
               ],
-              [ "Numéro de crédit 2010-11",
-                "Description du cédit",
-                "Année",
-                "Autorités nettes",
-                "Dépenses nettes",
-                "Disponible dans les exercices ultérieurs",
-                "Fonds inutilisés bruts",
-                "Fonds inutilisés bruts (%)",
-                "Prévision du ministére à P9",
-                "Prévision du ministére à P9 (%)",
-                "Fonds bloqués",
-                "Fonds à fin déterminée inutilisés",
-                "Budgets reportés",
-                "Fonds inutilisés nets",
-                "Fonds inutilisés nets (%)"
+              ["Crédit (2011-12)",
+               "Description",
+               "Année",
+               "Autorités nettes",
+               "Dépenses nettes",
+               "Fonds inutilisés bruts",
+               "Autorités pluri-annuels",
+               "Dépenses excédentaires",
+               "Fonds inutilisés",
+               "Fonds inutilisés (%)",
+               "Fonds bloqués",
+               "Fonds à fin déterminée inutilisés",
+               "Budgets reportés",
+               "Fonds inutilisés nets",
+               "Fonds inutilisés nets (%)"
               ]
             ]
         },
-      "name" : { "en" : "Lapses",
-          "fr" : "Fonds inutilisés"
+      "name" : { "en" : "4 - Lapses",
+          "fr" : "4 - Fonds inutilisés"
         },
-      "title" : { "en" : "Table 4 - Gross and Net Lapses by Vote from 2006-07 to 2010-11 ($000)",
-          "fr" : "Tableau 4 - Fonds inutilisés bruts et nets par crédit de 2006-07 à 2010-11 ($000)"
+      "title" : { "en" : "Table 4 - Gross and Net Lapses by Vote from 2007-08 to 2011-12 ($000)",
+          "fr" : "Tableau 4 - Fonds inutilisés bruts et nets par crédit de 2007-08 à 2011-12 ($000)"
         }
     },
   "Table5" : { "col_defs" : [ "int",
@@ -491,7 +506,7 @@ tables =  {
                   "header" : ""
                 },
                 { "colspan" : 3,
-                  "header" : "total operating"
+                  "header" : "Total Operating"
                 },
                 { "colspan" : 3,
                   "header" : "Capital"
@@ -500,17 +515,17 @@ tables =  {
                   "header" : "Transfer Payments"
                 },
                 { "colspan" : 3,
-                  "header" : "Special Purpose*"
+                  "header" : "Frozen"
                 },
                 { "colspan" : 3,
-                  "header" : "Frozen"
+                  "header" :  "Special Purpose"
                 },
                 { "colspan" : 3,
                   "header" : "Total"
                 }
               ],
-              [ "Vote Number 2010-11",
-                "Vote Description",
+              [ "Vote (2011-12)",
+                "Vote",
                 "Year",
                 "Authority",
                 "Expenditures",
@@ -545,17 +560,17 @@ tables =  {
                   "header" : "Paiements de Transfert"
                 },
                 { "colspan" : 3,
-                  "header" : "Affectations à fin spéciale*"
+                  "header" : "Montants gelés"
                 },
                 { "colspan" : 3,
-                  "header" : "Montants gelés"
+                  "header" : "Affectations à fin spéciale"
                 },
                 { "colspan" : 3,
                   "header" : "Total"
                 }
               ],
-              [ "Numéro de crédit 2010-11",
-                "Description du cédit",
+              [ "Crédit (2011-12)",
+                "Description",
                 "Année",
                 "Autorité",
                 "Dépenses",
@@ -578,11 +593,11 @@ tables =  {
               ]
             ]
         },
-      "name" : { "en" : "Voted Expenditures by Allotment",
-          "fr" : "Détail des dépenses votées"
+      "name" : { "en" : "5 - Voted Expenditures by Allotment",
+          "fr" : "5 - Détail des dépenses votées"
         },
-      "title" : { "en" : "Table 5 - Voted Expenditures by Allotment from 2006-07 to 20010-11($000)",
-          "fr" : "Tableau 5 - Détail des dépenses votées par affectation de 2006-07 à 2010-11 ($000)"
+      "title" : { "en" : "Table 5 - Voted Expenditures by Allotment from 2007-08 to 2011-12 ($000)",
+          "fr" : "Tableau 5 - Détail des dépenses votées par affectation de 2007-08 à 2011-12 ($000)"
         }
     },
   "Table6" : { "col_defs" : [ "int",
@@ -618,8 +633,8 @@ tables =  {
                   "header" : "Total Spending"
                 }
               ],
-              [ "Vote Number 2010-11",
-                "Vote Description",
+              [ "Vote (2011-12)",
+                "Description",
                 "Year",
                 "Authority",
                 "Expenditures",
@@ -651,8 +666,8 @@ tables =  {
                   "header" : "Total"
                 }
               ],
-              [ "Numéro de crédit 2010-11",
-                "Description du cédit",
+              [ "Crédit (2011-12)",
+                "Description",
                 "Année",
                 "Autorité",
                 "Dépenses",
@@ -669,11 +684,11 @@ tables =  {
               ]
             ]
         },
-      "name" : { "en" : "Expenditures by Operating Allotment",
-          "fr" : "Dépenses de fonctionnement par affectation"
+      "name" : { "en" : "6 - Expenditures by Operating Allotment",
+          "fr" : "6 - Dépenses de fonctionnement par affectation"
         },
-      "title" : { "en" : "Table 6 - Expenditures by Operating Allotment from 2006-07 to 2010-11 ($000)",
-          "fr" : "Tableau 6 - Dépenses de fonctionnement par affectation de 2006-07 à 2010-11 ($000) "
+      "title" : { "en" : "Table 6 - Expenditures by Operating Allotment from 2007-08 to 2011-12 ($000)",
+          "fr" : "Tableau 6 - Dépenses de fonctionnement par affectation de 2007-08 à 2011-12 ($000) "
         }
     },
   "Table7" : { "col_defs" : [ "int",
@@ -697,15 +712,9 @@ tables =  {
           "float"
         ],
       "coverage" : "historical",
-      "headers" : { "en" : [ [ { "colspan" : 3,
-                  "header" : ""
-                },
-                { "colspan" : 16,
-                  "header" : "Standard Objects"
-                }
-              ],
-              [ "Vote Number 2010-11 / Statutory",
-                "Vote Description / Statutory",
+      "headers" : { "en" : [ 
+              [ "Vote (2011-12) / Statutory",
+                "Description",
                 "Year",
                 "Personnel",
                 "Transportation and communication",
@@ -717,23 +726,17 @@ tables =  {
                 "Acquisition of land, buildings, and works",
                 "Acquisition of machinery and equipment",
                 "Transfer Payments",
-                "Other subsidies and payments",
                 "Public Debt Charges",
+                "Other subsidies and payments",
                 "Total Gross Expenditues",
-                "External Revenues",
-                "Internal Revenues",
+                "External Revenues*",
+                "Internal Revenues**",
                 "Total Net Expenditues"
               ]
             ],
-          "fr" : [ [ { "colspan" : 3,
-                  "header" : ""
-                },
-                { "colspan" : 16,
-                  "header" : "Articles courants"
-                }
-              ],
-              [ "Num. de crédit 2010-11 / Stat.",
-                "Description du crédit / Statutaire",
+          "fr" : [ 
+              [ "Crédit (2011-12) / Légis..",
+                "Description",
                 "Année",
                 "Personnel",
                 "Transports et communications",
@@ -745,20 +748,20 @@ tables =  {
                 "Acquisition de terrains, batiments et ouvrages",
                 "Acquisition de materiel et d'outillage",
                 "Paiements de transfert",
-                "Autres subventions et paiements",
                 "Frais de la dette",
+                "Autres subventions et paiements",
                 "Total des dépenses brutes",
-                "Revenus internes",
-                "Revenus externes",
+                "Revenus internes*",
+                "Revenus externes**",
                 "Total des dépenses nettes"
               ]
             ]
         },
-      "name" : { "en" : "Expenditures by Standard Object",
-          "fr" : "Dépenses par article courant"
+      "name" : { "en" : "7 - Expenditures by Standard Object",
+          "fr" : "7 - Dépenses par article courant"
         },
-      "title" : { "en" : "Table 7 - Expenditures by Standard Object from 2007-08 to 2010-11 ($000)",
-          "fr" : "Tableau 7 - Dépenses par article courant de 2007-08 à 2010-11 ($000)"
+      "title" : { "en" : "Table 7 - Expenditures by Standard Object from 2007-08 to 2011-12 ($000)",
+          "fr" : "Tableau 7 - Dépenses par article courant de 2007-08 à 2011-12 ($000)"
         }
     }
 }

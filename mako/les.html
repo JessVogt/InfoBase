@@ -1,5 +1,7 @@
 <%inherit file="mako/base.html"/>
-
+  <%block name='favicon'>
+  <link rel="icon" type="image/png" href="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBggGBQkIBwgKCQkKDRYODQwMDRoTFBAWHxwhIB8cHh4jJzIqIyUvJR4eKzssLzM1ODg4ISo9QTw2QTI3ODUBCQoKDgwOGQ0MFCwcFBosLCksKSw1NSspLCwsNSksLCkpLCwsLCwsKSksKSksKSwpKSkpKSkpKSkpKSkpLCwpKf/AABEIACAAIAMBIgACEQEDEQH/xAAZAAEAAwEBAAAAAAAAAAAAAAAEAQMFBwD/xAAsEAACAQIDBgUFAQAAAAAAAAABAgMEEQAFEhQhIjFBYQYVM1FSEzJTgcEH/8QAFgEBAQEAAAAAAAAAAAAAAAAAAQAC/8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAwDAQACEQMRAD8A6b4uzqTKFSQJLLEoGqKKT6bOSd3FYmwseXvgkmcFGcGKUBWRb+YS2bUQN3D0viPHpYRgoSCEBuBfdZ74TmT1mzLc5j60X3bN+RfbGgH505tdJkJZwAcwkvw9ft69MehzqeKQTJLJaNoi8ZnaVWV2KkHUoIItfFtVtj1tNfzC/Fa+z35YDXRTKakzCe42b1tF/Ub4bsCI/wBBYgRgAm6dCB0fBpqmKWBdWwerHyrD817Y1PGeWtVvDIyymDQVZ4lLFT0uBvsbnf2wFK9GQLJU1IAZW3UT81II6e4wpcxp2rqVY46GVjqASOtZixt2XFVeJBO9LsQglqngRFSbXfS7MxP6IxNXmEtVmlBNSGqq5IGc/T2ZoxxIV5kd8bmTZLJTzNXZgwkrHFgBvWIew/pwJ//Z"/>
+  </%block>
   <%block name='extracss'>
   body {
   padding-top: 60px;
@@ -11,36 +13,82 @@
 
   .sidescroll { overflow-x: auto;}
 
-  th {text-align: center;}
-
-  div.int{width: 90px;}
-  div.float{width: 90px;}
+  div.int{width: 90px;text-align:center;}
+  div.float{width: 90px;text-align:right;}
   div.str{width: 150px;}
   div.wide-str{width: 300px;}
-  div.percentage{width: 90px;}
+  div.percentage{width: 90px;text-align:center;}
   div.date{width: 90px;}
-
+  div.dept_menu {
+    z-index: 5000;
+    position: absolute;
+    top: 0px;
+  }
+  table caption {font-size: 1.1em;}
+  table thead tr th div.float{text-align: center;}
   table{ font-size: 0.9em;}
 
-  .print_view alert{ font-size: 1.2em;}
-  .print_view table caption{ font-size: 1em;}
-  @page
-  {
-    size: landscape;
-    margin: 2cm;
-  }
+  .print_view alert{ font-size: 3em;}
+  .print_view th,.print_view td {
+    line-height :13px;
+    padding :0px;
+  } 
+  .print_view table caption{ font-size: 1.2em;}
+  .print_view table { font-size: 0.7em;}
+  .print_view th {width: 60px}
+  .print_view div.int{width: 60px;}
+  .print_view div.float{width: 60px;}
+  .print_view div.str{width: 100px;}
+  .print_view div.wide-str{width: 220px;}
+  .print_view div.percentage{width: 60px;}
+  .print_view div.date{width: 60px;}
+
   </%block>
 
   <%block name='extrajs'>
-
-    <%include file='sandbox.js'/>
     ${ full_js }
+    <%include file='sandbox.js'/>
+    <%include file='group_funcs.js'/>
     <%include file='text.js'/>
-    <%include file='les.js'/>
+    <%include file='mappers.js'/>
     <%include file='base_table_view.js'/>
     <%include file='table_views.js'/>
     <%include file='base_graph_view.js'/>
-    <%include file='graph_views.js'/>
+    <%include file='graph1.js'/>
+    <%include file='graph2.js'/>
+    <%include file='graph2a.js'/>
+    <%include file='graph2b.js'/>
+    <%include file='graph3.js'/>
+    <%include file='graph4.js'/>
+    <%include file='graph5.js'/>
+    <%include file='graph6.js'/>
+    <%include file='graph7.js'/>
+    <%include file='les.js'/>
+    //$(function(){
+    //  var APP = ns('APP')
+    //  var langs = ['en','fr'];
+    //  var func ;
+    //  for (var lang in langs){
+    //    lang = langs[lang];
+    //    APP.app.state.set('lang',lang);
+    //    _.each(_.keys(depts),function(key,x){
+    //      var dept = depts[key];
+    //      func = function(){
+    //        APP.app.acv.updater(dept.dept[lang]);
+    //        _.each(_.range(10),function(index){
+    //          var func2 = function(){
+    //              index+=1;
+    //              var menu_append_el = $('#table_dropdown .dropdown-menu');
+    //              menu_append_el.find('li:nth-child('+index+') a').trigger("click");
+    //              }
+    //          window.setTimeout(func2,index * 200);
+    //          }
+    //        );
+    //      }
+    //      window.setTimeout(func,x*2000);
+    //    });
+    //  }
+    // });
   </%block>
 
   <div class="navbar navbar-fixed-top navbar-inverse">
@@ -49,8 +97,15 @@
         <span class="brand" id='title'>Lapse and Expenditure Statistics</span>
         <ul class='nav' id='navbar_ul'>
           <li>
+          <a href='#' id='dept_sel'> </a>
+          </li>
+          <li class="divider-vertical" id="search_divider"
+            rel="popover"
+            title=""
+            data-placement="bottom"></li> 
+          <li>
           <form class="navbar-search pull-left">
-            <input type="text" id='type_ahead'/>
+            <input type="text" id='type_ahead' />
           </form>
           </li>
         </ul>
@@ -63,9 +118,14 @@
   </div><!-- .navbar --!>
 
   <div id='app'>
-    <h3 class='alert alert-info well' id='welcome'>
-      Select a Department to get started
-    </h3>
+    <div class='container-fluid'>
+      <div class='row-fluid'>
+        <div class='span6 offset3 alert alert-info'>
+          <h3 id='welcome'>
+          </h3>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="modal hide fade" id="modal_skeleton">
@@ -80,23 +140,21 @@
       <a href="#" class="btn" class="close" data-dismiss="modal"></a>
     </div>
   </div>
-
 <%text filter="n">
 <script type='text/plain' id='main_t'>
   <div class='container-fluid'>
     <div class="row-fluid">
+      <div class="alert alert-info well span8 page-header">
+        <h3><%=txt%></h3><h4 class= "title"></h4>
+      </div>
+    </div>
+    <div class="row-fluid">
       <div class="span12">
-        <h3><%=txt%></h3>
         <div class="main">
-          </di>
+        </div>
       </div>
     </div>
   </div>
-</script>
-<script type='text/plain' id='loading_t'>
-  <h3 class='alert alert-info '>
-    Loading Department 
-  </h3>
 </script>
 <script type='text/plain' id='table_menu_t'>
   <li class="dropdown" id='table_dropdown'>
@@ -111,9 +169,10 @@
 <script type='text/plain' id='nav_li'>
   <li> <a > <%=text%> </a> </li>
 </script>
+
 <script type='text/plain' id='print_view_t'>
   <div class='print_view'>
-    <div class="alert fade in">
+    <div class="alert fade in" style='width: 25%;'>
       <button type="button" class="close" data-dismiss="alert">&times;</button>
       <%=help_text%>
     </div>
@@ -131,51 +190,126 @@
 </script>
 <script type='text/plain' id='dataview_t'>
   <div>
-    <ul class="nav nav-pills">
-      <li><a href="#<%=key%>_tables" data-toggle="pill"><%=gt("table")%></a></li>
-      <li><a href="#<%=key%>_graphs" data-toggle="pill"><%=gt("graphs")%></a></li>
+    <ul class="nav nav-tabs">
+      <li><a href="#<%=key%>_tables" data-toggle="tab"><%=gt("table")%></a></li>
+      <li><a href="#<%=key%>_graphs" data-toggle="tab"><%=gt("graphs")%></a></li>
     </ul>
 
     <div class='tab-content'>
-      <div class='tab-pane fade in well active' id='<%=key%>_tables'>
-        <h5><%=title%></h5>
+      <div class='tab-pane fade in well active tables table_content' id='<%=key%>_tables'>
         <div class='btn-group' > 
-          <button class='btn btn-info details'>
+          <button class='btn btn-inverse details'
+            rel='popover'
+            title='<%=gt("help")%>'
+            data-content='<%=gt("details_help")%>' 
+            data-placement='top'>
             <%=gt("details")%>
           </button>
-          <button class='btn btn-info full_screen'>
+          <button class='btn btn-inverse full_screen'>
             <%=gt("full_screen")%>
           </button>
-          <button class='btn btn-info copy' data-placement="top" rel="tooltip" title='<%=gt("copy_tooltip")%>' >
+          <button class='btn btn-inverse copy' 
+            rel='popover'
+            data-placement="bottom" 
+            data-content='<%=gt("copy_tooltip")%>' 
+            title='<%=gt("help")%>'>
             <%=gt("copy")%>
           </button>
-          <button class='btn btn-info print'>
+          <button class='btn btn-inverse print'>
             <%=gt("print")%>
           </button>
-          <button class='btn btn-info about'>
-            ?
+          <button class='btn btn-inverse about'>
+            <%=gt("about")%>
           </button>
+          <% if (footnotes){ %>
+            <button class='btn btn-inverse fn'>
+              <%=gt("footnotes")%>
+            </button>
+          <% } %>
         </div>
         <div class='table_payload'>
 
         </div>
       </div>
-      <div class='tab-pane fade in well' id='<%=key%>_graphs'>
-        hello
+      <div class='tab-pane fade in graph_content' id='<%=key%>_graphs'>
         <div class='graph_payload'>
 
         </div>
       </div>
     </div>
+
+  </div>
+</script>
+<script type='text/plain' id='footnotes_t'>
+    <div class='footnotes well well-small'>
+      <table class="table-condensed">
+        <tbody>
+        <% for (var fn in fns) { %>
+          <tr>
+          <td><%=fns[fn].symbol %></td>
+          <td><%=fns[fn].note[lang]%></dd>
+        </tr>
+        <% } %>
+        </tbody>
+      </table>
+    </div>
+</script>
+
+<script type='text/plain' id='graph_grid_t'>
+  <div class='container-fluid'>
+      <% for (var i in rows) { %>
+        <% var row = rows[i] %>
+        <div class="row-fluid">
+          <h4> <%=row.header%> </h4>
+          <% if (sidebar_header != false && i == 0) { %>
+            <div class='span2 well'>
+              <ul class="nav nav-list">
+                <li class="nav-header"> <%=sidebar_header%> </li>
+                <% for (var x=0;x<items.length;x++) { %>
+                  <li><a href="#"><%=items[x]%></a></li>
+                <% } %>
+              </ul>
+            </div>
+          <%}%>
+          <% for (var j in row.cols) { %>
+            <% var cell = row.cols[j] %>
+              <div class='well span<%=cell.span%> offset<%=cell.offset%>'>
+                <div id="<%=cell.id%>" style='height:<%=cell.height%>px;'>
+                </div>
+                <div id="<%=cell.id + '_fn'%>"></div>
+              </div>
+          <%}%>
+         </div>
+      <%}%>
+  </div>
+</script>
+<script type='text/plain' id='dept_list'>
+  <div class='well dept_menu'>
+  <div class='container-fluid'>
+    <div class="row-fluid">
+      <% for (var col_id in cols){ %>
+        <div class='span2'>
+        <% for (var m_id in cols[col_id]){ %>
+        <ul class="nav nav-list unstyled" >
+          <li class='nav-header'><%=cols[col_id][m_id][0].min[lang]%></li>
+          <% for (var d_id in cols[col_id][m_id]){ %>
+            <li><a href='#'><%=cols[col_id][m_id][d_id].dept[lang]%></a></li>
+          <%}%>
+        </ul>
+        <%}%>
+        </div>
+      <%}%>
+    </div>
+  </div>
   </div>
 </script>
 <script type='text/plain' id='list_t'>
   <div class='table_container sidescroll'>
-    <table class='datatable table table-striped table-condensed'>
+    <table class='table table-striped table-condensed'>
       <caption><%=title%></caption>
       <thead></thead>
-      <tfoot></tfoot>
       <tbody></tbody>
+      <tfoot></tfoot>
     </table>
   </div>
 </script>

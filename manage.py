@@ -8,20 +8,31 @@ here_dir = os.path.split(here)[0]
 
 def shell():
   from sqlalchemy import select, cast,join,func
-  from my_libs import ipython
+  from IPython import embed
   from py import les, settings
-  ipython.shell(locals())
+  embed()
 
 def report():
   from py.reporting import html_les
   html_les()
 
 def watch():
-  from my_libs import watch_dir
-  def rerunner():
-    subprocess.call('coffee -o /home/andrew/Projects/les/js -c /home/andrew/Projects/les/coffee/*.coffee',shell=True)
-    report()
-  watch_dir.rerunner('./coffee',rerunner)
+  import subprocess
+  from helpers import watch_dir
+
+  import pynotify
+  pynotify.init("icon-summary-body")
+
+  paths = ('./js',)
+  def rerunner(f):
+    print("rebuilding due to change in...%s" % os.path.basename(f))
+    x = subprocess.call(['./manage.py', '-r'],shell=True)
+    if pynotify and x:
+      n = pynotify.Notification("error!! recompiling {0}".format(f))
+      n.show()
+
+  watcher= watch_dir.make_watch_dir(paths,rerunner)
+  watcher()
 
 parser = OptionParser()
 parser.add_option("-b","--shell",

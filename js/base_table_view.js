@@ -1,6 +1,7 @@
 $(function () {
   var TABLES = ns('TABLES');
   var APP = ns('APP');
+  var GROUP = ns('GROUP');
 
   /***********HEADER VIEW*************/
   var headerView = Backbone.View.extend({
@@ -38,10 +39,17 @@ $(function () {
     tagName: "tr",
     initialize: function () {
       _.bindAll(this);
+      this.app = this.options['app'];
       this.row = this.options['row']; //read argument [object w/ only one key,val pair] to get row data
       this.types = this.options['types'];
-      if (this.options['info_row']) {
-        this.$el.addClass('info');
+      if (this.options['summary_row']) {
+        this.$el.addClass('info').css('font-weight','bold');
+      }
+      else if (this.options['min_row']) {
+        this.$el.addClass('warning').css('font-weight','bold');
+      }
+      else if (this.options['goc_row']) {
+        this.$el.addClass('success').css('font-weight','bold');
       }
       this.render(); //self-rendering
     },
@@ -66,13 +74,13 @@ $(function () {
         else  if (type == 'float') {
           data = $.formatNumber(data, {
             format: "#,##0",
-            locale: APP.app.state.get('lang')
+            locale: this.app.state.get('lang')
           });
         }
-        else if (type == 'percentage'){
+        else if (type == 'percentage' && data != ''){
           data = $.formatNumber(data, {
             format: "0%",
-            locale: APP.app.state.get('lang')
+            locale: this.app.state.get('lang')
           });
         }
         div.html(data);
@@ -83,7 +91,7 @@ $(function () {
     }
   });
 
-  /***********BASE TBL VIEW************/
+  /***********BASE Table VIEW************/
   TABLES.BaseTableView = Backbone.View.extend({
     data_table_args : {
         "bAutoWidth" : false,
@@ -106,31 +114,61 @@ $(function () {
       _.bindAll(this);
       // retrieve passed in data
       this.key = this.options["key"];
-      this.rows = this.options["rows"];
+      this.rows = _.map(this.options["rows"],function(row){return row});
       this.app = this.options["app"];
       this.def = this.options["def"];
       this.print_btn =this.options["print_btn"] ;
       this.details_btn =this.options["details_btn"] ;
       this.copy_btn =this.options["copy_btn"];
-      this.fs_btn =this.options["fs_btn"];
+      this.min_data = this.options['min_data'];
       // set some useful state based on these inputs
       this.state = this.app.state;
-      this.gt = APP.app.get_text;
+      this.gt = this.app.get_text;
       this.lang = this.state.get('lang');
       this.col_defs = this.def['col_defs'];
-       //
-      this.info_rows = [];
-      this.copied_row_data = _.map(this.rows, this.make_copy); // copy the rows so we can modify them
-      this.row_data = _.map(this.copied_row_data, this._mapper); //local var declared to store rows manipulated by mapper
+      this.dept = this.state.get('dept')
+       // set up holders for different types of rows
+      this.summary_rows = [];
+      this.min_rows = [];
+      this.goc_data = _.map(this.options['goc_data'], 
+          function(row){
+            row[0] = this.gt('goc_total');
+            return row;
+          },
+          this);
+      this.goc_rows = this.goc_data;
+
+      this.row_data = this.rows;
       this.init_row_data();
       //
       this.headers = this.def['headers'][this.lang];
+      var title = this.dept.dept[this.lang] +  " - " + this.def['title'][this.lang];
       this.$el = $(this.template({
-        title: this.def['title'][this.lang]
+        title:title 
       }));
        //
       this.setup_useful_this_links();
       this.setup_event_listeners();
+    }
+    ,add_ministry_sum : function(){
+      var min_total = GROUP.fnc_on_group(this.min_data,
+          {txt_cols: {0:this.gt('min_total')},
+            func_cols : this.sum_cols,
+            func : GROUP.sum_rows});
+      this.row_data.push(min_total);
+      this.min_rows.push(min_total);
+    }
+    ,add_ministry_year_sums : function(){
+      var min_totals = GROUP.group_rows(
+          this.min_data,
+          function(row){ return row[2]},
+          {txt_cols : {0 : this.gt('min_total'),
+                       2 : function(g){return _.first(g)[2]} },
+           func_cols : this.sum_cols,
+           func : GROUP.sum_rows}); 
+      min_totals = _.pluck(min_totals,1);
+      this.row_data = this.row_data.concat(min_totals);
+      this.min_rows = this.min_rows.concat(min_totals);
     }
     ,setup_useful_this_links : function(){
       //
@@ -145,59 +183,52 @@ $(function () {
       else {
         this.details_btn.hide();
       }
-      this.fs_btn.click(this.on_fs_click);
       this.copy_btn.click(this.on_copy_click);
       this.print_btn.click(this.on_print_click);
     }
-    ,on_fs_click : function(){
-      var self = this;
-      var home = this.$el.parent();
-      var txt =  this.gt("full_screen");
-      this.print_btn.hide();
-      APP.app.hide();
-      this.$el.detach().appendTo("body");
-      this.fs_btn.html("Return")
-        .unbind('click',this.on_fs_click)
-        .click(function(){
-          APP.app.show();
-          self.$el.detach().appendTo(home);
-          self.print_btn.show();
-          self.fs_btn.html(txt)
-             .click(self.on_fs_click)
-        });
-    },
-    on_details_click : function(){
+    ,on_details_click : function(){
       var txt = this.details ?  "details" : "hide";
       this.details = !this.details;
       this.details_btn.html(this.gt(txt));  
       this.datatable.fnDestroy();
       this.activate_dataTable();
-    },
-    on_print_click : function(e){
+    }
+    ,to_text : function(){
+      var clone = this.$el.find('table').clone();
+      clone.find('tfoot').remove();
+      return clone
+        .wrap('<p></p>')
+        .parent()
+        .html()
+    }
+    ,on_print_click : function(e){
      (new APP.printView({
        state : this.state,
        table : this.to_text()
      }));
-    },
-    to_text : function(){
-      return this.$el.find('table')
-          .wrap('<p></p>')
-          .parent()
-          .html(); 
-    },
-    on_copy_click : function(e){
+    }
+    ,excel_format : function(){
+      var clone = this.$el.find('table').clone();
+      clone.find('tfoot').remove();
+      clone.find('th').css({"vertical-align" : "bottom"});
+      clone.find('table,td,th').css({'border' : '1px solid black'});
+      clone.find('table,td,th').css({'border-width' : 'thin'});
+      clone.find('td,th').css({"width" : '200px'});
+      clone.find('tr:even').css({'background-color' : 'rgb(245,245,245)'})
+      clone.find('tr.info').css({'background-color' : '#d9edf7'});
+      clone.find('tr.warning').css({'background-color' : '#fcf8e3'});
+      clone.find('tr.success').css({'background-color' : '#dff0d8'});
+      return clone
+        .wrap('<p></p>')
+        .parent()
+        .html()
+    }
+    ,on_copy_click : function(e){
       // this will only work with IE7/8
       try {
-        window.clipboardData.setData("Text",this.to_text() );
+        window.clipboardData.setData("Text",this.excel_format() );
       }
       catch(err){}
-    },
-    make_copy: function (row) {
-      // creates a copy of the row
-      return $.extend([], row);
-    },
-    _mapper: function (row) {
-      return this.mapper(row)
     }
     , make_headers: function () {
       _.each(_.map(this.headers, function (h) {
@@ -234,8 +265,11 @@ $(function () {
       function (r) {
         return new rowView({
           row: r,
+          app : this.app,
           types: this.col_defs,
-          info_row: _.indexOf(this.info_rows,r) != -1
+          summary_row: _.indexOf(this.summary_rows,r) != -1,
+          min_row: _.indexOf(this.min_rows,r) != -1,
+          goc_row: _.indexOf(this.goc_rows,r) != -1
         });
       }, this),
 
@@ -250,6 +284,7 @@ $(function () {
       }
       var options  = _.extend({},this.data_table_args);
       var showing_defs  = this.col_defs;
+      // hide columns 
       if (!this.details && this.hide_col_ids.length > 0){
         showing_defs = _.map(_.filter(_.range(_.size(this.col_defs)),
               function(i){
@@ -262,68 +297,37 @@ $(function () {
           "aTargets" : this.hide_col_ids
         }];
       }
+      // activate datatables
       this.datatable = $('table',this.$el).dataTable(options);
       
+      // set table widths
       var tables_width = _.reduce(_.map(showing_defs,
             function(def){
                return this.width_map[def]},this),
           function(x,y){
             return x+y});
       this.datatable.css({"width" : tables_width+"px"});
-    },
-    perform_fnc_on_group : function(group,txt,fnc,impacted_cols){
-      var cols = _.range(0, group[0].length);
-      var sum_row = _.map(cols,
-
-      function (col_idx) { // takes a column index
-        // the first column will always be text
-        if (col_idx == 0) {
-          return txt;
-        }
-        // this column should not be subtotaled
-        if (_.indexOf(impacted_cols,col_idx) == -1) {
-          return ''
-        } else {
-          return fnc(group,col_idx);
-        }
-      });
-      this.info_rows.push(sum_row);
-      group.push(sum_row);
-    },
-    add_rows : function(rows,i){
-      // this column will be subtotaled
-      // check for the data type, floats and ints
-      return _.reduce(_.map(rows,
-
-      function (row) {
-        return row[i]
-      }),
-
-      function (x, y) {
-        return x + y
-      });
-    },
-    avg_rows : function(rows,i){
-      return this.add_rows(rows,i) / rows.length;
-    },
-    group_rows: function (group_func,fnc,txt) {
-      // group the rows
-      groups = _.groupBy(this.row_data,group_func );
-      _.each(groups,
-          function(group){
-              this.perform_fnc_on_group(group,txt,fnc,this.sum_cols);
+    }
+    ,merge_group_results : function(results){
+      // results is in the form of 
+      // [[group,result],[group,results]]
+      _.each(results,
+          function(result){ //each func
+            this.summary_rows.push(result[1]);
           },this);
-      // stitch the groups back together into one array
-      if (groups.length == 1) {
-        this.row_data = groups[0];
-      } else {
-        this.row_data = _.reduce(groups,
-
-        function (x, y) {
-          return x.concat(y)
-        });
-      }
-    } // end of group_rows
+      this.row_data = _.flatten(_.map(results,
+          function(result){
+            return result[0].concat([result[1]]);
+          }),true);
+    }
+    ,render: function () {
+      this.row_data = this.row_data.concat(this.goc_data);
+      this.make_headers();
+      this.make_body();
+      this.make_footers();
+      this.activate_dataTable();
+      return this;
+    }
   }) // end of BaseTableView
 }); // end of scope
 

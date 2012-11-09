@@ -1,3 +1,4 @@
+from __future__ import print_function
 import codecs
 import operator
 import functools
@@ -18,19 +19,25 @@ lookup = mako.lookup.TemplateLookup(directories=mako_dirs,
                                     input_encoding='utf-8')
 
 js_root = '/home/andrew/Projects/media/js'
-js_files = ['00-jquery-1.8.0.js',
+js_files = [ "excanvas.js",
+            '00-jquery-1.8.2.js',
             '01-underscore-min.js',
             '02-backbone.js',
             '03-jshashtable-2.1.js',
-            'bootstrap.js',
-            'jquery-ui-1.8.22.custom.min.js',
+            'bootstrap.min.js',
             'jquery.numberformatter-1.2.3.js',
-            "jquery.dataTables.min.js"
+            "jquery.dataTables.min.js",
+            "jquery.jqplot.min.js",
+            "jqplot.pieRenderer.min.js",
+            "jqplot.barRenderer.min.js",
+            "jqplot.categoryAxisRenderer.min.js",
+            "jqplot.canvasAxisTickRenderer.min.js",
            ]
 
 css_root = '/home/andrew/Projects/media/css'
 css_files = ['bootstrap.min.css',
-             'jquery-ui-1.8.22.custom.css']
+             "jquery.jqplot.min.css",
+             ]
 
 opn = functools.partial(codecs.open,encoding='utf-8')
 
@@ -51,53 +58,69 @@ def check(data,lookups,after_check=lambda x:x):
     for row in data[table]:
       try:
         # make sure rows are correct lenght
-        if table in ('Table4', 'Table5'  'Table6'  'Table7'):
-          assert len(table_def['col_defs']) == len(row)-1
-        elif table in ('Table2','Table2b','Table3'):
+        if table in ('Table4', 'Table5', 'Table6' ,'Table7'):
+          row = [ x.replace(u"\xad",u"-")  if isinstance(x,basestring)  else x
+                 for x in row]
+          try:
+            assert len(table_def['col_defs']) == len(row)-1
+          except Exception,e:
+            import pdb
+            pdb.set_trace()
+        elif table in ('Table2b','Table3'):
           assert len(table_def['col_defs']) == len(row)
-        elif table ==  'Table2a':
+        elif table ==  ('Table2','Table2a'):
           assert len(table_def['col_defs']) == len(row)-2
         # find acronym
         assert row[0] in lookups['depts']
         # perform lookup on rows
-        if row[2] and row[1] != '(S)' and historical == 'historical':
-          assert row[2] in lookups['votes'][historical]
-        if historical == 'in_year' and table != 'Table2a':
-          assert lookups['votes'][historical][row[0]][row[1]]
+        #if row[2] and row[1] != '(S)' and historical == 'historical':
+        #  assert row[2] in lookups['votes'][historical]
+        #if historical == 'in_year' and table != 'Table2a':
+        #  assert lookups['votes'][historical][row[0]][row[1]]
         after_check(row,table)
       except Exception,e:
+        import pdb
+        pdb.set_trace()
         errors.add( (table,) + tuple(row[:2]) )
   for row in errors:
     print(*row,sep="\t")
 
+def double_check(lookups):
+  for dept,val in lookups['depts'].iteritems():
+    val['footnotes'] = {}
+    val['tables'] = {k:v for k,v in val['tables'].iteritems()
+                     if not (
+                       len(v) is 0 or (
+                       len(v) is 1
+                       and all(x in (0,"")
+                               for x in v[0][1:])))}
+    for table,fns in lookups['footnotes'].iteritems():
+      relevant = filter(lambda fn : fn['deptcode'] == dept,
+                        fns)
+      if relevant:
+        val['footnotes'][table] = relevant
+        for rel in relevant:
+          lookups['footnotes'][table].remove(rel)
 
 def html_les():
-  r = redis.Redis()
-  r.flushdb()
-  if 'les' in r:
-    extra_js =  r.get('les')
-  else:
-    lookups,data = load()
-    lookups['data'] = {k:{} for k in lookups['d_e']}
-    del data['DATA8']
-    transform_data(lookups['data'], data)
-    remove_vote_0_lines(lookups['data'])
-    lookups['les_tables'] = tables
-    extra_js = reduce(operator.add,
-                      map(lambda k : '%s=%s;\n' % (k,json.dumps(lookups[k])),
-                          lookups))
-    r.set('les',extra_js)
+  lookups,data = load()
+  check(data,lookups,make_after_check(lookups))
+  ## filter out departments with no tables
+  lookups['depts'] = {key:val for key,val in
+                     lookups['depts'].iteritems()
+                     if val.get('tables')}
+  double_check(lookups)
+  lookups['les_tables'] = tables
 
+  extra_js = reduce(operator.add,
+                    map(lambda k : u'%s=%s;\n' % (k,json.dumps(lookups[k])),
+                        lookups))
   jsdata = reduce(operator.add,
                   map(lambda f : opn(os.path.join(js_root,f)).read()+";\n",
                       js_files))
-
   cssdata = reduce(operator.add,
                   map(lambda f : opn(os.path.join(css_root,f)).read(),
                       css_files))
-
-  with open('/media/KINGSTON/les2/Libraries/jsondata.js','w') as jsondata:
-    jsondata.write(extra_js+"\n")
 
   full_js = jsdata + u"\n" + extra_js
   full_css = cssdata

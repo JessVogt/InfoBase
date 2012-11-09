@@ -1,9 +1,10 @@
 import collections
+import itertools
 import xlrd
 from ..reporting import table_defs
 tables = table_defs.tables
-f  = '/media/KINGSTON/LESWEB.XLS'
-f2 = '/media/KINGSTON/CODES WEB LES.XLS'
+f  = 'LESWEB.XLS'
+f2 = 'CODES WEB LES.XLS'
 
 wb = xlrd.open_workbook(f)
 wb2 = xlrd.open_workbook(f2)
@@ -55,16 +56,30 @@ def stat(lines):
     return line[0],{'en' : line[1],'fr':line[2]}
   return dict(map(_,lines))
 
+def footnotes(lines):
+  grps = itertools.groupby(sorted(lines,
+                                    key = lambda l : l[0]),
+                             lambda l : l[0])
+  return {grp[0] : [dict(deptcode = l[1],
+                         symbol = l[2].strip(u"\""),
+                         note = dict(en = l[3],
+                                     fr= l[4]))
+                    for l in grp[1]]
+          for grp in grps}
+
+
 def load():
   data_sheets = dict(map(each_sheet,
                          filter(lambda x : 'Table' in x.name,
                                     wb.sheets())))
   lookup_sheets = dict(map(each_sheet,
                            wb2.sheets()))
+  lookup_sheets['footnotes'] = each_sheet(wb.sheet_by_name('Footnotes'))[1]
   lookups = {
     'depts': depts(lookup_sheets['DEPTCODE_MINCODE']),
     'votes': votes(lookup_sheets['VOTES']),
-    'stat': stat(lookup_sheets['STATUTORY'])
+    #'stat': stat(lookup_sheets['STATUTORY'])
+    'footnotes' : footnotes(lookup_sheets['footnotes'])
   }
   return lookups,data_sheets
 
