@@ -72,6 +72,10 @@
         "en" : "Print"
         ,"fr" : "Imprimer"
       }
+      ,"other_in_min" : {
+       "en" :  "Other Organisations in ministry"
+      ,"fr" : "Autres organisations dans le portefeuille"
+      }
       ,"print_help" : {
         "en" : "For long tables, use landscape/legal"
         ,"fr" : "Pour les tableaux plus longs, utiliser les options paysage et légal "

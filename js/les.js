@@ -6,15 +6,17 @@
     var MAPPERS = ns('MAPPERS');
     var LANG = ns('LANG');
 
-    var ministry_total = function(ministry,lang,table){
+    var find_all_in_ministry = function(dept,lang,table){
       // find all departments with a ministry name, matching
       // the ministry AND that has data for the requested table
-        var min = _.filter(window.depts,
-            function(dept){
-              return dept['min'][lang] == ministry && _.has(dept['tables'],table);
+      return _.filter(window.depts,
+            function(d){
+              return d['min'][lang] == dept['min'][lang] && _.has(dept['tables'],table);
             });
-        // extract all the table lines from these departments
-        var lines = _.map(min,
+    }
+
+    var ministry_total = function(depts,table){
+        var lines = _.map(depts,
           function(dept){  //map function
             return dept['tables'][table];
           });
@@ -245,6 +247,7 @@
     /************Data View********/
     var dataView = Backbone.View.extend({
       template : _.template($('#dataview_t').html())
+      ,nav_li : _.template($('#nav_li').html())
       ,initialize: function(){
         _.bindAll(this);
         // retrieve passed in data
@@ -259,14 +262,48 @@
         this.mapper = new MAPPERS.mapper(this.lang,this.def,this.key);
         this.raw_data = this.dept["tables"][this.key]
         this.data = this.mapper.map(this.raw_data);
-        var raw_min_data = ministry_total(this.dept.min[this.lang],this.lang,this.key);
+        var ministry_depts = find_all_in_ministry(this.dept,this.lang,this.key);
+        this.other_depts = _.filter(ministry_depts,
+         function(dept) {return dept != this.dept},
+         this); 
+        var raw_min_data = ministry_total(ministry_depts,this.key);
         this.min_data = this.mapper.map(raw_min_data);
         var raw_goc_data = window.depts['ZGOC']['tables'][this.key];
         this.goc_data = this.mapper.map(raw_goc_data);
       }
       ,render: function(){
 
-        $('#app h4.title').html(this.def.title[this.lang]);
+        // setup the dropdown menu of other departments
+        // sort the departments by name
+        this.other_depts_list = $('#other_depts_list');
+        if (this.other_depts.length > 0){
+          $('#app h4.title').html(this.def.title[this.lang]);
+          _.each(_.sortBy(this.other_depts,
+                function(d){return d.dept[this.lang]},
+                this
+                ),
+                function(dept){
+                    // create the link item with the
+                    // department name
+                    var nav = $( this.nav_li({
+                      text:dept.dept[this.lang]
+                    }));
+                    var self = this;
+                    // set up the onclick for the link item
+                    nav.on("click",
+                      function(event){
+                        self.app.state.set('dept',dept);
+                    });
+                  // append the link to the nav dropdown
+                  // item
+                  this.other_depts_list.append(nav);
+                },
+                this
+          );
+        }
+        else {
+          this.other_depts_list.parent().remove();
+        }
 
         // add the footnotes
         var footnotes = [];
@@ -288,7 +325,6 @@
           this.setup_useful_this_links();
 
           this.about_btn.click(this.on_about_click);
-
 
           // create the table view
           this.table_view = new TABLES.views[this.key]({
@@ -359,6 +395,7 @@
         this.copy_btn = this.$el.find('button.copy');
         this.print_btn = this.$el.find('button.print');
         this.fn_btn = this.$el.find('button.fn');
+        
       }
       ,on_about_click : function () {
         var gt = this.app.get_text;
@@ -498,7 +535,8 @@
         // check and see if the departmental drop down
         // is active
         this.app.html(this.template({
-          txt: org['dept'][this.lang]   
+          txt: org['dept'][this.lang],   
+          gt : this.get_text
         }));
 
         var main = this.app.find('.main');
