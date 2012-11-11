@@ -129,46 +129,18 @@ $(function () {
       this.dept = this.state.get('dept')
        // set up holders for different types of rows
       this.summary_rows = [];
-      this.min_rows = [];
       this.goc_data = _.map(this.options['goc_data'], 
           function(row){
             row[0] = this.gt('goc_total');
             return row;
           },
           this);
-      this.goc_rows = this.goc_data;
 
       this.row_data = this.rows;
       this.init_row_data();
       //
       this.headers = this.def['headers'][this.lang];
-      var title = this.dept.dept[this.lang] +  " - " + this.def['title'][this.lang];
-      this.$el = $(this.template({
-        title:title 
-      }));
-       //
-      this.setup_useful_this_links();
-      this.setup_event_listeners();
-    }
-    ,add_ministry_sum : function(){
-      var min_total = GROUP.fnc_on_group(this.min_data,
-          {txt_cols: {0:this.gt('min_total')},
-            func_cols : this.sum_cols,
-            func : GROUP.sum_rows});
-      this.row_data.push(min_total);
-      this.min_rows.push(min_total);
-    }
-    ,add_ministry_year_sums : function(){
-      var min_totals = GROUP.group_rows(
-          this.min_data,
-          function(row){ return row[2]},
-          {txt_cols : {0 : this.gt('min_total'),
-                       2 : function(g){return _.first(g)[2]} },
-           func_cols : this.sum_cols,
-           func : GROUP.sum_rows}); 
-      min_totals = _.pluck(min_totals,1);
-      this.row_data = this.row_data.concat(min_totals);
-      this.min_rows = this.min_rows.concat(min_totals);
+      this.title = this.dept.dept[this.lang] +  " - " + this.def['title'][this.lang];
     }
     ,setup_useful_this_links : function(){
       //
@@ -177,20 +149,25 @@ $(function () {
       this.footer = this.$el.find('tfoot');
     }
     ,setup_event_listeners : function(){
+      this.details_btn.off("click");
+      this.copy_btn.off("click");
+      this.print_btn.off("click");
+      this.state.off("change:goc_tot change:min_tot");
+
       if ( this.hide_col_ids.length > 0){
-        this.details_btn.click(this.on_details_click);
+        this.details_btn.on("click",this.on_details_click);
       }
       else {
         this.details_btn.hide();
       }
-      this.copy_btn.click(this.on_copy_click);
-      this.print_btn.click(this.on_print_click);
+      this.copy_btn.on("click",this.on_copy_click);
+      this.print_btn.on("click",this.on_print_click);
+      this.state.on("change:goc_tot change:min_tot",this.render);
     }
     ,on_details_click : function(){
       var txt = this.details ?  "details" : "hide";
       this.details = !this.details;
       this.details_btn.html(this.gt(txt));  
-      this.datatable.fnDestroy();
       this.activate_dataTable();
     }
     ,to_text : function(){
@@ -261,26 +238,58 @@ $(function () {
     }
     ,make_body: function () {
       _.each(_.map(this.row_data,
-
-      function (r) {
-        return new rowView({
-          row: r,
-          app : this.app,
-          types: this.col_defs,
-          summary_row: _.indexOf(this.summary_rows,r) != -1,
-          min_row: _.indexOf(this.min_rows,r) != -1,
-          goc_row: _.indexOf(this.goc_rows,r) != -1
-        });
-      }, this),
-
-      function (lineview) {
-        this.body.append(lineview.$el)
-      },
-      this)
+              function (r) {
+                return new rowView({
+                  row: r,
+                  app : this.app,
+                  types: this.col_defs,
+                  summary_row: _.indexOf(this.summary_rows,r) != -1,
+                });
+              }, this
+            ),
+            function (lineview) {
+              this.body.append(lineview.$el)
+            },
+            this) ;
+      if (this.state.get('min_tot')){
+      _.each(_.map(this.min_func(),
+              function (r) {
+                return new rowView({
+                  row: r,
+                  app : this.app,
+                  types: this.col_defs,
+                  min_row: true
+                });
+              }, this
+            ),
+            function (lineview) {
+              this.body.append(lineview.$el)
+            },
+            this) ;
+      }
+      if (this.state.get('goc_tot')){
+      _.each(_.map(this.goc_data,
+              function (r) {
+                return new rowView({
+                  row: r,
+                  app : this.app,
+                  types: this.col_defs,
+                  goc_row: true
+                });
+              }, this
+            ),
+            function (lineview) {
+              this.body.append(lineview.$el)
+            },
+            this) ;
+      }
     },
     activate_dataTable : function(){
       if (_.isUndefined(this.details)){
         this.details = false;
+      }
+      if (this.datatable){
+        this.datatable.fnDestroy();
       }
       var options  = _.extend({},this.data_table_args);
       var showing_defs  = this.col_defs;
@@ -307,6 +316,14 @@ $(function () {
           function(x,y){
             return x+y});
       this.datatable.css({"width" : tables_width+"px"});
+      this.$el.find('td').on("click", this,function(event){
+        var view = event.data
+        // return an array, where the last index is what
+        // we need
+        var index_ar = view.datatable.fnGetPosition(this);
+        var index = index_ar[2];
+
+      })
     }
     ,merge_group_results : function(results){
       // results is in the form of 
@@ -321,7 +338,13 @@ $(function () {
           }),true);
     }
     ,render: function () {
-      this.row_data = this.row_data.concat(this.goc_data);
+      this.$el.html("");
+      this.$el.append( $(this.template({
+        title:this.title 
+      })));
+      this.setup_useful_this_links();
+      this.setup_event_listeners();
+
       this.make_headers();
       this.make_body();
       this.make_footers();
@@ -329,5 +352,22 @@ $(function () {
       return this;
     }
   }) // end of BaseTableView
+  TABLES.add_ministry_sum = function(){
+    return  [GROUP.fnc_on_group(this.min_data,
+        {txt_cols: {0:this.gt('min_total')},
+          func_cols : this.sum_cols,
+          func : GROUP.sum_rows})];
+    }
+   TABLES.add_ministry_year_sums = function(){
+      var min_totals = GROUP.group_rows(
+          this.min_data,
+          function(row){ return row[2]},
+          {txt_cols : {0 : this.gt('min_total'),
+                       2 : function(g){return _.first(g)[2]} },
+           func_cols : this.sum_cols,
+           func : GROUP.sum_rows}); 
+      return _.pluck(min_totals,1);
+    }
+
 }); // end of scope
 

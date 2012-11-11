@@ -31,7 +31,8 @@
         _.bindAll(this);
         this.app = this.options["app"];
         this.state = this.app.state;
-        this.state.bind('change:lang', this.render);// re-render on change in language
+        this.state.nff('change:lang', this.render);// re-render on change in language
+        this.state.on('change:lang', this.render);// re-render on change in language
       }
     ,render:function () {			
       this.$el.html(this.app.get_text("lang"));
@@ -47,8 +48,7 @@
         this.state = this.options['state'];
         this.gt = this.options['app'].get_text;
         this.lookup = this.options['lookup'];
-        this.state.bind('change:lang', this.render);// re-render on change in language
-        //this.state.bind('change:lookup', this.render);// re-render on change in org_type change
+        this.state.on('change:lang', this.render);// re-render on change in language
         this.$el.typeahead({updater: this.updater});
       }
       ,render:function () {
@@ -97,7 +97,7 @@
         $('#dept_sel').on("click",this.render);
         //ensure that if the language changes, this list
         //will redraw automatically
-        this.state.bind("change:lang",this.lang_change);
+        this.state.on("change:lang",this.lang_change);
       }
       ,lang_change : function(model,attr){
         if ($('body').find(".dept_menu").length >= 1) {
@@ -158,6 +158,7 @@
               function(x){ return x['dept'][lang] == dept}));
         this.state.unset("dept",{silent: true});
         $('body').find(".dept_menu").remove();
+        this.state.off("change:lang",this.lang_change);
         this.state.set('dept',dept);
       }
 
@@ -259,15 +260,19 @@
         this.lang = this.app.lang;
         this.gt = this.app.get_text;
         this.def = les_tables[this.key];
+
         this.mapper = new MAPPERS.mapper(this.lang,this.def,this.key);
+
         this.raw_data = this.dept["tables"][this.key]
         this.data = this.mapper.map(this.raw_data);
+        //collect ministry data
         var ministry_depts = find_all_in_ministry(this.dept,this.lang,this.key);
         this.other_depts = _.filter(ministry_depts,
          function(dept) {return dept != this.dept},
          this); 
         var raw_min_data = ministry_total(ministry_depts,this.key);
         this.min_data = this.mapper.map(raw_min_data);
+        //collect goc data
         var raw_goc_data = window.depts['ZGOC']['tables'][this.key];
         this.goc_data = this.mapper.map(raw_goc_data);
       }
@@ -276,6 +281,8 @@
         // setup the dropdown menu of other departments
         // sort the departments by name
         this.other_depts_list = $('#other_depts_list');
+        // remove the previous entries
+        this.other_depts_list.find('li a').parent().remove();
         if (this.other_depts.length > 0){
           $('#app h4.title').html(this.def.title[this.lang]);
           _.each(_.sortBy(this.other_depts,
@@ -318,13 +325,18 @@
           this.$el = $(this.template({
             "gt" : this.app.get_text,
             "key" : this.key,
+            "min_tot" : this.app.state.get("min_tot"),
+            "goc_tot" : this.app.state.get("goc_tot"),
             "footnotes" : footnotes.length !== 0
           }));
           this.$el.find('.nav-tabs a:first').tab("show");
 
           this.setup_useful_this_links();
 
-          this.about_btn.click(this.on_about_click);
+          // establish event listeners
+          this.about_btn.on("click",this.on_about_click);
+          this.min_total_btn.on("click",this,this.on_min_tot_click);
+          this.goc_total_btn.on("click",this,this.on_goc_tot_click);
 
           // create the table view
           this.table_view = new TABLES.views[this.key]({
@@ -395,9 +407,10 @@
         this.copy_btn = this.$el.find('button.copy');
         this.print_btn = this.$el.find('button.print');
         this.fn_btn = this.$el.find('button.fn');
-        
+        this.min_total_btn = this.$el.find('button.min_tot');
+        this.goc_total_btn = this.$el.find('button.goc_tot');
       }
-      ,on_about_click : function () {
+      ,on_about_click : function (e) {
         var gt = this.app.get_text;
         var help_key = "#" + this.key + "_help_" + this.lang;
         var help_text = $(help_key).html();
@@ -409,10 +422,20 @@
           .html(gt("close"));
         this.modal.modal();
       }
+      ,on_min_tot_click : function (e) {
+        var view = e.data;
+        view.app.state.set("min_tot",
+                        !$(e.target).hasClass("active"));
+      }
+      ,on_goc_tot_click : function (e) {
+        var view = e.data;
+        view.app.state.set("goc_tot",
+                        !$(e.target).hasClass("active"));
+      }
       ,activate : function(){
         // unbind any events listeners which might be here
         this.drop_zone.find('.nav-pills a:last').off("shown");
-        this.drop_zone.find('a').off("click");
+        this.drop_zone.find('a,button').off("click");
         this.drop_zone.find('div').off("jqplotDataClick");
 
         this.drop_zone.children().remove();
@@ -569,6 +592,7 @@
          var table_index = _.indexOf(keys,curent_table);
          table_index = table_index === -1 ? 1 : table_index+1;
          menu_append_el.find('li:nth-child('+table_index+') a').trigger("click");
+
          main.find('.nav-pills a:last').tab("show");
       }
     });

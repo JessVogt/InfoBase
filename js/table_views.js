@@ -9,7 +9,7 @@ $(function () {
   "Table1" : BTV.extend({
      sum_cols: [2,3,4,5,7,9]
     // the function for adding ministry totals
-     ,min_func : BTV.add_ministry_sum
+     ,min_func : TABLES.add_ministry_sum
      ,init_row_data: function () {
 
        var txt = this.gt("total");
@@ -21,7 +21,6 @@ $(function () {
            {txt_cols : {0 : txt},
             func_cols : this.sum_cols,
             func : GROUP.sum_rows})]]);
-       this.add_ministry_sum();
     }
   })
 
@@ -29,7 +28,7 @@ $(function () {
 
      sum_cols: _.range(2, 8)
     // the function for adding ministry totals
-     ,min_func : BTV.add_ministry_sum
+     ,min_func : TABLES.add_ministry_sum
      ,init_row_data: function () {
 
        var total =   GROUP.fnc_on_group(
@@ -49,18 +48,14 @@ $(function () {
             func_cols : this.sum_cols,
             func : GROUP.sum_rows}));
         this.merge_group_results([[this.row_data,total]]);
-       this.add_ministry_sum();
     }
   })
 
   ,"Table2a" : BTV.extend({
-     
      sum_cols: _.range(1, 19)
-
      ,hide_col_ids : [7,8,9,10,11,13,14,15,16,17]
     // the function for adding ministry totals
-     ,min_func : BTV.add_ministry_sum
-
+     ,min_func : TABLES.add_ministry_sum
      ,init_row_data: function () {
 
        var txt = this.gt("total");
@@ -71,14 +66,13 @@ $(function () {
            {txt_cols : {0 : txt},
             func_cols : this.sum_cols,
             func : GROUP.sum_rows})]]);
-       this.add_ministry_sum();
      }
   })
 
   ,"Table2b" : BTV.extend({ 
      sum_cols: [2,3, 5,6] 
     // the function for adding ministry totals
-     ,min_func : BTV.add_ministry_sum
+     ,min_func : TABLES.add_ministry_sum
      ,hide_col_ids : []
      ,init_row_data: function () {
 
@@ -90,14 +84,13 @@ $(function () {
            {txt_cols : {0 : txt},
             func_cols : this.sum_cols,
             func : GROUP.sum_rows})]]);
-       this.add_ministry_sum();
      }
   })
 
   ,"Table3" : BTV.extend({ 
      hide_col_ids: [3,4,6,11,12,13,14,15,16,17]
     // the function for adding ministry totals
-     ,min_func : BTV.add_ministry_sum
+     ,min_func : TABLES.add_ministry_sum
      ,sum_cols: _.range(2, 19)
      ,init_row_data: function () {
 
@@ -109,14 +102,13 @@ $(function () {
            {txt_cols : {0 : txt},
             func_cols : this.sum_cols,
             func : GROUP.sum_rows})]]);
-       this.add_ministry_sum();
      }
   })
 
   ,"Table4" : BTV.extend({ 
      hide_col_ids: [6,7,10,11,12]
     // the function for adding ministry totals
-     ,min_func : BTV.add_ministry_year_sums
+     ,min_func : TABLES.add_ministry_year_sums
      ,sum_cols: [3,4,5,6,7,8,10,11,12,13,14]
      ,init_row_data: function () {
 
@@ -145,14 +137,13 @@ $(function () {
        },this);
        this.row_data = this.row_data.concat(totals);
 
-       this.add_ministry_year_sums();
      }
   })
 
   ,"Table5" : BTV.extend({ 
      hide_col_ids: [3,4,6,7,9,10,12,13,15,16]
     // the function for adding ministry totals
-     ,min_func : BTV.add_ministry_year_sums
+     ,min_func : TABLES.add_ministry_year_sums
      ,sum_cols: _.range(3, 21)
      ,init_row_data: function () {
        
@@ -177,14 +168,13 @@ $(function () {
          return total[1]
        },this);
        this.row_data = this.row_data.concat(totals);
-       this.add_ministry_year_sums();
      }
   })
 
   ,"Table6" : BTV.extend({ 
      hide_col_ids: [3,5,6,8,9,11]
     // the function for adding ministry totals
-     ,min_func : BTV.add_ministry_year_sums
+     ,min_func : TABLES.add_ministry_year_sums
      ,sum_cols: _.range(3, 15)
      ,init_row_data: function () {
 
@@ -209,7 +199,6 @@ $(function () {
          return total[1]
        },this);
        this.row_data = this.row_data.concat(totals);
-       this.add_ministry_year_sums();
 
      }
   })
@@ -217,7 +206,7 @@ $(function () {
   ,"Table7" : BTV.extend({ 
       hide_col_ids: [4,5,6,7,8,9,10,,11,13,14]
     // the function for adding ministry totals
-     ,min_func : BTV.add_ministry_year_sums
+     ,min_func : TABLES.add_ministry_year_sums
       ,sum_cols: _.range(3, 19)
       ,init_row_data: function () {
          var txt = this.gt("sub_avg");
@@ -247,7 +236,6 @@ $(function () {
            return total[1]
          },this);
          this.row_data = this.row_data.concat(totals);
-         this.add_ministry_year_sums();
       }
   })
   };
