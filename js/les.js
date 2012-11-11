@@ -31,7 +31,7 @@
         _.bindAll(this);
         this.app = this.options["app"];
         this.state = this.app.state;
-        this.state.nff('change:lang', this.render);// re-render on change in language
+        this.state.off('change:lang', this.render);// re-render on change in language
         this.state.on('change:lang', this.render);// re-render on change in language
       }
     ,render:function () {			
@@ -593,7 +593,7 @@
          table_index = table_index === -1 ? 1 : table_index+1;
          menu_append_el.find('li:nth-child('+table_index+') a').trigger("click");
 
-         main.find('.nav-pills a:last').tab("show");
+         main.find('.nav-pills a:first').tab("show");
       }
     });
     APP.app = new appView({lookup:depts});
