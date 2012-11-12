@@ -212,21 +212,19 @@
     </ul>
 
     <div class='tab-content'>
-      <div class='tab-pane fade in well active tables table_content' id='<%=key%>_tables'>
+      <div class='tab-pane well active tables table_content' id='<%=key%>_tables'>
         <div class="btn-toolbar" style='padding-left: 50px'>
           <div class='btn-group'> 
             <button class='btn btn-inverse details'
-              rel='popover'
-              title='<%=gt("help")%>'
-              data-content='<%=gt("details_help")%>' 
+              rel='tooltip'
+              title='<%=gt("details_help")%>' 
               data-placement='top'>
               <%=gt("details")%>
             </button>
             <button class='btn btn-inverse copy' 
-              rel='popover'
+              rel='tooltip'
               data-placement="bottom" 
-              data-content='<%=gt("copy_tooltip")%>' 
-              title='<%=gt("help")%>'>
+              title='<%=gt("copy_tooltip")%>' >
               <%=gt("copy")%>
             </button>
             <button class='btn btn-inverse print'>

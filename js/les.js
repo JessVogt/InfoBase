@@ -277,6 +277,7 @@
         this.goc_data = this.mapper.map(raw_goc_data);
       }
       ,render: function(){
+        var self = this;
 
         // setup the dropdown menu of other departments
         // sort the departments by name
@@ -329,7 +330,6 @@
             "goc_tot" : this.app.state.get("goc_tot"),
             "footnotes" : footnotes.length !== 0
           }));
-          this.$el.find('.nav-tabs a:first').tab("show");
 
           this.setup_useful_this_links();
 
@@ -351,6 +351,7 @@
             copy_btn : this.copy_btn
           });
           this.table_payload.append(this.table_view.render().$el);
+          this.$el.find('.nav-tabs a:first').tab("show");
         
 
           // create the graph
@@ -368,6 +369,7 @@
             this.graph_payload.append(this.graph_view.render().$el);
             this.$el.find('.nav-tabs a:last')
               .on("shown", this.graph_view.graph);
+
           }
           else {
             this.$el.find('.nav-tabs li:last').remove();
@@ -385,10 +387,30 @@
           modal_header : this.modal_header
         });
 
-        // activate the popovers
-        $("button[rel=popover]",this.$el).popover({trigger: 'hover'});
+        // active the tabs and set up functionality to save
+        // the currently open tab and also check if one 
+        // is already saved and set the current tab to the 
+        // one saved in the state
+        var tabs_a = this.$el.find('.nav-tabs a')
+        tabs_a.off("shown",this.on_tab_show);
+        tabs_a.on("shown",this.on_tab_show);
+
+        window.setTimeout(function(){
+          var tab_index = self.app.state.get('current_tab');
+          var tab = tabs_a[tab_index];
+          if (tab) {
+            $(tab).tab("show");
+          } else {
+            self.$el.find('.nav-tabs a:first').tab("show");
+          }
+        });
 
         return this;
+      }
+      ,on_tab_show : function(e){
+        var tabs_a = this.$el.find('.nav-tabs a');
+        this.app.state.set("current_tab",
+                            tabs_a.index(e.currentTarget));
       }
       ,setup_useful_this_links : function() {
         this.modal = $("#modal_skeleton");
@@ -593,7 +615,6 @@
          table_index = table_index === -1 ? 1 : table_index+1;
          menu_append_el.find('li:nth-child('+table_index+') a').trigger("click");
 
-         main.find('.nav-pills a:first').tab("show");
       }
     });
     APP.app = new appView({lookup:depts});
