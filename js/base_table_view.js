@@ -338,7 +338,7 @@ $(function () {
           }),true);
     }
     ,render: function () {
-      this.$el.html("");
+      this.$el.children().remove();
       this.$el.append( $(this.template({
         title:this.title 
       })));
