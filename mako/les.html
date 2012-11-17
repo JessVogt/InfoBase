@@ -216,13 +216,11 @@
         <div class="btn-toolbar" style='padding-left: 50px'>
           <div class='btn-group'> 
             <button class='btn btn-inverse details'
-              rel='tooltip'
               title='<%=gt("details_help")%>' 
               data-placement='top'>
               <%=gt("details")%>
             </button>
             <button class='btn btn-inverse copy' 
-              rel='tooltip'
               data-placement="bottom" 
               title='<%=gt("copy_tooltip")%>' >
               <%=gt("copy")%>
@@ -241,8 +239,12 @@
             <% } %>
           </div>
           <div class="btn-group" data-toggle="buttons-checkbox">
-            <button type="button" class="btn btn-primary min_tot <%=min_tot ? 'active' : ''%>">Min Total</button>
-            <button type="button" class="btn btn-primary goc_tot <%=goc_tot ? 'active' : ''%>">Government Total</button>
+            <button type="button" class="btn btn-primary min_tot <%=min_tot ? 'active' : ''%>">
+                <%=gt("min_total")%>
+            </button>
+            <button type="button" class="btn btn-primary goc_tot <%=goc_tot ? 'active' : ''%>">
+                <%=gt("goc_total")%>
+            </button>
           </div>
         </div>
 

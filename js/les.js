@@ -21,7 +21,7 @@
             return dept['tables'][table];
           });
         // flatten all these lists into one big list
-        return  _.flatten(lines,true);
+        return  _.flatten(_.compact(lines),true);
     }
 
     /************Auto Complete View********/
@@ -103,7 +103,7 @@
         if ($('body').find(".dept_menu").length >= 1) {
           this.render()
         }
-      }
+      } 
       ,render : function(){
         $('body').find(".dept_menu").remove();
         var lang = this.state.get('lang');
@@ -152,6 +152,7 @@
         }
       }
       ,onClick : function(event){
+        this.$el.find('a').off("click",this.onClick);
         var lang = this.state.get('lang');
         var dept = $(event.target).text();
         dept = _.first(_.filter(_.values(this.lookup),
@@ -265,8 +266,9 @@
 
         this.raw_data = this.dept["tables"][this.key]
         this.data = this.mapper.map(this.raw_data);
+    
         //collect ministry data
-        var ministry_depts = find_all_in_ministry(this.dept,this.lang,this.key);
+        var ministry_depts = APP.find_all_in_ministry(this.dept,this.lang,this.key);
         this.other_depts = _.filter(ministry_depts,
          function(dept) {return dept != this.dept},
          this); 
@@ -403,7 +405,7 @@
           } else {
             self.$el.find('.nav-tabs a:first').tab("show");
           }
-        });
+        },1);
 
         return this;
       }

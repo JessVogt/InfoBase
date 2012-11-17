@@ -37,7 +37,7 @@ tables =  {
                 "Expenditures at Period {p}".format(**f),
                 "Forecast Exenditures at year end",
                 "Forecast Lapse (by EACPD*)",
-                "Forecast Lapse (by EACPD*)",
+                "Forecast Lapse % (by EACPD*)",
                 "Previous Year Gross Lapse (2010-11)",
                 "Previous Year Gross Lapse Percentage (2010-11)",
                 "5 Year Gross Lapse Average",
@@ -62,8 +62,8 @@ tables =  {
                 "Autorité",
                 "Budgets Dépenses à la période {p}".format(**f),
                 "Dépenses prévues à la fin de l'année",
-                "Fonds inutilisés estimés par la DADPR*",
-                "Fonds inutilisés estimés par la DADPR*",
+                "Fonds inutilisés (estimés par la DADPR*)",
+                "Fonds inutilisés % (estimés par la DADPR*)",
                 "Fonds inutilisés bruts de l'année précédente",
                 "Fonds inutilisés bruts de l'année précédente en pourcentage",
                 "Moyenne des fonds inutilisés bruts sur 5 ans",
@@ -321,7 +321,7 @@ tables =  {
                 { "colspan" : 3,
                   "header" : "Revenues Credited to the Vote"
                 },
-                { "colspan" : 12,
+                { "colspan" : 13,
                   "header" : "Net Authorities"
                 }
               ],

@@ -231,7 +231,7 @@ $(function () {
         views.reverse();
         _.each(views,
         function (fv) {
-          this.footer.append(fv.$el)
+          this.footer.append(fv.$el);
         },
         this)
       }
@@ -243,9 +243,10 @@ $(function () {
                   row: r,
                   app : this.app,
                   types: this.col_defs,
-                  summary_row: _.indexOf(this.summary_rows,r) != -1,
+                  summary_row: _.indexOf(this.summary_rows,r) != -1
                 });
-              }, this
+              }, 
+              this
             ),
             function (lineview) {
               this.body.append(lineview.$el)

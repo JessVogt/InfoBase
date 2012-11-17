@@ -117,8 +117,8 @@
         ,"fr": "Total pour le portefeuille ministériel"
       }
       ,"goc_total": {
-        "en": "GoC Total"
-        ,"fr": "Total pour le GC"
+        "en": "Government Total"
+        ,"fr": "Total pour le Gouvernment"
       }
       ,"copy" : {
         "en" : "Copy table"
