@@ -322,40 +322,40 @@ $(function () {
 
       var tds = this.$el.find('td div');
 
-      //tds.on("hover",this,function(event){
-      //  var view = event.data
-      //  var td = $(event.target).parents('td')
-      //  var index_ar = view.datatable.fnGetPosition(td.get(0));
-      //  var index = index_ar[2];
-      //  if (_.all(view.def.key, function(key){return key!= index})){
-      //    $(event.target).toggleClass("clickable alert-success")
-      //  }
-      //});
+      tds.on("hover",this,function(event){
+        var view = event.data
+        var td = $(event.target).parents('td')
+        var index_ar = view.datatable.fnGetPosition(td.get(0));
+        var index = index_ar[2];
+        if (_.all(view.def.key, function(key){return key!= index})){
+          $(event.target).toggleClass("clickable alert-success")
+        }
+      });
 
-      //tds.on("click", this,function(event){
-      //  var view = event.data;
-      //  var td = $(event.target).parents('td');
-      //  var tr = td.parent();
-      //  if (tr.hasClass('info')){
-      //    return
-      //  }
-      //  var row = tr.data('row');
+      tds.on("click", this,function(event){
+        var view = event.data;
+        var td = $(event.target).parents('td');
+        var tr = td.parent();
+        if (tr.hasClass('info')){
+          return
+        }
+        var row = tr.data('row');
 
-      //  // return an array, where the last index is what
-      //  // we need
-      //  var index_ar = view.datatable.fnGetPosition(td.get(0));
-      //  var index = index_ar[2];
-      //  
-      //  new TABLES.AnalyticsView({
-      //    dept : view.dept,
-      //    key : view.key,
-      //    row : row,
-      //    col_index : index,
-      //    app : view.app,
-      //    def : view.def,
-      //    mapper : view.mapper
-      //  });
-      //})
+        // return an array, where the last index is what
+        // we need
+        var index_ar = view.datatable.fnGetPosition(td.get(0));
+        var index = index_ar[2];
+        
+        new TABLES.AnalyticsView({
+          dept : view.dept,
+          key : view.key,
+          row : row,
+          col_index : index,
+          app : view.app,
+          def : view.def,
+          mapper : view.mapper
+        });
+      })
     }
     ,merge_group_results : function(results){
       // results is in the form of 

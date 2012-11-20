@@ -24,20 +24,26 @@ js_files = [ "excanvas.js",
             '01-underscore-min.js',
             '02-backbone.js',
             '03-jshashtable-2.1.js',
+
             'bootstrap.min.js',
+
             'jquery.numberformatter-1.2.3.js',
+
             "jquery.dataTables.min.js",
+
             "jquery.jqplot.min.js",
             "jqplot.pieRenderer.min.js",
             "jqplot.barRenderer.min.js",
             "jqplot.categoryAxisRenderer.min.js",
             "jqplot.canvasAxisTickRenderer.min.js",
-            "diff_match_patch.js"
+
+            "jquery-ui-1.9.1.custom.min.js",
            ]
 
 css_root = '/home/andrew/Projects/media/css'
 css_files = ['bootstrap.min.css',
              "jquery.jqplot.min.css",
+             "flick/jquery-ui-1.9.1.custom.min.css",
              ]
 
 opn = functools.partial(codecs.open,encoding='utf-8')

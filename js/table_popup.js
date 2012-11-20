@@ -32,11 +32,6 @@ $(function () {
       this.ministry_depts = APP.find_all_in_ministry(this.dept,this.lang,this.key);
       this.headers = TABLES.extract_headers(this.def['headers'][this.lang],this.col_index);
 
-      this.modal = $("#modal_skeleton");
-      this.modal_header = this.modal.find(".modal-header h3");
-      this.modal_body = this.modal.find(".modal-body p");
-      this.modal_footer = this.modal.find(".modal-footer a");
-
       // all_lines in the format of 
       // [ [dept,[rows]], [dept,[rows]],...]
       this.all_lines = this.mapper.find_similar(this.original,depts);
@@ -149,30 +144,27 @@ $(function () {
       new_row.find('a').on("click",
           function(e){
             self.$el.find('a').off("click");
-            self.modal.modal("hide");
+            self.$el.dialog("close");
             self.app.state.set("dept",row[0]);
           }
       );
     }
     ,render : function (){
-      // clear out the modal
-      // the modal should probably be its own view
-      this.modal_body.html("");
-      this.modal_header.html(this.gt("statistics"));
-      this.modal_footer.html(this.gt("close"));
-      this.modal_body.append(this.$el);
-
       this.$el.append(this.template2({gt : this.gt}));
-
-      this.modal.modal();
+      var buttons = {}
+      buttons[this.gt("close")] = function(){ 
+            $(this).dialog("close")}; 
+      this.$el.dialog({
+        autoOpen : true,
+        title : this.gt("statistics"),
+        closeOnEscape : true,
+        buttons : buttons,
+        width : 800
+      });
 
       this.$el.find('.btn-group:last button').on("click",
           this.on_button_click);
-
-      var self = this;
-      window.setTimeout(function(){
-        self.$el.find('button.active').trigger("click");
-      },770);
+      this.$el.find('button.active').trigger("click");
     }
     ,on_button_click : function(e){
       var button_text = $.trim($(e.target).html()); 
