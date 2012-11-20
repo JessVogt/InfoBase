@@ -17,7 +17,7 @@ $(function () {
             cols : [{span: 4, 
                       height: 350,
                       id : this.make_id(1)},
-                      {span: 5, 
+                      {span: 4, 
                       height: 350,
                       id : this.make_id(2)}]}];
     }

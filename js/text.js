@@ -26,7 +26,7 @@
       }
       ,"copy_tooltip" : {
         "en" : "Clicking this button will automatically select and copy the table. You can then switch over to Excel and paste in the table"
-        ,"fr" : "En cliquant sur ce bouton, le tableau va automatiquement être sélectionné et copié. Vous pouvez ensuite  ouvrir Excel et coller le tableau sélectionné"
+        ,"fr" : "En cliquant sur ce bouton, le tableau va automatiquement être sélectionné et copié. Vous pouvez ensuite ouvrir Excel et coller le tableau sélectionné"
       }
       ,"pie_chart_per" : {
         "en" : "Percentages under 2% are not labeled"

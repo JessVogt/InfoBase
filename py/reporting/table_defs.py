@@ -75,7 +75,7 @@ tables =  {
                 "fr" : "1 - Prévision des fonds inutilisés"
         },
       "title" : { "en" : "Table 1 - Lapse Forecast for 2011-12 based on {month_en} data (P{p}) ($000)".format(**f),
-          "fr" : "Tableau 1 - Prévision des fonds inutilisés basée sur les dépenses d'{month_fr} 2011 (P{p}) ($000)".format(**f)
+          "fr" : "Tableau 1 - Prévision des fonds inutilisés basée sur les dépenses de {month_fr} 2011 (P{p}) ($000)".format(**f)
         }
       ,"key" : [0,1]
     },
@@ -743,7 +743,7 @@ tables =  {
               ]
             ],
           "fr" : [ 
-              [ "Crédit (2011-12) / Légis..",
+              [ "Crédit (2011-12) / Légis.",
                 "Description",
                 "Année",
                 "Personnel",

@@ -281,13 +281,13 @@
       ,render: function(){
         var self = this;
 
+        $('#app h4.title').html(this.def.title[this.lang]);
         // setup the dropdown menu of other departments
         // sort the departments by name
         this.other_depts_list = $('#other_depts_list');
         // remove the previous entries
         this.other_depts_list.find('li a').parent().remove();
         if (this.other_depts.length > 0){
-          $('#app h4.title').html(this.def.title[this.lang]);
           _.each(_.sortBy(this.other_depts,
                 function(d){return d.dept[this.lang]},
                 this
