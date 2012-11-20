@@ -133,8 +133,8 @@ tables =  {
       "name" : { "en" : "2 - Authority and Expenditure",
           "fr" : "2 - Crédits et dépenses"
         },
-      "title" : { "en" : "Table 2 - Authority and Expenditure based on {month_en} data (P{p}) ($000)".format(**f),
-          "fr" : "Tableau 2 - Crédits et dépenses à la fin de {month_fr} (P{p}) ($000)".format(**f)
+      "title" : { "en" : "Table 2 - Authority and Expenditure based on {month_en}, 2012-13 data (P{p}) ($000)".format(**f),
+          "fr" : "Tableau 2 - Crédits et dépenses à la fin de {month_fr}, 2012-13 (P{p}) ($000)".format(**f)
         }
       ,"key" : [0,1]
     },
@@ -388,8 +388,8 @@ tables =  {
       "name" : { "en" : "3 - Authorities",
           "fr" : "3 - Autorités"
         },
-      "title" : { "en" : " Table 3 - Authorities ($000)",
-          "fr" : "Tableau 3 - Autorités ($000)"
+      "title" : { "en" : " Table 3 - 2012-13 Authorities ($000)",
+          "fr" : "Tableau 3 - Autorités pour 2012-13 ($000)"
         }
       ,'key' : [0,1]
     },

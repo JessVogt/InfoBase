@@ -24,7 +24,7 @@ $(function () {
       this.series = [{label: h1[2]},
                      {label: h1[3]}];
 
-      this.ticks = [h0[1].header,h0[1].header];
+      this.ticks = [h0[1].header,h0[2].header];
 
       this.lookup = _.object(
            _.map(this.data,
