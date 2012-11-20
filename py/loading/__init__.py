@@ -44,10 +44,12 @@ def votes(lines):
   def _(line):
     if line[0] == 0:
       rtn['in_year'][line[1]][line[2]] = {'en' : line[3],
-                                          'fr' : line[4]}
+                                          'fr' : line[4],
+                                          'type': line[5] }
     else:
       rtn['historical'][line[-1]] = {'en' : line[3],
-                                     'fr' : line[4]}
+                                     'fr' : line[4],
+                                      'type': line[5]}
   map(_,lines)
   return rtn
 

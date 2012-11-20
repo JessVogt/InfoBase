@@ -6,7 +6,7 @@
     var MAPPERS = ns('MAPPERS');
     var LANG = ns('LANG');
 
-    var find_all_in_ministry = function(dept,lang,table){
+    APP.find_all_in_ministry = function(dept,lang,table){
       // find all departments with a ministry name, matching
       // the ministry AND that has data for the requested table
       return _.filter(window.depts,
@@ -350,11 +350,10 @@
             def : this.def,
             print_btn : this.print_btn,
             details_btn : this.details_btn,
-            copy_btn : this.copy_btn
+            copy_btn : this.copy_btn,
+            mapper : this.mapper
           });
           this.table_payload.append(this.table_view.render().$el);
-          this.$el.find('.nav-tabs a:first').tab("show");
-        
 
           // create the graph
           if (_.has(GRAPHS.views,this.key)){

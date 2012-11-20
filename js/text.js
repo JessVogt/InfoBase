@@ -200,6 +200,23 @@
         "en" :  "Lapse Forecast"
         ,"fr" : "Fonds inutilisés"
       }
+      ,'statistics' : {
+        "en" :  "Statistics"
+        ,"fr" : "Statistiques"
+      }
+      ,'summary_stats' : {
+        "en" :  "Summary"
+        ,"fr" : "Sommaire"
+      }
+      ,'ministry_stats' : {
+        "en" :  "Ministry"
+        ,"fr" : "Portefeuille"
+      }
+
+      ,'government_stats' : {
+        "en" :  "Government"
+        ,"fr" : "Governement"
+      }
       ,"lapse_history"  : {
         "en" :  "Lapse History"
         ,"fr" : "Historique des fonds inutilisés"

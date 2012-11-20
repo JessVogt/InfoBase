@@ -32,6 +32,7 @@ js_files = [ "excanvas.js",
             "jqplot.barRenderer.min.js",
             "jqplot.categoryAxisRenderer.min.js",
             "jqplot.canvasAxisTickRenderer.min.js",
+            "diff_match_patch.js"
            ]
 
 css_root = '/home/andrew/Projects/media/css'

@@ -77,6 +77,7 @@ tables =  {
       "title" : { "en" : "Table 1 - Lapse Forecast for 2011-12 based on {month_en} data (P{p}) ($000)".format(**f),
           "fr" : "Tableau 1 - Prévision des fonds inutilisés basée sur les dépenses d'{month_fr} 2011 (P{p}) ($000)".format(**f)
         }
+      ,"key" : [0,1]
     },
   "Table2" : { "col_defs" : [ "int",
           "wide-str",
@@ -135,6 +136,7 @@ tables =  {
       "title" : { "en" : "Table 2 - Authority and Expenditure based on {month_en} data (P{p}) ($000)".format(**f),
           "fr" : "Tableau 2 - Crédits et dépenses à la fin de {month_fr} (P{p}) ($000)".format(**f)
         }
+      ,"key" : [0,1]
     },
   "Table2a" : { "col_defs" : [ "wide-str",
           "float",
@@ -232,6 +234,7 @@ tables =  {
       "title" : { "en" : "Table 2A - Expenditures by Program Activity ($000)",
           "fr" : "Tableau 2A - Dépenses par Activité de programme ($000)"
         }
+      ,"key" : [0]
     },
   "Table2b" : { "col_defs" : [ "int",
           "str",
@@ -290,6 +293,7 @@ tables =  {
       "title" : { "en" : "Table 2B - Spending Rate Comparison (2012-13 vs 2011-12)",
           "fr" : "Tableau 2B - Niveau de dépense (2012-13 vs 2011-12)"
         }
+      ,'key' : [0,1]
     },
   "Table3" : { "col_defs" : [ "int",
           "wide-str",
@@ -387,6 +391,7 @@ tables =  {
       "title" : { "en" : " Table 3 - Authorities ($000)",
           "fr" : "Tableau 3 - Autorités ($000)"
         }
+      ,'key' : [0,1]
     },
   "Table4" : { "col_defs" : [ "int",
           "str",
@@ -478,6 +483,7 @@ tables =  {
       "title" : { "en" : "Table 4 - Gross and Net Lapses by Vote from 2007-08 to 2011-12 ($000)",
           "fr" : "Tableau 4 - Fonds inutilisés bruts et nets par crédit de 2007-08 à 2011-12 ($000)"
         }
+      ,'key' : [0,1,2]
     },
   "Table5" : { "col_defs" : [ "int",
           "str",
@@ -599,6 +605,7 @@ tables =  {
       "title" : { "en" : "Table 5 - Voted Expenditures by Allotment from 2007-08 to 2011-12 ($000)",
           "fr" : "Tableau 5 - Détail des dépenses votées par affectation de 2007-08 à 2011-12 ($000)"
         }
+      ,'key' : [0,1,2]
     },
   "Table6" : { "col_defs" : [ "int",
           "str",
@@ -690,6 +697,7 @@ tables =  {
       "title" : { "en" : "Table 6 - Expenditures by Operating Allotment from 2007-08 to 2011-12 ($000)",
           "fr" : "Tableau 6 - Dépenses de fonctionnement par affectation de 2007-08 à 2011-12 ($000) "
         }
+      ,'key' : [0,1,2]
     },
   "Table7" : { "col_defs" : [ "int",
           "str",
@@ -763,5 +771,6 @@ tables =  {
       "title" : { "en" : "Table 7 - Expenditures by Standard Object from 2007-08 to 2011-12 ($000)",
           "fr" : "Tableau 7 - Dépenses par article courant de 2007-08 à 2011-12 ($000)"
         }
+      ,'key' : [0,1,2]
     }
 }

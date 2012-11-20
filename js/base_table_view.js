@@ -87,6 +87,7 @@ $(function () {
       },
       this //scope of map is rowView
       );
+      this.$el.data("row",this.row);
       return this;
     }
   });
@@ -121,6 +122,7 @@ $(function () {
       this.details_btn =this.options["details_btn"] ;
       this.copy_btn =this.options["copy_btn"];
       this.min_data = this.options['min_data'];
+      this.mapper = this.options['mapper'];
       // set some useful state based on these inputs
       this.state = this.app.state;
       this.gt = this.app.get_text;
@@ -317,13 +319,42 @@ $(function () {
           function(x,y){
             return x+y});
       this.datatable.css({"width" : tables_width+"px"});
-      this.$el.find('td').on("click", this,function(event){
+
+      var tds = this.$el.find('td div');
+
+      tds.on("hover",this,function(event){
         var view = event.data
+        var td = $(event.target).parents('td')
+        var index_ar = view.datatable.fnGetPosition(td.get(0));
+        var index = index_ar[2];
+        if (_.all(view.def.key, function(key){return key!= index})){
+          $(event.target).toggleClass("clickable alert-success")
+        }
+      });
+
+      tds.on("click", this,function(event){
+        var view = event.data;
+        var td = $(event.target).parents('td');
+        var tr = td.parent();
+        if (tr.hasClass('info')){
+          return
+        }
+        var row = tr.data('row');
+
         // return an array, where the last index is what
         // we need
-        var index_ar = view.datatable.fnGetPosition(this);
+        var index_ar = view.datatable.fnGetPosition(td.get(0));
         var index = index_ar[2];
-
+        
+        new TABLES.AnalyticsView({
+          dept : view.dept,
+          key : view.key,
+          row : row,
+          col_index : index,
+          app : view.app,
+          def : view.def,
+          mapper : view.mapper
+        });
       })
     }
     ,merge_group_results : function(results){
@@ -353,6 +384,26 @@ $(function () {
       return this;
     }
   }) // end of BaseTableView
+  TABLES.extract_headers = function(headers,index){
+    // headers is an array of arrays
+    return _.map(headers,
+        function(header_group){
+          // headers come in two formats
+          // an array of strings or an array of objects
+         if (_.isString(header_group[0])){
+          return header_group[index];
+        } else {
+          var counter = 0;
+          for (var i in header_group){
+            counter += header_group[i].colspan
+            if (counter >= index){
+              return header_group[i].header
+            }
+          }
+        }
+      }
+    );
+  }
   TABLES.add_ministry_sum = function(){
     return  [GROUP.fnc_on_group(this.min_data,
         {txt_cols: {0:this.gt('min_total')},
