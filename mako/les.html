@@ -10,17 +10,26 @@
   .sidebar-nav { padding: 9px 0; }
 
   ${ full_css }
-
+  div.dataTables_scroll { clear: both; }
+  .modal.large{
+    width: 850px;
+    margin-left: -425px; /* - width/2 */
+  }
   .sidescroll { overflow-x: auto;}
   .vertical_scroll { overflow-y: auto;}
   .clickable { cursor:pointer;}
 
+  th.sorting_asc,
+  th.sorting_desc {
+    background-color:#D9EDF7;
+   }
   div.int{width: 90px;text-align:center;}
   div.float{width: 90px;text-align:right;}
   div.str{width: 150px;}
   div.wide-str{width: 300px;}
   div.percentage{width: 90px;text-align:center;}
   div.date{width: 90px;}
+  
   div.dept_menu {
     z-index: 5000;
     position: absolute;
@@ -49,6 +58,7 @@
 
   <%block name='extrajs'>
     ${ full_js }
+    <%include file='datatables.js'/>
     <%include file='sandbox.js'/>
     <%include file='group_funcs.js'/>
     <%include file='text.js'/>
@@ -131,7 +141,7 @@
     </div>
   </div>
 
-  <div class="modal hide fade" id="modal_skeleton">
+  <div class="modal hide fade large" id="modal_skeleton">
     <div class="modal-header">
       <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
       <h3></h3>
@@ -342,7 +352,7 @@
   <div>
      <div class="btn-toolbar" style='padding-left: 50px'>
         <div class='btn-group'> 
-          <button class='btn btn-inverse details'
+          <button class='btn btn-inverse copy'
             title='<%=gt("copy_tooltip")%>' 
             data-placement='top'>
             <%=gt("copy")%>
@@ -360,8 +370,7 @@
           </button>
         </div>
       </div>
-      <div class='table_div vertical_scroll'
-            style='height: 400px' >
+      <div class='table_div vertical_scroll'>
 
       </div>
   </div>

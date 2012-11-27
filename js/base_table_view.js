@@ -186,28 +186,8 @@ $(function () {
        table : this.to_text()
      }));
     }
-    ,excel_format : function(){
-      var clone = this.$el.find('table').clone();
-      clone.find('tfoot').remove();
-      clone.find('th').css({"vertical-align" : "bottom"});
-      clone.find('table,td,th').css({'border' : '1px solid black'});
-      clone.find('table,td,th').css({'border-width' : 'thin'});
-      clone.find('td,th').css({"width" : '200px'});
-      clone.find('tr:even').css({'background-color' : 'rgb(245,245,245)'})
-      clone.find('tr.info').css({'background-color' : '#d9edf7'});
-      clone.find('tr.warning').css({'background-color' : '#fcf8e3'});
-      clone.find('tr.success').css({'background-color' : '#dff0d8'});
-      return clone
-        .wrap('<p></p>')
-        .parent()
-        .html()
-    }
     ,on_copy_click : function(e){
-      // this will only work with IE7/8
-      try {
-        window.clipboardData.setData("Text",this.excel_format() );
-      }
-      catch(err){}
+        TABLES.excel_format( this.$el.find('table'),true);
     }
     , make_headers: function () {
       _.each(_.map(this.headers, function (h) {
@@ -319,6 +299,36 @@ $(function () {
           function(x,y){
             return x+y});
       this.datatable.css({"width" : tables_width+"px"});
+    }
+    ,merge_group_results : function(results){
+      // results is in the form of 
+      // [[group,result],[group,results]]
+      _.each(results,
+          function(result){ //each func
+            this.summary_rows.push(result[1]);
+          },this);
+      this.row_data = _.flatten(_.map(results,
+          function(result){
+            return result[0].concat([result[1]]);
+          }),true);
+    }
+    ,is_clickable(td){
+        var index_ar = view.datatable.fnGetPosition(td.get(0));
+        var index = index_ar[2];
+        return (_.all(view.def.key, 
+              function(key){return key!= index}))
+    }
+    ,render: function () {
+      this.$el.children().remove();
+      this.$el.append( $(this.template({
+        title:this.title 
+      })));
+      this.setup_useful_this_links();
+      this.setup_event_listeners();
+
+      this.make_headers();
+      this.make_body();
+      this.make_footers();
 
       var tds = this.$el.find('td div');
 
@@ -327,7 +337,7 @@ $(function () {
         var td = $(event.target).parents('td')
         var index_ar = view.datatable.fnGetPosition(td.get(0));
         var index = index_ar[2];
-        if (_.all(view.def.key, function(key){return key!= index})){
+        if (this.is_clickable(td){
           $(event.target).toggleClass("clickable alert-success")
         }
       });
@@ -356,31 +366,9 @@ $(function () {
           mapper : view.mapper
         });
       })
-    }
-    ,merge_group_results : function(results){
-      // results is in the form of 
-      // [[group,result],[group,results]]
-      _.each(results,
-          function(result){ //each func
-            this.summary_rows.push(result[1]);
-          },this);
-      this.row_data = _.flatten(_.map(results,
-          function(result){
-            return result[0].concat([result[1]]);
-          }),true);
-    }
-    ,render: function () {
-      this.$el.children().remove();
-      this.$el.append( $(this.template({
-        title:this.title 
-      })));
-      this.setup_useful_this_links();
-      this.setup_event_listeners();
 
-      this.make_headers();
-      this.make_body();
-      this.make_footers();
       this.activate_dataTable();
+
       return this;
     }
   }) // end of BaseTableView
@@ -393,7 +381,7 @@ $(function () {
          if (_.isString(header_group[0])){
           return header_group[index];
         } else {
-          var counter = 0;
+          var counter = -1;
           for (var i in header_group){
             counter += header_group[i].colspan
             if (counter >= index){
@@ -419,6 +407,27 @@ $(function () {
            func_cols : this.sum_cols,
            func : GROUP.sum_rows}); 
       return _.pluck(min_totals,1);
+    }
+    TABLES.excel_format = function(table,strip_footer){
+      strip_footer = strip_footer | false;
+      var clone = $(table).clone();
+      if (strip_footer){
+        clone.find('tfoot').remove();
+      }
+      clone.find('th').css({"vertical-align" : "bottom"});
+      clone.find('table,td,th').css({'border' : '1px solid black'});
+      clone.find('table,td,th').css({'border-width' : 'thin'});
+      clone.find('td,th').css({"width" : '200px'});
+      clone.find('tr:even').css({'background-color' : 'rgb(245,245,245)'})
+      clone.find('tr.info').css({'background-color' : '#d9edf7'});
+      clone.find('tr.warning').css({'background-color' : '#fcf8e3'});
+      clone.find('tr.success').css({'background-color' : '#dff0d8'});
+      var table_text =  clone .wrap('<p></p>') .parent() .html();
+      // this will only work with IE7/8/9
+      try {
+        window.clipboardData.setData("Text",table_text );
+      }
+      catch(err){}
     }
 
 }); // end of scope

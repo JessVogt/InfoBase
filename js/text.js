@@ -13,7 +13,7 @@
       ,"welcome" : {
         "en" : ["Click to select from a list of organisations ",
                 "<span class='badge badge-info'>OR</span>",
-                 " start typing the name of an organisation or its accronym."
+                 " start typing the name of an organisation or its acronym."
                 ].join("")
         ,"fr" : ["Cliquez pour sélectionner parmi une liste d’organisations ",
                  "<span class='badge badge-info'>OU</span>",
@@ -64,6 +64,10 @@
         "en" : "Footnotes"
         ,"fr" : "Notes"
       }
+      ,"org" :{
+       "en" : "Organisation"
+       ,"fr" : "Organisation"
+      }
       ,"loading" : {
         "en": "Loading"
         ,"fr": "Chargement"
@@ -83,6 +87,10 @@
       ,"print_friend" : {
         "en" : "Printer Friendly"
         ,"fr" : "Impression optimisée "
+      }
+      ,"rank" : {
+        "en": "Rank"
+        ,"fr": "Rang"
       }
       ,"sub_avg": {
         "en": "Average"

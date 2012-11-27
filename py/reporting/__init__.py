@@ -37,13 +37,11 @@ js_files = [ "excanvas.js",
             "jqplot.categoryAxisRenderer.min.js",
             "jqplot.canvasAxisTickRenderer.min.js",
 
-            "jquery-ui-1.9.1.custom.min.js",
            ]
 
 css_root = '/home/andrew/Projects/media/css'
 css_files = ['bootstrap.min.css',
              "jquery.jqplot.min.css",
-             "flick/jquery-ui-1.9.1.custom.min.css",
              ]
 
 opn = functools.partial(codecs.open,encoding='utf-8')

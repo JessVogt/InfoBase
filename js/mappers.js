@@ -43,6 +43,17 @@ $(function () {
           }
         });
   }
+
+  function make_historical_filter(source_row){
+    var vote_type = source_row[1];
+    var year = source_row[2];
+    return function(candidate_row){
+      return (candidate_row[1] == vote_type &&
+              candidate_row[2] == year);
+    }
+  }
+
+
   var mappers = {
     "Table1" : {'to' : function (row) {
         if (row[1]){
@@ -105,8 +116,18 @@ $(function () {
       return _.rest(row); 
     },
     'make_filter' : function(row){
-       return function(candidate_row){ return true}
-    }}
+      if (row[1] === 'Internal Services'){
+        return function(candidate_row){ 
+          return candidate_row[1] == 'Internal Services'
+        }
+      }else {
+        return function(candidate_row){
+          return (candidate_row[1] != 'Internal Services' &&
+                  candidate_row[0] != 'ZGOC');
+        }
+      }
+    }
+    }
     ,"Table2b" : {'to' : function (row) {
       if (row[1]){
         row.splice(2,0,votes[this.def['coverage']][row[0]][row[1]][this.lang]);
@@ -135,9 +156,17 @@ $(function () {
         row.splice(2,0,'');
       }
       return _.rest(row,1); 
-    },
-    'from' : function(row){
-
+    }
+    ,'make_filter' : function(source_row){
+      var type = votes[this.def['coverage']][source_row[0]][source_row[1]]['type'];
+      return _.bind(function(candidate_row){
+        var cr = candidate_row;
+        if (cr[1]){
+          var cr_type = votes[this.def['coverage']][cr[0]][cr[1]]['type'];
+          return ( type == cr_type);
+        }
+        return false;
+      },this);
     }}
     ,"Table4" : {'to' : function (row) {
       if (row[1]){
@@ -145,27 +174,24 @@ $(function () {
       }
       return row;
     },
-    'from' : function(row){
-
-    }}
+    'make_filter' : make_historical_filter
+    }
     ,"Table5" : {'to' : function (row) {
       if (row[1]){
         row[1] = votes[this.def['coverage']][row[1]][this.lang];
       }
       return row; // take out dept id since don't need anymore AND return row
     },
-    'from' : function(row){
-
-    }}
+    'make_filter' : make_historical_filter
+    }
     ,"Table6" : {'to' : function (row) {
       if (row[1]){
         row[1] = votes[this.def['coverage']][row[1]][this.lang];
       }
       return row; // take out dept id since don't need anymore AND return row
     },
-    'from' : function(row){
-
-    }}
+    'make_filter' : make_historical_filter
+    }
     ,"Table7" : {'to' : function (row) {
       if (row[0] == 'S') {
         row[0] = '';
@@ -175,9 +201,8 @@ $(function () {
       }
       return row; // take out dept id since don't need anymore AND return row
     },
-    'from' : function(row){
-
-    }}
+    'make_filter' : make_historical_filter
+    }
   }
 
   MAPPERS.mapper = mapper;

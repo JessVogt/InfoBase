@@ -6,6 +6,18 @@
     var MAPPERS = ns('MAPPERS');
     var LANG = ns('LANG');
 
+    APP.types_to_format = {
+      "percentage" :  function(val,lang){return $.formatNumber(val,
+                                                  {format : "0%" ,locale : lang})},
+      "float" :  function(val,lang){return $.formatNumber(val,
+                                                  {format:"#,##0" , locale: lang})},
+      "int" :  function(val,lang){return val},
+      "str" : function(val,lang){return val},
+      "wide-str" : function(val,lang){return val},
+      "date" : function(val,lang){return val}
+    }
+
+
     APP.find_all_in_ministry = function(dept,lang,table){
       // find all departments with a ministry name, matching
       // the ministry AND that has data for the requested table
@@ -458,7 +470,7 @@
       ,activate : function(){
         // unbind any events listeners which might be here
         this.drop_zone.find('.nav-pills a:last').off("shown");
-        this.drop_zone.find('a,button').off("click");
+        this.drop_zone.find('a,button,div').off("click");
         this.drop_zone.find('div').off("jqplotDataClick");
 
         this.drop_zone.children().remove();
@@ -537,6 +549,9 @@
 
         // check for a saved department 
         this.state.bind("change:dept", this.dept_change);
+      }
+      ,formater : function(format,val){
+          return APP.types_to_format[format](val,this.lang);
       }
       ,setup_useful_this_links : function(){
         this.title = $('#title');
