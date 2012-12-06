@@ -140,7 +140,6 @@ $(function () {
       this.modal_body = this.modal.find(".modal-body p");
       this.modal_footer = this.modal.find(".modal-footer a");
 
-      this.render(); //self-rendering
     }
     ,create_th : function(header,index,headers){
       var tr = $('<tr>');

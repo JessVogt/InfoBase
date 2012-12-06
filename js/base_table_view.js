@@ -312,10 +312,10 @@ $(function () {
             return result[0].concat([result[1]]);
           }),true);
     }
-    ,is_clickable(td){
-        var index_ar = view.datatable.fnGetPosition(td.get(0));
+    ,is_clickable : function(td){
+        var index_ar = this.datatable.fnGetPosition(td.get(0));
         var index = index_ar[2];
-        return (_.all(view.def.key, 
+        return (_.all(this.def.key, 
               function(key){return key!= index}))
     }
     ,render: function () {
@@ -335,9 +335,13 @@ $(function () {
       tds.on("hover",this,function(event){
         var view = event.data
         var td = $(event.target).parents('td')
+        var tr = td.parent();
+        if (tr.hasClass('info')){
+          return;
+        }
         var index_ar = view.datatable.fnGetPosition(td.get(0));
         var index = index_ar[2];
-        if (this.is_clickable(td){
+        if (view.is_clickable(td)){
           $(event.target).toggleClass("clickable alert-success")
         }
       });
@@ -347,24 +351,27 @@ $(function () {
         var td = $(event.target).parents('td');
         var tr = td.parent();
         if (tr.hasClass('info')){
-          return
+          return;
         }
         var row = tr.data('row');
 
-        // return an array, where the last index is what
-        // we need
-        var index_ar = view.datatable.fnGetPosition(td.get(0));
-        var index = index_ar[2];
-        
-        new TABLES.AnalyticsView({
-          dept : view.dept,
-          key : view.key,
-          row : row,
-          col_index : index,
-          app : view.app,
-          def : view.def,
-          mapper : view.mapper
-        });
+        if (view.is_clickable(td)){
+          // return an array, where the last index is what
+          // we need
+          var index_ar = view.datatable.fnGetPosition(td.get(0));
+          var index = index_ar[2];
+          
+          var av = new TABLES.AnalyticsView({
+            dept : view.dept,
+            key : view.key,
+            row : row,
+            col_index : index,
+            app : view.app,
+            def : view.def,
+            mapper : view.mapper
+          });
+          av.render();
+        }
       })
 
       this.activate_dataTable();
