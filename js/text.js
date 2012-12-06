@@ -2,7 +2,36 @@
     var LANG = ns("LANG");
 
     var lookups = {
-       "about" : {
+      // IGOC headers
+      "legal_name" : {
+        "en" : "Legal Name",
+        "fr" : "Nom légal"
+      }
+      ,"applied_title": {
+        "en" : "Applied Title",
+        "fr" : "Titre d'usage"
+      }
+      ,"minister": {
+        "en" : "Appropriate Minister(s)",
+        "fr" : "Ministre(s) de tutelle"
+      }
+      ,"mandate": {
+        "en" : "Mandate",
+        "fr" : "Mandat"
+      }
+      ,"org_head": {
+        "en" : "Instritutional Head",
+        "fr" : "Premier(ère) dirigeant(e)"
+      }
+      ,"legislation": {
+        "en" : "Legislation",
+        "fr" : "Instrument(s) habilitant(s)"
+      }
+      ,"website": {
+        "en" : "Website",
+        "fr" : "Site web"
+      }
+       ,"about" : {
         "en" : "About this table"
         ,"fr" : "À propos de ce tableau"
       }
@@ -30,11 +59,15 @@
       }
       ,"pie_chart_per" : {
         "en" : "Percentages under 2% are not labeled"
-        ,"fr" : "Les pourcentages inférieurs à 2% ne sera pas affichée"
+        ,"fr" : "Les pourcentages inférieurs à 2% ne seront pas affichés"
       }
       ,"details" : {
         "en" : "Show more details"
         ,"fr": "Voir plus de détails"
+      }
+      ,"org_info" : {
+        "en" : "Data from Inventory of Government of Canada Organizations"
+        ,"fr": "Données pris de l'Inventaire des organisations du gouvernement du Canada"
       }
       ,"hide" : {
         "en" : "Hide detail"
@@ -132,6 +165,14 @@
         "en" : "Copy table"
         ,"fr": "Copiez le tableau"
       }
+      ,"search_site" : {
+        "en": "Search their site"
+        ,"fr": "Cherchez dans leur site web"
+      }
+      ,"search_go" : {
+        "en": "Search"
+        ,"fr": "Cherchez"
+      }
       ,"search" : {
         "en": "Organisation search..."
         ,"fr": "Cherchez une organisation"
@@ -166,11 +207,11 @@
       }
       ,"vote_stat" : {
         "en": "Breakout of Voted and Statutory Expenditures"
-        ,"fr": "Breakout de dépenses crédits et législatives"
+        ,"fr": "Répartition des dépenses crédits et législatives"
       }
       ,"voted_exp_breakout" : {
         "en": "Voted Expenditure Breakout For"
-        ,"fr": "Détail des dépenses votées"
+        ,"fr": "Détail des dépenses votées pour"
       }
       ,"exp_breakout" : {
         "en": "Expenditure Breakout"

@@ -293,7 +293,7 @@
       ,render: function(){
         var self = this;
 
-        $('#app h4.title').html(this.def.title[this.lang]);
+        $('#app .table_title').html(this.def.title[this.lang]);
         // setup the dropdown menu of other departments
         // sort the departments by name
         this.other_depts_list = $('#other_depts_list');
@@ -515,6 +515,61 @@
       }
     })
 
+    var deptInfoView = Backbone.View.extend({
+      template : _.template($('#dept_info_t').html())
+      ,initialize: function(){
+        _.bindAll(this);
+        // retrieve passed in data
+        this.app = this.options["app"];
+
+        this.gt = this.app.get_text;
+        this.state = this.app.state;
+        // set up modal
+        // TODO: modal needs its own view, this is
+        // ridiculous
+        this.modal = $("#modal_skeleton");
+        this.modal_header = this.modal.find(".modal-header h3");
+        this.modal_body = this.modal.find(".modal-body p");
+        this.modal_footer = this.modal.find(".modal-footer a");
+
+        this.title_area = $('.dept_name');
+        this.title_area.on("hover", this, function(e){
+          var view = e.data;
+          view.title_area.toggleClass("text-info");
+        }).on("click",this.render);
+      }
+      ,render : function(){
+        var dept = this.state.get("dept");
+        var lang = this.state.get('lang');
+        this.body = $(this.template({
+          lang : lang,
+          gt : this.gt,
+          dept: dept
+        }));
+
+        this.search_box = this.body.find('input.site-search');
+        this.search_button = this.body.find('a.site-search');
+        this.search_button.on("click",this.on_search);
+
+        this.modal_body.children().remove(); 
+        this.modal_body.append(this.body);
+        this.modal_header.html('Info');
+        this.modal_footer.html(this.gt("close"));
+        this.modal.modal("show");
+
+        return this;
+      }
+      ,teardown : function(){
+        this.body.find('*').off();
+      }
+      ,on_search : function(e){
+        var dept = this.state.get("dept");
+        var site = 'site:'+ dept['website']['en'].split("/")[0].replace("http://","");
+        var q = 'q='+encodeURI(this.search_box.val()) + "+"+site;
+        window.open("http://www.google.com/search?"+q); 
+      }
+    })
+
 
     /************STATE MODEL********/
     var stateModel = Backbone.Model.extend({});
@@ -531,6 +586,8 @@
         //initialize views
         this.switchLangv = new switchLangView({app: this});
         this.switchLangv.$el.bind('click', this.set_lang) //lang chg => chg state: lang variable
+
+
         this.acv = new autocompleteView({
           app: this,
           state: this.state,
@@ -599,6 +656,13 @@
           txt: org['dept'][this.lang],   
           gt : this.get_text
         }));
+
+        if (this.dept_info_view){
+          this.dept_info_view.teardown();
+        }
+        this.dept_info_view = new deptInfoView({
+          app : this
+        });
 
         var main = this.app.find('.main');
         // remove any previous table menu

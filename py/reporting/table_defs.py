@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 f = {
-  "month_en" : "September",
-  "month_fr" : "september",
-  "p" : 6
+  "month_en" : "October",
+  "month_fr" : "octobre",
+  "p" : 7
 }
 tables =  { 
   "Table1" : { "col_defs" : [ "int",
@@ -75,7 +75,7 @@ tables =  {
                 "fr" : "1 - Prévision des fonds inutilisés"
         },
       "title" : { "en" : "Table 1 - Lapse Forecast for 2011-12 based on {month_en} data (P{p}) ($000)".format(**f),
-          "fr" : "Tableau 1 - Prévision des fonds inutilisés basée sur les dépenses de {month_fr} 2011 (P{p}) ($000)".format(**f)
+          "fr" : "Tableau 1 - Prévision des fonds inutilisés basée sur les dépenses d'{month_fr} 2011 (P{p}) ($000)".format(**f)
         }
       ,"key" : [0,1]
     },
@@ -124,7 +124,7 @@ tables =  {
                 "Description",
                 "Bruts",
                 "Recettes",
-                "Net",
+                "Netts",
                 "Brutes",
                 "Recettes",
                 "Nettes"
@@ -134,7 +134,7 @@ tables =  {
           "fr" : "2 - Crédits et dépenses"
         },
       "title" : { "en" : "Table 2 - Authority and Expenditure based on {month_en}, 2012-13 data (P{p}) ($000)".format(**f),
-          "fr" : "Tableau 2 - Crédits et dépenses à la fin de {month_fr}, 2012-13 (P{p}) ($000)".format(**f)
+          "fr" : "Tableau 2 - Crédits et dépenses à la fin d'{month_fr}, 2012-13 (P{p}) ($000)".format(**f)
         }
       ,"key" : [0,1]
     },
@@ -291,7 +291,7 @@ tables =  {
           "fr" : "2b - Niveau de dépense"
         },
       "title" : { "en" : "Table 2B - Spending Rate Comparison (2012-13 vs 2011-12)",
-          "fr" : "Tableau 2B - Niveau de dépense (2012-13 vs 2011-12)"
+          "fr" : "Tableau 2B - Comparaison des niveaux de dépense (2012-13 vs 2011-12)"
         }
       ,'key' : [0,1]
     },

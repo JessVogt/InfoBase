@@ -10,7 +10,7 @@ from ..loading import load
 from helpers.from_here import here
 import mako.lookup
 from .table_defs import tables
-
+from .. import models
 
 mako_dirs = (here(__file__)("../../mako"),
              here(__file__)("../../js"))
@@ -107,6 +107,60 @@ def double_check(lookups):
         for rel in relevant:
           lookups['footnotes'][table].remove(rel)
 
+def add_dept_data(depts):
+  s = models.Session()
+  for dept in depts.itervalues():
+    if dept['accronym'] != 'ZGOC':
+      about = models.About.get(s,eager_joins=('contact',
+                                              "about.transaction",
+                                              "legislation")
+                  ).filter(
+                  models.About.accronym == dept['accronym']
+                  ).first()
+      if not about:
+        print(dept['accronym'])
+      org = about.org
+      about_now = org.about_now()
+      legislation = org.legislation
+      contact = org.contact
+      if not about_now.legal_title_en:
+        continue
+      dept['legal_name'] = {
+        'en' : about_now.legal_title_en,
+        'fr' : about_now.legal_title_fr
+      }
+      dept['applied_title'] = {
+        'en' : about_now.applied_title_en,
+        'fr' : about_now.applied_title_fr
+      }
+      dept['minister'] = {
+          'en' : ",".join([about_now.minister1_en,
+                            about_now.minister2_en or ""]).strip(","),
+          'fr' : ",".join([about_now.minister1_fr,
+                            about_now.minister2_fr or ""]).strip(",") 
+        }
+      dept['mandate'] ={
+        'en' : about_now.mandate_en,
+        'fr' : about_now.mandate_fr
+      }
+      dept['org_head'] = {
+        'en' : about_now.head_en,
+        'fr' : about_now.head_fr
+      }
+      dept['legislation'] = map(lambda l : {
+        'en' : l.legislation_en,
+        'fr' : l.legislation_fr
+      },legislation)
+      if contact:
+        dept['website'] = {
+          'en' : contact.website_en,
+          'fr' : contact.website_fr
+        }
+      else:
+        dept['website'] = None
+
+
+
 def html_les():
   lookups,data = load()
   check(data,lookups,make_after_check(lookups))
@@ -115,6 +169,8 @@ def html_les():
                      lookups['depts'].iteritems()
                      if val.get('tables')}
   double_check(lookups)
+  #add_dept_data(lookups['depts'])
+
   lookups['les_tables'] = tables
 
   extra_js = reduce(operator.add,
@@ -131,7 +187,7 @@ def html_les():
   full_css = cssdata
 
   t = lookup.get_template('les.html')
-  with open("les.html",'w') as leshtml:
+  with open("les_sfid.html",'w') as leshtml:
     leshtml.write(t.render(full_js = full_js,
                            #js_root = './',
                            full_css = full_css,
