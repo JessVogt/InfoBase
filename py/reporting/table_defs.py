@@ -38,8 +38,8 @@ tables =  {
                 "Forecast Exenditures at year end",
                 "Forecast Lapse (by EACPD*)",
                 "Forecast Lapse % (by EACPD*)",
-                "Previous Year Gross Lapse (2010-11)",
-                "Previous Year Gross Lapse Percentage (2010-11)",
+                "Gross Lapse",
+                "Gross Lapse Percentage",
                 "5 Year Gross Lapse Average",
                 "5 Year Gross Lapse Percentage"
               ]
@@ -64,8 +64,8 @@ tables =  {
                 "Dépenses prévues à la fin de l'année",
                 "Fonds inutilisés (estimés par la DADPR*)",
                 "Fonds inutilisés % (estimés par la DADPR*)",
-                "Fonds inutilisés bruts de l'année précédente",
-                "Fonds inutilisés bruts de l'année précédente en pourcentage",
+                "Fonds inutilisés bruts",
+                "Fonds inutilisés bruts",
                 "Moyenne des fonds inutilisés bruts sur 5 ans",
                 "Moyenne des fonds inutilisés bruts sur 5 ans en pourcentage"
               ]
@@ -74,8 +74,8 @@ tables =  {
       "name" : { "en" : "1 - Lapse Forecast",
                 "fr" : "1 - Prévision des fonds inutilisés"
         },
-      "title" : { "en" : "Table 1 - Lapse Forecast for 2011-12 based on {month_en} data (P{p}) ($000)".format(**f),
-          "fr" : "Tableau 1 - Prévision des fonds inutilisés basée sur les dépenses d'{month_fr} 2011 (P{p}) ($000)".format(**f)
+      "title" : { "en" : "Table 1 - Lapse Forecast for 2012-13 based on {month_en} data (P{p}) ($000)".format(**f),
+                  "fr" : "Tableau 1 - Prévision des fonds inutilisés basée sur les dépenses d'{month_fr} 2012-13 (P{p}) ($000)".format(**f)
         }
       ,"key" : [0,1]
     },
@@ -124,7 +124,7 @@ tables =  {
                 "Description",
                 "Bruts",
                 "Recettes",
-                "Netts",
+                "Nets",
                 "Brutes",
                 "Recettes",
                 "Nettes"
@@ -178,7 +178,7 @@ tables =  {
                 "Grants & Contrib.",
                 "Other Votes",
                 "Statutory",
-                "Total 2013-12",
+                "Total 2012-13",
                 "Operating",
                 "Capital",
                 "Grants & Contrib.",
@@ -206,7 +206,7 @@ tables =  {
                   "header" : "2010 - 11 Période {p}".format(**f)
                 }
               ],
-              [ "Activites de programme",
+              [ "Activités de programme",
                 "Fonctionnement",
                 "Capital",
                 "Subventions & Contributions",
