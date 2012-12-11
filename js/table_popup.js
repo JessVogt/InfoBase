@@ -135,11 +135,6 @@ $(function () {
       );
       this.all_average = this.all_total / this.all_lines.length;
 
-      this.modal = $("#modal_skeleton");
-      this.modal_header = this.modal.find(".modal-header h3");
-      this.modal_body = this.modal.find(".modal-body p");
-      this.modal_footer = this.modal.find(".modal-footer a");
-
     }
     ,create_th : function(header,index,headers){
       var tr = $('<tr>');
@@ -205,14 +200,12 @@ $(function () {
     }
     ,render : function (){
       this.$el.append(this.template2({gt : this.gt}));
-      // clear out the modal
-      // the modal should probably be its own view
-      this.modal_body.html("");
-      this.modal_header.html(this.gt("statistics"));
-      this.modal_footer.html(this.gt("close"));
-      this.modal_body.append(this.$el);
 
-      this.modal.modal();
+      this.app.modal_view.render({
+        body: this.$el,
+        header: this.gt("statistics"),
+        footer :this.gt("close")
+      });
 
       this.$el.find('.btn-group:last button').on("click",
           this.on_button_click);

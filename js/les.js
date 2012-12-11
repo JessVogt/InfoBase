@@ -233,10 +233,6 @@
         this.app = this.options["app"];
         this.footnotes = this.options['footnotes'];
         this.button = this.options['btn'];
-        this.modal = this.options['modal']; 
-        this.modal_header = this.options['modal_header'];
-        this.modal_body = this.options['modal_body'];
-        this.modal_footer = this.options['modal_footer'];
         // set some useful state based on these inputs
         this.lang = this.app.lang;
         this.button.on("click",this.render);
@@ -248,13 +244,11 @@
           lang  : this.lang
         }));
 
-        this.modal_header
-          .html(gt("footnotes"));
-        this.modal_body
-          .html(html);
-        this.modal_footer
-          .html(gt("close"));
-        this.modal.modal();
+        this.app.modal_view.render({
+          body : html,
+          header : gt("footnotes"),
+          footer : gt("close")
+        });
       }
     });
 
@@ -393,11 +387,7 @@
         this.fnv = new footnoteView({
           app : this.app,
           footnotes : footnotes,
-          btn : this.fn_btn,
-          modal : this.modal,
-          modal_body : this.modal_body,
-          modal_footer : this.modal_footer,
-          modal_header : this.modal_header
+          btn : this.fn_btn
         });
 
         // active the tabs and set up functionality to save
@@ -426,10 +416,6 @@
                             tabs_a.index(e.currentTarget));
       }
       ,setup_useful_this_links : function() {
-        this.modal = $("#modal_skeleton");
-        this.modal_header = this.modal.find(".modal-header h3");
-        this.modal_body = this.modal.find(".modal-body p");
-        this.modal_footer = this.modal.find(".modal-footer a");
 
         this.tabs = this.$el.find('.tab-content');
         this.table_payload = this.tabs.find('.table_payload');
@@ -449,13 +435,11 @@
         var gt = this.app.get_text;
         var help_key = "#" + this.key + "_help_" + this.lang;
         var help_text = $(help_key).html();
-        this.modal_header
-          .html(gt("about"));
-        this.modal_body
-          .html(help_text);
-        this.modal_footer
-          .html(gt("close"));
-        this.modal.modal();
+        this.app.modal_view.render({
+          body : help_text,
+          header : gt("about"),
+          footer : gt("close")
+        });
       }
       ,on_min_tot_click : function (e) {
         var view = e.data;
@@ -524,43 +508,28 @@
 
         this.gt = this.app.get_text;
         this.state = this.app.state;
-        // set up modal
-        // TODO: modal needs its own view, this is
-        // ridiculous
-        this.modal = $("#modal_skeleton");
-        this.modal_header = this.modal.find(".modal-header h3");
-        this.modal_body = this.modal.find(".modal-body p");
-        this.modal_footer = this.modal.find(".modal-footer a");
-
-        this.title_area = $('.dept_name');
-        this.title_area.on("hover", this, function(e){
-          var view = e.data;
-          view.title_area.toggleClass("text-info");
-        }).on("click",this.render);
+        this.state.on("change:dept",this.setup);
       }
       ,render : function(){
         var dept = this.state.get("dept");
         var lang = this.state.get('lang');
-        this.body = $(this.template({
+
+        body = $(this.template({
           lang : lang,
           gt : this.gt,
           dept: dept
         }));
 
-        this.search_box = this.body.find('input.site-search');
-        this.search_button = this.body.find('a.site-search');
+        this.search_box = body.find('input.site-search');
+        this.search_button = body.find('a.site-search');
         this.search_button.on("click",this.on_search);
 
-        this.modal_body.children().remove(); 
-        this.modal_body.append(this.body);
-        this.modal_header.html('Info');
-        this.modal_footer.html(this.gt("close"));
-        this.modal.modal("show");
+        this.app.modal_view.render({
+          body: body,
+          header : "Info",
+          footer : this.gt("close") 
+        });
 
-        return this;
-      }
-      ,teardown : function(){
-        this.body.find('*').off();
       }
       ,on_search : function(e){
         var dept = this.state.get("dept");
@@ -568,8 +537,33 @@
         var q = 'q='+encodeURI(this.search_box.val()) + "+"+site;
         window.open("http://www.google.com/search?"+q); 
       }
-    })
+    });
 
+    var modalView = Backbone.View.extend({
+      initialize: function(){
+        _.bindAll(this);
+        this.app = this.options["app"];
+
+        this.gt = this.app.get_text;
+        this.state = this.app.state;
+        this.modal = $("#modal_skeleton");
+        this.header = this.modal.find(".modal-header h3");
+        this.body = this.modal.find(".modal-body");
+        this.footer = this.modal.find(".modal-footer a");
+      }
+      ,render : function(ob){
+        //clear out the body area
+        this.body.find("*").off();
+        this.body.children().remove(); 
+        this.body.html("");
+
+        this.body.append(ob.body);
+        this.header.html(ob.header);
+        this.footer.html(ob.footer);
+        this.modal.modal("show");
+         return this
+      }
+    });
 
     /************STATE MODEL********/
     var stateModel = Backbone.Model.extend({});
@@ -586,7 +580,8 @@
         //initialize views
         this.switchLangv = new switchLangView({app: this});
         this.switchLangv.$el.bind('click', this.set_lang) //lang chg => chg state: lang variable
-
+        this.modal_view = new modalView({app:this});
+        this.dept_info_view  = new deptInfoView({app:this});
 
         this.acv = new autocompleteView({
           app: this,
@@ -657,12 +652,9 @@
           gt : this.get_text
         }));
 
-        if (this.dept_info_view){
-          this.dept_info_view.teardown();
-        }
-        this.dept_info_view = new deptInfoView({
-          app : this
-        });
+        this.app.find('.dept_name').on("hover", this, function(e){
+          $(e.currentTarget).toggleClass("text-info");
+        }).on("click",this.dept_info_view.render);
 
         var main = this.app.find('.main');
         // remove any previous table menu
