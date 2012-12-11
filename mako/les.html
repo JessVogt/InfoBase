@@ -328,7 +328,12 @@
         <ul class="nav nav-list unstyled" >
           <li class='nav-header'><%=cols[col_id][m_id][0].min[lang]%></li>
           <% for (var d_id in cols[col_id][m_id]){ %>
-            <li><a href='#'><%=cols[col_id][m_id][d_id].dept[lang]%></a></li>
+            <% var dept = cols[col_id][m_id][d_id] %>
+            <% if (_.has(dept,'org_type') && dept['org_type']['en'] === 'Departments') { %>
+              <li><strong><a href='#'><%=dept['dept'][lang]%></a></strong></li>
+              <% } else { %>
+              <li><a href='#'><%=dept['dept'][lang]%></a></li>
+            <%}%>
           <%}%>
         </ul>
         <%}%>
