@@ -39,6 +39,10 @@
         "en" : "Select"
         ,"fr" : "Sélectionner"
       }
+      ,'IGOC_site' : {
+        "en" : "http://www.tbs-sct.gc.ca/reports-rapports/cc-se/index-eng.asp"
+        ,"fr" : "http://www.tbs-sct.gc.ca/reports-rapports/cc-se/index-fra.asp"
+      }
       ,"welcome" : {
         "en" : ["Click to select from a list of organisations ",
                 "<span class='badge badge-info'>OR</span>",
