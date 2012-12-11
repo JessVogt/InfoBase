@@ -76,7 +76,12 @@ $(function () {
               var line_key = _.map(this.def.key,
                 function(key){ return mapped_line[key]});
               var val = mapped_line[this.col_index];
-             return [dept_lines[0]].concat(line_key).concat([val]);
+              var table_line = [dept_lines[0]].concat(line_key).concat([val])
+              // mark mapped line as being the one selected
+              if (_.isEqual(mapped_line,this.row)){
+               this.table_line = table_line;
+              }
+             return table_line;
             },
             this
           );
@@ -93,7 +98,15 @@ $(function () {
             return _.last(lines);
           }
       ).reverse();
-      this.index = _.indexOf(_.pluck(this.sorted_lines,0),this.dept);
+
+      // find the sorted index value of the selected line
+      _.each( this.sorted_lines, function(table_line,index){
+         if (_.isEqual(table_line,this.table_line)){
+           this.index = index;
+         }},
+        this
+      );
+
       // summary_lines will be a sparse array, all the null values
       // will be filtered ignored during render
       this.summary_lines = _.map(this.sorted_lines,
@@ -157,15 +170,14 @@ $(function () {
       var dept_name = dept['dept'][this.lang];
       // change row to be the format of 
       // rank,dept_name,line_keys,val
-      row = [index+1,dept_name].concat(_.tail(row));
+      mapped_row = [index+1,dept_name].concat(_.tail(row));
       var tr = $('<tr>');
 
-      if ( dept === this.dept &&
-           _.last(row)  === this.val) {
+      if ( _.isEqual(row,this.table_line)) {
           tr.addClass("info");
        }
 
-      _.each(_.zip(this.types,row),function(type_val,index){
+      _.each(_.zip(this.types,mapped_row),function(type_val,index){
 
         var type = type_val[0];
         var val = type_val[1];
@@ -258,7 +270,7 @@ $(function () {
       if (this.display_total){
         this.display_total = this.formater(this.type,this.display_total);
         var new_header = _.map(this.combined_headers[0],function(){return ""});
-        new_header[new_header.length-2] = "total";
+        new_header[new_header.length-2] = "Total";
         new_header[new_header.length-1] = this.display_total;
         this.footers.push(new_header);
       }
