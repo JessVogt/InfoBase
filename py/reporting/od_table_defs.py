@@ -2,7 +2,7 @@
 import functools
 
 
-def make_tables(year,month):
+def make_od_tables(year,month):
 
   tables = {"table1" : {"col_defs" : ["wide-str",
                                     "float",
