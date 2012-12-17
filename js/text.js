@@ -20,7 +20,7 @@
         "fr" : "Mandat"
       }
       ,"org_head": {
-        "en" : "Instritutional Head",
+        "en" : "Insitutional Head",
         "fr" : "Premier(ère) dirigeant(e)"
       }
       ,"legislation": {
