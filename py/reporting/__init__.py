@@ -1,45 +1,64 @@
 from __future__ import print_function
 import codecs
+import subprocess
 import operator
 import functools
 import os
 import operator
 import json
-import redis
 from ..loading import load
 from helpers.from_here import here
 import mako.lookup
 from .table_defs import tables
 from .. import models
 
-mako_dirs = (here(__file__)("../../mako"),
-             here(__file__)("../../js"))
+mako_dirs = (here(__file__)("../../mako"),)
+js_dir =  here(__file__)("../../js")
+js_root = '/home/andrew/Projects/media/js'
+css_root = '/home/andrew/Projects/media/css'
+
 lookup = mako.lookup.TemplateLookup(directories=mako_dirs,
                                     output_encoding='utf-8',
                                     input_encoding='utf-8')
 
-js_root = '/home/andrew/Projects/media/js'
-js_files = [ "excanvas.compiled.js",
+my_js_files = [os.path.join(js_dir,f) for f in 
+               ["sandbox.js",
+                "base_graph_view.js",
+                "base_table_view.js",
+                "datatables.js",
+                "graph1.js",
+                "graph2a.js",
+                "graph2b.js",
+                "graph2.js",
+                "graph3.js",
+                "graph4.js",
+                "graph5.js",
+                "graph6.js",
+                "graph7.js",
+                "group_funcs.js",
+                "mappers.js",
+                "table_popup.js",
+                "table_views.js",
+                "text.js",
+                "od.js",
+                "les.js",
+               ]]
+
+js_files = ["excanvas.compiled.js",
             '00-jquery-1.8.2.js',
             '01-underscore-min.js',
             '02-backbone.js',
             '03-jshashtable-2.1.js',
-
             'bootstrap.min.js',
-
             'jquery.numberformatter-1.2.3.js',
-
             "jquery.dataTables.min.js",
-
             "jquery.jqplot.min.js",
             "jqplot.pieRenderer.min.js",
             "jqplot.barRenderer.min.js",
             "jqplot.categoryAxisRenderer.min.js",
             "jqplot.canvasAxisTickRenderer.min.js",
-
            ]
 
-css_root = '/home/andrew/Projects/media/css'
 css_files = ['bootstrap.min.css',
              "jquery.jqplot.min.css",
              ]
@@ -165,7 +184,7 @@ def add_dept_data(depts):
 
 
 
-def html_les():
+def html_les(dev=True):
   lookups,data = load()
   check(data,lookups,make_after_check(lookups))
   ## filter out departments with no tables
@@ -180,6 +199,15 @@ def html_les():
   extra_js = reduce(operator.add,
                     map(lambda k : u'%s=%s;\n' % (k,json.dumps(lookups[k])),
                         lookups))
+  my_js = "\n".join([opn(f).read() for f in my_js_files
+                        if not f.endswith('od.js')])
+  if not dev:
+    proc = subprocess.Popen(['uglifyjs'],
+                            stdin=subprocess.PIPE,
+                            stdout = subprocess.PIPE,
+                           shell=True)
+    my_js = proc.communicate(my_js.encode("utf-8"))[0].decode("utf-8")
+                        
   jsdata = reduce(operator.add,
                   map(lambda f : opn(os.path.join(js_root,f)).read()+";\n",
                       js_files))
@@ -187,7 +215,7 @@ def html_les():
                   map(lambda f : opn(os.path.join(css_root,f)).read(),
                       css_files))
 
-  full_js = jsdata + u"\n" + extra_js
+  full_js = jsdata + u"\n" + extra_js + u"\n" + my_js
   full_css = cssdata
 
   t = lookup.get_template('les.html')
@@ -198,4 +226,5 @@ def html_les():
                            no_auto_js = True,
                            no_auto_css = True))
 
-
+def od(dev=True):
+  pass

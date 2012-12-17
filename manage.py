@@ -13,10 +13,13 @@ def shell():
   s = models.Session()
   embed()
 
-def report(dev=dev, output=output):
+def report(dev=True, output=None):
   from py.reporting import html_les
   from py.reporting import od
-  html_les()
+  if output == 'les':
+    html_les(dev)
+  elif output == 'od':
+    od(dev)
 
 def watch():
   import subprocess
@@ -45,7 +48,7 @@ parser.add_argument("-dev",
 parser.add_argument("-output",
                     action="store",
                     choices=['les','od'],
-                    dest="" )
+                    default='les')
 parser.add_argument("-w","--watch",
                  action="store_true", dest="watch", default=False,
                  help="watch for changes")

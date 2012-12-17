@@ -62,50 +62,6 @@
 
   <%block name='extrajs'>
     ${ full_js }
-    <%include file='datatables.js'/>
-    <%include file='sandbox.js'/>
-    <%include file='group_funcs.js'/>
-    <%include file='text.js'/>
-    <%include file='mappers.js'/>
-    <%include file='base_table_view.js'/>
-    <%include file='table_views.js'/>
-    <%include file='base_graph_view.js'/>
-    <%include file='graph1.js'/>
-    <%include file='graph2.js'/>
-    <%include file='graph2a.js'/>
-    <%include file='graph2b.js'/>
-    <%include file='graph3.js'/>
-    <%include file='graph4.js'/>
-    <%include file='graph5.js'/>
-    <%include file='graph6.js'/>
-    <%include file='graph7.js'/>
-    <%include file='table_popup.js'/>
-    <%include file='les.js'/>
-    //$(function(){
-    //  var APP = ns('APP')
-    //  var langs = ['en','fr'];
-    //  var func ;
-    //  for (var lang in langs){
-    //    lang = langs[lang];
-    //    APP.app.state.set('lang',lang);
-    //    _.each(_.keys(depts),function(key,x){
-    //      var dept = depts[key];
-    //      func = function(){
-    //        APP.app.acv.updater(dept.dept[lang]);
-    //        _.each(_.range(10),function(index){
-    //          var func2 = function(){
-    //              index+=1;
-    //              var menu_append_el = $('#table_dropdown .dropdown-menu');
-    //              menu_append_el.find('li:nth-child('+index+') a').trigger("click");
-    //              }
-    //          window.setTimeout(func2,index * 200);
-    //          }
-    //        );
-    //      }
-    //      window.setTimeout(func,x*2000);
-    //    });
-    //  }
-    // });
   </%block>
 
   <div class="navbar navbar-fixed-top navbar-inverse">
