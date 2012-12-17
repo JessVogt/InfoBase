@@ -551,6 +551,9 @@
         this.body = this.modal.find(".modal-body");
         this.footer = this.modal.find(".modal-footer a");
       }
+      ,hide : function(){
+        this.modal.modal("hide");
+      }
       ,render : function(ob){
         //clear out the body area
         this.body.find("*").off();

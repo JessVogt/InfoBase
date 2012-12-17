@@ -204,7 +204,7 @@ $(function () {
       tr.find('a').on("click",
           function(e){
             self.$el.find('a').off("click");
-            self.modal.modal("hide"); 
+            self.app.modal_view.hide(); 
             self.app.state.set("dept",dept);
           }
       );
