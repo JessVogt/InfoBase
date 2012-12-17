@@ -336,7 +336,8 @@ $(function () {
         var view = event.data
         var td = $(event.target).parents('td')
         var tr = td.parent();
-        if (tr.hasClass('info')){
+        var row = tr.data('row');
+        if (_.indexOf(view.row_data,row) == -1 || tr.hasClass("info")){
           return;
         }
         var index_ar = view.datatable.fnGetPosition(td.get(0));
@@ -350,10 +351,10 @@ $(function () {
         var view = event.data;
         var td = $(event.target).parents('td');
         var tr = td.parent();
-        if (tr.hasClass('info')){
+        var row = tr.data('row');
+        if (_.indexOf(view.row_data,row) == -1 || tr.hasClass("info")){
           return;
         }
-        var row = tr.data('row');
 
         if (view.is_clickable(td)){
           // return an array, where the last index is what

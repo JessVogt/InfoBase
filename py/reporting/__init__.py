@@ -19,7 +19,7 @@ lookup = mako.lookup.TemplateLookup(directories=mako_dirs,
                                     input_encoding='utf-8')
 
 js_root = '/home/andrew/Projects/media/js'
-js_files = [ "excanvas.js",
+js_files = [ "excanvas.compiled.js",
             '00-jquery-1.8.2.js',
             '01-underscore-min.js',
             '02-backbone.js',
@@ -147,6 +147,10 @@ def add_dept_data(depts):
         'en' : about_now.head_en,
         'fr' : about_now.head_fr
       }
+      dept['org_type'] = {
+        'en' : about_now.form_en,
+        'fr' : about_now.form_fr
+      }
       dept['legislation'] = map(lambda l : {
         'en' : l.legislation_en,
         'fr' : l.legislation_fr
@@ -169,7 +173,7 @@ def html_les():
                      lookups['depts'].iteritems()
                      if val.get('tables')}
   double_check(lookups)
-  #add_dept_data(lookups['depts'])
+  add_dept_data(lookups['depts'])
 
   lookups['les_tables'] = tables
 

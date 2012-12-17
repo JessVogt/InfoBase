@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import subprocess
 import sys,os
-from optparse import OptionParser
+from argparse import ArgumentParser
 
 here = os.path.realpath(__file__)
 here_dir = os.path.split(here)[0]
@@ -9,11 +9,13 @@ here_dir = os.path.split(here)[0]
 def shell():
   from sqlalchemy import select, cast,join,func
   from IPython import embed
-  from py import les, settings
+  from py import models
+  s = models.Session()
   embed()
 
-def report():
+def report(dev=dev, output=output):
   from py.reporting import html_les
+  from py.reporting import od
   html_les()
 
 def watch():
@@ -34,25 +36,28 @@ def watch():
   watcher= watch_dir.make_watch_dir(paths,rerunner)
   watcher()
 
-parser = OptionParser()
-parser.add_option("-b","--shell",
-                 action="store_true", dest="shell", default=False,
-                 help="choose address")
-parser.add_option("-r","--report",
-                 action="store_true", dest="report", default=False,
-                 help="run report")
-parser.add_option("-w","--watch",
+parser = ArgumentParser()
+parser.add_argument("-b","--shell",action='store_true')
+parser.add_argument("-r","--report",action='store_true')
+parser.add_argument("-dev",
+                    action="store_true",
+                    dest="dev" )
+parser.add_argument("-output",
+                    action="store",
+                    choices=['les','od'],
+                    dest="" )
+parser.add_argument("-w","--watch",
                  action="store_true", dest="watch", default=False,
                  help="watch for changes")
 
 if __name__ == "__main__":
   # parse args
-  args, left_over= parser.parse_args(sys.argv)
+  args = parser.parse_args()
   # start server
   if args.shell:
     shell()
   if args.report:
-    report()
+    report(dev=args.dev,output=args.output)
   if args.watch:
     watch()
 
