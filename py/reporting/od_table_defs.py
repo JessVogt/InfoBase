@@ -13,6 +13,7 @@ def make_od_tables(year,month):
                                     "float"],
                       "coverage" : "in_year",
                       "headers" : {"en" :[[
+                        "Vote/Statutory",
                         "Total available for use for the year ending March 31,{year}",
                         "Used during the quarter ended {month}-{year}",
                         "Year to date used at quarter-end",
@@ -21,6 +22,7 @@ def make_od_tables(year,month):
                         "Year to date used at quarter-end",
                       ]],
                         "fr": [[
+                          "Crédit/Statutaire",
                           "Crédits totaux disponibles pour l'exercice se terminant le 31 mars {year}"
                           "Crédits utilisés pour le trimestre terminé le {month}-{year}",
                           "Cumul des crédits utilisés à la fin du trimestre",
@@ -262,9 +264,4 @@ def make_od_tables(year,month):
             ref[i] = fmt(ref[i])
 
   return tables
-
-
-
-
-
 
