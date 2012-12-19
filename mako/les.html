@@ -60,9 +60,6 @@
 
   </%block>
 
-  <%block name='extrajs'>
-    ${ full_js }
-  </%block>
 
   <div class="navbar navbar-fixed-top navbar-inverse">
     <div class="navbar-inner">
@@ -422,5 +419,13 @@
 </script>
 </%text>
 <%include file='help_text.html'/>
+<%block name='extrajs'>
+    ${ full_js }
+    $(function(){
+      var APP = ns('APP');
+      APP.app = new APP.appView();
+      APP.app.state.set("lang","en");
+    });
+</%block>
 
 
