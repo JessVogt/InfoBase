@@ -1,19 +1,57 @@
 # -*- coding: utf-8 -*-
 import functools
 
-
 def make_od_tables(year,month):
-
-  tables = {"table1" : {"col_defs" : ["wide-str",
-                                    "float",
-                                    "float",
-                                    "float",
-                                    "float",
-                                    "float",
-                                    "float"],
+  tables = {"table1" : {"col_defs" : [
+                                    "int",
+                                    "wide-str",
+                                    "big-int",
+                                    "big-int",
+                                    "big-int",
+                                    "big-int",
+                                    "big-int",
+                                    "big-int",
+                                    "big-int",
+                                    "big-int",
+                                    "big-int",
+                                    "big-int",
+                                    "big-int",
+                                    "big-int",
+                                    "big-int",
+                                    "big-int",
+                                    "big-int",
+                                    "big-int",
+                                    "big-int"
+                                     ],
                       "coverage" : "in_year",
-                      "headers" : {"en" :[[
+                      "headers" : {"en" :[
+                       [
+                        { "colspan" : 2,
+                         "header" : ""
+                        },
+                        { "colspan" : 12,
+                         "header" : "{year} Authorities"
+                        },
+                        { "colspan" : 2,
+                         "header" : "{year} Expenditures"
+                        },
+                        { "colspan" : 3,
+                         "header" : "{last_year}"
+                        }
+                       ],[
                         "Vote/Statutory",
+                        "Description",
+                        "Multi-year Authorities",
+                        "Main Estimates",
+                        "SE(A)",
+                        "SE(B)",
+                        "SE(C)",
+                        "Transfers from TB Vote 5 Gov. Contengencies",
+                        "Transfers from TB Vote 10 Gov. Wide Initiatives ",
+                        "Transfers from TB Vote 15 Compens. Adjustments  ",
+                        "Transfers from TB Vote 25 OBCF  ",
+                        "Transfers from TB Vote 30 Paylist Requirements ",
+                        "Transfers from TB Vote 33 CBCF ",
                         "Total available for use for the year ending March 31,{year}",
                         "Used during the quarter ended {month}-{year}",
                         "Year to date used at quarter-end",
@@ -21,14 +59,39 @@ def make_od_tables(year,month):
                         "Used during the quarter ended {month}-{last_year} ",
                         "Year to date used at quarter-end",
                       ]],
-                        "fr": [[
-                          "Crédit/Statutaire",
-                          "Crédits totaux disponibles pour l'exercice se terminant le 31 mars {year}"
-                          "Crédits utilisés pour le trimestre terminé le {month}-{year}",
-                          "Cumul des crédits utilisés à la fin du trimestre",
-                          "Crédits totaux disponibles pour l'exercice se terminant le 31 mars {last_year}",
-                          "Crédits utilisés pour le trimestre terminé le {month}-{last_year}",
-                          "Cumul des crédits utilisés à la fin du trimestre",
+                        "fr": [ [
+                        { "colspan" : 2,
+                         "header" : ""
+                        },
+                        { "colspan" : 12,
+                         "header" : "{year} Autoritiés"
+                        },
+                        { "colspan" : 2,
+                         "header" : "{year} Dépenses"
+                        },
+                        { "colspan" : 3,
+                         "header" : "{last_year}"
+                        }
+                       ],[
+                         "Crédit/Statutaire",
+                         "Description", 
+                         "Crédits pluri-annuels",
+                         "Budget principal",
+                         "Supp. A",
+                         "Supp. B",
+                         "Supp. C",
+                         "Transferts du crédit 5 du CT (Éventualités du gouvernement)",
+                         "Transferts du crédit 10 du CT (Initiatives pangouvernementales)",
+                         "Transferts du crédit 15 du CT (Rajustements à la rémunération)",
+                         "Transferts du crédit 25 du CT (Report du budget de fonctionnement)",
+                         "Transferts du crédit 30 du CT (Besoins en matière de rémunération)",
+                         "Transferts du crédit 30 du CT (Report du budget d'immobilisations)",
+                         "Crédits totaux disponibles pour l'exercice se terminant le 31 mars {year}"
+                         "Crédits utilisés pour le trimestre terminé le {month}-{year}",
+                         "Cumul des crédits utilisés à la fin du trimestre",
+                         "Crédits totaux disponibles pour l'exercice se terminant le 31 mars {last_year}",
+                         "Crédits utilisés pour le trimestre terminé le {month}-{last_year}",
+                         "Cumul des crédits utilisés à la fin du trimestre",
                         ]]},
                       "link" : {
                         "en" : "",
@@ -42,10 +105,10 @@ def make_od_tables(year,month):
                                 }
                       ,"key" : [0]},
           "table2" : {"col_defs" : ["wide-str",
-                                    "float",
-                                    "float",
-                                    "float",
-                                    "float"],
+                                    "big-int",
+                                    "big-int",
+                                    "big-int",
+                                    "big-int"],
                       "coverage" : "in_year",
                       "headers" : {"en" :[[
                         { "colspan" : 1,
@@ -93,12 +156,12 @@ def make_od_tables(year,month):
                                 }
                       ,"key" : [0]},
           "table3" : {"col_defs" : ["wide-str",
-                                    "float",
-                                    "float",
-                                    "float",
-                                    "float",
-                                    "float",
-                                    "float"],
+                                    "big-int",
+                                    "big-int",
+                                    "big-int",
+                                    "big-int",
+                                    "big-int",
+                                    "big-int"],
                       "coverage" : "in_year",
                       "headers" : { "en" :[[
                         { "colspan" : 1,
@@ -146,14 +209,17 @@ def make_od_tables(year,month):
                                  "fr" : "Dépenses ministérielles budgétaires par program ($000)"
                                 }
                       ,"key" : [0] },
-          "table4" : {"col_defs" : ["wide-str",
+          "table4" : {"col_defs" : [ 'int',
+                                    "wide-str",
                                     "date",
-                                    "float",
-                                    "float",
-                                    "float" ],
+                                    "big-int",
+                                    "big-int",
+                                    "big-int",
+                                    "big-int",
+                                   ],
                       "coverage" : "historical",
                       "headers" : {"en" :[[
-                        "Vote (2011-12) / Statutory",
+                        "Vote {last_year}/ Statutory",
                         "Description",
                         "Year",
                         "Total budgetary authority available for use",
@@ -183,9 +249,9 @@ def make_od_tables(year,month):
                       ,"key" : [0,1,2]},
           "table5" : {"col_defs" : ["wide-str",
                                     "date",
-                                    "float",
-                                    "float",
-                                    "float" ],
+                                    "big-int",
+                                    "big-int",
+                                    "big-int" ],
                       "coverage" : "historical",
                       "headers" : {"en" :[[
                         "Standard Object",
@@ -212,9 +278,9 @@ def make_od_tables(year,month):
                       ,"key" : [0]},
           "table6" : {"col_defs" : ["wide-str",
                                     "date",
-                                    "float",
-                                    "float",
-                                    "float" ],
+                                    "big-int",
+                                    "big-int",
+                                    "big-int" ],
                       "coverage" : "historical",
                       "headers" : {"en" :[[
                         "Program"

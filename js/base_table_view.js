@@ -71,7 +71,7 @@ $(function () {
           el.attr("rel", "tooltip");
           data = data.substring(0,77) + "...";
         }
-        else  if (type == 'float') {
+        else  if (type == 'big-int') {
           data = $.formatNumber(data, {
             format: "#,##0",
             locale: this.app.state.get('lang')
@@ -103,7 +103,7 @@ $(function () {
     }
     ,width_map : {
       "int" : 90,
-      "float" : 90,
+      "big-int" : 90,
       "str" : 150,
       "wide-str" : 300,
       "percentage" : 90,

@@ -22,11 +22,11 @@ jQuery.extend( jQuery.fn.dataTableExt.oSort, {
     "int-desc": simple_desc
 } );
 jQuery.extend( jQuery.fn.dataTableExt.oSort, {
-    "float-pre": function ( a ) {
+    "big-int-pre": function ( a ) {
         a = (a==="-") ? 0 : a.replace( /[^\d\-\.]/g, "" );
         return parseInt( a );
     },
-    "float-asc": simple_asc,
-    "float-desc":simple_desc 
+    "big-int-asc": simple_asc,
+    "big-int-desc":simple_desc 
 } );
 });
