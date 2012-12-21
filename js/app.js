@@ -13,12 +13,12 @@
       "date" : function(val,lang){return val}
     }
 
-    APP.find_all_in_ministry = function(dept,lang,table){
+    APP.find_all_in_ministry = function(dept,lang){
       // find all departments with a ministry name, matching
       // the ministry AND that has data for the requested table
       return _.filter(window.depts,
             function(d){
-              return d['min'][lang] == dept['min'][lang] && _.has(dept['tables'],table);
+              return d['min'][lang] == dept['min'][lang];
             });
     }
 
@@ -239,5 +239,51 @@
       this.state.set({lang: new_lang});
     }
     }); 
+
+    APP.otherDeptsDropDown = Backbone.View.extend({
+      template : _.template($('#nav_li').html())
+      ,initialize: function(){
+        _.bindAll(this);
+        this.app = this.options["app"];
+        this.state = this.app.state;
+        this.state.on("change:other_depts",this.render);
+      }
+      ,render: function(){
+        var dept = this.state.get('dept');
+        var lang = this.state.get("lang");
+        var other_depts = this.state.get("other_depts");
+        var other_depts_list = $('#other_depts_list');
+        // remove the previous entries
+        other_depts_list.find('li a').parent().remove();
+        if (other_depts.length > 0){
+          _.each(_.sortBy(other_depts,
+                function(d){return d.dept[lang]},
+                this
+                ),
+                function(dept){
+                    // create the link item with the
+                    // department name
+                    var nav = $( this.template({
+                      text:dept.dept[lang]
+                    }));
+                    var self = this;
+                    // set up the onclick for the link item
+                    nav.on("click",
+                      function(event){
+                        other_depts_list.find("li").off();
+                        self.app.state.set('dept',dept);
+                    });
+                  // append the link to the nav dropdown
+                  // item
+                  other_depts_list.append(nav);
+                },
+                this
+          );
+        }
+        else {
+          other_depts_list.parent().remove();
+        }
+      }
+    });
 
 })();

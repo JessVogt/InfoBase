@@ -5,6 +5,15 @@
     var MAPPERS = ns('MAPPERS');
     var LANG = ns('LANG');
 
+    APP.find_all_in_ministry = function(dept,lang,table){
+      // find all departments with a ministry name, matching
+      // the ministry AND that has data for the requested table
+      return _.filter(window.depts,
+            function(d){
+              return d['min'][lang] == dept['min'][lang] && _.has(dept['tables'],table);
+            });
+    }
+
     var ministry_total = function(depts,table){
         var lines = _.map(depts,
           function(dept){  //map function
@@ -112,9 +121,6 @@
     
         //collect ministry data
         var ministry_depts = APP.find_all_in_ministry(this.dept,this.lang,this.key);
-        this.other_depts = _.filter(ministry_depts,
-         function(dept) {return dept != this.dept},
-         this); 
         var raw_min_data = ministry_total(ministry_depts,this.key);
         this.min_data = this.mapper.map(raw_min_data);
         //collect goc data
@@ -125,39 +131,6 @@
         var self = this;
 
         $('#app .table_title').html(this.def.title[this.lang]);
-        // setup the dropdown menu of other departments
-        // sort the departments by name
-        this.other_depts_list = $('#other_depts_list');
-        // remove the previous entries
-        this.other_depts_list.find('li a').parent().remove();
-        if (this.other_depts.length > 0){
-          _.each(_.sortBy(this.other_depts,
-                function(d){return d.dept[this.lang]},
-                this
-                ),
-                function(dept){
-                    // create the link item with the
-                    // department name
-                    var nav = $( this.nav_li({
-                      text:dept.dept[this.lang]
-                    }));
-                    var self = this;
-                    // set up the onclick for the link item
-                    nav.on("click",
-                      function(event){
-                        self.app.state.set('dept',dept);
-                    });
-                  // append the link to the nav dropdown
-                  // item
-                  this.other_depts_list.append(nav);
-                },
-                this
-          );
-        }
-        else {
-          this.other_depts_list.parent().remove();
-        }
-
         // add the footnotes
         var footnotes = [];
         if (_.has(window.footnotes,this.key)){
@@ -329,7 +302,16 @@
         }
       }
       ,on_click: function(){
-        //$.cookie("table",this.key,{path:"les", expires: Infinity});
+        // based on the current table AND the current department
+        // set the list of other departments who also have
+        // data for the current table
+        var ministry_depts = APP.find_all_in_ministry(this.dept,this.lang,this.key);
+        var other_depts = _.filter(ministry_depts,
+         function(dept) {return dept != this.dept
+         },
+        this); 
+        this.state.set("other_depts",other_depts);
+        
         this.state.set('table',this.key);
         this.setup_dataView();
         this.data_view.activate();
@@ -351,6 +333,7 @@
         this.dept_info_view  = new APP.deptInfoView(sub_view_args);
         this.acv = new APP.autocompleteView(sub_view_args);
         this.full_dept_list = new APP.fullDeptList(sub_view_args);
+        this.other_dept_dropdown = new APP.otherDeptsDropDown(sub_view_args);
 
         this.setup_useful_this_links();
 
@@ -394,12 +377,13 @@
          }
       }
       ,dept_change : function(model,org){
-        // check and see if the departmental drop down
-        // is active
+
+        this.app.find("*").off();
         this.app.html(this.template({
           txt: org['dept'][this.lang],   
           gt : this.get_text
         }));
+
 
         this.app.find('.dept_name').on("hover", this, function(e){
           $(e.currentTarget).toggleClass("text-info");

@@ -5,94 +5,9 @@
     var MAPPERS = ns('MAPPERS');
     var LANG = ns('LANG');
 
-    var ministry_total = function(depts,table){
-        var lines = _.map(depts,
-          function(dept){  //map function
-            return dept['tables'][table];
-          });
-        // flatten all these lists into one big list
-        return  _.flatten(_.compact(lines),true);
-    }
-
-    APP.printView = Backbone.View.extend({
-      template : _.template($('#print_view_t').html())
-      ,initialize : function(){
-        _.bindAll(this);
-        this.state = this.options['state'];
-        this.lang = this.state.get('lang');
-        this.table = $(this.options['table']);
-        this.table.attr('id','');
-        this.render();
-      }
-      ,render : function(){
-        var gt = APP.app.get_text;
-        this.$el = $(this.template({
-          close_text : gt('close'),
-          print_text : gt('print'),
-          help_text : gt('print_help')
-        }));
-        this.$el.
-          find('.table_area')
-          .append(this.table);
-        this.$el
-          .find('.print_view_close')
-          .click(this.close);
-        this.$el.
-          find('.print_view_print')
-          .click(this.print);
-
-        APP.app.hide();
-
-        $('body').append(this.$el);
-        return this;
-      }
-      ,close : function(event){
-        this.$el.remove();
-        APP.app.show();
-      }
-      ,print : function(){
-        this.$el
-          .find('button')
-          .hide();
-        window.print();
-        this.$el
-          .find('button')
-          .show();
-        return false;
-      }
-    });
-
-    var footnoteView = Backbone.View.extend({
-      template : _.template($('#footnotes_t').html())
-      ,initialize: function(){
-        _.bindAll(this);
-        // retrieve passed in data
-        this.app = this.options["app"];
-        this.footnotes = this.options['footnotes'];
-        this.button = this.options['btn'];
-        // set some useful state based on these inputs
-        this.lang = this.app.lang;
-        this.button.on("click",this.render);
-      }
-      ,render : function () {
-        var gt = this.app.get_text;
-        var html = $(this.template({
-          fns : this.footnotes,
-          lang  : this.lang
-        }));
-
-        this.app.modal_view.render({
-          body : html,
-          header : gt("footnotes"),
-          footer : gt("close")
-        });
-      }
-    });
-
     /************Data View********/
     var dataView = Backbone.View.extend({
       template : _.template($('#dataview_t').html())
-      ,nav_li : _.template($('#nav_li').html())
       ,initialize: function(){
         _.bindAll(this);
         // retrieve passed in data
@@ -127,36 +42,6 @@
         $('#app .table_title').html(this.def.title[this.lang]);
         // setup the dropdown menu of other departments
         // sort the departments by name
-        this.other_depts_list = $('#other_depts_list');
-        // remove the previous entries
-        this.other_depts_list.find('li a').parent().remove();
-        if (this.other_depts.length > 0){
-          _.each(_.sortBy(this.other_depts,
-                function(d){return d.dept[this.lang]},
-                this
-                ),
-                function(dept){
-                    // create the link item with the
-                    // department name
-                    var nav = $( this.nav_li({
-                      text:dept.dept[this.lang]
-                    }));
-                    var self = this;
-                    // set up the onclick for the link item
-                    nav.on("click",
-                      function(event){
-                        self.app.state.set('dept',dept);
-                    });
-                  // append the link to the nav dropdown
-                  // item
-                  this.other_depts_list.append(nav);
-                },
-                this
-          );
-        }
-        else {
-          this.other_depts_list.parent().remove();
-        }
 
         // add the footnotes
         var footnotes = [];
@@ -300,50 +185,41 @@
       }
     });
 
-    /************Menu View********/
-    var menuView = Backbone.View.extend({
-      template : _.template($('#nav_li').html())
+    var OrgView = Backbone.View.extend({
+      template : _.template($('#main_t').html())
       ,initialize: function(){
         _.bindAll(this);
-        // retrieve passed in data
-        this.app = this.options["app"];
-        this.key = this.options["key"];
-        this.dept = this.options["dept"];
-        this.drop_zone = this.options["drop_zone"];
-        // set some useful state based on these inputs
+        this.app = this.options['app'];
         this.state = this.app.state;
-        this.lang = this.state.get('lang');
-        this.def = les_tables[this.key];
+        this.state.on("change:dept", this.render);
+
       }
-      ,render: function(){
-        this.$el =  $(this.template({
-          key: this.key,
-          text: this.def["name"][this.lang]
-        })).on('click','a',this.on_click);
+      ,render : function(model, org){
+        var lang = this.state.get("lang");
+        // render the main template
+        this.app.app.html(this.template({
+          org: org,   
+          lang : lang,
+          gt : this.app.get_text
+        }));
+        // set state for all other depts in the current
+        // ministry
+        var ministry_depts = APP.find_all_in_ministry(org,this.lang);
+        var other_depts = _.filter(ministry_depts,
+         function(dept) {return dept != org
+         }); 
+        this.state.set("other_depts",other_depts);
+
         return this;
       }
-      , setup_dataView : function(){
-        if (_.isUndefined(this.table_view)){
-          this.data_view = new dataView(this.options);
-          //this.data_view.render();
-        }
-      }
-      ,on_click: function(){
-        //$.cookie("table",this.key,{path:"les", expires: Infinity});
-        this.state.set('table',this.key);
-        this.setup_dataView();
-        this.data_view.activate();
-      }
-    })
+    });
 
     /************APP VIEW***********/
     APP.appView = Backbone.View.extend({
-       el:$('body')
-      ,template : _.template($('#main_t').html())
-      ,menu_t : _.template($('#table_menu_t').html())
-      ,initialize: function(){
+      initialize: function(){
         _.bindAll(this);
         this.state = new APP.stateModel({})
+
         //initialize views
         sub_view_args = {app: this};
         this.switchLangv = new APP.switchLangView(sub_view_args);
@@ -351,14 +227,12 @@
         this.dept_info_view  = new APP.deptInfoView(sub_view_args);
         this.acv = new APP.autocompleteView(sub_view_args);
         this.full_dept_list = new APP.fullDeptList(sub_view_args);
+        this.other_dept_dropdown = new APP.otherDeptsDropDown(sub_view_args);
+        this.org_view = new OrgView(sub_view_args);
 
         this.setup_useful_this_links();
-
         // check for a language or set the default of english
-        this.state.on("change:lang", this.lang_change);
-        // check for a saved department 
-        this.state.on("change:dept", this.dept_change);
-
+        this.state.on("change:lang", this.render);
       }
       ,setup_useful_this_links : function(){
         this.title = $('#title');
@@ -373,69 +247,18 @@
       ,get_text : function(txt){
           return LANG.l(txt,this.state.get('lang'));
         }
-      ,hide : function(){
-        $('#app,.navbar').hide();
-      }
-      ,show : function(){
-        $('#app,.navbar').show();
-      }
-      ,lang_change: function(model,attr){
+      ,render: function(model,attr){
         // get faster reference 
         this.lang = attr;
         var gt = this.get_text;
         this.title.html(gt("title"));
         this.welcome.html(gt("welcome"));
         this.dept_sel.html(gt("select"))
-
         // if a department has already been picked
         // remake all the tables in the new language
         if (!_.isUndefined(this.state.get('dept'))){
-          this.dept_change(this.state,this.state.get('dept'));
+          this.org_view.render(this.state,this.state.get('dept'));
          }
-      }
-      ,dept_change : function(model,org){
-        // check and see if the departmental drop down
-        // is active
-        this.app.html(this.template({
-          txt: org['dept'][this.lang],   
-          gt : this.get_text
-        }));
-
-        this.app.find('.dept_name').on("hover", this, function(e){
-          $(e.currentTarget).toggleClass("text-info");
-        }).on("click",this.dept_info_view.render);
-
-        var main = this.app.find('.main');
-        // remove any previous table menu
-        this.nav_bar_ul.find('li#table_dropdown').remove();
-        //add new, empty table list
-        var new_table_menu = $(this.menu_t({
-          get_text : this.get_text
-        }));
-        this.nav_bar_ul.append(new_table_menu);
-        var menu_append_el = new_table_menu.find('.dropdown-menu');
-        var keys = _.keys(org['tables']).sort() // _.uniq + .concat(_.keys(org['footnotes'])));
-        _.each(keys,
-               function(key){
-                  // add sidebar nav
-                  var mv = new menuView({
-                        app : this,
-                        key : key,
-                        dept : org,
-                        drop_zone : main
-                  });
-                  //mv.setup_dataView();
-                  menu_append_el
-                    .append(mv.render().$el);
-               },this);
-         new_table_menu.find('.dropdown-toggle').dropdown();
-         //activate the first table
-         var curent_table = this.state.get('table');
-         // keys is already sorted
-         var table_index = _.indexOf(keys,curent_table);
-         table_index = table_index === -1 ? 1 : table_index+1;
-         menu_append_el.find('li:nth-child('+table_index+') a').trigger("click");
-
       }
     });
 })();
