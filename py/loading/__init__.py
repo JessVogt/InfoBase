@@ -70,7 +70,20 @@ def footnotes(lines):
           for grp in grps}
 
 
-def load():
+def load_od():
+
+  data_sheets = None
+
+  lookup_sheets = dict(map(each_sheet,
+                           wb2.sheets()))
+  lookup_sheets['footnotes'] = each_sheet(wb.sheet_by_name('Footnotes'))[1]
+  lookups = {
+    'depts': depts(lookup_sheets['DEPTCODE_MINCODE']),
+    'votes': votes(lookup_sheets['VOTES']),
+  }
+  return lookups,data_sheets
+
+def load_les():
   data_sheets = dict(map(each_sheet,
                          filter(lambda x : 'Table' in x.name,
                                     wb.sheets())))
