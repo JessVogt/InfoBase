@@ -186,7 +186,6 @@
             this.graph_payload.append(this.graph_view.render().$el);
             this.$el.find('.nav-tabs a:last')
               .on("shown", this.graph_view.graph);
-
           }
           else {
             this.$el.find('.nav-tabs li:last').remove();
@@ -207,16 +206,6 @@
         var tabs_a = this.$el.find('.nav-tabs a')
         tabs_a.off("shown",this.on_tab_show);
         tabs_a.on("shown",this.on_tab_show);
-
-        window.setTimeout(function(){
-          var tab_index = self.app.state.get('current_tab');
-          var tab = tabs_a[tab_index];
-          if (tab) {
-            $(tab).tab("show");
-          } else {
-            self.$el.find('.nav-tabs a:first').tab("show");
-          }
-        },1);
 
         return this;
       }
@@ -270,6 +259,14 @@
         this.drop_zone.children().remove();
         this.render();
         this.drop_zone.append(this.$el);
+
+        var tab_index = this.app.state.get('current_tab');
+        var tab = this.$el.find('.nav-tabs a')[tab_index];
+        if (tab) {
+          $(tab).tab("show");
+        } else {
+          this.$el.find('.nav-tabs a:first').tab("show");
+        }
       }
     });
 
@@ -296,7 +293,7 @@
         return this;
       }
       , setup_dataView : function(){
-        if (_.isUndefined(this.table_view)){
+        if (_.isUndefined(this.data_view)){
           this.data_view = new dataView(this.options);
           //this.data_view.render();
         }
@@ -305,6 +302,7 @@
         // based on the current table AND the current department
         // set the list of other departments who also have
         // data for the current table
+
         var ministry_depts = APP.find_all_in_ministry(this.dept,this.lang,this.key);
         var other_depts = _.filter(ministry_depts,
          function(dept) {return dept != this.dept

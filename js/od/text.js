@@ -138,8 +138,8 @@
         ,"fr": "Sous total"
       }
       ,"title" : {
-        "en": "Lapse and Expenditure Statistics"
-        ,"fr": "Statistiques sur les fonds inutilisés et les dépenses"
+        "en": "Open Data"
+        ,"fr": "Donneés ouvertes"
       }
       ,"table" : {
         "en" : "Table"

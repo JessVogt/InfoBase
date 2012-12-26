@@ -204,7 +204,7 @@
         }));
         // set state for all other depts in the current
         // ministry
-        var ministry_depts = APP.find_all_in_ministry(org,this.lang);
+        var ministry_depts = APP.find_all_in_ministry(org,lang);
         var other_depts = _.filter(ministry_depts,
          function(dept) {return dept != org
          }); 

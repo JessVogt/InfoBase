@@ -19,7 +19,7 @@
       return _.filter(window.depts,
             function(d){
               return d['min'][lang] == dept['min'][lang];
-            });
+      });
     }
 
     /************STATE MODEL********/
@@ -36,20 +36,25 @@
         this.header = this.modal.find(".modal-header h3");
         this.body = this.modal.find(".modal-body");
         this.footer = this.modal.find(".modal-footer a");
+        this.modal.on("hidden",this.reset);
       }
       ,hide : function(){
         this.modal.modal("hide");
       }
-      ,render : function(ob){
+      ,reset : function(){
         //clear out the body area
         this.body.find("*").off();
         this.body.children().remove(); 
         this.body.html("");
-
+      }
+      ,render : function(ob){
+        this.reset();
         this.body.append(ob.body);
         this.header.html(ob.header);
         this.footer.html(ob.footer);
-        this.modal.modal("show");
+        this.modal.modal({
+          keyboard: false
+        });
          return this
       }
     });

@@ -98,7 +98,7 @@
     </div>
   </div>
 
-  <div class="modal hide fade large" id="modal_skeleton">
+  <div class="modal hide large" id="modal_skeleton" tabindex="-1" role='dialog'>
     <div class="modal-header">
       <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
       <h3></h3>
@@ -130,6 +130,7 @@
       </div>
         <p class="table_title" style='padding-top: 10px;font-size: 1.5em;font-weight:bold'> 
         </p>
+      </div>
     </div>
     <div class="row-fluid">
       <div class="span12">
@@ -219,7 +220,7 @@
 
         </div>
       </div>
-      <div class='tab-pane fade in graph_content' id='<%=key%>_graphs'>
+      <div class='tab-pane graph_content' id='<%=key%>_graphs'>
         <div class='graph_payload'>
 
         </div>
