@@ -232,82 +232,78 @@ def html_les(dev=True):
 def fake_data(lookups):
   import numpy
   rand = numpy.random.randint
-  t = lookups['tables']
   for key in lookups['depts']:
     dept = lookups['depts'][key]
     dept['tables'] = {
-      'table1' : [
-       [1,1] + rand(10000,10000000,len(t['table1']['col_defs'])-2).tolist(),
-       [5,2] + rand(10000,10000000,len(t['table1']['col_defs'])-2).tolist(),
-       [10,3] + rand(10000,10000000,len(t['table1']['col_defs'])-2).tolist(),
-       ['S','S'] + rand(10000,10000000,len(t['table1']['col_defs'])-2).tolist(),
-      ],
+      'table1' : [ ],
       'table2' : [
-       [1] +  rand(10000,10000000,4).tolist(),
-       [2 ] + rand(10000,10000000,4).tolist(),
-       [3 ] + rand(10000,10000000,4).tolist(),
-       [4 ] + rand(10000,10000000,4).tolist(),
-       [5 ] + rand(10000,10000000,4).tolist(),
-       [6 ] + rand(10000,10000000,4).tolist(),
-       [7 ] + rand(10000,10000000,4).tolist(),
-       [8 ] + rand(10000,10000000,4).tolist(),
-       [9 ] + rand(10000,10000000,4).tolist(),
-       [10] + rand(10000,10000000,4).tolist(),
-       [11] + rand(10000,10000000,4).tolist(),
-       [12] + rand(10000,10000000,4).tolist(),
-       [21] + rand(10000,10000000,4).tolist(), 
-       [22] + rand(10000,10000000,4).tolist() 
+       [key,1] +  rand(10000,10000000,4).tolist(),
+       [key,2 ] + rand(10000,10000000,4).tolist(),
+       [key,3 ] + rand(10000,10000000,4).tolist(),
+       [key,4 ] + rand(10000,10000000,4).tolist(),
+       [key,5 ] + rand(10000,10000000,4).tolist(),
+       [key,6 ] + rand(10000,10000000,4).tolist(),
+       [key,7 ] + rand(10000,10000000,4).tolist(),
+       [key,8 ] + rand(10000,10000000,4).tolist(),
+       [key,9 ] + rand(10000,10000000,4).tolist(),
+       [key,10] + rand(10000,10000000,4).tolist(),
+       [key,11] + rand(10000,10000000,4).tolist(),
+       [key,12] + rand(10000,10000000,4).tolist(),
+       [key,21] + rand(10000,10000000,4).tolist(), 
+       [key,22] + rand(10000,10000000,4).tolist() 
       ],
       'table3' : [
-       ['Program EN1','Program FR1'] + rand(10000,10000000,4).tolist(),
-       ['Program EN2','Program FR2'] + rand(10000,10000000,4).tolist(),
-       ['Program EN3','Program FR3'] + rand(10000,10000000,4).tolist(),
-       ['Program EN4','Program FR4'] + rand(10000,10000000,4).tolist(),
-       ['Program EN5','Program FR5'] + rand(10000,10000000,4).tolist(),
-       ['Program EN6','Program FR6'] + rand(10000,10000000,4).tolist(),
+       [key,'Program EN1','Program FR1'] + rand(10000,10000000,4).tolist(),
+       [key,'Program EN2','Program FR2'] + rand(10000,10000000,4).tolist(),
+       [key,'Program EN3','Program FR3'] + rand(10000,10000000,4).tolist(),
+       [key,'Program EN4','Program FR4'] + rand(10000,10000000,4).tolist(),
+       [key,'Program EN5','Program FR5'] + rand(10000,10000000,4).tolist(),
+       [key,'Program EN6','Program FR6'] + rand(10000,10000000,4).tolist(),
       ],
       'table4' : [
-       [1,1,'2009-10'] +  rand(10000,10000000,len(t['table4']['col_defs'])-3).tolist(),
-       [1,1,'2010-11'] +  rand(10000,10000000,len(t['table4']['col_defs'])-3).tolist(),
-       [1,1,'2011-12'] +  rand(10000,10000000,len(t['table4']['col_defs'])-3).tolist(),
-       [5,2,'2009-10'] +  rand(10000,10000000,len(t['table4']['col_defs'])-3).tolist(),
-       [5,2,'2010-11'] +  rand(10000,10000000,len(t['table4']['col_defs'])-3).tolist(),
-       [5,2,'2011-12'] +  rand(10000,10000000,len(t['table4']['col_defs'])-3).tolist(),
-       [10,3,'2009-10'] + rand(10000,10000000,len(t['table4']['col_defs'])-3).tolist(),
-       [10,3,'2010-11'] + rand(10000,10000000,len(t['table4']['col_defs'])-3).tolist(),
-       [10,3,'2011-12'] + rand(10000,10000000,len(t['table4']['col_defs'])-3).tolist(),
+       [key,1,1,'2009-10'] +  rand(10000,10000000,7-3).tolist(),
+       [key,1,1,'2010-11'] +  rand(10000,10000000,7-3).tolist(),
+       [key,1,1,'2011-12'] +  rand(10000,10000000,7-3).tolist(),
+       [key,5,2,'2009-10'] +  rand(10000,10000000,7-3).tolist(),
+       [key,5,2,'2010-11'] +  rand(10000,10000000,7-3).tolist(),
+       [key,5,2,'2011-12'] +  rand(10000,10000000,7-3).tolist(),
+       [key,10,3,'2009-10'] + rand(10000,10000000,7-3).tolist(),
+       [key,10,3,'2010-11'] + rand(10000,10000000,7-3).tolist(),
+       [key,10,3,'2011-12'] + rand(10000,10000000,7-3).tolist(),
       ],
       'table5' : [
-       [1] +  rand(10000,10000000,3).tolist(),
-       [2 ] + rand(10000,10000000,3).tolist(),
-       [3 ] + rand(10000,10000000,3).tolist(),
-       [4 ] + rand(10000,10000000,3).tolist(),
-       [5 ] + rand(10000,10000000,3).tolist(),
-       [6 ] + rand(10000,10000000,3).tolist(),
-       [7 ] + rand(10000,10000000,3).tolist(),
-       [8 ] + rand(10000,10000000,3).tolist(),
-       [9 ] + rand(10000,10000000,3).tolist(),
-       [10] + rand(10000,10000000,3).tolist(),
-       [11] + rand(10000,10000000,3).tolist(),
-       [12] + rand(10000,10000000,3).tolist(),
-       [21] + rand(10000,10000000,3).tolist(), 
-       [22] + rand(10000,10000000,3).tolist() 
+       [key,1] +  rand(10000,10000000,3).tolist(),
+       [key,2 ] + rand(10000,10000000,3).tolist(),
+       [key,3 ] + rand(10000,10000000,3).tolist(),
+       [key,4 ] + rand(10000,10000000,3).tolist(),
+       [key,5 ] + rand(10000,10000000,3).tolist(),
+       [key,6 ] + rand(10000,10000000,3).tolist(),
+       [key,7 ] + rand(10000,10000000,3).tolist(),
+       [key,8 ] + rand(10000,10000000,3).tolist(),
+       [key,9 ] + rand(10000,10000000,3).tolist(),
+       [key,10] + rand(10000,10000000,3).tolist(),
+       [key,11] + rand(10000,10000000,3).tolist(),
+       [key,12] + rand(10000,10000000,3).tolist(),
+       [key,21] + rand(10000,10000000,3).tolist(), 
+       [key,22] + rand(10000,10000000,3).tolist() 
       ],
       'table6' : [
-       ['Program EN1','Program FR1'] + rand(10000,10000000,3).tolist(),
-       ['Program EN2','Program FR2'] + rand(10000,10000000,3).tolist(),
-       ['Program EN3','Program FR3'] + rand(10000,10000000,3).tolist(),
-       ['Program EN4','Program FR4'] + rand(10000,10000000,3).tolist(),
-       ['Program EN5','Program FR5'] + rand(10000,10000000,3).tolist(),
-       ['Program EN6','Program FR6'] + rand(10000,10000000,3).tolist(),
+       [key,'Program EN1','Program FR1'] + rand(10000,10000000,3).tolist(),
+       [key,'Program EN2','Program FR2'] + rand(10000,10000000,3).tolist(),
+       [key,'Program EN3','Program FR3'] + rand(10000,10000000,3).tolist(),
+       [key,'Program EN4','Program FR4'] + rand(10000,10000000,3).tolist(),
+       [key,'Program EN5','Program FR5'] + rand(10000,10000000,3).tolist(),
+       [key,'Program EN6','Program FR6'] + rand(10000,10000000,3).tolist(),
       ]
     }
+    for vote in lookups['votes']['in_year'][key]:
+      v = lookups['votes']['in_year'][key][vote]
+      dept['tables']['table1'].append([key,vote,v['type']] + rand(10000,10000000,19-2).tolist())
 
 def od(dev=True):
   lookups,data = load_les()
-  lookups['tables'] = make_od_tables(2013,03)
   add_dept_data(lookups['depts'])
-  
+
   fake_data(lookups)
   js_data = ";\n".join(
     [u'{}={}'.format(k,json.dumps(lookups[k]))
@@ -315,7 +311,8 @@ def od(dev=True):
   )+";\n"
 
   app_js_files = list(my_js_files)
-  app_js_files += ["od/text.js", 
+  app_js_files += ["od/text.js",
+                   "od/tables.js",
                    "od/od.js"]
   js_app = process_my_js(app_js_files, dev=dev)
 

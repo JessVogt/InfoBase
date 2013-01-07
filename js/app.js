@@ -2,6 +2,8 @@
     var APP = ns('APP');
     var LANG = ns('LANG');
 
+    APP.dispatcher = _.clone(Backbone.Events)
+
     APP.types_to_format = {
       "percentage" :  function(val,lang){return $.formatNumber(val,
                                                   {format : "0%" ,locale : lang})},

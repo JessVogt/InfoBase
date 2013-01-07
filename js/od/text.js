@@ -69,6 +69,10 @@
         "en" : "Show more details"
         ,"fr": "Voir plus de détails"
       }
+      ,"back" : {
+        "en" : "Back"
+        ,"fr": "Retour"
+      }
       ,"org_info" : {
         "en" : "Data from Inventory of Government of Canada Organizations"
         ,"fr": "Données pris de l'Inventaire des organisations du gouvernement du Canada"

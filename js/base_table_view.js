@@ -3,7 +3,7 @@ $(function () {
   var APP = ns('APP');
   var GROUP = ns('GROUP');
 
-  /***********HEADER VIEW*************/
+  
   var headerView = Backbone.View.extend({
     template: _.template($('#header_t').html()),
     tagName: "tr",
@@ -34,7 +34,7 @@ $(function () {
       return this;
     }
   });
-  /*************ROW VIEW***************/
+
   var rowView = Backbone.View.extend({
     tagName: "tr",
     initialize: function () {
@@ -380,6 +380,43 @@ $(function () {
       return this;
     }
   }) // end of BaseTableView
+
+  TABLES.miniTableVew = Backbone.View.extend({
+
+    template : _.template($('#mini_t').html())
+
+     ,initialize : function(){
+       this.def = this.options['def'];
+       this.app = this.options['app'];
+       _.extend(this,this.def['mini_view']);
+       _.bindAll(this);
+       this.state = this.app.state;
+       this.org = this.state.get("dept");
+       this.lang = this.state.get('lang');
+       this.id = this.def['id'];
+       this.data = this.org['mapped_objs'][this.id]['en'];
+       // find the target div for this minigraph
+       // based on the def which was provided
+       this.$el = $('#'+this.id);
+     }
+     ,make_title : function(){
+       this.$el.find('.title').append(this.def['name'][this.lang]);
+     }
+     ,render : function(){
+       this.$el.append(
+        $(this.template({
+          gt : this.app.get_text       
+        }))
+       );
+       this.make_title();
+       this.prep_data();
+       this.render_data();
+       this.$el.find('.mini_payload').append(this.content);
+
+       return this;
+     }
+  });
+
   TABLES.extract_headers = function(headers,index){
     // headers is an array of arrays
     return _.map(headers,
@@ -436,6 +473,17 @@ $(function () {
         window.clipboardData.setData("Text",table_text );
       }
       catch(err){}
+    }
+    TABLES.array_to_grid = function(spans, data){
+      return _.map(data, function(row){
+        var row_div = $('<div>').addClass('row');
+        _.each(_.zip(spans,row), function(span_data){
+          var span = span_data[0];
+          var data = span_data[1];
+          row_div.append($('<div>').addClass('span'+span).html(data));
+        });
+        return row_div;
+      });
     }
 
 }); // end of scope
