@@ -151,19 +151,26 @@ $(function () {
       this.footer = this.$el.find('tfoot');
     }
     ,setup_event_listeners : function(){
-      this.details_btn.off("click");
-      this.copy_btn.off("click");
-      this.print_btn.off("click");
-      this.state.off("change:goc_tot change:min_tot");
+      if (this.details_btn){
+        this.details_btn.off("click");
+        if ( this.hide_col_ids.length > 0){
+          this.details_btn.on("click",this.on_details_click);
+        }
+        else {
+          this.details_btn.hide();
+        }
+      }
 
-      if ( this.hide_col_ids.length > 0){
-        this.details_btn.on("click",this.on_details_click);
+      if (this.copy_btn){
+        this.copy_btn.off("click");
+        this.copy_btn.on("click",this.on_copy_click);
       }
-      else {
-        this.details_btn.hide();
+      if (this.print_btn){
+        this.print_btn.off("click");
+        this.print_btn.on("click",this.on_print_click);
       }
-      this.copy_btn.on("click",this.on_copy_click);
-      this.print_btn.on("click",this.on_print_click);
+
+      this.state.off("change:goc_tot change:min_tot");
       this.state.on("change:goc_tot change:min_tot",this.render);
     }
     ,on_details_click : function(){
@@ -332,48 +339,48 @@ $(function () {
 
       var tds = this.$el.find('td div');
 
-      tds.on("hover",this,function(event){
-        var view = event.data
-        var td = $(event.target).parents('td')
-        var tr = td.parent();
-        var row = tr.data('row');
-        if (_.indexOf(view.row_data,row) == -1 || tr.hasClass("info")){
-          return;
-        }
-        var index_ar = view.datatable.fnGetPosition(td.get(0));
-        var index = index_ar[2];
-        if (view.is_clickable(td)){
-          $(event.target).toggleClass("clickable alert-success")
-        }
-      });
+      //tds.on("hover",this,function(event){
+      //  var view = event.data
+      //  var td = $(event.target).parents('td')
+      //  var tr = td.parent();
+      //  var row = tr.data('row');
+      //  if (_.indexOf(view.row_data,row) == -1 || tr.hasClass("info")){
+      //    return;
+      //  }
+      //  var index_ar = view.datatable.fnGetPosition(td.get(0));
+      //  var index = index_ar[2];
+      //  if (view.is_clickable(td)){
+      //    $(event.target).toggleClass("clickable alert-success")
+      //  }
+      //});
 
-      tds.on("click", this,function(event){
-        var view = event.data;
-        var td = $(event.target).parents('td');
-        var tr = td.parent();
-        var row = tr.data('row');
-        if (_.indexOf(view.row_data,row) == -1 || tr.hasClass("info")){
-          return;
-        }
+      //tds.on("click", this,function(event){
+      //  var view = event.data;
+      //  var td = $(event.target).parents('td');
+      //  var tr = td.parent();
+      //  var row = tr.data('row');
+      //  if (_.indexOf(view.row_data,row) == -1 || tr.hasClass("info")){
+      //    return;
+      //  }
 
-        if (view.is_clickable(td)){
-          // return an array, where the last index is what
-          // we need
-          var index_ar = view.datatable.fnGetPosition(td.get(0));
-          var index = index_ar[2];
-          
-          var av = new TABLES.AnalyticsView({
-            dept : view.dept,
-            key : view.key,
-            row : row,
-            col_index : index,
-            app : view.app,
-            def : view.def,
-            mapper : view.mapper
-          });
-          av.render();
-        }
-      })
+      //  if (view.is_clickable(td)){
+      //    // return an array, where the last index is what
+      //    // we need
+      //    var index_ar = view.datatable.fnGetPosition(td.get(0));
+      //    var index = index_ar[2];
+      //    
+      //    var av = new TABLES.AnalyticsView({
+      //      dept : view.dept,
+      //      key : view.key,
+      //      row : row,
+      //      col_index : index,
+      //      app : view.app,
+      //      def : view.def,
+      //      mapper : view.mapper
+      //    });
+      //    av.render();
+      //  }
+      //})
 
       this.activate_dataTable();
 
@@ -395,9 +402,14 @@ $(function () {
        this.lang = this.state.get('lang');
        this.id = this.def['id'];
        this.data = this.org['mapped_objs'][this.id]['en'];
+       this.headers = _.last(this.def['headers'][this.lang])
+       this.h_lookup = this.def['header_lookup']['en'];
        // find the target div for this minigraph
        // based on the def which was provided
        this.$el = $('#'+this.id);
+     }
+     ,to_lang : function(header){
+       return this.headers[this.h_lookup[header]];
      }
      ,make_title : function(){
        this.$el.find('.title').append(this.def['name'][this.lang]);

@@ -23,13 +23,14 @@
         this.app = this.options["app"];
         this.def = this.options["def"];
 
-        this.drop_zone = this.app.$el.find('table_content');
-        this.mapper = this.def.attributes.mapper.en;
-        this.key = this.def.get("id");
+        this.drop_zone = this.app.$el.find('.table_content');
+        this.mapper = this.def.mapper.en;
+        this.key = this.def["id"];
         this.gt = this.app.get_text;
         this.state = this.app.state;
         this.dept = this.state.get("dept");
         this.lang = this.state.get("lang");
+        this.data = this.dept['mapped_data'][this.key][this.lang];
         var other_orgs = this.state.get("other_orgs");
         // set some useful state based on these inputs
         var ministry_depts = other_orgs.concat([this.dept]);
@@ -43,6 +44,7 @@
 
       ,render: function(){
         this.drop_zone.children().remove();
+        
 
         //this.app.$el.find('.table_title').html(this.def.title[this.lang]);
         // setup the dropdown menu of other departments
@@ -69,25 +71,25 @@
           this.setup_useful_this_links();
 
           // establish event listeners
-          this.listenTo( this.about_btn, "click", this.on_about_click);
-          this.listenTo( this.min_total_btn, "click",this.on_min_tot_click); 
-          this.listenTo( this.goc_total_btn, "click",this.on_goc_tot_click); 
-          this.listenTo( this.back_btn, 'click', this.teardown);
+          this.about_btn.on("click", this.on_about_click);
+          this.min_total_btn.on( "click",this.on_min_tot_click); 
+          this.goc_total_btn.on( "click",this.on_goc_tot_click); 
+          this.back_btn.on("click",this.tear_down);
 
           // create the table view
-          //this.table_view = new TABLES.views[this.key]({
-          //  key : this.key,
-          //  rows : this.data,
-          //  min_data : this.min_data,
-          //  goc_data : this.goc_data,
-          //  app : this.app,
-          //  def : this.def,
-          //  print_btn : this.print_btn,
-          //  details_btn : this.details_btn,
-          //  copy_btn : this.copy_btn,
-          //  mapper : this.mapper
-          //});
-          //this.table_payload.append(this.table_view.render().$el);
+          this.table_view = new this.def['table_view']({
+            key : this.key,
+            rows : this.data,
+            min_data : this.min_data,
+            goc_data : this.goc_data,
+            app : this.app,
+            def : this.def,
+            print_btn : this.print_btn,
+            details_btn : this.details_btn,
+            copy_btn : this.copy_btn,
+            mapper : this.mapper
+          });
+          this.table_payload.append(this.table_view.render().$el);
 
           // create the graph
           //if (_.has(GRAPHS.views,this.key)){
@@ -122,13 +124,9 @@
 
         return this;
       }
-      ,teardown : function(e){
-
-      }
-      ,on_tab_show : function(e){
-        var tabs_a = this.$el.find('.nav-tabs a');
-        this.app.state.set("current_tab",
-                            tabs_a.index(e.currentTarget));
+      ,tear_down : function(e){
+         $('.panels').show(400);
+         this.remove();
       }
       ,setup_useful_this_links : function() {
 
@@ -141,8 +139,6 @@
         this.back_btn = this.$el.find('button.back');
         this.about_btn = this.$el.find('button.about');
         this.details_btn = this.$el.find('button.details');
-        this.copy_btn = this.$el.find('button.copy');
-        this.print_btn = this.$el.find('button.print');
         this.fn_btn = this.$el.find('button.fn');
         this.min_total_btn = this.$el.find('button.min_tot');
         this.goc_total_btn = this.$el.find('button.goc_tot');
@@ -201,7 +197,7 @@
 
     /************APP VIEW***********/
     APP.appView = Backbone.View.extend({
-      el : $'#app')
+      el : $('#app')
       ,initialize: function(){
         _.bindAll(this);
         this.state = new APP.stateModel({})

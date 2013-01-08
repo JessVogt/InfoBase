@@ -4,12 +4,13 @@
   var TABLES = ns('TABLES');
   var GRAPHS = ns('GRAPHS');
   var MAPPERS = ns('MAPPERS');
-  var BTV = TABLES.BaseTableView;
-  var BGV = GRAPHS.BaseGraphView;
   var col = Backbone.Collection.extend({});
   TABLES.tables = new col;
 
   APP.dispatcher.on("app_ready", function(app){
+
+    var BTV = TABLES.BaseTableView;
+    var BGV = GRAPHS.BaseGraphView;
 
     TABLES.tables.on("add", function(table){
 
@@ -20,36 +21,56 @@
         org['mapped_objs'][id] = {};
       });
 
+      // setup the mappers
       MAPPERS.maps[table.get("id")] = table.get("mapper");
       table.set('mapper' , {
        'en' : new MAPPERS.mapper('en',table.attributes,id)
        ,'fr' : new MAPPERS.mapper('fr',table.attributes,id)
       }); 
 
-      app.state.on("change:other_orgs", function(state){
-        var lang = app.state.get("lang");
-        var org = app.state.get('dept');
+      // setup the table views
+      table.set('table_view', BTV.extend(table.get('table_view')));
 
-        mapper = table.get('mapper')[lang];
+      // setup lookups for the headers
+      table.set("header_lookup" , {
+        'en' : {},
+        'fr' : {}
+      });
 
-        if (_.isUndefined(org["mapped_data"][id][lang])) {
-          org["mapped_data"][id][lang] =  mapper.map(org['tables'][id]);
+      _.each(['en','fr'], function(lang){
+        _.each(_.last(table.get('headers')[lang]),function(header,index){
+           table.get('header_lookup')[lang][header] = index;
+        });
+      });
+
+      app.state.on("change:other_orgs change:lang", function(state){
+        if (state.get('other_orgs')){
+          var lang = app.state.get("lang");
+          var org = app.state.get('dept');
+
+          mapper = table.get('mapper')[lang];
+
+          if (_.isUndefined(org["mapped_data"][id][lang])) {
+            org["mapped_data"][id][lang] =  mapper.map(org['tables'][id]);
+          }
+
+          var headers = _.last(table.get('headers')[lang]);
+
+          if (_.isUndefined(org["mapped_objs"][id][lang])) {
+            org["mapped_objs"][id]['en'] = _.map(org["mapped_data"][id]['en'],
+              function(row){
+                return _.object(headers,row);
+              }
+            );
+            org["mapped_objs"][id]['fr'] = _.map(org["mapped_data"][id]['fr'],
+              function(row){
+                return _.object(headers,row);
+              }
+            );
+          }
+
+          APP.dispatcher.trigger("mapped",table);
         }
-
-       var headers = _.last(table.get('headers')[lang]);
-        if (_.isUndefined(org["mapped_objs"][id][lang])) {
-          org["mapped_objs"][id]['en'] = _.map(org["mapped_data"][id]['en'],
-            function(row){
-              return _.object(headers,row);
-            }
-          );
-          org["mapped_objs"][id]['fr'] = _.map(org["mapped_data"][id]['fr'],
-            function(row){
-              return _.object(headers,row);
-            }
-          );
-        }
-        APP.dispatcher.trigger("mapped",table);
       });
     });
 
@@ -60,18 +81,18 @@
         });
         mtv.render();
 
-
         mtv.$el.find('a.details').on("click", function(event){
           // move the mini views out of the way and replace with larger 
           // table
-          $('.panels').hide();
 
           var dv = new APP.DetailsView({
             app : app,
-            def: table
+            def: table.attributes
           });
 
           dv.render();
+
+          $('.panels').hide(500);
         });
     });
 
@@ -208,8 +229,8 @@
               _.pluck(this.data,exp),
               function(x,y){return x+y})/1000;
           this.rows = [
-            [$('<strong>').html(auth), ttf(auth_total,this.lang) + ' (k)'],
-            [$('<strong>').html(exp), ttf(exp_total,this.lang) + ' (k)']
+            [$('<strong>').html(this.to_lang(auth)), ttf(auth_total,this.lang) + ' (k)'],
+            [$('<strong>').html(this.to_lang(exp)), ttf(exp_total,this.lang) + ' (k)']
           ];
         }
         ,render_data : function(){
@@ -291,6 +312,10 @@
       }
       ,mini_view : {
         prep_data : function(){
+          var expenditures = _.pluck(this.data,"Year to date used at quarter-end");
+          this.rows = [
+          [ ]
+          ]
         }
         ,render_data : function(){
           this.content = ''
