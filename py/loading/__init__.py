@@ -56,7 +56,7 @@ def votes(lines):
 def sos(lines):
   import pdb
   pdb.set_trace()
-  return 
+  return
 
 def stat(lines):
   def _(line):
