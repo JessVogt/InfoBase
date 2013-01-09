@@ -193,7 +193,7 @@ def html_les(dev=True):
                      lookups['depts'].iteritems()
                      if val.get('tables')}
   double_check(lookups)
-  add_dept_data(lookups['depts'])
+  ##add_dept_data(lookups['depts'])
 
   lookups['les_tables'] = tables
 

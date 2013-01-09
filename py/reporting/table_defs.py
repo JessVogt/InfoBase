@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 f = {
-  "month_en" : "October",
-  "month_fr" : "octobre",
-  "p" : 7
+  "month_en" : "November",
+  "month_fr" : "novembre",
+  "p" : 8
 }
 tables =  { 
   "Table1" : { "col_defs" : [ "int",
