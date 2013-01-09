@@ -99,7 +99,7 @@
     TABLES.tables.add([{
       id: 'table1',
       col_defs : [ "int",
-                    "wide-str",
+                    "str",
                     "big-int",
                     "big-int",
                     "big-int",
@@ -202,17 +202,19 @@
       ,mapper : {
         to : function(row){
           if (row[1] && _.isNumber(row[1]) ){
-            row.splice(2,0,votes[this.def['coverage']][row[0]][row[1]][this.lang]);
+            row.splice(2,1,votes[this.def['coverage']][row[0]][row[1]][this.lang]);
           }
           else {
-            row.splice(2,0,'');
+            row.splice(2,1,'');
           }
-          return row; 
+          // remove acronym
+          return _.tail(row); 
         }
         ,make_filter : function(source_row){}
       }
       ,table_view : { 
-        sum_cols : []
+        hide_col_ids : [2,3,4,5,6,7,8,9,10,11,12]
+        ,sum_cols : []
         ,min_func : TABLES.add_ministry_sum
         ,init_row_data : function(){
         }

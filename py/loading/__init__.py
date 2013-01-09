@@ -53,6 +53,11 @@ def votes(lines):
   map(_,lines)
   return rtn
 
+def sos(lines):
+  import pdb
+  pdb.set_trace()
+  return 
+
 def stat(lines):
   def _(line):
     return line[0],{'en' : line[1],'fr':line[2]}
@@ -80,6 +85,7 @@ def load_od():
   lookups = {
     'depts': depts(lookup_sheets['DEPTCODE_MINCODE']),
     'votes': votes(lookup_sheets['VOTES']),
+    'sos' : sos(lookup_sheets['SO'])
   }
   return lookups,data_sheets
 

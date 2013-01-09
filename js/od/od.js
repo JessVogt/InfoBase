@@ -130,11 +130,8 @@
       }
       ,setup_useful_this_links : function() {
 
-        this.tabs = this.$el.find('.tab-content');
-        this.table_payload = this.tabs.find('.table_payload');
-        this.graph_payload = this.tabs.find('.graph_payload');
-        this.table_area = this.tabs.find('.table_content');
-        this.graph_area = this.tabs.find('.graph_content');
+        this.table_payload = this.$el.find('.table_payload');
+        this.graph_payload = this.$el.find('.graph_payload');
 
         this.back_btn = this.$el.find('button.back');
         this.about_btn = this.$el.find('button.about');
