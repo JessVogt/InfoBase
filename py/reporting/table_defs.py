@@ -184,13 +184,13 @@ tables =  {
                 "Grants & Contrib.",
                 "Other Votes",
                 "Statutory",
-                "Total 2010-11",
+                "Total 2011-12",
                 "Operating",
                 "Capital",
                 "Grants & Contrib.",
                 "Other Votes",
                 "Statutory",
-                "Total 2009-10"
+                "Total 2010-11"
               ]
             ],
           "fr" : [ [ { "colspan" : 1,
