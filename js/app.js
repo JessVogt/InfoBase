@@ -71,7 +71,14 @@
 
         this.lookup = depts;
         this.state.on('change:lang', this.render);// re-render on change in language
+        this.state.on('change:dept', this.clear);// re-render on change in language
         this.$el.typeahead({updater: this.updater});
+      }
+      ,clear : function(){
+        var that = this;
+        window.setTimeout(function(){
+          that.$el.val('');
+        },1);
       }
       ,render:function () {
          var lang = this.state.get('lang');
