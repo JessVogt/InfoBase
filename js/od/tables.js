@@ -7,6 +7,21 @@
   var col = Backbone.Collection.extend({});
   TABLES.tables = new col;
 
+  APP.dispatcher.on("mini_view_ready", function(){
+    $('.span3')
+    .height(_.max($('.span3').map(function(x,y){
+      return $(y).height()
+    })));
+    $('.span3').css({
+      position : 'relative'
+    });
+    $('.span3 div.details_button').css({
+      'bottom' : 0, 
+      'position' : 'absolute', 
+      'right' : 0
+    });
+  });
+
   APP.dispatcher.on("app_ready", function(app){
 
     var BTV = TABLES.BaseTableView;
