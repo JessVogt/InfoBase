@@ -401,9 +401,10 @@ $(function () {
        this.org = this.state.get("dept");
        this.lang = this.state.get('lang');
        this.id = this.def['id'];
-       this.data = this.org['mapped_objs'][this.id]['en'];
+       this.data = this.org['mapped_objs'][this.id][this.lang];
        this.headers = _.last(this.def['headers'][this.lang])
        this.h_lookup = this.def['header_lookup']['en'];
+       this.gt = this.app.get_text;
        // find the target div for this minigraph
        // based on the def which was provided
        this.$el = $('#'+this.id);
@@ -424,6 +425,11 @@ $(function () {
        this.prep_data();
        this.render_data();
        this.$el.find('.mini_payload').append(this.content);
+
+       
+       window.setInterval(function(){
+         APP.dispatcher.trigger("mini_view_ready")
+       },1);
 
        return this;
      }

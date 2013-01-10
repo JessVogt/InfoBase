@@ -51,6 +51,7 @@
         // sort the departments by name
 
         // add the footnotes
+        footnotes = [];
         //var footnotes = [];
         //if (_.has(window.footnotes,this.key)){
         //  footnotes = footnotes.concat(window.footnotes[this.key]);  
@@ -64,8 +65,8 @@
             "gt" : this.app.get_text,
             "key" : this.key,
             "min_tot" : this.app.state.get("min_tot"),
-            "goc_tot" : this.app.state.get("goc_tot")
-            //"footnotes" : footnotes.length !== 0
+            "goc_tot" : this.app.state.get("goc_tot"),
+            "footnotes" : footnotes.length !== 0
           }));
 
           this.setup_useful_this_links();

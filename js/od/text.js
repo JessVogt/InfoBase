@@ -66,8 +66,8 @@
         ,"fr" : "Les pourcentages inférieurs à 2% ne seront pas affichés"
       }
       ,"details" : {
-        "en" : "Show more details"
-        ,"fr": "Voir plus de détails"
+        "en" : "Details"
+        ,"fr": "Détails"
       }
       ,"back" : {
         "en" : "Back"
@@ -188,6 +188,10 @@
       ,"other" : {
         "en": "Other"
         ,"fr": "Autre"
+      }
+      ,"remainder" : {
+        "en": "Remainder"
+        ,"fr": "Rest"
       }
       ,"so" : {
         "en": "Standard Objects"

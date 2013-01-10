@@ -272,7 +272,7 @@ def fake_data(lookups):
        [key,10,3,'2011-12'] + rand(10000,10000000,7-3).tolist(),
       ],
       'table5' : [
-       [key,1] +  rand(10000,10000000,3).tolist(),
+       [key,1 ] +  rand(10000,10000000,3).tolist(),
        [key,2 ] + rand(10000,10000000,3).tolist(),
        [key,3 ] + rand(10000,10000000,3).tolist(),
        [key,4 ] + rand(10000,10000000,3).tolist(),
@@ -301,7 +301,7 @@ def fake_data(lookups):
       dept['tables']['table1'].append([key,vote,v['type']] + rand(10000,10000000,19-2).tolist())
 
 def od(dev=True):
-  lookups,data = load_les()
+  lookups,data = load_od()
   add_dept_data(lookups['depts'])
 
   fake_data(lookups)

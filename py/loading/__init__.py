@@ -54,9 +54,8 @@ def votes(lines):
   return rtn
 
 def sos(lines):
-  import pdb
-  pdb.set_trace()
-  return
+  return {l[0]: {'en' : l[1],'fr' : l[2]}
+          for l in lines}
 
 def stat(lines):
   def _(line):

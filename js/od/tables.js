@@ -50,19 +50,16 @@
 
           mapper = table.get('mapper')[lang];
 
+          // map the data for the current lang unless it's already
+          // been mapped
           if (_.isUndefined(org["mapped_data"][id][lang])) {
             org["mapped_data"][id][lang] =  mapper.map(org['tables'][id]);
           }
 
-          var headers = _.last(table.get('headers')[lang]);
+          var headers = _.last(table.get('headers')['en']);
 
           if (_.isUndefined(org["mapped_objs"][id][lang])) {
-            org["mapped_objs"][id]['en'] = _.map(org["mapped_data"][id]['en'],
-              function(row){
-                return _.object(headers,row);
-              }
-            );
-            org["mapped_objs"][id]['fr'] = _.map(org["mapped_data"][id]['fr'],
+            org["mapped_objs"][id][lang] = _.map(org["mapped_data"][id][lang],
               function(row){
                 return _.object(headers,row);
               }
@@ -231,8 +228,8 @@
               _.pluck(this.data,exp),
               function(x,y){return x+y})/1000;
           this.rows = [
-            [$('<strong>').html(this.to_lang(auth)), ttf(auth_total,this.lang) + ' (k)'],
-            [$('<strong>').html(this.to_lang(exp)), ttf(exp_total,this.lang) + ' (k)']
+            [$('<strong>').html(this.to_lang(auth)+ ' ($000)'), ttf(auth_total,this.lang) ],
+            [$('<strong>').html(this.to_lang(exp)+ ' ($000)'), ttf(exp_total,this.lang) ]
           ];
         }
         ,render_data : function(){
@@ -270,7 +267,7 @@
         "Expended during the quarter ended {month}-{year}",
         "Year to date used at quarter-end",
         "Expended during the quarter ended {month}-{last_year}",
-        "Year to date used at quarter-end",
+        "{last_year} Year to date used at quarter-end",
         ]],
         "fr": [[
         { "colspan" : 1,
@@ -302,7 +299,8 @@
       ,key : [0]
       ,mapper : {
         to : function(row){
-         return row
+          row.splice(1,1,sos[row[1]][this.lang]);
+          return _.tail(row)
         }
         ,make_filter : function(source_row){}
       }
@@ -314,13 +312,33 @@
       }
       ,mini_view : {
         prep_data : function(){
-          var expenditures = _.pluck(this.data,"Year to date used at quarter-end");
+          var ttf = APP.types_to_format['big-int'];
+          var col = "Expended during the quarter ended {month}-{year}";
+          data = _.sortBy(data, function(d){
+            return d[col]
+          });    
+          var first = data.shift();
+          var second = data.shift();
+          var third = data.shift();
+          var rest = _.reduce(data, function(x,y){
+             return x + y[col];
+          },0);
           this.rows = [
-          [ ]
-          ]
+            [first["Standard Object"],first[col]],
+            [second["Standard Object"],second[col]],
+            [third["Standard Object"],third[col]],
+            [this.gt("remainder"),rest],
+          ];
+          this.rows = _.map(this.rows, function(row){
+            debugger
+            return [$('<strong>').html(row[0]),
+                    ttf(row[1]/1000)];
+          });
         }
         ,render_data : function(){
-          this.content = ''
+          this.content = TABLES.array_to_grid(
+              [2,1],
+              this.rows);
         }
       },
       graph_view : {
@@ -333,8 +351,6 @@
     {
       id: "table3",
       "col_defs" : ["wide-str",
-        "big-int",
-        "big-int",
         "big-int",
         "big-int",
         "big-int",
@@ -351,7 +367,7 @@
           "header" : "{last_year}"
         }],
         [
-          "Program",
+        "Program",
         "Expended during the quarter ended {month}-{year}",
         "Year to date used at quarter-end",
         "Expended during the quarter ended {month}-{last_year}",
@@ -388,7 +404,12 @@
       ,"key" : [0] 
       ,mapper : {
         to : function(row){
-          return row;
+          if (this.lang == 'en'){
+            row.splice(2,1);
+          } else {
+            row.splice(1,1);
+          }
+          return _.tail(row);
         }
         ,make_filter : function(source_row){}
       }
@@ -400,6 +421,10 @@
       }
       ,mini_view : {
         prep_data : function(){
+          var data = _.sortBy(this.data,
+              function(d){
+                return d["Year to date used at quarter-end"]
+          });
         }
         ,render_data : function(){
           this.content = ''
@@ -414,7 +439,7 @@
     },
     {
       id: "table4",
-      col1_defs : [ 'int',
+      col_defs : [ 'int',
         "wide-str",
         "date",
         "big-int",
@@ -454,7 +479,14 @@
       ,"key" : [0,1,2]
       ,mapper : {
         to : function(row){
-          return row;
+          if (row[1] && _.isNumber(row[1]) ){
+            row.splice(2,1,votes[this.def['coverage']][row[2]][this.lang]);
+          }
+          else {
+            row.splice(2,1,'');
+          }
+          // remove acronym
+          return _.tail(row);
         }
         ,make_filter : function(source_row){}
       }
@@ -481,7 +513,6 @@
     {
       id: "table5",
       "col_defs" : ["wide-str",
-        "date",
         "big-int",
         "big-int",
         "big-int" ],
@@ -511,7 +542,8 @@
       ,"key" : [0]
       ,mapper : {
         to : function(row){
-          return row;
+          row.splice(1,1,sos[row[1]][this.lang]);
+          return _.tail(row)
         }
         ,make_filter : function(source_row){}
       }
@@ -538,7 +570,6 @@
     {
       id: "table6",
       "col_defs" : ["wide-str",
-      "date",
       "big-int",
       "big-int",
       "big-int" ],
@@ -568,7 +599,12 @@
       ,"key" : [0]
       ,mapper : {
         to : function(row){
-          return row;
+          if (this.lang == 'en'){
+            row.splice(2,1);
+          } else {
+            row.splice(1,1);
+          }
+          return _.tail(row);
         }
         ,make_filter : function(source_row){}
       }
