@@ -3,7 +3,6 @@ $(function () {
   var APP = ns('APP');
   var GROUP = ns('GROUP');
 
-  
   var headerView = Backbone.View.extend({
     template: _.template($('#header_t').html()),
     tagName: "tr",
@@ -11,6 +10,7 @@ $(function () {
       _.bindAll(this);
       this.types = this.options['types'];
       this.headers = this.options['header']; //read argument [object w/ only one key,val pair] to get headers
+      this.m= TABLES.m;
       this.render(); //self-rendering
     },
     render: function () {
@@ -26,6 +26,7 @@ $(function () {
           class_: this.types[_.indexOf(this.headers,h)]
         };
         else args = _.extend({class_: ''},h);
+        args['header'] = this.m(args['header']);
         header = this.template(args);
         $(this.el).append(header); //append header
       },

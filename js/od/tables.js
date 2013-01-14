@@ -4,25 +4,58 @@
   var TABLES = ns('TABLES');
   var GRAPHS = ns('GRAPHS');
   var MAPPERS = ns('MAPPERS');
-  var col = Backbone.Collection.extend({});
+  var col = Backbone.Collection.extend({
+    rendered : function(){
+      return $.when.apply(this,
+        this.map(function(t){
+          return t.get('mini_view')['rendered'];
+        }));
+    }
+  
+  });
   TABLES.tables = new col;
 
-  APP.dispatcher.on("mini_view_ready", function(){
-    $('.span3')
-    .height(_.max($('.span3').map(function(x,y){
-      return $(y).height()
-    })));
-    $('.span3').css({
-      position : 'relative'
-    });
-    $('.span3 div.details_button').css({
-      'bottom' : 0, 
-      'position' : 'absolute', 
-      'right' : 0
-    });
-  });
+  var template_args = {
+    'year' : '2012-13',
+    'last_year' : '2011-12',
+    'last_year_2' : '2010-11',
+    'last_year_3' : '2009-10',
+    'month' : 9
+  }
+
+  var bold = function(s){
+    return $('<strong>').html(s)
+  };
 
   APP.dispatcher.on("app_ready", function(app){
+    app.state.on("change:dept", function(){
+      $.when(TABLES.tables.rendered()).done(
+        function(){
+          setTimeout(function(){
+            $('.mini_row').each(function(i,row){
+              $('.span3',row)
+              .height(_.max($('.span3',row).map(function(x,y){
+                return $(y).height();
+              })));
+            });
+            $('.span3')
+            $('.span3').css({
+              position : 'relative'
+            });
+            $('.span3 div.details_button').css({
+              'bottom' : 0, 
+              'position' : 'absolute', 
+              'right' : 0
+            });
+          });
+        })
+    });
+
+    TABLES.m = function(s){
+      return Mustache.render(s,template_args);
+    }
+
+    var m = TABLES.m;
 
     var BTV = TABLES.BaseTableView;
     var BGV = GRAPHS.BaseGraphView;
