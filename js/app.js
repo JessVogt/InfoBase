@@ -25,7 +25,23 @@
     }
 
     /************STATE MODEL********/
-    APP.stateModel = Backbone.Model.extend({});
+    APP.stateModel = Backbone.Model.extend({
+      gsp : function(key){
+        var promise = this.get(key);
+        if (!promise){
+          promise = $.Deferred();
+          this.set(key, promise);
+        }
+        return promise;
+      }
+      ,rp : function(key,options){
+        this.set(key, $.Deferred(),options);
+      }
+      ,sp: function(key,val){
+        this.gsp(key).resolve(val);
+        this.set("_"+key,val);
+      }
+    });
 
     APP.modalView = Backbone.View.extend({
       initialize: function(){
