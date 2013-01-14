@@ -242,16 +242,16 @@
         this.state.off('change:lang', this.render);// re-render on change in language
         this.state.on('change:lang', this.render);// re-render on change in language
       }
-    ,render:function () {			
-      this.$el.off();
-      this.$el.html(this.app.get_text("lang"));
-      this.$el.on("click",this.set_lang);
-      return this;
-    }
-    ,set_lang : function () {
-      var new_lang = this.state.get("lang") == "en" ? "fr" : "en";
-      this.state.set({lang: new_lang});
-    }
+      ,render:function () {			
+        this.$el.off();
+        this.$el.html(this.app.get_text("lang"));
+        this.$el.on("click",this.set_lang);
+        return this;
+      }
+      ,set_lang : function () {
+        var new_lang = this.state.get("lang") == "en" ? "fr" : "en";
+        this.state.set({lang: new_lang});
+      }
     }); 
 
     APP.otherDeptsDropDown = Backbone.View.extend({

@@ -391,48 +391,48 @@ $(function () {
   TABLES.miniTableVew = Backbone.View.extend({
 
     template : _.template($('#mini_t').html())
+    ,initialize : function(){
+      this.rendered = $.Deferred();
+      this.def = this.options['def'];
+      this.app = this.options['app'];
+      _.extend(this,this.def['mini_view']);
+      _.bindAll(this);
+      this.state = this.app.state;
+      this.org = this.state.get("dept");
+      this.lang = this.state.get('lang');
+      this.id = this.def['id'];
+      this.data = this.org['mapped_objs'][this.id][this.lang];
+      this.headers = _.last(this.def['headers'][this.lang])
+      this.h_lookup = this.def['header_lookup']['en'];
+      this.gt = this.app.get_text;
+      // find the target div for this minigraph
+      // based on the def which was provided
+      this.$el = $('#'+this.id);
+    }
+    ,to_lang : function(header){
+      return this.headers[this.h_lookup[header]];
+    }
+    ,make_title : function(){
+      this.$el.find('.title').append(this.def['name'][this.lang]);
+    }
+    ,render : function(){
+      this.$el.append(
+       $(this.template({
+         gt : this.app.get_text       
+       }))
+      );
+      this.make_title();
+      this.prep_data();
+      this.render_data();
+      this.$el.find('.mini_payload').append(this.content);
 
-     ,initialize : function(){
-       this.def = this.options['def'];
-       this.app = this.options['app'];
-       _.extend(this,this.def['mini_view']);
-       _.bindAll(this);
-       this.state = this.app.state;
-       this.org = this.state.get("dept");
-       this.lang = this.state.get('lang');
-       this.id = this.def['id'];
-       this.data = this.org['mapped_objs'][this.id][this.lang];
-       this.headers = _.last(this.def['headers'][this.lang])
-       this.h_lookup = this.def['header_lookup']['en'];
-       this.gt = this.app.get_text;
-       // find the target div for this minigraph
-       // based on the def which was provided
-       this.$el = $('#'+this.id);
-     }
-     ,to_lang : function(header){
-       return this.headers[this.h_lookup[header]];
-     }
-     ,make_title : function(){
-       this.$el.find('.title').append(this.def['name'][this.lang]);
-     }
-     ,render : function(){
-       this.$el.append(
-        $(this.template({
-          gt : this.app.get_text       
-        }))
-       );
-       this.make_title();
-       this.prep_data();
-       this.render_data();
-       this.$el.find('.mini_payload').append(this.content);
-
-       
-       window.setInterval(function(){
-         APP.dispatcher.trigger("mini_view_ready")
-       },1);
-
-       return this;
-     }
+      
+      //window.setInterval(function(){
+      //  APP.dispatcher.trigger("mini_view_ready")
+      //},1);
+      this.rendered.resolve();
+      return this;
+    }
   });
 
   TABLES.extract_headers = function(headers,index){
