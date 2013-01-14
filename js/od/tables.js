@@ -91,55 +91,72 @@
         });
       });
 
-      app.state.on("change:other_orgs change:lang", function(state){
-        if (state.get('other_orgs')){
-          var lang = app.state.get("lang");
-          var org = app.state.get('dept');
-
-          mapper = table.get('mapper')[lang];
-
-          // map the data for the current lang unless it's already
-          // been mapped
-          if (_.isUndefined(org["mapped_data"][id][lang])) {
-            org["mapped_data"][id][lang] =  mapper.map(org['tables'][id]);
-          }
-
-          var headers = _.last(table.get('headers')['en']);
-
-          if (_.isUndefined(org["mapped_objs"][id][lang])) {
-            org["mapped_objs"][id][lang] = _.map(org["mapped_data"][id][lang],
-              function(row){
-                return _.object(headers,row);
-              }
-            );
-          }
-
-          APP.dispatcher.trigger("mapped",table);
+      app.state.on("change:dept", function(state){
+        if (state.get('current_table')){
+          return
         }
+        var lang = app.state.get("lang");
+        var org = app.state.get('dept');
+
+        mapper = table.get('mapper')[lang];
+
+        // map the data for the current lang unless it's already
+        // been mapped
+        if (_.isUndefined(org["mapped_data"][id][lang])) {
+          org["mapped_data"][id][lang] =  mapper.map(org['tables'][id]);
+        }
+
+        var headers = _.last(table.get('headers')['en']);
+
+        if (_.isUndefined(org["mapped_objs"][id][lang])) {
+          org["mapped_objs"][id][lang] = _.map(org["mapped_data"][id][lang],
+            function(row){
+              return _.object(headers,row);
+            }
+          );
+        }
+
+        APP.dispatcher.trigger("mapped",table);
+        
       });
     });
 
     APP.dispatcher.on("mapped", function(table){
-        var mtv = new TABLES.miniTableVew({
+      if (app.state.get('table')){
+        var current_table = app.state.get('table').get('id');
+      }else {
+        var current_table = undefined;
+      }
+      var id = table.get('id');
+
+      var mtv = new TABLES.miniTableVew({
+        app : app,
+        def: table.attributes
+      });
+      mtv.render();
+
+      mtv.$el.find('a.details').on("click", function(event){
+        // move the mini views out of the way and replace with larger 
+        // table
+
+        app.state.set({'table':table});
+
+        var dv = new APP.DetailsView({
           app : app,
           def: table.attributes
         });
-        mtv.render();
 
-        mtv.$el.find('a.details').on("click", function(event){
-          // move the mini views out of the way and replace with larger 
-          // table
+        dv.render();
 
-          var dv = new APP.DetailsView({
-            app : app,
-            def: table.attributes
-          });
-
-          dv.render();
-
-          $('.panels').hide(500);
-        });
+        $('.panels').hide(500);
+      });
+      
+      if (id === current_table) {
+        mtv.$el.find('a.details').trigger("click");
+      }
     });
+
+
 
     TABLES.tables.add([{
       id: 'table1',
@@ -170,13 +187,13 @@
         "header" : ""
         },
         { "colspan" : 12,
-        "header" : "{year} Authorities"
+        "header" : "{{year}} Authorities"
         },
         { "colspan" : 2,
-        "header" : "{year} Expenditures"
+        "header" : "{{year}} Expenditures"
         },
         { "colspan" : 3,
-        "header" : "{last_year}"
+        "header" : "{{last_year}}"
         }
       ],[
         "Vote/Statutory",
@@ -192,25 +209,25 @@
         "Transfers from TB Vote 25 OBCF  ",
         "Transfers from TB Vote 30 Paylist Requirements ",
         "Transfers from TB Vote 33 CBCF ",
-        "Total available for use for the year ending March 31,{year}",
-        "Used during the quarter ended {month}-{year}",
+        "Total available for use for the year ending March 31,{{year}}",
+        "Used during the quarter ended {{month}}-{{year}}",
         "Year to date used at quarter-end",
-        "Total available for use for the year ending March 31,{last_year}",
-        "Used during the quarter ended {month}-{last_year} ",
-        "Year to date used at quarter-end",
+        "Total available for use for the year ending March 31,{{last_year}}",
+        "Used during the quarter ended {{month}}-{{last_year}} ",
+        "Year to date used at quarter-end"
       ]],
         "fr": [ [
         { "colspan" : 2,
         "header" : ""
         },
         { "colspan" : 12,
-        "header" : "{year} Autoritiés"
+        "header" : "{{year}} Autoritiés"
         },
         { "colspan" : 2,
-        "header" : "{year} Dépenses"
+        "header" : "{{year}} Dépenses"
         },
         { "colspan" : 3,
-        "header" : "{last_year}"
+        "header" : "{{last_year}}"
         }
       ],[
         "Crédit/Statutaire",
@@ -226,12 +243,12 @@
         "Transferts du crédit 25 du CT (Report du budget de fonctionnement)",
         "Transferts du crédit 30 du CT (Besoins en matière de rémunération)",
         "Transferts du crédit 30 du CT (Report du budget d'immobilisations)",
-        "Crédits totaux disponibles pour l'exercice se terminant le 31 mars {year}",
-        "Crédits utilisés pour le trimestre terminé le {month}-{year}",
+        "Crédits totaux disponibles pour l'exercice se terminant le 31 mars {{year}}",
+        "Crédits utilisés pour le trimestre terminé le {{month}}-{{year}}",
         "Cumul des crédits utilisés à la fin du trimestre",
-        "Crédits totaux disponibles pour l'exercice se terminant le 31 mars {last_year}",
-        "Crédits utilisés pour le trimestre terminé le {month}-{last_year}",
-        "Cumul des crédits utilisés à la fin du trimestre",
+        "Crédits totaux disponibles pour l'exercice se terminant le 31 mars {{last_year}}",
+        "Crédits utilisés pour le trimestre terminé le {{month}}-{{last_year}}",
+        "Cumul des crédits utilisés à la fin du trimestre"
         ]]},
       link : {
         "en" : "",
@@ -267,7 +284,7 @@
       ,mini_view : {
         prep_data : function(){
           var ttf = APP.types_to_format['big-int'];
-          var auth = "Total available for use for the year ending March 31,{year}";
+          var auth = "Total available for use for the year ending March 31,{{year}}";
           var exp = "Year to date used at quarter-end";
           var auth_total = _.reduce(
               _.pluck(this.data,auth),
@@ -305,34 +322,34 @@
           "header" : ""
         },
         { "colspan" : 2,
-          "header" : "{year}"
+          "header" : "{{year}}"
         },
         { "colspan" : 2,
-          "header" : "{last_year}"
+          "header" : "{{last_year}}"
         }],
         [
           "Standard Object",
-        "Expended during the quarter ended {month}-{year}",
+        "Expended during the quarter ended {{month}}-{{year}}",
         "Year to date used at quarter-end",
-        "Expended during the quarter ended {month}-{last_year}",
-        "{last_year} Year to date used at quarter-end",
+        "Expended during the quarter ended {{month}}-{{last_year}}",
+        "{{last_year}} Year to date used at quarter-end"
         ]],
         "fr": [[
         { "colspan" : 1,
           "header" : ""
         },
         { "colspan" : 2,
-          "header" : "{year}"
+          "header" : "{{year}}"
         },
         { "colspan" : 2,
-          "header" : "{last_year}"
+          "header" : "{{last_year}}"
         }],
         [
           "Article Courant",
-        "Dépensées durant le trimestre terminé le {month}-{year}",
+        "Dépensées durant le trimestre terminé le {{month}}-{{year}}",
         "Cumul des crédits utilisés à la fin du trimestre",
-        "Dépensées durant le trimestre terminé le {month}-{last_year}",
-        "Cumul des crédits utilisés à la fin du trimestre",
+        "Dépensées durant le trimestre terminé le {{month}}-{{last_year}}",
+        "Cumul des crédits utilisés à la fin du trimestre"
         ]]},
       link : {
         "en" : "",
@@ -361,9 +378,9 @@
       ,mini_view : {
         prep_data : function(){
           var ttf = APP.types_to_format['big-int'];
-          var col = "Expended during the quarter ended {month}-{year}";
-          data = _.sortBy(data, function(d){
-            return d[col]
+          var col = "Expended during the quarter ended {{month}}-{{year}}";
+          var data = _.sortBy(this.data, function(d){
+            return -d[col]
           });    
           var first = data.shift();
           var second = data.shift();
@@ -372,15 +389,20 @@
              return x + y[col];
           },0);
           this.rows = [
+            ['Top Standard Objects','($000)'],
             [first["Standard Object"],first[col]],
             [second["Standard Object"],second[col]],
             [third["Standard Object"],third[col]],
-            [this.gt("remainder"),rest],
+            [this.gt("remainder"),rest]
           ];
           this.rows = _.map(this.rows, function(row){
-            debugger
-            return [$('<strong>').html(row[0]),
-                    ttf(row[1]/1000)];
+            if (_.isNumber(row[1])){
+              return [$('<strong>').html(row[0]),
+                      ttf(row[1]/1000)];
+            } else {
+              return [$('<strong>').html(row[0]),
+                      row[1]]
+            }
           });
         }
         ,render_data : function(){
@@ -409,34 +431,34 @@
           "header" : ""
         },
         { "colspan" : 2,
-          "header" : "{year}"
+          "header" : "{{year}}"
         },
         { "colspan" : 2,
-          "header" : "{last_year}"
+          "header" : "{{last_year}}"
         }],
         [
         "Program",
-        "Expended during the quarter ended {month}-{year}",
+        "Expended during the quarter ended {{month}}-{{year}}",
         "Year to date used at quarter-end",
-        "Expended during the quarter ended {month}-{last_year}",
-        "Year to date used at quarter-end",
+        "Expended during the quarter ended {{month}}-{{last_year}}",
+        "Year to date used at quarter-end"
         ]],
         "fr": [[
         { "colspan" : 1,
           "header" : ""
         },
         { "colspan" : 2,
-          "header" : "{year}"
+          "header" : "{{year}}"
         },
         { "colspan" : 2,
-          "header" : "{last_year}"
+          "header" : "{{last_year}}"
         }],
         [
           "Program",
-        "Dépensées durant le trimestre terminé le {month}-{year}",
+        "Dépensées durant le trimestre terminé le {{month}}-{{year}}",
         "Cumul des crédits utilisés à la fin du trimestre",
-        "Dépensées durant le trimestre terminé le {month}-{last_year}",
-        "Cumul des crédits utilisés à la fin du trimestre",
+        "Dépensées durant le trimestre terminé le {{month}}-{{last_year}}",
+        "Cumul des crédits utilisés à la fin du trimestre"
         ]]
       },
       "link" : {
@@ -469,13 +491,36 @@
       }
       ,mini_view : {
         prep_data : function(){
-          var data = _.sortBy(this.data,
-              function(d){
-                return d["Year to date used at quarter-end"]
+          var ttf = APP.types_to_format['big-int'];
+          var col = "Expended during the quarter ended {{month}}-{{year}}";
+          var data = _.sortBy(this.data, function(d){
+            return -d[col]
+          });    
+          var first = data.shift();
+          var second = data.shift();
+          var rest = _.reduce(data, function(x,y){
+             return x + y[col];
+          },0);
+          this.rows = [
+            ['Top Programs','($000)'],
+            [first["Program"],first[col]],
+            [second["Program"],second[col]],
+            [this.gt("remainder"),rest]
+          ];
+          this.rows = _.map(this.rows, function(row){
+            if (_.isNumber(row[1])){
+              return [$('<strong>').html(row[0]),
+                      ttf(row[1]/1000)];
+            } else {
+              return [$('<strong>').html(row[0]),
+                      row[1]]
+            }
           });
         }
         ,render_data : function(){
-          this.content = ''
+          this.content = TABLES.array_to_grid(
+              [2,1],
+              this.rows);
         }
       },
       graph_view : {
@@ -497,13 +542,13 @@
       ],
       "coverage" : "historical",
       "headers" : {"en" :[[
-        "Vote {last_year}/ Statutory",
+        "Vote {{last_year}}/ Statutory",
         "Description",
         "Year",
         "Total budgetary authority available for use",
         "Budgetary authority used in the current year",
         "Authority lapsed (or over-expended)",
-        "Authority available for use in subsequent years",
+        "Authority available for use in subsequent years"
         ]],
         "fr": [[
           "Crédit (2011-12) / Légis.",
@@ -512,14 +557,14 @@
         "Autorisation budgétaire totale utilisable",
         "Autorisation budgétaire utilisée dans l'exercice en cours",
         "Autorisation expirée (ou dépassée)",
-        "Autorisation prête pour usage dans les exercices financiers suivants",
+        "Autorisation prête pour usage dans les exercices financiers suivants"
         ]]},
       "link" : {
         "en" : "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-eng.asp",
         "fr" : "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-fra.asp"
       },
-      "name" : { "en" : "Authorities and Actual Expenditures",
-        "fr" : "Autorisations et dépenses réelles"
+      "name" : { "en" : "Authorities and Expenditures",
+        "fr" : "Autorisations et dépenses"
       },
       "title" : { "en" : "Authorities and Actual Expenditures ($000)",
         "fr" : "Autorisations et dépenses réelles ($000)"
@@ -546,9 +591,35 @@
       }
       ,mini_view : {
         prep_data : function(){
+          var ttf = APP.types_to_format['big-int'];
+          var f_years = _.groupBy(this.data, function(data){
+            return data["Year"];
+          });
+          f_years = _.map(f_years, function(f_year){
+            return [f_year[0]['Year'], 
+                    _.reduce(f_year, function(x,y){
+                      return x + y["Total budgetary authority available for use"];
+                    },0),
+                    _.reduce(f_year, function(x,y){
+                      return x + y["Budgetary authority used in the current year"];
+                    },0),
+                    ];
+          });
+          this.rows = _.map(f_years,function(fyear){
+            return [fyear[0],
+                    ttf(fyear[1]/1000),
+                    ttf(fyear[2]/1000)];
+          });
+          this.rows.unshift([
+            $('<strong>').html(this.gt("year")),
+            $('<strong>').html(this.gt("authorities") + ' ($000)'),
+            $('<strong>').html(this.gt("expenditures")+ ' ($000)')
+          ]);
         }
         ,render_data : function(){
-          this.content = ''
+          this.content = TABLES.array_to_grid(
+              [1,1,1],
+              this.rows);
         }
       },
       graph_view : {
@@ -567,15 +638,15 @@
       "coverage" : "historical",
       "headers" : {"en" :[[
         "Standard Object",
-        "{last_year}",
-        "{last_year_2}",
-        "{last_year_3}",
+        "{{last_year}}",
+        "{{last_year_2}}",
+        "{{last_year_3}}"
         ]],
         "fr": [[
           "Article courtant",
-        "{last_year}",
-        "{last_year_2}",
-        "{last_year_3}",
+        "{{last_year}}",
+        "{{last_year_2}}",
+        "{{last_year_3}}"
         ]]},
       "link" : {
         "en" : "",
@@ -584,8 +655,8 @@
       "name" : { "en" : "Expenditures by Standard Object",
         "fr" : "Dépenses par article courant"
       },
-      "title" : { "en" : "Expenditures by Standard Object from {last_year_3} to {last_year} ($000)",
-        "fr" : "Dépenses par article courant de {last_year_3} à {last_year} ($000)"
+      "title" : { "en" : "Expenditures by Standard Object from {{last_year_3}} to {{last_year}} ($000)",
+        "fr" : "Dépenses par article courant de {{last_year_3}} à {{last_year}} ($000)"
       }
       ,"key" : [0]
       ,mapper : {
@@ -603,9 +674,39 @@
       }
       ,mini_view : {
         prep_data : function(){
+          var ttf = APP.types_to_format['big-int'];
+          var last_year = _.map(this.data, function(d){
+            return [d["Standard Object"],d['{{last_year}}']]
+          });
+          var last_year_2 = _.map(this.data, function(d){
+            return [d["Standard Object"],d['{{last_year_2}}']]
+          });
+          var last_year_3 = _.map(this.data, function(d){
+            return [d["Standard Object"],d['{{last_year_3}}']]
+          });
+          var top_last_year = _.sortBy(last_year, function(d){
+            return -d[1];
+          }).shift();
+          var top_last_year_2 = _.sortBy(last_year_2, function(d){
+            return -d[1];
+          }).shift();
+          var top_last_year_3 = _.sortBy(last_year_3, function(d){
+            return -d[1];
+          }).shift();
+          this.rows = [
+           [m('{{last_year}}'),top_last_year[0] + ' - '+ ttf(top_last_year[1]/1000)],
+           [m('{{last_year_2}}'),top_last_year_2[0]+ ' - '+ ttf(top_last_year_2[1]/1000)],
+           [m('{{last_year_3}}'),top_last_year_3[0]+ ' - '+ ttf(top_last_year_3[1]/1000)]
+          ];
+          this.rows.unshift([
+            bold(this.gt("year")),
+            bold(this.gt("so")+' ($000)'),
+          ]);
         }
         ,render_data : function(){
-          this.content = ''
+          this.content = TABLES.array_to_grid(
+              [1,2],
+              this.rows);
         }
       },
       graph_view : {
@@ -624,15 +725,15 @@
       "coverage" : "historical",
       "headers" : {"en" :[[
           "Program",
-          "{last_year}",
-          "{last_year_2}",
-          "{last_year_3}",
+          "{{last_year}}",
+          "{{last_year_2}}",
+          "{{last_year_3}}"
         ]],
         "fr": [[
           "Program",
-          "{last_year}",
-          "{last_year_2}",
-          "{last_year_3}",
+          "{{last_year}}",
+          "{{last_year_2}}",
+          "{{last_year_3}}"
         ]]},
       "link" : {
         "en" : "",
@@ -641,8 +742,8 @@
       "name" : { "en" : "Expenditures by Program",
         "fr" : "Dépenses par article courant"
       },
-      "title" : { "en" : "Expenditures by Program from {last_year_3} to {last_year} ($000)",
-        "fr" : "Dépenses par Program de {last_year_3} à {last_year} ($000)"
+      "title" : { "en" : "Expenditures by Program from {{last_year_3}} to {{last_year}} ($000)",
+        "fr" : "Dépenses par Program de {{last_year_3}} à {{last_year}} ($000)"
       }
       ,"key" : [0]
       ,mapper : {
@@ -663,10 +764,40 @@
         }
       }
       ,mini_view : {
-        prep_data : function(){
+        prep_data: function(){
+          var ttf = APP.types_to_format['big-int'];
+          var last_year = _.map(this.data, function(d){
+            return [d["Program"],d['{{last_year}}']]
+          });
+          var last_year_2 = _.map(this.data, function(d){
+            return [d["Program"],d['{{last_year_2}}']]
+          });
+          var last_year_3 = _.map(this.data, function(d){
+            return [d["Program"],d['{{last_year_3}}']]
+          });
+          var top_last_year = _.sortBy(last_year, function(d){
+            return -d[1];
+          }).shift();
+          var top_last_year_2 = _.sortBy(last_year_2, function(d){
+            return -d[1];
+          }).shift();
+          var top_last_year_3 = _.sortBy(last_year_3, function(d){
+            return -d[1];
+          }).shift();
+          this.rows = [
+           [m('{{last_year}}'),top_last_year[0] + ' - '+ ttf(top_last_year[1]/1000)],
+           [m('{{last_year_2}}'),top_last_year_2[0]+ ' - '+ ttf(top_last_year_2[1]/1000)],
+           [m('{{last_year_3}}'),top_last_year_3[0]+ ' - '+ ttf(top_last_year_3[1]/1000)]
+          ];
+          this.rows.unshift([
+            bold(this.gt("year")),
+            bold(this.gt("program")+' ($000)'),
+          ]);
         }
         ,render_data : function(){
-          this.content = ''
+          this.content = TABLES.array_to_grid(
+              [1,2],
+              this.rows);
         }
       },
       graph_view : {
@@ -680,28 +811,4 @@
   });
 
 })();
-
-  //fmt = functools.partial(str.format,**dict(
-  //  year = year,
-  //  last_year=year-1,
-  //  last_year_2 = year-2,
-  //  last_year_3 = year-3,
-  //  month = month
-  //))
-
-  //for table in tables:
-  //  for lang in ("en","fr"):
-
-  //    for h in ('title','name'):
-  //      tables[table][h][lang] = fmt(tables[table][h][lang])
-
-  //    for header_i,_ in enumerate(tables[table]['headers'][lang]):
-  //      ref = tables[table]['headers'][lang][header_i]
-  //      for i,col in enumerate(ref):
-  //        if isinstance(ref[i],dict):
-  //          ref[i]['header'] =  fmt(ref[i]['header'])
-  //        else:
-  //          ref[i] = fmt(ref[i])
-
-  //return tables
 

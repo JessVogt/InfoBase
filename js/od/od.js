@@ -31,7 +31,7 @@
         this.dept = this.state.get("dept");
         this.lang = this.state.get("lang");
         this.data = this.dept['mapped_data'][this.key][this.lang];
-        var other_orgs = this.state.get("other_orgs");
+        var other_orgs = this.state.get("_other_orgs");
         // set some useful state based on these inputs
         var ministry_depts = other_orgs.concat([this.dept]);
         //collect ministry data
@@ -128,6 +128,7 @@
       ,tear_down : function(e){
          $('.panels').show(400);
          this.remove();
+         this.app.state.unset("table");
       }
       ,setup_useful_this_links : function() {
 
@@ -161,34 +162,31 @@
         view.app.state.set("goc_tot",
                         !$(e.target).hasClass("active"));
       }
-      ,activate : function(){
-        // unbind any events listeners which might be here
-        //this.drop_zone.find('.nav-pills a:last').off("shown");
-        //this.drop_zone.find('a,button,div').off("click");
-        //this.drop_zone.find('div').off("jqplotDataClick");
-
-        
-      }
     });
 
     var OrgView = Backbone.View.extend({
       template : _.template($('#main_t').html())
       ,initialize: function(){
+        this.rendered = $.Deferred();
         _.bindAll(this);
         this.app = this.options['app'];
         this.state = this.app.state;
         this.state.on("change:dept", this.render);
-
       }
       ,render : function(model, org){
         var lang = this.state.get("lang");
         // render the main template
         this.app.app.html(this.template({
-          org: org,   
+          org : org,   
           lang : lang,
           gt : this.app.get_text
         }));
 
+        var other_dept_dropdown = new APP.otherDeptsDropDown({
+          app : this.app
+         });
+
+        this.rendered.resolve();
         return this;
       }
     });
@@ -198,7 +196,7 @@
       el : $('#app')
       ,initialize: function(){
         _.bindAll(this);
-        this.state = new APP.stateModel({})
+        this.state = new APP.stateModel({ })
 
         //initialize views
         sub_view_args = {app: this};
@@ -207,12 +205,12 @@
         this.dept_info_view  = new APP.deptInfoView(sub_view_args);
         this.acv = new APP.autocompleteView(sub_view_args);
         this.full_dept_list = new APP.fullDeptList(sub_view_args);
-        this.other_dept_dropdown = new APP.otherDeptsDropDown(sub_view_args);
         this.org_view = new OrgView(sub_view_args);
 
         this.setup_useful_this_links();
         // check for a language or set the default of english
         this.state.on("change:lang", this.render);
+        this.state.on("change:lang", this.reset_dept);
         APP.dispatcher.trigger("app_ready",this);
       }
       ,setup_useful_this_links : function(){
@@ -226,8 +224,16 @@
         return APP.types_to_format[format](val,this.lang);
       }
       ,get_text : function(txt){
-          return LANG.l(txt,this.state.get('lang'));
-        }
+        return LANG.l(txt,this.state.get('lang'));
+      }
+      ,reset_dept : function(model, dept){
+        var that = this;
+        var dept = this.state.get('dept');
+        if (!dept){ return }
+        setTimeout(function(){
+          that.state.set('dept',_.clone(dept))
+        });
+      }
       ,render: function(model,attr){
         // get faster reference 
         this.lang = attr;
@@ -235,11 +241,6 @@
         this.title.html(gt("title"));
         this.welcome.html(gt("welcome"));
         this.dept_sel.html(gt("select"))
-        // if a department has already been picked
-        // remake all the tables in the new language
-        if (!_.isUndefined(this.state.get('dept'))){
-          this.org_view.render(this.state,this.state.get('dept'));
-        }
       }
     });
 
@@ -250,9 +251,22 @@
       var lang = app.state.get("lang");
       var ministry_depts = APP.find_all_in_ministry(org,lang);
       var other_depts = _.filter(ministry_depts,
-       function(dept) {return dept != org
+       function(dept) {return dept['accronym'] != org['accronym'];
        }); 
-      state.set("other_orgs",other_depts);
+      state.sp("other_orgs",other_depts); 
+      if (state.get('table')){
+        $.when(app.org_view.rendered).done(
+                  function() {
+                    state.rp("other_orgs");
+                });
+      }
+      else {
+        $.when(TABLES.tables.rendered(),
+                app.org_view.rendered).done(
+                  function() {
+                    state.rp("other_orgs");
+                });
+      }
     });
   });
 
