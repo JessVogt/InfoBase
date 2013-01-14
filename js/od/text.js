@@ -157,6 +157,10 @@
         "en": "Org Total"
         ,"fr": "Total pour l’organisation"
       }
+      ,"year": {
+        "en": "Year"
+        ,"fr": "Année"
+      }
       ,"year_total": {
         "en": "Year Total"
         ,"fr": "Total pour l'année"
@@ -196,6 +200,10 @@
       ,"so" : {
         "en": "Standard Objects"
         ,"fr": "Articles courants"
+      }
+      ,"program" : {
+       'en' : 'Program',
+       'fr' : 'Programme'
       }
       ,"graph2b_title" : {
         "en": "Comparison of Authorities and Expenditures Between This Period and the Same from the Previous Fiscal year"

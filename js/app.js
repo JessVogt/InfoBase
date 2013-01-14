@@ -276,15 +276,14 @@
         _.bindAll(this);
         this.app = this.options["app"];
         this.state = this.app.state;
-        this.state.on("change:other_depts",this.render);
+        var other_orgs = this.state.gsp("other_orgs");
+        $.when(other_orgs).done(this.render);
       }
-      ,render: function(){
+      ,render: function(other_depts){
         var dept = this.state.get('dept');
         var lang = this.state.get("lang");
-        var other_depts = this.state.get("other_depts");
         var other_depts_list = $('#other_depts_list');
-        // remove the previous entries
-        other_depts_list.find('li a').parent().remove();
+
         if (other_depts.length > 0){
           _.each(_.sortBy(other_depts,
                 function(d){return d.dept[lang]},

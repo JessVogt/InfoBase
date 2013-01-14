@@ -22,7 +22,15 @@
   p.clickable:hover {
     text-decoration: underline;
   }
+  .section-header {
+    border-bottom: 1px solid #EEE;
+    width: 100%
+  }
+  .section-footer {
+    border-top: 1px solid #EEE;
+    width: 100%;
 
+  }
   th.sorting_asc,
   th.sorting_desc {
     background-color:#D9EDF7;
@@ -163,7 +171,7 @@
           <p class='lead'>Current Fiscal Year (April 1st 2012, March 31st 2013)</p>
         </div>
       </div>
-      <div class="row" >
+      <div class="row mini_row" >
         <div class="span3 well well-small" id='table1'>
         </div>                           
         <div class="span3 well well-small" id='table2'>
@@ -177,7 +185,7 @@
           <p class='lead'>Previous Fiscal Years (2009-10 to 2011-12)</p>
         </div>
       </div>
-      <div class="row" >
+      <div class="row mini_row" >
         <div class="span3 well well-small" id='table4'>
         </div>
         <div class="span3 well well-small" id='table5'>
@@ -199,8 +207,8 @@
     <div class='mini_payload' style='font-size: 10px'>
 
     </div>
-    <div class='details_button'>
-      <a class='btn btn-link btn-small details'><%=gt('details')%></a>
+    <div class='details_button section-footer'>
+      <a class='btn btn-link btn-small details pull-right'><%=gt('details')%></a>
     </div>
   </div>
 </script>
