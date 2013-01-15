@@ -340,48 +340,48 @@ $(function () {
 
       var tds = this.$el.find('td div');
 
-      //tds.on("hover",this,function(event){
-      //  var view = event.data
-      //  var td = $(event.target).parents('td')
-      //  var tr = td.parent();
-      //  var row = tr.data('row');
-      //  if (_.indexOf(view.row_data,row) == -1 || tr.hasClass("info")){
-      //    return;
-      //  }
-      //  var index_ar = view.datatable.fnGetPosition(td.get(0));
-      //  var index = index_ar[2];
-      //  if (view.is_clickable(td)){
-      //    $(event.target).toggleClass("clickable alert-success")
-      //  }
-      //});
+      tds.on("hover",this,function(event){
+        var view = event.data
+        var td = $(event.target).parents('td')
+        var tr = td.parent();
+        var row = tr.data('row');
+        if (_.indexOf(view.row_data,row) == -1 || tr.hasClass("info")){
+          return;
+        }
+        var index_ar = view.datatable.fnGetPosition(td.get(0));
+        var index = index_ar[2];
+        if (view.is_clickable(td)){
+          $(event.target).toggleClass("clickable alert-success")
+        }
+      });
 
-      //tds.on("click", this,function(event){
-      //  var view = event.data;
-      //  var td = $(event.target).parents('td');
-      //  var tr = td.parent();
-      //  var row = tr.data('row');
-      //  if (_.indexOf(view.row_data,row) == -1 || tr.hasClass("info")){
-      //    return;
-      //  }
+      tds.on("click", this,function(event){
+        var view = event.data;
+        var td = $(event.target).parents('td');
+        var tr = td.parent();
+        var row = tr.data('row');
+        if (_.indexOf(view.row_data,row) == -1 || tr.hasClass("info")){
+          return;
+        }
 
-      //  if (view.is_clickable(td)){
-      //    // return an array, where the last index is what
-      //    // we need
-      //    var index_ar = view.datatable.fnGetPosition(td.get(0));
-      //    var index = index_ar[2];
-      //    
-      //    var av = new TABLES.AnalyticsView({
-      //      dept : view.dept,
-      //      key : view.key,
-      //      row : row,
-      //      col_index : index,
-      //      app : view.app,
-      //      def : view.def,
-      //      mapper : view.mapper
-      //    });
-      //    av.render();
-      //  }
-      //})
+        if (view.is_clickable(td)){
+          // return an array, where the last index is what
+          // we need
+          var index_ar = view.datatable.fnGetPosition(td.get(0));
+          var index = index_ar[2];
+          
+          var av = new TABLES.AnalyticsView({
+            dept : view.dept,
+            key : view.key,
+            row : row,
+            col_index : index,
+            app : view.app,
+            def : view.def,
+            mapper : view.mapper
+          });
+          av.render();
+        }
+      })
 
       this.activate_dataTable();
 

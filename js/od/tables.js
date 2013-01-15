@@ -272,7 +272,17 @@
           // remove acronym
           return _.tail(row); 
         }
-        ,make_filter : function(source_row){}
+        ,make_filter : function(source_row){
+          var type = votes[this.def['coverage']][source_row[0]][source_row[1]]['type'];
+          return _.bind(function(candidate_row){
+            var cr = candidate_row;
+            if (cr[1]){
+              var cr_type = votes[this.def['coverage']][cr[0]][cr[1]]['type'];
+              return ( type == cr_type);
+            }
+            return false;
+          },this);
+        }
       }
       ,table_view : { 
         hide_col_ids : [2,3,4,5,6,7,8,9,10,11,12]
@@ -367,7 +377,11 @@
           row.splice(1,1,sos[row[1]][this.lang]);
           return _.tail(row)
         }
-        ,make_filter : function(source_row){}
+        ,make_filter : function(source_row){
+          return _.bind(function(candidate_row){
+            return ( source_row[1] == candidate_row[1]);
+          },this);
+        }
       }
       ,table_view : { 
         sum_cols : []
@@ -481,7 +495,18 @@
           }
           return _.tail(row);
         }
-        ,make_filter : function(source_row){}
+        ,make_filter : function(source_row){
+          if (source_row[1] === 'Internal Services'){
+            return function(candidate_row){ 
+              return candidate_row[1] == 'Internal Services'
+            }
+          }else {
+            return function(candidate_row){
+              return (candidate_row[1] != 'Internal Services' &&
+                      candidate_row[0] != 'ZGOC');
+            }
+          }
+        }
       }
       ,table_view : { 
         sum_cols : []
