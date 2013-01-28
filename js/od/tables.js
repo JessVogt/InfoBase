@@ -1,162 +1,24 @@
-(function() {
+$(function() {
   var APP = ns('APP');
   var LANG = ns('LANG');
   var TABLES = ns('TABLES');
-  var GRAPHS = ns('GRAPHS');
   var MAPPERS = ns('MAPPERS');
-  var col = Backbone.Collection.extend({
-    rendered : function(){
-      return $.when.apply(this,
-        this.map(function(t){
-          return t.get('mini_view')['rendered'];
-        }));
-    }
-  
-  });
-  TABLES.tables = new col;
-
-  var template_args = {
-    'year' : '2012-13',
-    'last_year' : '2011-12',
-    'last_year_2' : '2010-11',
-    'last_year_3' : '2009-10',
-    'month' : 9
-  }
 
   var bold = function(s){
     return $('<strong>').html(s)
   };
 
-  APP.dispatcher.on("app_ready", function(app){
-    app.state.on("change:dept", function(){
-      $.when(TABLES.tables.rendered()).done(
-        function(){
-          setTimeout(function(){
-            $('.mini_row').each(function(i,row){
-              $('.span3',row)
-              .height(_.max($('.span3',row).map(function(x,y){
-                return $(y).height();
-              })));
-            });
-            $('.span3')
-            $('.span3').css({
-              position : 'relative'
-            });
-            $('.span3 div.details_button').css({
-              'bottom' : 0, 
-              'position' : 'absolute', 
-              'right' : 0
-            });
-          });
-        })
-    });
+  TABLES.template_args = {
+    'year' : '2012-13',
+    'last_year' : '2011-12',
+    'last_year_2' : '2010-11',
+    'last_year_3' : '2009-10',
+    'month' : 9
+  };
 
-    TABLES.m = function(s){
-      return Mustache.render(s,template_args);
-    }
+  APP.dispatcher.on("load_tables",function(app){
 
     var m = TABLES.m;
-
-    var BTV = TABLES.BaseTableView;
-    var BGV = GRAPHS.BaseGraphView;
-
-    TABLES.tables.on("add", function(table){
-
-      var id = table.get("id");
-
-      _.each(depts,function(org){
-        org['mapped_data'][id] = {};
-        org['mapped_objs'][id] = {};
-      });
-
-      // setup the mappers
-      MAPPERS.maps[table.get("id")] = table.get("mapper");
-      table.set('mapper' , {
-       'en' : new MAPPERS.mapper('en',table.attributes,id)
-       ,'fr' : new MAPPERS.mapper('fr',table.attributes,id)
-      }); 
-
-      // setup the table views
-      table.set('table_view', BTV.extend(table.get('table_view')));
-
-      // setup lookups for the headers
-      table.set("header_lookup" , {
-        'en' : {},
-        'fr' : {}
-      });
-
-      _.each(['en','fr'], function(lang){
-        _.each(_.last(table.get('headers')[lang]),function(header,index){
-           table.get('header_lookup')[lang][header] = index;
-        });
-      });
-
-      app.state.on("change:dept", function(state){
-        if (state.get('current_table')){
-          return
-        }
-        var lang = app.state.get("lang");
-        var org = app.state.get('dept');
-
-        mapper = table.get('mapper')[lang];
-
-        // map the data for the current lang unless it's already
-        // been mapped
-        if (_.isUndefined(org["mapped_data"][id][lang])) {
-          org["mapped_data"][id][lang] =  mapper.map(org['tables'][id]);
-        }
-
-        var headers = _.last(table.get('headers')['en']);
-
-        if (_.isUndefined(org["mapped_objs"][id][lang])) {
-          org["mapped_objs"][id][lang] = _.map(org["mapped_data"][id][lang],
-            function(row){
-              return _.object(headers,row);
-            }
-          );
-        }
-
-        APP.dispatcher.trigger("mapped",table);
-        
-      });
-    });
-
-    APP.dispatcher.on("mapped", function(table){
-      if (app.state.get('table')){
-        var current_table = app.state.get('table').get('id');
-      }else {
-        var current_table = undefined;
-      }
-      var id = table.get('id');
-
-      var mtv = new TABLES.miniTableVew({
-        app : app,
-        def: table.attributes
-      });
-      mtv.render();
-
-      mtv.$el.find('a.details').on("click", function(event){
-        // move the mini views out of the way and replace with larger 
-        // table
-
-        app.state.set({'table':table});
-
-        var dv = new APP.DetailsView({
-          app : app,
-          def: table.attributes
-        });
-
-        dv.render();
-
-        $('.panels').hide(500);
-      });
-      
-      if (id === current_table) {
-        mtv.$el.find('a.details').trigger("click");
-      }
-    });
-
-
 
     TABLES.tables.add([{
       id: 'table1',
@@ -257,10 +119,10 @@
       name : { "en" : "Statement of Authorites and Expenditures",
                 "fr" : "État des autorisations et Dépenses"
               },
-      title : { "en" : "",
-                "fr" : ""
+      title : { "en" : "Statement of Authorites and Expenditures",
+                "fr" : "État des autorisations et Dépenses"
                 }
-      ,key : [0]
+      ,key : [0,1]
       ,mapper : {
         to : function(row){
           if (row[1] && _.isNumber(row[1]) ){
@@ -273,15 +135,9 @@
           return _.tail(row); 
         }
         ,make_filter : function(source_row){
-          var type = votes[this.def['coverage']][source_row[0]][source_row[1]]['type'];
-          return _.bind(function(candidate_row){
-            var cr = candidate_row;
-            if (cr[1]){
-              var cr_type = votes[this.def['coverage']][cr[0]][cr[1]]['type'];
-              return ( type == cr_type);
-            }
-            return false;
-          },this);
+          return function(candidate_row){
+            return (source_row[2]  == candidate_row[2]);
+          };
         }
       }
       ,table_view : { 
@@ -295,7 +151,7 @@
         prep_data : function(){
           var ttf = APP.types_to_format['big-int'];
           var auth = "Total available for use for the year ending March 31,{{year}}";
-          var exp = "Year to date used at quarter-end";
+          var exp = "{{year}} Expenditures-Year to date used at quarter-end";
           var auth_total = _.reduce(
               _.pluck(this.data,auth),
               function(x,y){return x+y})/1000;
@@ -303,7 +159,7 @@
               _.pluck(this.data,exp),
               function(x,y){return x+y})/1000;
           this.rows = [
-            [$('<strong>').html(this.to_lang(auth)+ ' ($000)'), ttf(auth_total,this.lang) ],
+            [$('<strong>').html(m(this.to_lang(auth))+ ' ($000)'), ttf(auth_total,this.lang) ],
             [$('<strong>').html(this.to_lang(exp)+ ' ($000)'), ttf(exp_total,this.lang) ]
           ];
         }
@@ -319,9 +175,10 @@
         ,render : function(){
          }
       }
-    },{
+    },
+    {
       id: "table2",
-      col_defs : ["wide-str",
+      col_defs : ["str",
         "big-int",
         "big-int",
         "big-int",
@@ -433,7 +290,7 @@
       }
     },
     {
-      id: "table3",
+     id: "table3",
       "col_defs" : ["wide-str",
         "big-int",
         "big-int",
@@ -558,31 +415,31 @@
     {
       id: "table4",
       col_defs : [ 'int',
-        "wide-str",
+        "str",
         "date",
         "big-int",
         "big-int",
         "big-int",
-        "big-int",
+        "big-int"
       ],
       "coverage" : "historical",
       "headers" : {"en" :[[
-        "Vote {{last_year}}/ Statutory",
-        "Description",
-        "Year",
-        "Total budgetary authority available for use",
-        "Budgetary authority used in the current year",
-        "Authority lapsed (or over-expended)",
-        "Authority available for use in subsequent years"
+          "Vote {{last_year}}/ Statutory",
+          "Description",
+          "Year",
+          "Total budgetary authority available for use",
+          "Budgetary authority used in the current year",
+          "Authority lapsed (or over-expended)",
+          "Authority available for use in subsequent years"
         ]],
         "fr": [[
-          "Crédit (2011-12) / Légis.",
-        "Description",
-        "Année",
-        "Autorisation budgétaire totale utilisable",
-        "Autorisation budgétaire utilisée dans l'exercice en cours",
-        "Autorisation expirée (ou dépassée)",
-        "Autorisation prête pour usage dans les exercices financiers suivants"
+          "Crédit {{last_year}} / Légis.",
+          "Description",
+          "Année",
+          "Autorisation budgétaire totale utilisable",
+          "Autorisation budgétaire utilisée dans l'exercice en cours",
+          "Autorisation expirée (ou dépassée)",
+          "Autorisation prête pour usage dans les exercices financiers suivants"
         ]]},
       "link" : {
         "en" : "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-eng.asp",
@@ -606,7 +463,14 @@
           // remove acronym
           return _.tail(row);
         }
-        ,make_filter : function(source_row){}
+        ,make_filter : function(source_row){
+          var vote_type = source_row[2];
+          var year = source_row[3];
+          return function(candidate_row){
+            return (candidate_row[2] == vote_type &&
+                    candidate_row[3] == year);
+          }
+        }
       }
       ,table_view : { 
         sum_cols : []
@@ -635,6 +499,9 @@
                     ttf(fyear[1]/1000),
                     ttf(fyear[2]/1000)];
           });
+          this.rows = _.sortBy(this.rows, function(fyear){
+            return fyear[0];
+          }).reverse();
           this.rows.unshift([
             $('<strong>').html(this.gt("year")),
             $('<strong>').html(this.gt("authorities") + ' ($000)'),
@@ -656,7 +523,7 @@
     },
     {
       id: "table5",
-      "col_defs" : ["wide-str",
+      "col_defs" : ["str",
         "big-int",
         "big-int",
         "big-int" ],
@@ -689,7 +556,11 @@
           row.splice(1,1,sos[row[1]][this.lang]);
           return _.tail(row)
         }
-        ,make_filter : function(source_row){}
+        ,make_filter : function(source_row){
+          return function(candidate_row){
+            return (candidate_row[1] == source_row[1]);
+          }
+        }
       }
       ,table_view : { 
         sum_cols : []
@@ -780,11 +651,23 @@
           }
           return _.tail(row);
         }
-        ,make_filter : function(source_row){}
+        ,make_filter : function(source_row){
+          if (source_row[1] === 'Internal Services'){
+            return function(candidate_row){ 
+              return candidate_row[1] == 'Internal Services'
+            }
+          }else {
+            return function(candidate_row){
+              return (candidate_row[1] != 'Internal Services' &&
+                      candidate_row[0] != 'ZGOC');
+            }
+          }
+        }
       }
       ,table_view : { 
         sum_cols : []
         ,min_func : TABLES.add_ministry_sum
+
         ,init_row_data : function(){
         }
       }
@@ -801,6 +684,7 @@
             return [d["Program"],d['{{last_year_3}}']]
           });
           var top_last_year = _.sortBy(last_year, function(d){
+
             return -d[1];
           }).shift();
           var top_last_year_2 = _.sortBy(last_year_2, function(d){
@@ -835,5 +719,5 @@
 
   });
 
-})();
+});
 

@@ -1,14 +1,6 @@
 $(function () {
   var MAPPERS = ns('MAPPERS');
 
-  function make_historical_filter(source_row){
-    var vote_type = source_row[1];
-    var year = source_row[2];
-    return function(candidate_row){
-      return (candidate_row[1] == vote_type &&
-              candidate_row[2] == year);
-    }
-  }
 
   MAPPERS.maps = {
     "Table1" : {'to' : function (row) {

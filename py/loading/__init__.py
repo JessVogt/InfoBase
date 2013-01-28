@@ -11,7 +11,7 @@ wb2 = xlrd.open_workbook(f2)
 
 def clean_data(d):
   if isinstance(d,basestring):
-    d = d.strip('*').strip()
+    d = d.strip('*').strip().replace(u"\xad","-")
     # try and convert to an integer
     # if it fails, then return the string
     try:

@@ -18,6 +18,8 @@
     APP.DetailsView = Backbone.View.extend({
       template : _.template($('#dataview_t').html())
       ,initialize: function(){
+        this.rendered = $.Deferred();
+        APP.dispatcher.trigger("new_details_view",this);
         _.bindAll(this);
         // retrieve passed in data
         this.app = this.options["app"];
@@ -38,14 +40,13 @@
         var raw_min_data = ministry_total(ministry_depts,this.key);
         this.min_data = this.mapper.map(raw_min_data);
         //collect goc data
-        //var raw_goc_data = window.depts['ZGOC']['tables'][this.key];
-        //this.goc_data = this.mapper.map(raw_goc_data);
+        var raw_goc_data = window.depts['ZGOC']['tables'][this.key];
+        this.goc_data = this.mapper.map(raw_goc_data);
       }
 
       ,render: function(){
         this.drop_zone.children().remove();
         
-
         //this.app.$el.find('.table_title').html(this.def.title[this.lang]);
         // setup the dropdown menu of other departments
         // sort the departments by name
@@ -73,8 +74,8 @@
 
           // establish event listeners
           this.about_btn.on("click", this.on_about_click);
-          this.min_total_btn.on( "click",this.on_min_tot_click); 
-          this.goc_total_btn.on( "click",this.on_goc_tot_click); 
+          this.min_total_btn.on( "click",this,this.on_min_tot_click); 
+          this.goc_total_btn.on( "click",this,this.on_goc_tot_click); 
           this.back_btn.on("click",this.tear_down);
 
           // create the table view
@@ -82,6 +83,7 @@
             key : this.key,
             rows : this.data,
             min_data : this.min_data,
+
             goc_data : this.goc_data,
             app : this.app,
             def : this.def,
@@ -92,28 +94,6 @@
           });
           this.table_payload.append(this.table_view.render().$el);
 
-          // create the graph
-          //if (_.has(GRAPHS.views,this.key)){
-          //  // check if department is TBS and then remove the
-          //  // central votes
-          //  this.graph_view = new GRAPHS.views[this.key]({
-          //    key : this.key,
-          //    data : this.data,
-          //    app : this.app,
-          //    def : this.def,
-          //    dept : this.dept,
-          //    footnotes : []
-          //  });
-          //  this.graph_payload.append(this.graph_view.render().$el);
-          //  this.$el.find('.nav-tabs a:last')
-          //    .on("shown", this.graph_view.graph);
-
-          //}
-          //else {
-          //  this.$el.find('.nav-tabs li:last').remove();
-          //  this.$el.find('.graph_content').remove();
-          //}
-        //}
 
         //this.fnv = new footnoteView({
         //  app : this.app,
@@ -123,10 +103,11 @@
         //
         this.drop_zone.append(this.$el);
 
+        setTimeout(this.rendered.resolve,1);
         return this;
       }
       ,tear_down : function(e){
-         $('.panels').show(400);
+         $('.panels').show();
          this.remove();
          this.app.state.unset("table");
       }
@@ -167,13 +148,13 @@
     var OrgView = Backbone.View.extend({
       template : _.template($('#main_t').html())
       ,initialize: function(){
-        this.rendered = $.Deferred();
         _.bindAll(this);
         this.app = this.options['app'];
         this.state = this.app.state;
         this.state.on("change:dept", this.render);
       }
       ,render : function(model, org){
+        this.rendered = $.Deferred();
         var lang = this.state.get("lang");
         // render the main template
         this.app.app.html(this.template({
@@ -186,7 +167,7 @@
           app : this.app
          });
 
-        this.rendered.resolve();
+        setTimeout(this.rendered.resolve);
         return this;
       }
     });
@@ -244,7 +225,7 @@
       }
     });
 
-  APP.dispatcher.on("app_ready", function(app){
+  APP.dispatcher.once("app_ready", function(app){
     app.state.on("change:dept", function(state,org){
       // set state for all other depts in the current
       // ministry
@@ -261,7 +242,7 @@
                 });
       }
       else {
-        $.when(TABLES.tables.rendered(),
+        $.when(TABLES.rendered_mini_views(),
                 app.org_view.rendered).done(
                   function() {
                     state.rp("other_orgs");

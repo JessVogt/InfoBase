@@ -9,7 +9,7 @@ import json
 import mako.lookup
 from ..loading import load_les, load_od
 from helpers.from_here import here
-from .table_defs import tables
+#from .table_defs import tables
 from .od_table_defs import make_od_tables
 from .. import models
 
@@ -41,6 +41,7 @@ my_js_files = ["sandbox.js",
                "group_funcs.js",
                "table_popup.js",
                "mappers.js",
+               "tables.js",
                "app.js",
                ]
 
@@ -81,25 +82,25 @@ def make_after_check(lookups):
 def check(data,lookups,after_check=lambda x:x):
   errors = set()
   for table in data:
-    table_def = tables[table]
-    historical = table_def['coverage']
+    #table_def = tables[table]
+    #historical = table_def['coverage']
     for row in data[table]:
       try:
         # make sure rows are correct lenght
-        if table in ('Table4', 'Table5', 'Table6' ,'Table7'):
-          row = [ x.replace(u"\xad",u"-")  if isinstance(x,basestring)  else x
-                 for x in row]
-          try:
-            assert len(table_def['col_defs']) == len(row)-1
-          except Exception,e:
-            import pdb
-            pdb.set_trace()
-        elif table in ('Table2b','Table3'):
-          assert len(table_def['col_defs']) == len(row)
-        elif table ==  ('Table2','Table2a'):
-          assert len(table_def['col_defs']) == len(row)-2
-        # find acronym
-        assert row[0] in lookups['depts']
+        #if table in ('Table4', 'Table5', 'Table6' ,'Table7'):
+        #  row = [ x.replace(u"\xad",u"-")  if isinstance(x,basestring)  else x
+        #         for x in row]
+        #  try:
+        #    assert len(table_def['col_defs']) == len(row)-1
+        #  except Exception,e:
+        #    import pdb
+        #    pdb.set_trace()
+        #elif table in ('Table2b','Table3'):
+        #  assert len(table_def['col_defs']) == len(row)
+        #elif table ==  ('Table2','Table2a'):
+        #  assert len(table_def['col_defs']) == len(row)-2
+        ## find acronym
+        #assert row[0] in lookups['depts']
         # perform lookup on rows
         #if row[2] and row[1] != '(S)' and historical == 'historical':
         #  assert row[2] in lookups['votes'][historical]
@@ -196,15 +197,13 @@ def html_les(dev=True):
   double_check(lookups)
   add_dept_data(lookups['depts'])
 
-  lookups['les_tables'] = tables
-
   js_data = ";\n".join(
     [u'{}={}'.format(k,json.dumps(lookups[k]))
      for k in lookups]
   )+";\n"
-                        
+
   app_js_files = list(my_js_files)
-  app_js_files += ["les/text.js", 
+  app_js_files += ["les/text.js",
                    "les/graph1.js",
                    "les/graph2a.js",
                    "les/graph2b.js",
@@ -214,9 +213,8 @@ def html_les(dev=True):
                    "les/graph5.js",
                    "les/graph6.js",
                    "les/graph7.js",
-                   "les/mappers.js",
-                   "les/table_views.js",
-                   "les/les.js" ]
+                   "les/tables.js",
+                   "od/od.js" ]
 
   js_app = process_my_js(app_js_files, dev=dev)
 
@@ -259,7 +257,7 @@ def fake_data(lookups):
        [key,'Program EN3','Program FR3'] + rand(10000,10000000,4).tolist(),
        [key,'Program EN4','Program FR4'] + rand(10000,10000000,4).tolist(),
        [key,'Program EN5','Program FR5'] + rand(10000,10000000,4).tolist(),
-       [key,'Program EN6','Program FR6'] + rand(10000,10000000,4).tolist(),
+       [key,'Internal Services','Services Internes'] + rand(10000,10000000,4).tolist(),
       ],
       'table4' : [
        [key,1,1,'2009-10'] +  rand(10000,10000000,7-3).tolist(),
@@ -294,7 +292,7 @@ def fake_data(lookups):
        [key,'Program EN3','Program FR3'] + rand(10000,10000000,3).tolist(),
        [key,'Program EN4','Program FR4'] + rand(10000,10000000,3).tolist(),
        [key,'Program EN5','Program FR5'] + rand(10000,10000000,3).tolist(),
-       [key,'Program EN6','Program FR6'] + rand(10000,10000000,3).tolist(),
+       [key,'Internal Services','Services Internes'] + rand(10000,10000000,3).tolist(),
       ]
     }
     for vote in lookups['votes']['in_year'][key]:
@@ -303,6 +301,12 @@ def fake_data(lookups):
 
 def od(dev=True):
   lookups,data = load_od()
+  lookups['depts']['ZGOC'] = {'accronym' : 'ZGOC',
+                              'dept' : {'en' : 'Government of Canada',
+                                        'fr' : 'Gouvernement du Canada'},
+                              'min' : {'en' : 'Government of Canada',
+                                        'fr' : 'Gouvernement du Canada'}
+                             }
   add_dept_data(lookups['depts'])
 
   fake_data(lookups)
