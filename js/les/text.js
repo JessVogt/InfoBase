@@ -43,6 +43,10 @@
         "en" : "http://www.tbs-sct.gc.ca/reports-rapports/cc-se/index-eng.asp"
         ,"fr" : "http://www.tbs-sct.gc.ca/reports-rapports/cc-se/index-fra.asp"
       }
+      ,"allotment" : {
+        "en" : "Allotment"
+        ,"fr" : "Affectation"
+      }
       ,"welcome" : {
         "en" : ["Click to select from a list of organisations ",
                 "<span class='badge badge-info'>OR</span>",
@@ -68,6 +72,10 @@
       ,"details" : {
         "en" : "Show more details"
         ,"fr": "Voir plus de détails"
+      }
+      ,"back" : {
+        "en" : "Back"
+        ,"fr": "Retour"
       }
       ,"org_info" : {
         "en" : "Data from Inventory of Government of Canada Organizations"
@@ -218,7 +226,7 @@
         ,"fr": "Détail des dépenses votées pour"
       }
       ,"exp_breakout" : {
-        "en": "Expenditure Breakout"
+        "'en": "Expenditure Breakout"
         ,"fr": "Détail des dépenses"
       }
       ,"graph5_title_1" : {
@@ -233,9 +241,17 @@
         "en" :  "Net Lapse"
         ,"fr" : "Fonds inutilisés nets"
       }
+      , "gross_lapse" : {
+        "en" :  "Gross Lapse"
+        ,"fr" : "Fonds inutilisés bruts"
+      }
       , "approp_by_auth" : {
         "en" : "Appropriation by Authority"
         ,"fr" :"Crédit par autorisation"
+      }
+      ,'appropriation_p' : {
+        "en" : "Appropriation Period"
+        ,"fr" :"Période d'appropriation"
       }
       , "central_vote_transfer" : {
         "en" :  "Central Vote Transfers"

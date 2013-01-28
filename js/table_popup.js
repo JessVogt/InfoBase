@@ -8,7 +8,11 @@ $(function () {
     ,template2 : _.template($('#analytics_t').html())
     ,row_template : _.template($("#stat_tr").html())
     ,initialize: function () {
+
       _.bindAll(this);
+
+      this.m = TABLES.m;
+
       this.dept = this.options['dept'];
       this.key = this.options['key'];
       this.row = this.options['row'];
@@ -155,7 +159,7 @@ $(function () {
         var type = this.types[index];
         var div = $('<div>')
           .addClass(type)
-          .html(h)
+          .html(this.m(h))
         $('<th>')
           .append(div)
           .appendTo(tr)
@@ -286,8 +290,8 @@ $(function () {
       // empty out current table
       this.$el.find('.table_div').children().remove();
       //create new empty table
-      var empty_table = $(this.template({'title' : ""}));
-      this.$el.find('.table_div').append(empty_table);
+      var empty_table = $(this.template());
+      this.$el.find('.table_div').append(empty_table);           
 
       this.create_footer();
       this.$el.find('thead').append(_.map(this.combined_headers, this.create_th));

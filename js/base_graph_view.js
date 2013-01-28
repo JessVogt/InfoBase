@@ -1,6 +1,16 @@
 $(function () {
+  var TABLES = ns('TABLES');
   var GRAPHS = ns('GRAPHS');
   var APP = ns('APP');
+
+  // attach all the graphs to their respective views
+  APP.dispatcher.once("load_tables",function(app){
+    var add_graph_view = function(table){
+      table.set("graph_view", GRAPHS.views[table.get("id")]);
+    }
+    TABLES.tables.each(add_graph_view);
+    TABLES.tables.on("add",add_graph_view);
+  });
 
   GRAPHS.BaseGraphView = Backbone.View.extend({
 

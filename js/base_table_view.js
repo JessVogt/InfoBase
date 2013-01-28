@@ -3,7 +3,6 @@ $(function () {
   var APP = ns('APP');
   var GROUP = ns('GROUP');
 
-  /***********HEADER VIEW*************/
   var headerView = Backbone.View.extend({
     template: _.template($('#header_t').html()),
     tagName: "tr",
@@ -11,6 +10,7 @@ $(function () {
       _.bindAll(this);
       this.types = this.options['types'];
       this.headers = this.options['header']; //read argument [object w/ only one key,val pair] to get headers
+      this.m= TABLES.m;
       this.render(); //self-rendering
     },
     render: function () {
@@ -26,6 +26,7 @@ $(function () {
           class_: this.types[_.indexOf(this.headers,h)]
         };
         else args = _.extend({class_: ''},h);
+        args['header'] = this.m(args['header']);
         header = this.template(args);
         $(this.el).append(header); //append header
       },
@@ -34,7 +35,7 @@ $(function () {
       return this;
     }
   });
-  /*************ROW VIEW***************/
+
   var rowView = Backbone.View.extend({
     tagName: "tr",
     initialize: function () {
@@ -151,19 +152,26 @@ $(function () {
       this.footer = this.$el.find('tfoot');
     }
     ,setup_event_listeners : function(){
-      this.details_btn.off("click");
-      this.copy_btn.off("click");
-      this.print_btn.off("click");
-      this.state.off("change:goc_tot change:min_tot");
+      if (this.details_btn){
+        this.details_btn.off("click");
+        if ( this.hide_col_ids.length > 0){
+          this.details_btn.on("click",this.on_details_click);
+        }
+        else {
+          this.details_btn.hide();
+        }
+      }
 
-      if ( this.hide_col_ids.length > 0){
-        this.details_btn.on("click",this.on_details_click);
+      if (this.copy_btn){
+        this.copy_btn.off("click");
+        this.copy_btn.on("click",this.on_copy_click);
       }
-      else {
-        this.details_btn.hide();
+      if (this.print_btn){
+        this.print_btn.off("click");
+        this.print_btn.on("click",this.on_print_click);
       }
-      this.copy_btn.on("click",this.on_copy_click);
-      this.print_btn.on("click",this.on_print_click);
+
+      this.state.off("change:goc_tot change:min_tot");
       this.state.on("change:goc_tot change:min_tot",this.render);
     }
     ,on_details_click : function(){
@@ -321,7 +329,7 @@ $(function () {
     ,render: function () {
       this.$el.children().remove();
       this.$el.append( $(this.template({
-        title:this.title 
+        table_title:this.title 
       })));
       this.setup_useful_this_links();
       this.setup_event_listeners();
@@ -380,6 +388,50 @@ $(function () {
       return this;
     }
   }) // end of BaseTableView
+
+  TABLES.miniTableVew = Backbone.View.extend({
+
+    template : _.template($('#mini_t').html())
+    ,initialize : function(){
+      this.rendered = $.Deferred();
+      this.def = this.options['def'];
+      this.app = this.options['app'];
+      _.extend(this,this.def['mini_view']);
+      _.bindAll(this);
+      this.state = this.app.state;
+      this.org = this.state.get("dept");
+      this.lang = this.state.get('lang');
+      this.id = this.def['id'];
+      this.data = this.org['mapped_objs'][this.id][this.lang];
+      this.headers = _.last(this.def['headers'][this.lang])
+      this.h_lookup = this.def['header_lookup']['en'];
+      this.gt = this.app.get_text;
+      // find the target div for this minigraph
+      // based on the def which was provided
+      this.$el = $('#'+this.id);
+    }
+    ,to_lang : function(header){
+      return this.headers[this.h_lookup[header]];
+    }
+    ,make_title : function(){
+      this.$el.find('.title').append(this.def['name'][this.lang]);
+    }
+    ,render : function(){
+      this.$el.append(
+       $(this.template({
+         gt : this.app.get_text       
+       }))
+      );
+      this.make_title();
+      this.prep_data();
+      this.render_data();
+      this.$el.find('.mini_payload').append(this.content);
+
+      setTimeout(this.rendered.resolve);
+      return this;
+    }
+  });
+
   TABLES.extract_headers = function(headers,index){
     // headers is an array of arrays
     return _.map(headers,
@@ -436,6 +488,39 @@ $(function () {
         window.clipboardData.setData("Text",table_text );
       }
       catch(err){}
+    }
+    TABLES.array_to_grid = function(spans, data){
+      return _.map(data, function(row){
+        var row_div = $('<div>').addClass('row');
+        _.each(_.zip(spans,row), function(span_data){
+          var span = span_data[0];
+          var data = span_data[1];
+          row_div.append($('<div>').addClass('span'+span).html(data));
+        });
+        return row_div;
+      });
+    }
+
+    TABLES.build_table = function(options){
+      var table = $(_.template($('#list_t').html())());
+      table.find('table').removeClass('table-striped');
+      if (options.headers){
+        _.each(options.headers, function(header_row){
+           var row = $('<tr>');
+           row.append( _.map(header_row,function(x,index){
+             return $('<th>').html(x).css(options.css[index]);
+           }));
+           table.find('thead').append( row);
+        });
+      }
+     _.each(options.body, function(data_row){
+        var row = $('<tr>');
+        row.append( _.map(data_row,function(x,index){
+          return $('<td>').html(x).css(options.css[index]);
+        }));
+        table.find('tbody').append(row);
+     });
+     return table;
     }
 
 }); // end of scope

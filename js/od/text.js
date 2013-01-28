@@ -66,8 +66,12 @@
         ,"fr" : "Les pourcentages inférieurs à 2% ne seront pas affichés"
       }
       ,"details" : {
-        "en" : "Show more details"
-        ,"fr": "Voir plus de détails"
+        "en" : "Details"
+        ,"fr": "Détails"
+      }
+      ,"back" : {
+        "en" : "Back"
+        ,"fr": "Retour"
       }
       ,"org_info" : {
         "en" : "Data from Inventory of Government of Canada Organizations"
@@ -153,6 +157,10 @@
         "en": "Org Total"
         ,"fr": "Total pour l’organisation"
       }
+      ,"year": {
+        "en": "Year"
+        ,"fr": "Année"
+      }
       ,"year_total": {
         "en": "Year Total"
         ,"fr": "Total pour l'année"
@@ -185,9 +193,17 @@
         "en": "Other"
         ,"fr": "Autre"
       }
+      ,"remainder" : {
+        "en": "Remainder"
+        ,"fr": "Rest"
+      }
       ,"so" : {
         "en": "Standard Objects"
         ,"fr": "Articles courants"
+      }
+      ,"program" : {
+       'en' : 'Program',
+       'fr' : 'Programme'
       }
       ,"graph2b_title" : {
         "en": "Comparison of Authorities and Expenditures Between This Period and the Same from the Previous Fiscal year"

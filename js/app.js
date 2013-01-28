@@ -2,6 +2,8 @@
     var APP = ns('APP');
     var LANG = ns('LANG');
 
+    APP.dispatcher = _.clone(Backbone.Events)
+
     APP.types_to_format = {
       "percentage" :  function(val,lang){return $.formatNumber(val,
                                                   {format : "0%" ,locale : lang})},
@@ -23,7 +25,23 @@
     }
 
     /************STATE MODEL********/
-    APP.stateModel = Backbone.Model.extend({});
+    APP.stateModel = Backbone.Model.extend({
+      gsp : function(key){
+        var promise = this.get(key);
+        if (!promise){
+          promise = $.Deferred();
+          this.set(key, promise);
+        }
+        return promise;
+      }
+      ,rp : function(key,options){
+        this.set(key, $.Deferred(),options);
+      }
+      ,sp: function(key,val){
+        this.gsp(key).resolve(val);
+        this.set("_"+key,val);
+      }
+    });
 
     APP.modalView = Backbone.View.extend({
       initialize: function(){
@@ -69,7 +87,14 @@
 
         this.lookup = depts;
         this.state.on('change:lang', this.render);// re-render on change in language
+        this.state.on('change:dept', this.clear);// re-render on change in language
         this.$el.typeahead({updater: this.updater});
+      }
+      ,clear : function(){
+        var that = this;
+        window.setTimeout(function(){
+          that.$el.val('');
+        },1);
       }
       ,render:function () {
          var lang = this.state.get('lang');
@@ -233,16 +258,16 @@
         this.state.off('change:lang', this.render);// re-render on change in language
         this.state.on('change:lang', this.render);// re-render on change in language
       }
-    ,render:function () {			
-      this.$el.off();
-      this.$el.html(this.app.get_text("lang"));
-      this.$el.on("click",this.set_lang);
-      return this;
-    }
-    ,set_lang : function () {
-      var new_lang = this.state.get("lang") == "en" ? "fr" : "en";
-      this.state.set({lang: new_lang});
-    }
+      ,render:function () {			
+        this.$el.off();
+        this.$el.html(this.app.get_text("lang"));
+        this.$el.on("click",this.set_lang);
+        return this;
+      }
+      ,set_lang : function () {
+        var new_lang = this.state.get("lang") == "en" ? "fr" : "en";
+        this.state.set({lang: new_lang});
+      }
     }); 
 
     APP.otherDeptsDropDown = Backbone.View.extend({
@@ -251,15 +276,14 @@
         _.bindAll(this);
         this.app = this.options["app"];
         this.state = this.app.state;
-        this.state.on("change:other_depts",this.render);
+        var other_orgs = this.state.gsp("other_orgs");
+        $.when(other_orgs).done(this.render);
       }
-      ,render: function(){
+      ,render: function(other_depts){
         var dept = this.state.get('dept');
         var lang = this.state.get("lang");
-        var other_depts = this.state.get("other_depts");
         var other_depts_list = $('#other_depts_list');
-        // remove the previous entries
-        other_depts_list.find('li a').parent().remove();
+
         if (other_depts.length > 0){
           _.each(_.sortBy(other_depts,
                 function(d){return d.dept[lang]},

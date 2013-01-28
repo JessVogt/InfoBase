@@ -14,6 +14,7 @@ $(function () {
                         ['to','make_filter','line_key']));
   }
 
+
   mapper.prototype.map = function(rows){
   return _.map(rows,
     function(row){
@@ -53,5 +54,6 @@ $(function () {
   }
 
   MAPPERS.mapper = mapper;
+  MAPPERS.maps = {}
 
 });

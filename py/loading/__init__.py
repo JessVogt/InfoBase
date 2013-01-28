@@ -11,7 +11,7 @@ wb2 = xlrd.open_workbook(f2)
 
 def clean_data(d):
   if isinstance(d,basestring):
-    d = d.strip('*').strip()
+    d = d.strip('*').strip().replace(u"\xad","-")
     # try and convert to an integer
     # if it fails, then return the string
     try:
@@ -53,6 +53,10 @@ def votes(lines):
   map(_,lines)
   return rtn
 
+def sos(lines):
+  return {l[0]: {'en' : l[1],'fr' : l[2]}
+          for l in lines}
+
 def stat(lines):
   def _(line):
     return line[0],{'en' : line[1],'fr':line[2]}
@@ -80,6 +84,7 @@ def load_od():
   lookups = {
     'depts': depts(lookup_sheets['DEPTCODE_MINCODE']),
     'votes': votes(lookup_sheets['VOTES']),
+    'sos' : sos(lookup_sheets['SO'])
   }
   return lookups,data_sheets
 
