@@ -711,7 +711,7 @@ $(function() {
                     "SE(A)",
                     "SE(B)",
                     "SE(C)",
-                    "Transfers from TB Vote 5 Gov. Contengencies",
+                    "Transfers from TB Vote 5 Gov. Contingencies",
                     "Transfers from TB Vote 10 Gov. Wide Initiatives ",
                     "Transfers from TB Vote 15 Compens. Adjustments  ",
                     "Transfers from TB Vote 25 OBCF  ",
