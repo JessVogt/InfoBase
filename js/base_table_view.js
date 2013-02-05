@@ -143,7 +143,7 @@ $(function () {
       this.init_row_data();
       //
       this.headers = this.def['headers'][this.lang];
-      this.title = this.dept.dept[this.lang] +  " - " + this.def['title'][this.lang];
+      this.title = TABLES.m(this.dept.dept[this.lang] +  " - " + this.def['title'][this.lang]);
     }
     ,setup_useful_this_links : function(){
       //
@@ -190,7 +190,7 @@ $(function () {
     }
     ,on_print_click : function(e){
      (new APP.printView({
-       state : this.state,
+       app: this.app,
        table : this.to_text()
      }));
     }
@@ -329,7 +329,7 @@ $(function () {
     ,render: function () {
       this.$el.children().remove();
       this.$el.append( $(this.template({
-        table_title:this.title 
+        table_title:this.title
       })));
       this.setup_useful_this_links();
       this.setup_event_listeners();
@@ -393,7 +393,6 @@ $(function () {
 
     template : _.template($('#mini_t').html())
     ,initialize : function(){
-      this.rendered = $.Deferred();
       this.def = this.options['def'];
       this.app = this.options['app'];
       _.extend(this,this.def['mini_view']);
@@ -402,7 +401,12 @@ $(function () {
       this.org = this.state.get("dept");
       this.lang = this.state.get('lang');
       this.id = this.def['id'];
-      this.data = this.org['mapped_objs'][this.id][this.lang];
+
+      if (this.org['mapped_objs'][this.id][this.lang].length > 0){
+        this.data = this.org['mapped_objs'][this.id][this.lang];
+      } else {
+        this.data = null;
+      }
       this.headers = _.last(this.def['headers'][this.lang])
       this.h_lookup = this.def['header_lookup']['en'];
       this.gt = this.app.get_text;
@@ -416,6 +420,11 @@ $(function () {
     ,make_title : function(){
       this.$el.find('.title').append(this.def['name'][this.lang]);
     }
+    ,set_no_content : function(){
+      this.content = $("<span class='title'>").html(this.gt("no_data"));
+      this.$el.find('a.details').remove();
+
+    }
     ,render : function(){
       this.$el.append(
        $(this.template({
@@ -423,12 +432,25 @@ $(function () {
        }))
       );
       this.make_title();
-      this.prep_data();
-      this.render_data();
+      if (this.data){
+        this.prep_data();
+        this.render_data();
+      } else {
+        this.set_no_content();
+      }
       this.$el.find('.mini_payload').append(this.content);
 
-      setTimeout(this.rendered.resolve);
+      var that = this;
+      setTimeout(function(){
+        APP.dispatcher.trigger(that.make_signal(),that);
+      });
       return this;
+    }
+    ,make_signal : function(){
+     return 'table_' + this.def.id +"_rendered";
+    }
+    ,trigger_click : function(){
+      this.$el.find('a.details').trigger("click");
     }
   });
 

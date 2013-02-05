@@ -5,15 +5,18 @@ $(function() {
   var GRAPHS = ns('GRAPHS');
   var MAPPERS = ns('MAPPERS');
 
-  var col = Backbone.Collection.extend({});
-
-  var current_mini_views  = {};
-  TABLES.rendered_mini_views = function(){
-    return $.when.apply(this,
-      _.map(current_mini_views,function(view){
-        return view['rendered'];
+  var col = Backbone.Collection.extend({
+    initialize : function(){
+      _.bindAll();
+    }
+    ,rendered_mini_views : function(){
+      return $.when.apply(this,
+        this.map(function(view){
+          return view['rendered'];
       }));
-  }
+    }
+  });
+
 
   TABLES.tables = new col;
 
@@ -22,31 +25,51 @@ $(function() {
   }
 
   APP.dispatcher.once("app_ready", function(app){
-    app.state.on("change:dept", function(){
-      $.when(TABLES.rendered_mini_views()).done(
-        function(){
-          setTimeout(function(){
-            $('.widget-row').each(function(i,row){
-              $('.table-widget',row)
-              .height(_.max($('.table-widget',row).map(function(x,y){
-                return $(y).height();
-              })));
-              $('.section-header',row)
-              .height(_.max($('.section-header',row).map(function(x,y){
-                return $(y).height();
-              })));
-            });
 
-            $('.table-widget').css({
-              position : 'relative'
-            });
-            $('.table-widget div.details_button').css({
-              'bottom' : 0, 
-              'position' : 'absolute', 
-              'right' : 0
-            });
-          });
-        })
+    app.state.on("change:dept", function(state){
+      var deferreds = TABLES.tables.map(function(table){
+        var d = $.Deferred();
+        var signal = 'table_' + table.get("id") +"_rendered";
+        APP.dispatcher.once(signal,function(view){
+          d.resolve(view);
+        });
+        return d;
+      })
+      // once all the mini table signals have been sent
+      // do some prettying up on the page
+      $.when.apply(this,deferreds).done(function(){
+        var views = _.map(arguments,_.identity);
+        var current_table = app.state.get("table");
+        if (current_table){
+          var current_view = _.first(_.filter(views,function(v){
+            return v.def.id === current_table.get('id');
+          }));
+        } else {
+          var current_view = undefined;
+        }
+        $('.widget-row').each(function(i,row){
+          $('.table-widget',row)
+          .height(_.max($('.table-widget',row).map(function(x,y){
+            return $(y).height();
+          })));
+          $('.section-header',row)
+          .height(_.max($('.section-header',row).map(function(x,y){
+            return $(y).height();
+          })));
+        });
+        $('.table-widget').css({
+          position : 'relative'
+        });
+        $('.table-widget div.details_button').css({
+          'bottom' : 0, 
+          'position' : 'absolute', 
+          'right' : 0
+        });
+        APP.dispatcher.trigger("mini_tables_rendered",
+            {current_view : current_view,
+              views : views} 
+        ); 
+      });
     });
 
     TABLES.tables.on("add", function(table){
@@ -98,6 +121,7 @@ $(function() {
         });
       });
 
+
       app.state.on("change:dept", function(state){
 
         var lang = app.state.get("lang");
@@ -126,49 +150,8 @@ $(function() {
       });
     });
 
-    APP.dispatcher.on("mapped", function(table){
-      if (app.state.get('table')){
-        var current_table = app.state.get('table').get('id');
-      }else {
-        var current_table = undefined;
-      }
-      var id = table.get('id');
-
-      var mtv = new TABLES.miniTableVew({
-        app : app,
-        def: table.attributes
-      });
-
-      current_mini_views[id] = mtv;
-
-      mtv.render();
-      
-      mtv.$el.find('a.details').on("click", function(event){
-        // move the mini views out of the way and replace with larger 
-        // table
-
-        app.state.set({'table':table});
-
-        var dv = new APP.DetailsView({
-          app : app,
-          def: table.attributes
-        });
-
-        dv.render();
-
-        $('.panels').hide();
-      });
-
-      $.when(TABLES.rendered_mini_views()).done(function(){
-        if (id === current_table) {
-          mtv.$el.find('a.details').trigger("click");
-        }
-      });
-    });
-
   APP.dispatcher.trigger("load_tables",app);
 
   });
-
 });
 

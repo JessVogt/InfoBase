@@ -53,6 +53,14 @@
                  " commencez par entrer le nom d'une organisation ou son acronyme."
                 ].join("")
       }
+      ,"current_year_fisc" : {
+         "en" : "Financial data for the current Fiscal Year (April 1st 2012, March 31st 2013)",
+         "fr" : "Données financières pour l'exercise (1 avril á  31 mars, 2013)"
+      }
+      ,"previous_year_fisc" : {
+         "en" : "Financial data from previous fiscal years (2009-10 to 2011-12)",
+         "fr" : "Données financières pour les exercises (2009-10 to 2011-12)"
+      }
       ,"close" : {
         "en" : "close"
         ,"fr" : "fermer"
@@ -108,6 +116,10 @@
       ,"org" :{
        "en" : "Organisation"
        ,"fr" : "Organisation"
+      }
+      ,"open_data_link" : {
+       "en" : "Open Data Link"
+       ,"fr" : "Lien aux données ouvertes"
       }
       ,"loading" : {
         "en": "Loading"

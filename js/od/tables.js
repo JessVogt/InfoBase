@@ -16,6 +16,11 @@ $(function() {
     'month' : 9
   };
 
+  APP.dispatcher.on("new_details_view",function(dv){
+    debugger
+    dv.$el.find('li.back a').on("click",dv.tear_down);
+  });
+
   APP.dispatcher.on("load_tables",function(app){
 
     var m = TABLES.m;

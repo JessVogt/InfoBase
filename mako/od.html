@@ -68,14 +68,13 @@
 
   </%block>
 
-
-  <div class="navbar navbar-fixed-top navbar-inverse">
-    <div class="navbar-inner">
-      <div class="container-fluid" id='navbar'>
+  <div class='container'>
+    <div class="navbar span9">
+      <div class="navbar-inner" id='navbar'>
         <span class="brand" id='title'></span>
         <ul class='nav' id='navbar_ul'>
           <li>
-          <a href='#' id='dept_sel'> </a>
+            <a href='#' id='dept_sel'> </a>
           </li>
           <li class="divider-vertical" id="search_divider"
             rel="popover"
@@ -90,7 +89,6 @@
         <ul class='nav pull-right'>
           <li><a href="#" id="lang_change"></a> </li>
         </ul>
-
       </div>
     </div>
   </div>
@@ -121,31 +119,39 @@
 <%text filter="n">
 <script type='text/plain' id='main_t'>
   <div class='container'>
+    <ul class="nav nav-pills">
+      <li class="">
+        <% var website = _.has(org,'website') ? org['website'][lang] : '#' %>
+        <a href="http://<%=website%>" target=_blank class='dept_name'>
+          <%=org['dept'][lang]%>
+        </a> 
+      </li>
+      <li class='dropdown active'>
+        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+          <span class="caret" ></span>
+        </a>
+        <ul class="dropdown-menu" id='other_depts_list'>
+          <li class="nav-header"><%=gt("other_in_min")%></li>
+        </ul>
+      </li>
+    </ul>
     <div class="row">
+      <% if (_.has(org,'website')){ %>
       <div class="well span9">
-        <div class='dept_title'>
-          <a href="http://<%=org['website'][lang]%>" target=_blank>
-            <%= org['dept'][lang]%> 
-          </a>
-          <div class='btn-group'>
-            <a class="btn btn-link dropdown-toggle" data-toggle="dropdown" href="#">
-              <span class="caret" ></span>
-            </a>
-            <ul class="dropdown-menu" id='other_depts_list'>
-              <li class="nav-header"><%=gt("other_in_min")%></li>
-            </ul>
-          </div>
-        </div>
         <p> 
           <a href='<%=gt("IGOC_site")%>' target='_new'>
             <%=gt("org_info")%>
           </a>
-        </p>
+       </p>
         <table class='table table-condensed'>
           <tbody>
             <tr>
               <th> <%= gt("legal_name")%> </th>
               <td> <%=org['legal_name'][lang]%>  </td>
+            </tr>
+            <tr>
+              <th> <%= gt("minister")%> </th>
+              <td> <%=org['minister'][lang]%>  </td>
             </tr>
             <tr>
               <th> <%= gt("mandate")%> </th>
@@ -164,12 +170,13 @@
           </tbody>
         </table>
       </div>
+      <% } %>
     </div>
     <p></p>
     <div class='panels'>
       <div class="row" >
         <div class='span9'>
-          <p class='lead'>Current Fiscal Year (April 1st 2012, March 31st 2013)</p>
+          <p class='lead'><%=gt('current_year_fisc') %></p>
         </div>
       </div>
       <div class="row widget-row" >
@@ -182,7 +189,7 @@
       </div>
       <div class="row" >
         <div class='span9'>
-          <p class='lead'>Previous Fiscal Years (2009-10 to 2011-12)</p>
+          <p class='lead'><%=gt('previous_year_fisc') %></p>
         </div>
       </div>
       <div class="row widget-row" >
@@ -219,42 +226,48 @@
 </script>
 
 <script type='text/plain' id='dataview_t'>
-  <div class='row'>
-    <div class='span12 well tables'>
-    <div class="btn-toolbar" >
-      <div class='btn-group'> 
-        <button class='btn back' >
-          <%=gt("back")%>
-        </button>
-        <button class='btn btn-inverse details'
+<div class='row'>
+  <div class='span9 well tables'>
+    <ul class='nav nav-pills'>
+      <li class='back active'>
+      <a href='#'><%=gt("back")%></a>
+      </li>
+      <li>
+        <a href='#' class='details'
           title='<%=gt("details_help")%>' 
           data-placement='top'>
           <%=gt("details")%>
-        </button>
-        <button class='btn btn-inverse about'>
+        </a>
+      </li>
+      <li>
+      <a href='#'> 
+            <%=gt("open_data_link")%>
+        </a>
+      </li>
+      <li>
+        <a href='#' class='about'>
           <%=gt("about")%>
-        </button>
-        <% if (footnotes){ %>
-          <button class='btn btn-inverse fn'>
-            <%=gt("footnotes")%>
-          </button>
-        <% } %>
-      </div>
-      <div class="btn-group" data-toggle="buttons-checkbox">
-        <button type="button" class="btn btn-primary min_tot <%=min_tot ? 'active' : ''%>">
+        </a>
+      </li>
+      <% if (footnotes){ %>
+      <li>
+        <a class='fn' href='#'>
+          <%=gt("footnotes")%>
+        </a>
+      </li>
+      <% } %>
+      <li class="<%=min_tot ? 'active' : ''%>">
+        <a class="min_tot" href='#'>
             <%=gt("min_total")%>
-        </button>
-        <button type="button" class="btn btn-primary goc_tot <%=goc_tot ? 'active' : ''%>">
+        </a>
+      </li>
+      <li class="<%=goc_tot ? 'active' : ''%>">
+        <a class="goc_tot " href='#'>
             <%=gt("goc_total")%>
-        </button>
-      </div>
-    </div>
+        </a>
+      </li>
+    </ul>
     <div class='table_payload' style='font-size: 12px'>
-
-    </div>
-  </div>
-  <div class='fade in graph_content' id='<%=key%>_graphs'>
-    <div class='graph_payload'>
 
     </div>
   </div>
@@ -275,34 +288,6 @@
     </div>
 </script>
 
-<script type='text/plain' id='graph_grid_t'>
-  <div class='container-fluid'>
-      <% for (var i in rows) { %>
-        <% var row = rows[i] %>
-        <div class="row-fluid">
-          <h4> <%=row.header%> </h4>
-          <% if (sidebar_header != false && i == 0) { %>
-            <div class='span2 well'>
-              <ul class="nav nav-list">
-                <li class="nav-header"> <%=sidebar_header%> </li>
-                <% for (var x=0;x<items.length;x++) { %>
-                  <li><a href="#"><%=items[x]%></a></li>
-                <% } %>
-              </ul>
-            </div>
-          <%}%>
-          <% for (var j in row.cols) { %>
-            <% var cell = row.cols[j] %>
-              <div class='well span<%=cell.span%> offset<%=cell.offset%>'>
-                <div id="<%=cell.id%>" style='height:<%=cell.height%>px;'>
-                </div>
-                <div id="<%=cell.id + '_fn'%>"></div>
-              </div>
-          <%}%>
-         </div>
-      <%}%>
-  </div>
-</script>
 <script type='text/plain' id='dept_list'>
   <div class='well dept_menu'>
   <div class='container-fluid'>

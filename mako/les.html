@@ -70,7 +70,7 @@
   </%block>
 
 
-  <div class="navbar navbar-fixed-top navbar-inverse">
+  <div class="navbar navbar-fixed-top">
     <div class="navbar-inner">
       <div class="container-fluid" id='navbar'>
         <span class="brand" id='title'></span>
@@ -120,25 +120,29 @@
     </div>
   </div>
 <%text filter="n">
+<script type='text/plain' id='breadcrumb_el'>
+  <li><a href="#"><%=link%></a> <span class="divider">/</span></li>
+</script>
 <script type='text/plain' id='main_t'>
   <div class='container'>
-
-    <div class='dept_title'>
-      <span class='dept_name' style='font-size: 2em'>
-        <%=org['dept'][lang]%>  
-      </span>
-      <div class='btn-group'>
-        <a class="btn btn-link dropdown-toggle" data-toggle="dropdown" href="#">
+    <ul class="nav nav-pills">
+      <li style='display: none;' class='back active'>
+        <a href='#' ></a>
+      </li>
+      <li class="active">
+        <a href="#" class='dept_name'><%=org['dept'][lang]%></a> 
+      </li>
+      <li class='dropdown active'>
+        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
           <span class="caret" ></span>
         </a>
         <ul class="dropdown-menu" id='other_depts_list'>
           <li class="nav-header"><%=gt("other_in_min")%></li>
         </ul>
-      </div>
-    </div>
-
+      </li>
+    </ul>
     <div class='panels'>
-      <p class='lead'>Current Fiscal Year (April 1st 2012, March 31st 2013)</p>
+      <p class='lead'><%=gt('current_year_fisc') %></p>
       <div class="row widget-row" >
           <div class="table-widget span3 well well-small" id='Table1'>
           </div>                       
@@ -147,13 +151,15 @@
           <div class="table-widget span3 well well-small" id='Table2a'>
           </div>                       
       </div>                       
+      <p></p>
       <div class="row widget-row" >
           <div class="table-widget span3 well well-small" id='Table2b'>
           </div>                       
           <div class="table-widget span3 well well-small" id='Table3'>
           </div>
       </div>
-      <p class='lead'>Previous Fiscal Years (2009-10 to 2011-12)</p>
+      <p></p>
+      <p class='lead'><%=gt('previous_year_fisc') %></p>
       <div class='row widget-row'>
           <div class="table-widget span3 well well-small" id='Table4'>
           </div>                       
@@ -162,6 +168,7 @@
           <div class="table-widget span3 well well-small" id='Table6'>
           </div>                       
       </div>                       
+      <p></p>
       <div class="row widget-row" >
           <div class="table-widget span3 well well-small" id='Table7'>
           </div>
@@ -176,7 +183,7 @@
 <script type='text/plain' id='mini_t'>
   <div class='mini_t'>
     <div class='section-header'>
-      <span class='title '></span>
+      <strong><span class='title '></span></strong>
     </div>
     <div class='mini_payload' style='font-size: 10px'>
 
@@ -214,48 +221,52 @@
       <li><a href="#<%=key%>_tables" data-toggle="tab"><%=gt("table")%></a></li>
       <li><a href="#<%=key%>_graphs" data-toggle="tab"><%=gt("graphs")%></a></li>
     </ul>
-
     <div class='tab-content'>
-      <div class='tab-pane well active tables table_content' id='<%=key%>_tables'>
-        <div class="btn-toolbar" style='padding-left: 50px'>
-          <div class='btn-group'> 
-            <button class='btn back' >
-              <%=gt("back")%>
-            </button>
-            <button class='btn btn-inverse details'
-              title='<%=gt("details_help")%>' 
-              data-placement='top'>
-              <%=gt("details")%>
-            </button>
-            <button class='btn btn-inverse copy' 
-              data-placement="bottom" 
-              title='<%=gt("copy_tooltip")%>' >
-              <%=gt("copy")%>
-            </button>
-            <button class='btn btn-inverse print'>
-              <%=gt("print")%>
-            </button>
-            <button class='btn btn-inverse about'>
-              <%=gt("about")%>
-            </button>
+      <div class='tab-pane active tables table_content' id='<%=key%>_tables'>
+          <ul class='nav nav-pills'>
+            <li>
+              <a href='#' class='details'
+                title='<%=gt("details_help")%>' 
+                data-placement='top'>
+                <%=gt("details")%>
+              </a>
+            </li>
+            <li>
+              <a href='#' class='copy'
+                 title='<%=gt("copy_tooltip")%>' 
+                 data-placement='top'>
+                  <%=gt("copy")%>
+              </a>
+            </li>
+            <li>
+              <a href='#' class='about'>
+                <%=gt("about")%>
+              </a>
+            </li>
+            <li>
+              <a href='#' class='print'>
+                <%=gt("print")%>
+              </a>
+            </li>
             <% if (footnotes){ %>
-              <button class='btn btn-inverse fn'>
+            <li>
+              <a class='fn' href='#'>
                 <%=gt("footnotes")%>
-              </button>
-
+              </a>
+            </li>
             <% } %>
-          </div>
-          <div class="btn-group" data-toggle="buttons-checkbox">
-            <button type="button" class="btn btn-primary min_tot <%=min_tot ? 'active' : ''%>">
-                <%=gt("min_total")%>
-            </button>
-            <button type="button" class="btn btn-primary goc_tot <%=goc_tot ? 'active' : ''%>">
-                <%=gt("goc_total")%>
-            </button>
-          </div>
-        </div>
-
-        <div class='table_payload'>
+            <li class="<%=min_tot ? 'active' : ''%>">
+              <a class="min_tot" href='#'>
+                  <%=gt("min_total")%>
+              </a>
+            </li>
+            <li class="<%=goc_tot ? 'active' : ''%>">
+              <a class="goc_tot " href='#'>
+                  <%=gt("goc_total")%>
+              </a>
+            </li>
+          </ul>
+        <div class='well table_payload'>
 
         </div>
       </div>
@@ -454,7 +465,7 @@
       </td>
      </tr>
    </tbody>
-    </table>
+ </table>
 </script>
 <script type='text/plain' id='header_t'>
   <th colspan='<%=colspan%>'><div class='<%=class_%>' > <%=header%> </div></th>

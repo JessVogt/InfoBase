@@ -44,43 +44,101 @@ $(function() {
 
   APP.dispatcher.on("new_details_view",function(dv){
 
-
-    $.when(dv.rendered).done(function(){
-
-    // create the graph
-      if (_.has(dv.def, "graph_view")){
-        dv.graph_payload = dv.$el.find('.graph_payload');
-        // check if department is TBS and then remove the
-        // central votes
-        dv.graph_view = new dv.def.graph_view({
-          key : dv.key,
-          data : dv.data,
-          app : dv.app,
-          def : dv.def,
-          dept : dv.dept,
-          footnotes : []
-        });
-        dv.graph_payload.append(dv.graph_view.render().$el);
-      }
-      else {
-        dv.$el.find('.nav-tabs li:last').remove();
-        dv.$el.find('.graph_content').remove();
-      }
-      
-      var tab_index = dv.app.state.get('current_tab');
-      var tab = dv.$el.find('.nav-tabs a')[tab_index];
-      if (tab) {
-        $(tab).tab("show");
-      } else {
-        dv.$el.find('.nav-tabs a:first').tab("show");
-      }
-      dv.$el.find('.nav-tabs a:last').on("shown",function(){
-        dv.$el.find('.nav-tabs a:last').off("shown");
-        dv.graph_view.graph();
+    // setup the back button
+    $('.nav-pills li.back')
+      .show()
+      .find('a')
+      .html(dv.gt("back"))
+      .on("click",dv.tear_down)
+      .on("click", function(b){
+        $(b)
+        .parent()
+        .hide()
+        .find('a').off("click");
       });
+    
+    // create the graph
+    if (_.has(dv.def, "graph_view")){
+      dv.graph_payload = dv.$el.find('.graph_payload');
+      // check if department is TBS and then remove the
+      // central votes
+      dv.graph_view = new dv.def.graph_view({
+        key : dv.key,
+        data : dv.data,
+        app : dv.app,
+        def : dv.def,
+        dept : dv.dept,
+        footnotes : []
+      });
+      dv.graph_payload.append(dv.graph_view.render().$el);
+    }
+    else {
+      dv.$el.find('.nav-tabs li:last').remove();
+      dv.$el.find('.graph_content').remove();
+    }
+    
+    var tab_index = dv.app.state.get('current_tab');
+    var tab = dv.$el.find('.nav-tabs a')[tab_index];
+    if (tab) {
+      $(tab).tab("show");
+    } else {
+      dv.$el.find('.nav-tabs a:first').tab("show");
+    }
+    dv.$el.find('.nav-tabs a:last').on("shown",function(){
+      dv.$el.find('.nav-tabs a:last').off("shown");
+      dv.graph_view.graph();
     });
   });
 
+  APP.printView = Backbone.View.extend({
+    template : _.template($('#print_view_t').html())
+    ,initialize : function(){
+      _.bindAll(this);
+      this.app = this.options['app'];
+      this.state = this.app.state;
+      this.lang = this.state.get('lang');
+      this.table = $(this.options['table']);
+      this.table.attr('id','');
+      this.render();
+    }
+    ,render : function(){
+      var gt = APP.app.get_text;
+      this.$el = $(this.template({
+        close_text : gt('close'),
+        print_text : gt('print'),
+        help_text : gt('print_help')
+      }));
+      this.$el.
+        find('.table_area')
+        .append(this.table);
+      this.$el
+        .find('.print_view_close')
+        .click(this.close);
+      this.$el.
+        find('.print_view_print')
+        .click(this.print);
+
+      this.app.app.hide();
+      $('body div.navbar').hide();
+      $('body').append(this.$el);
+      return this;
+    }
+    ,close : function(event){
+      this.$el.remove();
+      this.app.app.show();
+      $('body div.navbar').show();
+    }
+    ,print : function(){
+      this.$el
+        .find('button')
+        .hide();
+      window.print();
+      this.$el
+        .find('button')
+        .show();
+      return false;
+    }
+  });
 
   APP.dispatcher.once("load_tables",function(app){
 
@@ -162,7 +220,7 @@ $(function() {
             },
           title : { 
             en : "Table 1 - Lapse Forecast for 2012-13 based on {{month_en}} data (P{{p}}) ($000)",
-            fr : "Tableau 1 - Prévision des fonds inutilisés basée sur les dépenses d'{{month_fr}} 2012-13 (P{{p}}) ($000)",
+            fr : "Tableau 1 - Prévision des fonds inutilisés basée sur les dépenses d'{{month_fr}} 2012-13 (P{{p}}) ($000)"
           }
           ,key : [0,1]
           ,table_view : { 
@@ -288,7 +346,7 @@ $(function() {
           },
           title : { 
             en : "Table 2 - Authority and Expenditure based on {{month_en}}, 2012-13 data (P{{p}}) ($000)",
-            fr : "Tableau 2 - Crédits et dépenses à la fin d'{{month_fr}}, 2012-13 (P{{p}}) ($000)",
+            fr : "Tableau 2 - Crédits et dépenses à la fin d'{{month_fr}}, 2012-13 (P{{p}}) ($000)"
           }
           ,key : [0,1]
           ,table_view : { 
@@ -381,37 +439,39 @@ $(function() {
       {
         id : "Table2a",
         col_defs : [ "wide-str",
-              "big-int",
-              "big-int",
-              "big-int",
-              "big-int",
-              "big-int",
-              "big-int",
-              "big-int",
-              "big-int",
-              "big-int",
-              "big-int",
-              "big-int",
-              "big-int",
-              "big-int",
-              "big-int",
-              "big-int",
-              "big-int",
-              "big-int",
-              "big-int"
-            ],
+                     "big-int",
+                     "big-int",
+                     "big-int",
+                     "big-int",
+                     "big-int",
+                     "big-int",
+                     "big-int",
+                     "big-int",
+                     "big-int",
+                     "big-int",
+                     "big-int",
+                     "big-int",
+                     "big-int",
+                     "big-int",
+                     "big-int",
+                     "big-int",
+                     "big-int",
+                     "big-int"
+        ],
         coverage : "in_year",
-        headers : { "en" : [ [ { "colspan" : 1,
-                      "header" : ""
+        headers : { "en" : [ 
+                  [ 
+                    {"colspan" : 1,
+                     "header" : ""
                     },
-                    { "colspan" : 6,
-                      "header" : "2012-13 Period {{p}}",
+                    {"colspan" : 6,
+                     "header" : "2012-13 Period {{p}}"
                     },
-                    { "colspan" : 6,
-                      "header" : "2011-12 Period {{p}}"
+                    {"colspan" : 6,
+                     "header" : "2011-12 Period {{p}}"
                     },
-                    { "colspan" : 6,
-                      "header" : "2010-11 Period {{p}}"
+                    {"colspan" : 6,
+                     "header" : "2010-11 Period {{p}}"
                     }
                   ],
                   [ "Program Activity",
@@ -605,6 +665,7 @@ $(function() {
          ,key : [0,1]
           ,table_view : { 
             sum_cols: [2,3, 5,6] 
+            ,hide_col_ids: []
             ,min_func : TABLES.add_ministry_sum
             ,init_row_data : function(){
               var txt = this.gt("total");

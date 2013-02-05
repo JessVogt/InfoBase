@@ -57,6 +57,10 @@
                  " commencez par entrer le nom d'une organisation ou son acronyme."
                 ].join("")
       }
+      ,"no_data" : {
+        "en" : "No data avilable for this table"
+        ,"fr" : "Pas de données disponibles pour cette table"
+      }
       ,"close" : {
         "en" : "close"
         ,"fr" : "fermer"
@@ -74,8 +78,8 @@
         ,"fr": "Voir plus de détails"
       }
       ,"back" : {
-        "en" : "Back"
-        ,"fr": "Retour"
+        "en" : "&larr; Back"
+        ,"fr": "&larr; Retour"
       }
       ,"org_info" : {
         "en" : "Data from Inventory of Government of Canada Organizations"
@@ -104,6 +108,14 @@
       ,"lang" : {
         "en" : "Français"
         ,"fr" : "English"
+      }
+      ,"current_year_fisc" : {
+         "en" : "Financial data for the current Fiscal Year (April 1st 2012, March 31st 2013)",
+         "fr" : "Données financières pour l'exercise (1 avril á  31 mars, 2013)"
+      }
+      ,"previous_year_fisc" : {
+         "en" : "Financial data from previous fiscal years (2009-10 to 2011-12)",
+         "fr" : "Données financières pour les exercises (2009-10 to 2011-12)"
       }
       ,"footnotes" : {
         "en" : "Footnotes"
@@ -146,8 +158,8 @@
         ,"fr": "Sous total"
       }
       ,"title" : {
-        "en": "Lapse and Expenditure Statistics"
-        ,"fr": "Statistiques sur les fonds inutilisés et les dépenses"
+        "en": "Lapse and Expenditure Dashboard"
+        ,"fr": "Tableau de bord pour les fonds inutilisés et les dépenses"
       }
       ,"table" : {
         "en" : "Table"
