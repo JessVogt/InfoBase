@@ -50,8 +50,8 @@ $(function() {
       .find('a')
       .html(dv.gt("back"))
       .on("click",dv.tear_down)
-      .on("click", function(b){
-        $(b)
+      .on("click", function(e){
+        $(e.currentTarget)
         .parent()
         .hide()
         .find('a').off("click");
