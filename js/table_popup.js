@@ -33,6 +33,7 @@ $(function () {
           function(key){return this.row[key]},
           this
       );
+
       this.type = this.def['col_defs'][this.col_index];
 
       this.line_key_types = _.map(this.def.key,
@@ -82,7 +83,7 @@ $(function () {
               var val = mapped_line[this.col_index];
               var table_line = [dept_lines[0]].concat(line_key).concat([val])
               // mark mapped line as being the one selected
-              if (_.isEqual(mapped_line,this.row)){
+              if (_.isEqual(mapped_line.original,this.row.original)){
                this.table_line = table_line;
               }
              return table_line;
