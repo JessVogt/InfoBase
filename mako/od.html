@@ -121,63 +121,68 @@
 
   <div class='container'>
     <ul class="nav nav-pills">
-      <li class="">
-        <% var website = _.has(org,'website') ? org['website'][lang] : '#' %>
-        <a href="http://<%=website%>" target="_blank" class='dept_name'>
-          <%=org['dept'][lang]%>
-        </a> 
+      <li>
+        {{#if org.website}}
+          <a href="http://{{lang org.website}}" 
+              target="_blank" class='dept_name'>
+            {{lang org.dept}}
+          </a> 
+        {{else}}
+          {{lang org.dept}}
+        {{/if}}
       </li>
       <li class='dropdown active'>
         <a class="dropdown-toggle" data-toggle="dropdown" href="#">
           <span class="caret" ></span>
         </a>
         <ul class="dropdown-menu" id='other_depts_list'>
-          <li class="nav-header"><%=gt("other_in_min")%></li>
+          <li class="nav-header">{{gt 'other_in_min'}}</li>
         </ul>
       </li>
     </ul>
     <div class="row">
-      <% if (_.has(org,'website')){ %>
+      {{#if org.website}}
       <div class="well span9">
         <p> 
-          <a href='<%=gt("IGOC_site")%>' target='_new'>
-            <%=gt("org_info")%>
+          <a href='{{gt "IGOC_site" }}' target='_new'>
+            {{gt 'org_info'}}
           </a>
        </p>
         <table class='table table-condensed'>
           <tbody>
             <tr>
-              <th> <%= gt("legal_name")%> </th>
-              <td> <%=org['legal_name'][lang]%>  </td>
+              <th> {{gt 'legal_name'}} </th>
+              <td> {{lang org.legal_name}}  </td>
             </tr>
             <tr>
-              <th> <%= gt("minister")%> </th>
-              <td> <%=org['minister'][lang]%>  </td>
+              <th> {{gt 'minister'}} </th>
+              <td> {{lang org.minister}}  </td>
             </tr>
             <tr>
-              <th> <%= gt("mandate")%> </th>
-              <td> <%=org['mandate'][lang]%>  </td>
+              <th> {{gt 'mandate'}} </th>
+              <td> {{lang org.mandate}}  </td>
             </tr>
             <tr>
-              <th> <%= gt("legislation")%> </th>
+              <th> {{gt 'legislation'}} </th>
               <td>
-                <% for (var l_index in org['legislation']) {%> 
-                <a href='http://google.com/search?q=<%=encodeURI(org["legislation"][l_index][lang])%>' target="_blank">
-                      <%=org['legislation'][l_index][lang]%>  
-                    </a>
-                <%}%>
+                {{#each org.legislation}}
+                  <a href='http://google.com/search?q=<{{uri this}}' 
+                    target="_blank">
+                    {{lang this}}  
+                  </a>
+                {{/each}}
               </td>
             </tr>
           </tbody>
         </table>
       </div>
-      <% } %>
+      {{/if}}
     </div>
     <p></p>
     <div class='panels'>
       <div class="row" >
         <div class='span9'>
-          <p class='lead'><%=gt('current_year_fisc') %></p>
+          <p class='lead'>{{gt "current_year_fisc"}} </p>
         </div>
       </div>
       <div class="row widget-row" >
@@ -190,7 +195,7 @@
       </div>
       <div class="row" >
         <div class='span9'>
-          <p class='lead'><%=gt('previous_year_fisc') %></p>
+          <p class='lead'>{{gt "previous_year_fisc"}} </p>
         </div>
       </div>
       <div class="row widget-row" >
@@ -315,18 +320,16 @@
   </div>
 </script>
 <script type='text/plain' id='list_t'>
-  <!--
   <div class='table_container sidescroll'>
     <table class='table table-striped table-condensed'>
-      <% if (typeof table_title != "undefined"){ %>
+      {{#if table_title}}
         <caption><%=table_title%></caption>
-      <%}%>
+      {{/if}}
       <thead></thead>
       <tbody></tbody>
       <tfoot></tfoot>
     </table>
   </div>
-  -->
 </script>
 
 <script type='text/plain' id='analytics_t'>
@@ -378,17 +381,25 @@
 </%text>
 <%block name='extrajs'>
     ${ full_js }
-    _.templateSetting = {
-
-
-
-    }
     $(function(){
 
 
         var APP = ns('APP');
 
         APP.dispatcher.on("app_ready", function(app){
+
+        Handlebars.registerHelper("gt",function(context){
+          console.log(context);
+          return app.get_text(context);
+        });
+        Handlebars.registerHelper("uri",function(context){
+          return encodeURI(context[app.state.get("lang")]);
+        });
+        Handlebars.registerHelper("lang",function(context){
+          console.log(context);
+          return context[app.state.get("lang")];
+        });
+
           app.state.set("lang","en");
         });
 

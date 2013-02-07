@@ -94,7 +94,7 @@
   });
 
   var OrgView = Backbone.View.extend({
-    template : _.template($('#main_t').html())
+    template : Handlebars.compile($('#main_t').html())
     ,initialize: function(){
       this.rendered = $.Deferred();
       _.bindAll(this);
