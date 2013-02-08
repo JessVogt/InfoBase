@@ -23,22 +23,19 @@ $(function() {
     }
   }
 
-  APP.dispatcher.once("app_ready",function(app){
-    app.state.on("change:dept", function(state,dept){
-      if (!_.has(dept,"website")) {
-        return;
-      }
-      $.when(app.org_view.rendered).done(function(){
-        
-        app.$el.find('.dept_name')
-        .addClass("clickable")
-        .on("hover", this, function(e){
-          $(e.currentTarget).toggleClass("text-info");
-        })
-        .on("click",function(){
-          (new APP.deptInfoView({app: app})).render();
-        });
-      });
+  APP.dispatcher.once("new_org_view",function(view){
+    var app = view.app;
+    var dept = app.state.get("dept");
+    if (!_.has(dept,"website")) {
+      return;
+    }
+    app.$el.find('.dept_name')
+    .addClass("clickable")
+    .on("hover", this, function(e){
+      $(e.currentTarget).toggleClass("text-info");
+    })
+    .on("click",function(){
+      (new APP.deptInfoView({app: app})).render();
     });
   });
 

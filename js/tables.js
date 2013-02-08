@@ -5,18 +5,7 @@ $(function() {
   var GRAPHS = ns('GRAPHS');
   var MAPPERS = ns('MAPPERS');
 
-  var col = Backbone.Collection.extend({
-    initialize : function(){
-      _.bindAll();
-    }
-    ,rendered_mini_views : function(){
-      return $.when.apply(this,
-        this.map(function(view){
-          return view['rendered'];
-      }));
-    }
-  });
-
+  var col = Backbone.Collection.extend({ });
 
   TABLES.tables = new col;
 
@@ -24,53 +13,51 @@ $(function() {
     return Mustache.render(s,TABLES.template_args);
   }
 
-  APP.dispatcher.once("app_ready", function(app){
-
-    app.state.on("change:dept", function(state){
-      var deferreds = TABLES.tables.map(function(table){
-        var d = $.Deferred();
-        var signal = 'table_' + table.get("id") +"_rendered";
-        APP.dispatcher.once(signal,function(view){
-          d.resolve(view);
-        });
-        return d;
-      })
-      // once all the mini table signals have been sent
-      // do some prettying up on the page
-      $.when.apply(this,deferreds).done(function(){
-        var views = _.map(arguments,_.identity);
-        var current_table = app.state.get("table");
-        if (current_table){
-          var current_view = _.first(_.filter(views,function(v){
-            return v.def.id === current_table.get('id');
-          }));
-        } else {
-          var current_view = undefined;
-        }
-        $('.widget-row').each(function(i,row){
-          $('.table-widget',row)
-          .height(_.max($('.table-widget',row).map(function(x,y){
-            return $(y).height();
-          })));
-          $('.section-header',row)
-          .height(_.max($('.section-header',row).map(function(x,y){
-            return $(y).height();
-          })));
-        });
-        $('.table-widget').css({
-          position : 'relative'
-        });
-        $('.table-widget div.details_button').css({
-          'bottom' : 0, 
-          'position' : 'absolute', 
-          'right' : 0
-        });
-        APP.dispatcher.trigger("mini_tables_rendered",
-            {current_view : current_view,
-              views : views} 
-        ); 
+  APP.dispatcher.on("dept_selected", function(state){
+    var deferreds = TABLES.tables.map(function(table){
+      var signal = 'table_' + table.get("id") +"_rendered";
+      return APP.deferred_signal(signal);
+    })
+    // once all the mini table signals have been sent
+    // do some prettying up on the page
+    $.when.apply(this,deferreds).done(function(){
+      var views = _.map(arguments,_.identity);
+      var current_table = state.get("table");
+      if (current_table){
+        var current_view = _.first(_.filter(views,function(v){
+          return v.def.id === current_table.get('id');
+        }));
+      } else {
+        var current_view = undefined;
+      }
+      $('.widget-row').each(function(i,row){
+        $('.table-widget',row)
+        .height(_.max($('.table-widget',row).map(function(x,y){
+          return $(y).height();
+        })));
+        $('.section-header',row)
+        .height(_.max($('.section-header',row).map(function(x,y){
+          return $(y).height();
+        })));
       });
+      $('.table-widget').css({
+        position : 'relative'
+      });
+      $('.table-widget div.details_button').css({
+        'bottom' : 0, 
+        'position' : 'absolute', 
+        'right' : 0
+      });
+      APP.dispatcher.trigger("mini_tables_rendered",
+          {current_view : current_view,
+            views : views} 
+      ); 
     });
+  });
+
+  APP.dispatcher.once("app_ready", function(app){
+    // get ready to adjust the heights and signal the readiness
+    // of the mini views
 
     TABLES.tables.on("add", function(table){
 
@@ -122,7 +109,7 @@ $(function() {
       });
 
 
-      app.state.on("change:dept", function(state){
+      APP.dispatcher.on("dept_selected", function(state){
 
         var lang = app.state.get("lang");
         var org = app.state.get('dept');

@@ -393,7 +393,8 @@ $(function () {
 
     template : _.template($('#mini_t').html())
     ,initialize : function(){
-      this.def = this.options['def'];
+      this.table = this.options['table'];
+      this.def = this.table.attributes;
       this.app = this.options['app'];
       _.extend(this,this.def['mini_view']);
       _.bindAll(this);

@@ -14,39 +14,13 @@
       return  _.flatten(_.compact(lines),true);
   };
 
-  var footnoteView = Backbone.View.extend({
-    template : _.template($('#footnotes_t').html())
-    ,initialize: function(){
-      _.bindAll(this);
-      // retrieve passed in data
-      this.app = this.options["app"];
-      this.footnotes = this.options['footnotes'];
-      this.button = this.options['btn'];
-      // set some useful state based on these inputs
-      this.lang = this.app.lang;
-      this.button.on("click",this.render);
-    }
-    ,render : function () {
-      var gt = this.app.get_text;
-      var html = $(this.template({
-        fns : this.footnotes,
-        lang  : this.lang
-      }));
-
-      this.app.modal_view.render({
-        body : html,
-        header : gt("footnotes"),
-        footer : gt("close")
-      });
-    }
-  });
 
   /************APP VIEW***********/
   APP.appView = Backbone.View.extend({
     el : $('#app')
     ,initialize: function(){
       _.bindAll(this);
-      this.state = new APP.stateModel({ })
+      this.state = new APP.stateModel({app:this})
 
       //initialize views
       sub_view_args = {app: this};
@@ -93,90 +67,108 @@
     }
   });
 
+  var footnoteView = Backbone.View.extend({
+    template : _.template($('#footnotes_t').html())
+    ,initialize: function(){
+      _.bindAll(this);
+      // retrieve passed in data
+      this.app = this.options["app"];
+      this.footnotes = this.options['footnotes'];
+      this.button = this.options['btn'];
+      // set some useful state based on these inputs
+      this.lang = this.app.lang;
+      this.button.on("click",this.render);
+    }
+    ,render : function () {
+      var gt = this.app.get_text;
+      var html = $(this.template({
+        fns : this.footnotes,
+        lang  : this.lang
+      }));
+
+      this.app.modal_view.render({
+        body : html,
+        header : gt("footnotes"),
+        footer : gt("close")
+      });
+    }
+  });
+
   var OrgView = Backbone.View.extend({
     template : _.template($('#main_t').html())
     ,initialize: function(){
-      this.rendered = $.Deferred();
       _.bindAll(this);
-      APP.dispatcher.trigger("new_org_view",this);
-      this.app = this.options['app'];
-      this.state = this.app.state;
-      this.state.on("change:dept", this.render);
+      APP.dispatcher.on("dept_ready", this.render);
     }
-    ,render : function(model, org){
-      var lang = this.state.get("lang");
+    ,render : function(state){
+      var app = state.get("app");
+      var org = state.get("dept");
+      var lang = state.get("lang");
       // render the main template
       //this.app.app.children().remove();
-      this.app.app.html(this.template({
+      app.app.html(this.template({
         org : org,   
         lang : lang,
-        gt : this.app.get_text
+        gt : app.get_text
       }));
 
       var other_dept_dropdown = new APP.otherDeptsDropDown({
-        app : this.app
+        app : app
        });
 
-      setTimeout(this.rendered.resolve);
+      setTimeout(_.bind(function(){
+        APP.dispatcher.trigger("new_org_view",this);
+      },this));
       return this;
     }
   });
 
   APP.dispatcher.once("app_ready", function(app){
     app.org_view = new OrgView({app:app});
-    app.state.on("change:dept", function(state,org){
-      // set state for all other depts in the current
-      // ministry
-      var lang = app.state.get("lang");
-      var ministry_depts = APP.find_all_in_ministry(org,lang);
-      var other_depts = _.filter(ministry_depts,
-       function(dept) {return dept['accronym'] != org['accronym'];
-       }); 
-      state.sp("other_orgs",other_depts); 
-      if (state.get('table')){
-        $.when(app.org_view.rendered).done(
-                  function() {
-                    state.rp("other_orgs");
-        });
-      }
-      else {
-        $.when(TABLES.tables.rendered_mini_views(),
-                app.org_view.rendered).done(
-                  function() {
-                    state.rp("other_orgs");
-        });
-      }
-    });
+  });
+
+  APP.dispatcher.on("dept_selected", function(state){
+    // set state for all other depts in the current
+    // ministry
+    var org = state.get("dept");
+    var lang = state.get("lang");
+    var ministry_depts = APP.find_all_in_ministry(org,lang);
+    var other_depts = _.filter(ministry_depts,
+     function(dept) {
+       return dept['accronym'] != org['accronym'];
+    }); 
+    state.set("other_orgs",other_depts); 
+    APP.dispatcher.trigger("other_orgs",other_depts);
   });  
 
-  APP.dispatcher.once("app_ready", function(app){
-    APP.dispatcher.on("mapped", function(table){
-      if (app.state.get('table')){
-        var current_table = app.state.get('table').get('id');
-      }else {
-        var current_table = undefined;
-      }
-      var id = table.get('id');
+  APP.dispatcher.on("mapped", function(table){
+    APP.dispatcher.on("new_org_view"),function(table,state){
+    if (state.get('table')){
+      var current_table = state.get('table').get('id');
+    }else {
+      var current_table = undefined;
+    }
+    var id = table.get('id');
 
-      var mtv = new TABLES.miniTableVew({
-        app : app,
-        def: table.attributes
-      });
+    var mtv = new TABLES.miniTableVew({
+      app : state.get("app"),
+      table : table
+    });
 
-      mtv.render();
-      
-      mtv.$el.find('a.details').on("click", function(event){
-        // move the mini views out of the way and replace with larger 
-        // table
-        APP.dispatcher.trigger("table_selected",table);
-      });
-
+    mtv.render();
+    
+    mtv.$el.find('a.details').on("click", function(event){
+      // move the mini views out of the way and replace with larger 
+      // table
+      APP.dispatcher.trigger("table_selected",table);
     });
   });
 
   APP.dispatcher.on("mini_tables_rendered", function(ctx){
     if (ctx.current_view){
-      setTimeout( ctx.current_view.trigger_click);
+      setTimeout( function(){
+        APP.dispatcher.trigger("table_selected",ctx.current_view.table);
+      });
     }
   });
 
@@ -197,7 +189,7 @@
       this.dept = this.state.get("dept");
       this.lang = this.state.get("lang");
       this.data = this.dept['mapped_data'][this.key][this.lang];
-      var other_orgs = this.state.get("_other_orgs");
+      var other_orgs = this.state.get("other_orgs");
       // set some useful state based on these inputs
       var ministry_depts = other_orgs.concat([this.dept]);
       //collect ministry data
@@ -209,7 +201,6 @@
     }
 
     ,render: function(){
-
 
       this.drop_zone.children().remove();
       
@@ -256,7 +247,6 @@
         mapper : this.mapper
       });
       this.table_payload.append(this.table_view.render().$el);
-
 
       this.fnv = new footnoteView({
         app : this.app,
@@ -315,18 +305,19 @@
     }
   });
 
+
   APP.dispatcher.once("app_ready", function(app){
-    APP.dispatcher.on("table_selected", function(table){
-        setTimeout(function(){scrollTo(0,0)});
+    APP.dispatcher.on("table_selected",
+      function(other_orgs,table){
+       setTimeout(function(){scrollTo(0,0)});
+       app.state.set({'table':table});
 
-        app.state.set({'table':table});
-
-        var dv = new DetailsView({
-          app : app,
-          def: table.attributes
-        });
-        dv.render();
-        $('.panels').hide();
+       var dv = new DetailsView({
+         app : app,
+         def: table.attributes
+       });
+       dv.render();
+       $('.panels').hide();
     });
   });
 

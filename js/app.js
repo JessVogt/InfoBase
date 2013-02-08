@@ -3,6 +3,55 @@
     var LANG = ns('LANG');
 
     APP.dispatcher = _.clone(Backbone.Events)
+    /************STATE MODEL********/
+    APP.stateModel = Backbone.Model.extend({ 
+      initialize : function(){
+        this.on("change:dept",this.dept_change);
+      }
+      ,dept_change : function(model, attr){
+        APP.dispatcher.trigger("dept_selected",this);
+        APP.dispatcher.trigger("dept_ready",this);
+      }
+    });
+
+    APP.deferred_signal = function(signal){
+      var d = $.Deferred();
+      var f = function(arg){
+        // deregister this function
+        APP.dispatcher.off(signal,f);
+        // pass the argument from the signal to the deferred
+        d.resolve(arg);
+      };
+      // register this deferred to only fire once
+      // this is a precaution since f removes itself
+      APP.dispatcher.once(signal,f);
+      return d;
+    }
+
+    APP.on_these = function (signals,func) {
+      // wait for all the signals to have fired
+      var deferreds = _.map(signals,APP.deferred_signal)
+      $.when.apply(null,deferreds).done(
+       function(){
+         // now pass all the args to the func
+         func.apply(null, _.map(arguments, _.identity));
+         setTimeout(function(){
+           // re-register all the signals for the next round
+           console.log("asdfadsf");
+           APP.on_these(signals,func);
+         });
+       })
+    }
+
+    APP.deferred_state = function(state,attr){
+      var d = $.Deferred();
+      var f = function(arg){
+        state.off("change:"+attr, f);
+        d.resolve(arg);
+      };
+      state.once("change:"+attr, f);
+      return d;
+    }
 
     APP.types_to_format = {
       "percentage" :  function(val,lang){return $.formatNumber(val,
@@ -24,24 +73,6 @@
       });
     }
 
-    /************STATE MODEL********/
-    APP.stateModel = Backbone.Model.extend({
-      gsp : function(key){
-        var promise = this.get(key);
-        if (!promise){
-          promise = $.Deferred();
-          this.set(key, promise);
-        }
-        return promise;
-      }
-      ,rp : function(key,options){
-        this.set(key, $.Deferred(),options);
-      }
-      ,sp: function(key,val){
-        this.gsp(key).resolve(val);
-        this.set("_"+key,val);
-      }
-    });
 
     APP.modalView = Backbone.View.extend({
       initialize: function(){
@@ -87,7 +118,7 @@
 
         this.lookup = depts;
         this.state.on('change:lang', this.render);// re-render on change in language
-        this.state.on('change:dept', this.clear);// re-render on change in language
+        APP.dispatcher.on("dept_ready",this.clear);
         this.$el.typeahead({updater: this.updater});
       }
       ,clear : function(){
@@ -218,7 +249,6 @@
 
         this.gt = this.app.get_text;
         this.state = this.app.state;
-        this.state.on("change:dept",this.setup);
       }
       ,render : function(){
         var dept = this.state.get("dept");
@@ -276,10 +306,9 @@
         _.bindAll(this);
         this.app = this.options["app"];
         this.state = this.app.state;
-        var other_orgs = this.state.gsp("other_orgs");
-        $.when(other_orgs).done(this.render);
+        this.state.on("change:other_depts",this.render);
       }
-      ,render: function(other_depts){
+      ,render: function(model,other_depts){
         var dept = this.state.get('dept');
         var lang = this.state.get("lang");
         var other_depts_list = $('#other_depts_list');
