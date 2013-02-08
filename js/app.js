@@ -2,56 +2,41 @@
     var APP = ns('APP');
     var LANG = ns('LANG');
 
-    APP.dispatcher = _.clone(Backbone.Events)
+    APP.dispatcher = _.extend({
+      deferred_signal : function(signal){
+        var d = $.Deferred();
+        var that = this;
+        var f = function(arg){
+          // deregister this function
+          that.off(signal,f);
+          // pass the argument from the signal to the deferred
+          d.resolve(arg);
+        };
+        // register this deferred to only fire once
+        // this is a precaution since f removes itself
+        this.once(signal,f);
+        return d;
+      }
+      ,on_these : function (signals,func,repeat) {
+        var that = this;
+        repeat = repeat || false;
+        // wait for all the signals to have fired
+        var deferreds = _.map(signals,this.deferred_signal,this);
+        $.when.apply(null,deferreds).done(
+        function(){
+          // now pass all the args to the func
+          func.apply(null, _.map(arguments, _.identity));
+          if (repeat){
+            setTimeout(function(){
+              // re-register all the signals for the next round
+              that.on_these(signals,func,repeat);
+            });
+          }
+        })
+      }
+    },Backbone.Events)
     /************STATE MODEL********/
-    APP.stateModel = Backbone.Model.extend({ 
-      initialize : function(){
-        this.on("change:dept",this.dept_change);
-      }
-      ,dept_change : function(model, attr){
-        APP.dispatcher.trigger("dept_selected",this);
-        APP.dispatcher.trigger("dept_ready",this);
-      }
-    });
-
-    APP.deferred_signal = function(signal){
-      var d = $.Deferred();
-      var f = function(arg){
-        // deregister this function
-        APP.dispatcher.off(signal,f);
-        // pass the argument from the signal to the deferred
-        d.resolve(arg);
-      };
-      // register this deferred to only fire once
-      // this is a precaution since f removes itself
-      APP.dispatcher.once(signal,f);
-      return d;
-    }
-
-    APP.on_these = function (signals,func) {
-      // wait for all the signals to have fired
-      var deferreds = _.map(signals,APP.deferred_signal)
-      $.when.apply(null,deferreds).done(
-       function(){
-         // now pass all the args to the func
-         func.apply(null, _.map(arguments, _.identity));
-         setTimeout(function(){
-           // re-register all the signals for the next round
-           console.log("asdfadsf");
-           APP.on_these(signals,func);
-         });
-       })
-    }
-
-    APP.deferred_state = function(state,attr){
-      var d = $.Deferred();
-      var f = function(arg){
-        state.off("change:"+attr, f);
-        d.resolve(arg);
-      };
-      state.once("change:"+attr, f);
-      return d;
-    }
+    APP.stateModel = Backbone.Model.extend({ });
 
     APP.types_to_format = {
       "percentage" :  function(val,lang){return $.formatNumber(val,
@@ -117,18 +102,16 @@
         this.gt = this.options['app'].get_text;
 
         this.lookup = depts;
-        this.state.on('change:lang', this.render);// re-render on change in language
+        APP.dispatcher.on("lang_change",this.render);
         APP.dispatcher.on("dept_ready",this.clear);
         this.$el.typeahead({updater: this.updater});
       }
-      ,clear : function(){
-        var that = this;
-        window.setTimeout(function(){
-          that.$el.val('');
-        },1);
+      ,clear : function(app){
+        setTimeout(_.bind(function(){
+          this.$el.val('');
+        },this));
       }
-      ,render:function () {
-         var lang = this.state.get('lang');
+      ,render:function (lang) {
          var text = this.gt("search");
          // filter the departments to remove the GoC
          // data
@@ -173,13 +156,7 @@
         $('#dept_sel').on("click",this.render);
         //ensure that if the language changes, this list
         //will redraw automatically
-        this.state.on("change:lang",this.lang_change);
       }
-      ,lang_change : function(model,attr){
-        if ($('body').find(".dept_menu").length >= 1) {
-          this.render()
-        }
-      } 
       ,render : function(){
         $('body').find(".dept_menu").remove();
         var lang = this.state.get('lang');
@@ -235,7 +212,6 @@
               function(x){ return x['dept'][lang] == dept}));
         this.state.unset("dept",{silent: true});
         $('body').find(".dept_menu").remove();
-        this.state.off("change:lang",this.lang_change);
         this.state.set('dept',dept);
       }
     });
@@ -284,19 +260,12 @@
       ,initialize: function(){
         _.bindAll(this);
         this.app = this.options["app"];
-        this.state = this.app.state;
-        this.state.off('change:lang', this.render);// re-render on change in language
-        this.state.on('change:lang', this.render);// re-render on change in language
+        this.$el.on("click",this.app.toggle_lang);
+        APP.dispatcher.on("lang_change",this.render);
       }
-      ,render:function () {			
-        this.$el.off();
+      ,render:function (lang) {			
         this.$el.html(this.app.get_text("lang"));
-        this.$el.on("click",this.set_lang);
         return this;
-      }
-      ,set_lang : function () {
-        var new_lang = this.state.get("lang") == "en" ? "fr" : "en";
-        this.state.set({lang: new_lang});
       }
     }); 
 
@@ -305,38 +274,34 @@
       ,initialize: function(){
         _.bindAll(this);
         this.app = this.options["app"];
-        this.state = this.app.state;
-        this.state.on("change:other_depts",this.render);
       }
-      ,render: function(model,other_depts){
-        var dept = this.state.get('dept');
-        var lang = this.state.get("lang");
+      ,render: function(other_depts){
+        var state = this.app.state;
+        var dept = state.get('dept');
+        var lang = state.get("lang");
+        var other_depts = state.get("other_depts");
         var other_depts_list = $('#other_depts_list');
+        var template = this.template;
 
         if (other_depts.length > 0){
           _.each(_.sortBy(other_depts,
-                function(d){return d.dept[lang]},
-                this
-                ),
-                function(dept){
-                    // create the link item with the
-                    // department name
-                    var nav = $( this.template({
-                      text:dept.dept[lang]
-                    }));
-                    var self = this;
-                    // set up the onclick for the link item
-                    nav.on("click",
-                      function(event){
-                        other_depts_list.find("li").off();
-                        self.app.state.set('dept',dept);
-                    });
-                  // append the link to the nav dropdown
-                  // item
-                  other_depts_list.append(nav);
-                },
-                this
-          );
+                          function(d){return d.dept[lang]})
+                 ,function(dept){
+                          // create the link item with the
+                          // department name
+                          var nav = $( template({
+                            text:dept.dept[lang]
+                          }));
+                          // set up the onclick for the link item
+                          nav.on("click",
+                            function(event){
+                              other_depts_list.find("li").off();
+                              state.set('dept',dept);
+                          });
+                        // append the link to the nav dropdown
+                        // item
+                        other_depts_list.append(nav);
+                 });
         }
         else {
           other_depts_list.parent().remove();

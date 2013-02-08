@@ -34,7 +34,13 @@
       // check for a language or set the default of english
       this.state.on("change:lang", this.render);
       this.state.on("change:lang", this.reset_dept);
+      this.state.on("change:lang", this.lang_change);
+      this.state.on("change:dept",this.dept_change);
       APP.dispatcher.trigger("app_ready",this);
+    }
+    ,dept_change : function(model, attr){
+      APP.dispatcher.trigger("dept_selected",this);
+      APP.dispatcher.trigger("dept_ready",this);
     }
     ,setup_useful_this_links : function(){
       this.title = $('#title');
@@ -46,8 +52,16 @@
     ,formater : function(format,val){
       return APP.types_to_format[format](val,this.lang);
     }
+    ,lang_change : function(state,lang){
+      APP.dispatcher.trigger("lang_change",lang);
+    }
     ,get_text : function(txt){
       return LANG.l(txt,this.state.get('lang'));
+    }
+    ,toggle_lang : function(){
+      this.state.set({
+        lang:this.state.get("lang") == "en" ? "fr" : "en" 
+      });
     }
     ,reset_dept : function(model, dept){
       var that = this;
@@ -98,12 +112,10 @@
     template : _.template($('#main_t').html())
     ,initialize: function(){
       _.bindAll(this);
-      APP.dispatcher.on("dept_ready", this.render);
     }
-    ,render : function(state){
-      var app = state.get("app");
-      var org = state.get("dept");
-      var lang = state.get("lang");
+    ,render : function(app){
+      var org = app.state.get("dept");
+      var lang = app.state.get("lang");
       // render the main template
       //this.app.app.children().remove();
       app.app.html(this.template({
@@ -111,10 +123,6 @@
         lang : lang,
         gt : app.get_text
       }));
-
-      var other_dept_dropdown = new APP.otherDeptsDropDown({
-        app : app
-       });
 
       setTimeout(_.bind(function(){
         APP.dispatcher.trigger("new_org_view",this);
@@ -124,43 +132,42 @@
   });
 
   APP.dispatcher.once("app_ready", function(app){
-    app.org_view = new OrgView({app:app});
+    var org_view = new OrgView({app:app});
+    APP.dispatcher.on("dept_ready", org_view.render);
+    APP.dispatcher.on("new_org_view",function(view){
+      (new APP.otherDeptsDropDown({ app : app })).render();
+    });
   });
 
-  APP.dispatcher.on("dept_selected", function(state){
+  APP.dispatcher.on("dept_selected", function(app){
     // set state for all other depts in the current
     // ministry
-    var org = state.get("dept");
-    var lang = state.get("lang");
+    var org = app.state.get("dept");
+    var lang = app.state.get("lang");
     var ministry_depts = APP.find_all_in_ministry(org,lang);
     var other_depts = _.filter(ministry_depts,
      function(dept) {
        return dept['accronym'] != org['accronym'];
     }); 
-    state.set("other_orgs",other_depts); 
-    APP.dispatcher.trigger("other_orgs",other_depts);
+    app.state.set("other_depts",other_depts); 
   });  
 
-  APP.dispatcher.on("mapped", function(table){
-    APP.dispatcher.on("new_org_view"),function(table,state){
-    if (state.get('table')){
-      var current_table = state.get('table').get('id');
-    }else {
-      var current_table = undefined;
-    }
-    var id = table.get('id');
+  APP.dispatcher.once("app_ready",function(app){
+    APP.dispatcher.on("new_org_view",function(view){
+      TABLES.tables.each(function(table){
+        var mtv = new TABLES.miniTableVew({
+          app : app,
+          table : table
+        });
 
-    var mtv = new TABLES.miniTableVew({
-      app : state.get("app"),
-      table : table
-    });
-
-    mtv.render();
-    
-    mtv.$el.find('a.details').on("click", function(event){
-      // move the mini views out of the way and replace with larger 
-      // table
-      APP.dispatcher.trigger("table_selected",table);
+        mtv.render();
+        
+        mtv.$el.find('a.details').on("click", function(event){
+          // move the mini views out of the way and replace with larger 
+          // table
+          APP.dispatcher.trigger("table_selected",table);
+        });
+      });
     });
   });
 
@@ -189,9 +196,9 @@
       this.dept = this.state.get("dept");
       this.lang = this.state.get("lang");
       this.data = this.dept['mapped_data'][this.key][this.lang];
-      var other_orgs = this.state.get("other_orgs");
+      var other_depts = this.state.get("other_depts");
       // set some useful state based on these inputs
-      var ministry_depts = other_orgs.concat([this.dept]);
+      var ministry_depts = other_depts.concat([this.dept]);
       //collect ministry data
       var raw_min_data = ministry_total(ministry_depts,this.key);
       this.min_data = this.mapper.map(raw_min_data);
@@ -307,8 +314,7 @@
 
 
   APP.dispatcher.once("app_ready", function(app){
-    APP.dispatcher.on("table_selected",
-      function(other_orgs,table){
+    APP.dispatcher.on("table_selected", function(table){
        setTimeout(function(){scrollTo(0,0)});
        app.state.set({'table':table});
 

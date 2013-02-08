@@ -13,16 +13,15 @@ $(function() {
     return Mustache.render(s,TABLES.template_args);
   }
 
-  APP.dispatcher.on("dept_selected", function(state){
-    var deferreds = TABLES.tables.map(function(table){
-      var signal = 'table_' + table.get("id") +"_rendered";
-      return APP.deferred_signal(signal);
+  APP.dispatcher.on("dept_selected", function(app){
+    var signals = TABLES.tables.map(function(table){
+      return 'table_' + table.get("id") +"_rendered";
     })
     // once all the mini table signals have been sent
     // do some prettying up on the page
-    $.when.apply(this,deferreds).done(function(){
+    APP.dispatcher.on_these(signals, function(){
       var views = _.map(arguments,_.identity);
-      var current_table = state.get("table");
+      var current_table = app.state.get("table");
       if (current_table){
         var current_view = _.first(_.filter(views,function(v){
           return v.def.id === current_table.get('id');
@@ -109,36 +108,40 @@ $(function() {
       });
 
 
-      APP.dispatcher.on("dept_selected", function(state){
-
-        var lang = app.state.get("lang");
-        var org = app.state.get('dept');
-
-        mapper = table.get('mapper')[lang];
-
-        // map the data for the current lang unless it's already
-        // been mapped
-        if (_.isUndefined(org["mapped_data"][id][lang])) {
-          org["mapped_data"][id][lang] =  mapper.map(org['tables'][id]);
-        }
-
-        var headers = table.get('unique_headers')['en'];
-
-        if (_.isUndefined(org["mapped_objs"][id][lang])) {
-          org["mapped_objs"][id][lang] = _.map(org["mapped_data"][id][lang],
-            function(row){
-              return _.object(headers,row);
-            }
-          );
-        }
-
-        APP.dispatcher.trigger("mapped",table);
-        
-      });
     });
+
 
   APP.dispatcher.trigger("load_tables",app);
 
   });
+
+  APP.dispatcher.on("dept_selected", function(app){
+
+    var lang = app.state.get("lang");
+    var org = app.state.get('dept');
+
+    TABLES.tables.each(function(table){
+      var id = table.get("id");
+      mapper = table.get('mapper')[lang];
+      // map the data for the current lang unless it's already
+      // been mapped
+      if (_.isUndefined(org["mapped_data"][id][lang])) {
+        org["mapped_data"][id][lang] =  mapper.map(org['tables'][id]);
+      }
+
+      var headers = table.get('unique_headers')['en'];
+
+      if (_.isUndefined(org["mapped_objs"][id][lang])) {
+        org["mapped_objs"][id][lang] = _.map(org["mapped_data"][id][lang],
+          function(row){
+            return _.object(headers,row);
+          }
+        );
+      }
+    });
+
+    APP.dispatcher.trigger("mapped");
+  });
+
 });
 

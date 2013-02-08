@@ -23,24 +23,28 @@ $(function() {
     }
   }
 
-  APP.dispatcher.once("new_org_view",function(view){
-    var app = view.app;
-    var dept = app.state.get("dept");
-    if (!_.has(dept,"website")) {
-      return;
-    }
-    app.$el.find('.dept_name')
-    .addClass("clickable")
-    .on("hover", this, function(e){
-      $(e.currentTarget).toggleClass("text-info");
-    })
-    .on("click",function(){
-      (new APP.deptInfoView({app: app})).render();
+  // hook on to the department title, turn it into a link
+  // and when the link is clicked, show the departmental info
+  // view
+  APP.dispatcher.once("app_ready",function(app){
+    APP.dispatcher.on("new_org_view",function(view){
+      var dept = app.state.get("dept");
+      if (!_.has(dept,"website")) {
+        return;
+      }
+      app.$el.find('.dept_name')
+      .addClass("clickable")
+      .on("hover", this, function(e){
+        $(e.currentTarget).toggleClass("text-info");
+      })
+      .on("click",function(){
+        (new APP.deptInfoView({app: app})).render();
+      });
     });
   });
 
+  // register functionality unique to the LED
   APP.dispatcher.on("new_details_view",function(dv){
-
     // setup the back button
     $('.nav-pills li.back')
       .show()
