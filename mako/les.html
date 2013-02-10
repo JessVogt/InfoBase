@@ -69,7 +69,7 @@
 
   </%block>
 
-
+  <!--
   <div class="navbar navbar-fixed-top">
     <div class="navbar-inner">
       <div class="container-fluid" id='navbar'>
@@ -106,7 +106,7 @@
       </div>
     </div>
   </div>
-
+  -->
   <div class="modal hide large" id="modal_skeleton" tabindex="-1" role='dialog'>
     <div class="modal-header">
       <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -123,6 +123,21 @@
 <script type='text/plain' id='breadcrumb_el'>
   <li><a href="#"><%=link%></a> <span class="divider">/</span></li>
 </script>
+<script type='text/plain' id='home_t'>
+<div id='app2'>
+  <div class='container'>
+    <div class='row'>
+      <div class='span4'>
+        <%= gt("vertical")%>
+      </div>
+      <div class='span4'>
+        <%= gt("horizontal")%>
+      </div>
+    </div>
+  </div>
+</div>
+</script>
+
 <script type='text/plain' id='main_t'>
   <div class='container'>
     <ul class="nav nav-pills">
@@ -141,6 +156,9 @@
         </ul>
       </li>
     </ul>
+  </div>
+</script>
+<script type='text/plain' id='panels_t'>
     <div class='panels'>
       <p class='lead'><%=gt('current_year_fisc') %></p>
       <div class="row widget-row" >
@@ -174,11 +192,9 @@
           </div>
       </div>
     </div>
-  </div>
   <div class='table_content'>
 
   </div>
-
 </script>
 <script type='text/plain' id='mini_t'>
   <div class='mini_t'>

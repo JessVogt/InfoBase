@@ -2,8 +2,16 @@
     var LANG = ns("LANG");
 
     var lookups = {
+      ,"horizontal" : {
+        "en" : "Explore horizonally across departments",
+        "fr" : "Explorez les données entre les ministères"
+      }
+      ,"vertical" : {
+        "en" : "Select a department",
+        "fr" : "Sélectionnez un ministère"
+      }
       // IGOC headers
-      "legal_name" : {
+      ,"legal_name" : {
         "en" : "Legal Name",
         "fr" : "Nom légal"
       }

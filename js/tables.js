@@ -112,6 +112,7 @@ $(function() {
 
 
   APP.dispatcher.trigger("load_tables",app);
+  APP.dispatcher.trigger("tables_loaded",app);
 
   });
 

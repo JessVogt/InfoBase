@@ -18,6 +18,7 @@
   /************APP VIEW***********/
   APP.appView = Backbone.View.extend({
     el : $('#app')
+    .template : _.template($('home_t').html())
     ,initialize: function(){
       _.bindAll(this);
       this.state = new APP.stateModel({app:this})
@@ -110,6 +111,7 @@
 
   var OrgView = Backbone.View.extend({
     template : _.template($('#main_t').html())
+    ,template2 : _.template($('#panels_t').html())
     ,initialize: function(){
       _.bindAll(this);
     }
@@ -117,12 +119,14 @@
       var org = app.state.get("dept");
       var lang = app.state.get("lang");
       // render the main template
-      //this.app.app.children().remove();
-      app.app.html(this.template({
+      app.app.children().remove();
+      $(this.template({
         org : org,   
         lang : lang,
         gt : app.get_text
-      }));
+      })).append(this.template2({
+        gt : app.get_text
+      })).appendTo(app.app);
 
       setTimeout(_.bind(function(){
         APP.dispatcher.trigger("new_org_view",this);
