@@ -17,7 +17,12 @@ $(function() {
   };
 
   APP.dispatcher.on("new_details_view",function(dv){
+    // add event listener to the back button
     dv.$el.find('li.back a').on("click",dv.tear_down);
+    // for IE resize the container to avoid vertical scroll bars
+    $('.sidescroll').css(
+      {'height' : $('.sidescroll').children().height()+40 +'px'
+    });
   });
 
   APP.dispatcher.on("load_tables",function(app){
@@ -153,7 +158,7 @@ $(function() {
       }
       ,mini_view : {
         prep_data : function(){
-          var ttf = APP.types_to_format['big-int'];
+          var ttf = this.app.formater
           var auth = "Total available for use for the year ending March 31,{{year}}";
           var exp = "{{year}} Expenditures-Year to date used at quarter-end";
           var auth_total = _.reduce(
@@ -163,8 +168,8 @@ $(function() {
               _.pluck(this.data,exp),
               function(x,y){return x+y})/1000;
           this.rows = [
-            [$('<strong>').html(m(this.to_lang(auth))+ ' ($000)'), ttf(auth_total,this.lang) ],
-            [$('<strong>').html(this.to_lang(exp)+ ' ($000)'), ttf(exp_total,this.lang) ]
+            [$('<strong>').html(m(this.to_lang(auth))+ ' ($000)'), ttf("big-int",auth_total) ],
+            [$('<strong>').html(this.to_lang(exp)+ ' ($000)'), ttf("big-int",exp_total) ]
           ];
         }
         ,render_data : function(){
@@ -252,7 +257,7 @@ $(function() {
       }
       ,mini_view : {
         prep_data : function(){
-          var ttf = APP.types_to_format['big-int'];
+          var ttf = this.app.formater
           var col = "Expended during the quarter ended {{month}}-{{year}}";
           var data = _.sortBy(this.data, function(d){
             return -d[col]
@@ -273,7 +278,7 @@ $(function() {
           this.rows = _.map(this.rows, function(row){
             if (_.isNumber(row[1])){
               return [$('<strong>').html(row[0]),
-                      ttf(row[1]/1000)];
+                      ttf("big-int",row[1]/1000)];
             } else {
               return [$('<strong>').html(row[0]),
                       row[1]]
@@ -377,7 +382,7 @@ $(function() {
       }
       ,mini_view : {
         prep_data : function(){
-          var ttf = APP.types_to_format['big-int'];
+          var ttf = this.app.formater
           var col = "Expended during the quarter ended {{month}}-{{year}}";
           var data = _.sortBy(this.data, function(d){
             return -d[col]
@@ -396,7 +401,7 @@ $(function() {
           this.rows = _.map(this.rows, function(row){
             if (_.isNumber(row[1])){
               return [$('<strong>').html(row[0]),
-                      ttf(row[1]/1000)];
+                      ttf("big-int",row[1]/1000)];
             } else {
               return [$('<strong>').html(row[0]),
                       row[1]]
@@ -484,7 +489,7 @@ $(function() {
       }
       ,mini_view : {
         prep_data : function(){
-          var ttf = APP.types_to_format['big-int'];
+          var ttf = this.app.formater
           var f_years = _.groupBy(this.data, function(data){
             return data["Year"];
           });
@@ -500,8 +505,8 @@ $(function() {
           });
           this.rows = _.map(f_years,function(fyear){
             return [fyear[0],
-                    ttf(fyear[1]/1000),
-                    ttf(fyear[2]/1000)];
+                    ttf("big-int",fyear[1]/1000),
+                    ttf("big-int",fyear[2]/1000)];
           });
           this.rows = _.sortBy(this.rows, function(fyear){
             return fyear[0];
@@ -574,7 +579,7 @@ $(function() {
       }
       ,mini_view : {
         prep_data : function(){
-          var ttf = APP.types_to_format['big-int'];
+          var ttf = this.app.formater
           var last_year = _.map(this.data, function(d){
             return [d["Standard Object"],d['{{last_year}}']]
           });
@@ -594,9 +599,9 @@ $(function() {
             return -d[1];
           }).shift();
           this.rows = [
-           [m('{{last_year}}'),top_last_year[0] + ' - '+ ttf(top_last_year[1]/1000)],
-           [m('{{last_year_2}}'),top_last_year_2[0]+ ' - '+ ttf(top_last_year_2[1]/1000)],
-           [m('{{last_year_3}}'),top_last_year_3[0]+ ' - '+ ttf(top_last_year_3[1]/1000)]
+           [m('{{last_year}}'),top_last_year[0] + ' - '+ ttf("big-int",top_last_year[1]/1000)],
+           [m('{{last_year_2}}'),top_last_year_2[0]+ ' - '+ ttf("big-int",top_last_year_2[1]/1000)],
+           [m('{{last_year_3}}'),top_last_year_3[0]+ ' - '+ ttf("big-int",top_last_year_3[1]/1000)]
           ];
           this.rows.unshift([
             bold(this.gt("year")),
@@ -677,7 +682,7 @@ $(function() {
       }
       ,mini_view : {
         prep_data: function(){
-          var ttf = APP.types_to_format['big-int'];
+          var ttf = this.app.formater
           var last_year = _.map(this.data, function(d){
             return [d["Program"],d['{{last_year}}']]
           });
@@ -698,9 +703,9 @@ $(function() {
             return -d[1];
           }).shift();
           this.rows = [
-           [m('{{last_year}}'),top_last_year[0] + ' - '+ ttf(top_last_year[1]/1000)],
-           [m('{{last_year_2}}'),top_last_year_2[0]+ ' - '+ ttf(top_last_year_2[1]/1000)],
-           [m('{{last_year_3}}'),top_last_year_3[0]+ ' - '+ ttf(top_last_year_3[1]/1000)]
+           [m('{{last_year}}'),top_last_year[0] + ' - '+ ttf("big-int",top_last_year[1]/1000)],
+           [m('{{last_year_2}}'),top_last_year_2[0]+ ' - '+ ttf("big-int",top_last_year_2[1]/1000)],
+           [m('{{last_year_3}}'),top_last_year_3[0]+ ' - '+ ttf("big-int",top_last_year_3[1]/1000)]
           ];
           this.rows.unshift([
             bold(this.gt("year")),

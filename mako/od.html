@@ -23,6 +23,8 @@
     text-decoration: underline;
   }
   .section-header {
+    padding-bottom : 5px;
+    margin-bottom : 10px;
     border-bottom: 1px solid #EEE;
     width: 100%
   }
@@ -69,7 +71,7 @@
   </%block>
 
   <div class='container'>
-    <div class="navbar span9">
+    <div class="navbar">
       <div class="navbar-inner" id='navbar'>
         <span class="brand" id='title'></span>
         <ul class='nav' id='navbar_ul'>
@@ -96,7 +98,7 @@
   <div id='app'>
     <div class='container'>
       <div class='row'>
-        <div class='span6 offset3 alert alert-info'>
+        <div class='alert alert-info' style='margin: 20px'>
           <h3 id='welcome'>
           </h3>
         </div>
@@ -137,7 +139,7 @@
     </ul>
     <div class="row">
       <% if (_.has(org,'website')){ %>
-      <div class="well span9">
+      <div class="well">
         <p> 
           <a href='<%=gt("IGOC_site")%>' target='_new'>
             <%=gt("org_info")%>
@@ -210,7 +212,7 @@
 <script type='text/plain' id='mini_t'>
   <div class='mini_t'>
     <div class='section-header'>
-      <span class='title'></span>
+      <strong><span class='title'></span></strong>
     </div>
     <div class='mini_payload' style='font-size: 10px'>
 
@@ -227,7 +229,7 @@
 
 <script type='text/plain' id='dataview_t'>
 <div class='row'>
-  <div class='span9 well tables'>
+  <div class='well tables'>
     <ul class='nav nav-pills'>
       <li class='back active'>
       <a href='#'><%=gt("back")%></a>
