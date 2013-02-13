@@ -2,7 +2,7 @@
     var LANG = ns("LANG");
 
     var lookups = {
-      ,"horizontal" : {
+      "horizontal" : {
         "en" : "Explore horizonally across departments",
         "fr" : "Explorez les données entre les ministères"
       }
@@ -56,14 +56,12 @@
         ,"fr" : "Affectation"
       }
       ,"welcome" : {
-        "en" : ["Click to select from a list of organisations ",
-                "<span class='badge badge-info'>OR</span>",
-                 " start typing the name of an organisation or its acronym."
-                ].join("")
-        ,"fr" : ["Cliquez pour sélectionner parmi une liste d’organisations ",
-                 "<span class='badge badge-info'>OU</span>",
-                 " commencez par entrer le nom d'une organisation ou son acronyme."
-                ].join("")
+        "en" : "<p class='lead'><a class='btn-link dept-sel'>Click</a> to select from a list of organisations</p>  \
+<span class='badge badge-info'>OR</span><p class='lead'></p> \
+<form><input class='input-xlarge' type='text' placeholder='start typing the name of an organization'></input></form>"
+        ,"fr" : "<p class='lead'><a class='btn-link'>Cliquez</a> pour sélectionner parmi une liste d’organisations</p> \
+<span class='badge badge-info'>OU</span><p class='lead'></p>\
+<form><input class='input-xlarge' type='text' placeholder='commencez par taper une organisation'></input></form>"
       }
       ,"no_data" : {
         "en" : "No data avilable for this table"

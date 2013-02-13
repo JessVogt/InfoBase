@@ -70,13 +70,11 @@
   .print_view div.date{width: 60px;}
 
   </%block>
-
-  <!--
   <div class="navbar navbar-fixed-top">
     <div class="navbar-inner">
       <div class="container-fluid" id='navbar'>
         <span class="brand" id='title'></span>
-        <ul class='nav' id='navbar_ul'>
+        <ul class='nav' id='navbar_ul' style='display:none;'>
           <li>
           <a href='#' id='dept_sel'> </a>
           </li>
@@ -93,22 +91,12 @@
         <ul class='nav pull-right'>
           <li><a href="#" id="lang_change"></a> </li>
         </ul>
-
       </div>
     </div>
   </div>
-
   <div id='app'>
-    <div class='container'>
-      <div class='row'>
-        <div class='span6 offset3 alert alert-info'>
-          <h3 id='welcome'>
-          </h3>
-        </div>
-      </div>
-    </div>
   </div>
-  -->
+
   <div class="modal hide large" id="modal_skeleton" tabindex="-1" role='dialog'>
     <div class="modal-header">
       <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -125,15 +113,19 @@
 <script type='text/plain' id='breadcrumb_el'>
   <li><a href="#"><%=link%></a> <span class="divider">/</span></li>
 </script>
+<script type='text/plain' id='nav_bar_t'>
+</script>
 <script type='text/plain' id='home_t'>
-<div id='app2'>
+<div>
   <div class='container'>
     <div class='row'>
-      <div class='span4'>
-        <%= gt("vertical")%>
+      <div class='well span4'>
+        <%=gt("welcome") %>
       </div>
-      <div class='span4'>
-        <%= gt("horizontal")%>
+      <div class='well span4 horizontal'>
+        <p class='lead'>
+          <%=gt("horizontal")%>
+        </p>
       </div>
     </div>
   </div>
