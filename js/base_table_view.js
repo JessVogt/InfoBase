@@ -422,9 +422,8 @@ $(function () {
       this.$el.find('.title').append(this.def['name'][this.lang]);
     }
     ,set_no_content : function(){
-      this.content = $("<span class='title'>").html(this.gt("no_data"));
+      this.content = $("<p >").html(this.gt("no_data"));
       this.$el.find('a.details').remove();
-
     }
     ,render : function(){
       this.$el.append(

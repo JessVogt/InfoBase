@@ -30,8 +30,8 @@ $(function() {
         var current_view = undefined;
       }
       $('.widget-row').each(function(i,row){
-        $('.table-widget',row)
-        .height(_.max($('.table-widget',row).map(function(x,y){
+        $('.mini_t',row)
+        .height(_.max($('.mini_t',row).map(function(x,y){
           return $(y).height();
         })));
         $('.section-header',row)
@@ -39,10 +39,10 @@ $(function() {
           return $(y).height();
         })));
       });
-      $('.table-widget').css({
+      $('.mini_t').css({
         position : 'relative'
       });
-      $('.table-widget div.details_button').css({
+      $('.mini_t div.details_button').css({
         'bottom' : 0, 
         'position' : 'absolute', 
         'right' : 0

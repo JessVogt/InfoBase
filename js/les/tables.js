@@ -585,7 +585,7 @@ $(function() {
               var sorted = _.sortBy(this.data, function(x){
                 return x[auth];
               });
-              this.rows  = _.map(_.last(sorted, 3), function(row,index){
+              this.rows  = _.map(_.last(sorted, 3).reverse(), function(row,index){
                 return [index+1,row['Program Activity'],ttf(row[auth])];
               });
             }
