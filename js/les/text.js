@@ -159,7 +159,7 @@
       }
       ,"title" : {
         "en": "Lapse and Expenditure Dashboard"
-        ,"fr": "Tableau de bord pour les fonds inutilisés et les dépenses"
+        ,"fr": "Tableau de bord des péremptions et des dépenses"
       }
       ,"table" : {
         "en" : "Table"

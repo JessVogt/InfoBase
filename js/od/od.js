@@ -281,6 +281,7 @@
 
       this.about_btn = this.$el.find('a.about');
       this.print_btn = this.$el.find('a.print');
+      this.copy_btn = this.$el.find('a.copy');
       this.details_btn = this.$el.find('a.details');
       this.fn_btn = this.$el.find('a.fn');
       this.min_total_btn = this.$el.find('a.min_tot');
