@@ -1085,11 +1085,6 @@ $(function() {
               "big-int"
             ],
           "coverage" : "historical",
-
-
-
-
-
           "headers" : { "en" : [ [ { "colspan" : 3,
                       "header" : ""
                     },
@@ -1117,22 +1112,22 @@ $(function() {
                     "Year",
                     "Authority",
                     "Expenditures",
-                    "Gross Lapse**",
+                    "Gross Lapse*",
                     "Authority",
                     "Expenditures",
-                    "Gross Lapse**",
+                    "Gross Lapse*",
                     "Authority",
                     "Expenditures",
-                    "Gross Lapse**",
+                    "Gross Lapse*",
                     "Authority",
                     "Expenditures",
-                    "Gross Lapse**",
+                    "Gross Lapse*",
                     "Authority",
                     "Expenditures",
-                    "Gross Lapse**",
+                    "Gross Lapse*",
                     "Authority",
                     "Expenditures",
-                    "Gross Lapse**"
+                    "Gross Lapse*"
                   ]
                 ],
               "fr" : [ [ { "colspan" : 3,
@@ -1162,22 +1157,22 @@ $(function() {
                     "Année",
                     "Autorité",
                     "Dépenses",
-                    "Fonds Périmés Bruts**",
+                    "Fonds Périmés Bruts*",
                     "Autorité",
                     "Dépenses",
-                    "Fonds Périmés Bruts**",
+                    "Fonds Périmés Bruts*",
                     "Autorité",
                     "Dépenses",
-                    "Fonds Périmés Bruts**",
+                    "Fonds Périmés Bruts*",
                     "Autorité",
                     "Dépenses",
-                    "Fonds Périmés Bruts**",
+                    "Fonds Périmés Bruts*",
                     "Autorité",
                     "Dépenses",
-                    "Fonds Périmés Bruts**",
+                    "Fonds Périmés Bruts*",
                     "Autorité",
                     "Dépenses",
-                    "Fonds Périmés Bruts**"
+                    "Fonds Périmés Bruts*"
                   ]
                 ]
             },
@@ -1232,11 +1227,11 @@ $(function() {
           prep_data : function(){
             var top_headers = this.def.headers[this.lang][0];
             var ttf = APP.types_to_format['big-int'];
-            var allotments = ["Total Operating-Gross Lapse**",
-                "Capital-Gross Lapse**",
-                "Transfer Payments-Gross Lapse**",
-                "Frozen-Gross Lapse**",
-                "Special Purpose-Gross Lapse**"];
+            var allotments = ["Total Operating-Gross Lapse*",
+                "Capital-Gross Lapse*",
+                "Transfer Payments-Gross Lapse*",
+                "Frozen-Gross Lapse*",
+                "Special Purpose-Gross Lapse*"];
             var reduced = _.map(this.data, function(row){
               return _.pick.apply(this,[row,'Year'].concat(allotments)); 
             });
@@ -1308,16 +1303,16 @@ $(function() {
                     "Year",
                     "Authority",
                     "Expenditures",
-                    "Gross Lapse**",
+                    "Gross Lapse*",
                     "Authority",
                     "Expenditures",
-                    "Gross Lapse**",
+                    "Gross Lapse*",
                     "Authority",
                     "Expenditures",
-                    "Gross Lapse**",
+                    "Gross Lapse*",
                     "Authority",
                     "Expenditures",
-                    "Gross Lapse**"
+                    "Gross Lapse*"
                   ]
                 ],
               "fr" : [ [ { "colspan" : 3,
