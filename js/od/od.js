@@ -5,45 +5,41 @@
   var MAPPERS = ns('MAPPERS');
   var LANG = ns('LANG');
 
-  var ministry_total = function(depts,table){
-      var lines = _.map(depts,
-        function(dept){  //map function
-          return dept['tables'][table];
-        });
-      // flatten all these lists into one big list
-      return  _.flatten(_.compact(lines),true);
-  };
-
-
   /************APP VIEW***********/
   APP.appView = Backbone.View.extend({
-    el : $('#app')
+    el : $('body')
     ,template : _.template($('#home_t').html())
+    ,events : {
+      "click #lang_change" : "toggle_lang"
+      ,"click a.home" : "reset"
+      ,"hover .horizontal" : "highlighter"
+      ,"click .horizontal" : "horizontal_explore"
+    }
     ,initialize: function(){
       _.bindAll(this);
       this.state = new APP.stateModel({app:this})
       //initialize views
       sub_view_args = {app: this};
-      this.switchLangv = new APP.switchLangView(sub_view_args);
       this.modal_view = new APP.modalView(sub_view_args);
       this.dept_info_view  = new APP.deptInfoView(sub_view_args);
-
+      this.full_dept_list = new APP.fullDeptList(sub_view_args);
       this.setup_useful_this_links();
       // check for a language or set the default of english
-      this.state.on("change:lang", this.render);
-      this.state.on("change:lang", this.reset_dept);
-      this.state.on("change:lang", this.lang_change);
-      this.state.on("change:dept",this.dept_change);
-      APP.dispatcher.trigger("app_ready",this);
+      this.state
+        .on("change:lang", this.render)
+        .on("change:lang", this.reset_dept)
+        .on("change:lang", this.lang_change)
+        .on("change:dept",this.dept_change);
+      APP.dispatcher.trigger_a("app_ready",this);
     }
     ,dept_change : function(model, attr){
       APP.dispatcher.trigger("dept_selected",this);
       APP.dispatcher.trigger("dept_ready",this);
     }
     ,setup_useful_this_links : function(){
-      this.title = $('#title');
-      this.dept_sel = $('#dept_sel');
       this.nav_bar_ul = $('#navbar_ul');
+      this.title = $('#title');
+      this.change_lang = $('#lang_change');
       this.app = $('#app');
     }
     ,formater : function(format,val){
@@ -61,49 +57,34 @@
       });
     }
     ,reset_dept : function(model, dept){
-      var that = this;
       var dept = this.state.get('dept');
       if (!dept){ return }
-      setTimeout(function(){
-        that.state.set('dept',_.clone(dept))
-      });
+      this.state.unset("dept",{silent:true});
+      this.state.set('dept',dept)
+    }
+    ,reset : function() {
+       this.state.clear({silent:true});
+       this.state.set({lang : this.lang});
+    }
+    ,highlighter : function(e){
+       $(e.currentTarget).toggleClass('alert-info');
     }
     ,render: function(model,attr){
+      if (this.state.get("dept")){ return;}
       this.remove();
       // get faster reference 
       this.lang = attr;
       var gt = this.get_text;
+      this.change_lang.html(gt("lang"));
       this.title.html(gt("title"));
-      this.dept_sel.html(gt("select"))
       this.app.html(this.template({
         gt : gt
       }));
 
-      setTimeout(_.bind(function(){
-        APP.dispatcher.trigger("home",this);
-      });
-
-      var hover_func = function(e){
-         $(e.currentTarget).toggleClass('alert-info');
-      };
-      this.app.find(".horizontal")
-        .on("mouseenter mouseleave",hover_func)
-        .on("click",this.horizontal_explore);
-
-      var acv = new APP.autocompleteView(sub_view_args);
-      var full_dept_list = new APP.fullDeptList(sub_view_args);
-      this.app.find("a.dept-sel")
-        .on("click",full_dept_list.render);
-
-      var that=this;
-      setTimeout(function(){
-        that.app.find('.well').height(
-          _.max(that.app.find('.well').map(function(x,y){return $(y).height()}))
-        );
-      });
+      APP.dispatcher.trigger_a("home",this);
     }
     ,horizontal_explore : function(){
-      APP.dispatcher.trigger("horizontal_explore");
+      APP.dispatcher.trigger("horizontal_explore",this);
     }
     ,remove : function(){
       if (this.app){
@@ -113,24 +94,35 @@
     }
   });
 
-  APP.VerticalView = Backbone.View.extend({
-    ,initialize: function(){
-      _.bindAll(this);
-
+  APP.dispatcher.on("home", function(app){
+    // ensure the two panels are equal sized 
+    app.app.find('.well').height(
+      _.max(app.app.find('.well').map(function(x,y){return $(y).height()}))
+    );
+    // remove the narbar elements
+    $('.nav_bar_ul').children().remove()
+    // shutdown the existing auto-complete and setup the new one
+    if (app.auto_complete){
+      app.auto_complete.stopListening();
     }
-    render : function(){
-
-
-    }
+    app.auto_complete = new APP.autocompleteView({
+      el : $('.home .dept_search')
+      ,app : app
+    });
   });
 
-  APP.dispatcher.once("app_ready", function(app){
-    APP.dispatcher.on("home", function(app){
-      
-    });
-    APP.dispatcher.on("dept_ready",function(){
-
-
+  APP.dispatcher.on("dept_ready",function(app){
+    var vertical_navbar = _.template($('#ver_navbar_t').html());
+    $('.nav_bar_ul').children().remove();
+    $('.nav_bar_ul').append(vertical_navbar({
+      gt : app.get_text
+    }));
+    if (app.auto_complete){
+      app.auto_complete.stopListening();
+    }
+    app.auto_complete = new APP.autocompleteView({
+      el : $('.nav_bar_ul .dept_search')
+      ,app : app
     });
   });
 
@@ -176,9 +168,7 @@
 
   APP.dispatcher.on("mini_tables_rendered", function(ctx){
     if (ctx.current_view){
-      setTimeout( function(){
-        APP.dispatcher.trigger("table_selected",ctx.current_view.table);
-      });
+      APP.dispatcher.trigger_a("table_selected",ctx.current_view.table);
     }
   });
 

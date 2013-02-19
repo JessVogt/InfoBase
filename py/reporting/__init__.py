@@ -214,6 +214,8 @@ def html_les(dev=True):
                    "les/graph6.js",
                    "les/graph7.js",
                    "les/tables.js",
+                   "table_builder.js",
+                   "les/horizontal.js",
                    "od/od.js" ]
 
   js_app = process_my_js(app_js_files, dev=dev)

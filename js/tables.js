@@ -17,6 +17,10 @@ $(function() {
     var signals = TABLES.tables.map(function(table){
       return 'table_' + table.get("id") +"_rendered";
     })
+    APP.size_panels(app,signals)
+  });
+
+  APP.size_panels = function(app,signals){
     // once all the mini table signals have been sent
     // do some prettying up on the page
     APP.dispatcher.on_these(signals, function(){
@@ -52,7 +56,7 @@ $(function() {
             views : views} 
       ); 
     });
-  });
+  };
 
   APP.dispatcher.once("app_ready", function(app){
     // get ready to adjust the heights and signal the readiness

@@ -74,20 +74,9 @@
     <div class="navbar-inner">
       <div class="container-fluid" id='navbar'>
         <span class="brand" id='title'></span>
-        <ul class='nav' id='navbar_ul' style='display:none;'>
-          <li>
-          <a href='#' id='dept_sel'> </a>
-          </li>
-          <li class="divider-vertical" id="search_divider"
-            rel="popover"
-            title=""
-            data-placement="bottom"></li> 
-          <li>
-          <form class="navbar-search pull-left">
-            <input type="text" class='search-query span2' id='type_ahead' />
-          </form>
-          </li>
-        </ul>
+        <div class='nav_bar_ul'>
+
+        </div>
         <ul class='nav pull-right'>
           <li><a href="#" id="lang_change"></a> </li>
         </ul>
@@ -113,11 +102,24 @@
 <script type='text/plain' id='breadcrumb_el'>
   <li><a href="#"><%=link%></a> <span class="divider">/</span></li>
 </script>
-<script type='text/plain' id='nav_bar_t'>
+<script type='text/plain' id='ver_navbar_t'>
+<ul class='nav'>
+  <li> <a href='#' class='home'><%= gt("home")%></a> </li>
+  <li> <a href='#' class='dept_sel'> <%= gt("select")%></a> </li>
+  <form class="navbar-search pull-left">
+    <input type="text" class='search-query span2 dept_search' />
+  </form>
+  </li>
+</ul>
+</script>
+<script type='text/plain' id='hori_navbar_t'>
+<ul class='nav'>
+  <li> <a href='#' class='home'><%= gt("home")%></a> </li>
+</ul>
 </script>
 <script type='text/plain' id='home_t'>
 <div>
-  <div class='container'>
+  <div class='container home'>
     <div class='row'>
       <div class='well span4'>
         <%=gt("welcome") %>
@@ -133,24 +135,24 @@
 </script>
 
 <script type='text/plain' id='main_t'>
-  <div class='container'>
-    <ul class="nav nav-pills">
-      <li style='display: none;' class='back active'>
-        <a href='#' ></a>
-      </li>
-      <li class="active">
-        <a href="#" class='dept_name'><%=org['dept'][lang]%></a> 
-      </li>
-      <li class='dropdown active'>
-        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-          <span class="caret" ></span>
-        </a>
-        <ul class="dropdown-menu" id='other_depts_list'>
-          <li class="nav-header"><%=gt("other_in_min")%></li>
-        </ul>
-      </li>
-    </ul>
-  </div>
+<div class='container'>
+  <ul class="nav nav-pills">
+    <li style='display: none;' class='back active'>
+      <a href='#' ></a>
+    </li>
+    <li class="active">
+      <a href="#" class='dept_name'><%=org['dept'][lang]%></a> 
+    </li>
+    <li class='dropdown active'>
+      <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+        <span class="caret" ></span>
+      </a>
+      <ul class="dropdown-menu" id='other_depts_list'>
+        <li class="nav-header"><%=gt("other_in_min")%></li>
+      </ul>
+    </li>
+  </ul>
+</div>
 </script>
 <script type='text/plain' id='panels_t'>
     <div class='panels'>

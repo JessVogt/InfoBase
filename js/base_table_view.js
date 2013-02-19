@@ -440,10 +440,7 @@ $(function () {
       }
       this.$el.find('.mini_payload').append(this.content);
 
-      var that = this;
-      setTimeout(function(){
-        APP.dispatcher.trigger(that.make_signal(),that);
-      });
+      APP.dispatcher.trigger_a(this.make_signal(),this);
       return this;
     }
     ,make_signal : function(){

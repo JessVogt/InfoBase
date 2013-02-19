@@ -3,7 +3,12 @@
     var LANG = ns('LANG');
 
     APP.dispatcher = _.extend({
-      deferred_signal : function(signal){
+      trigger_a : function(signal,context){
+        setTimeout(_.bind(function(){
+          APP.dispatcher.trigger(signal,context);
+        }));
+      }
+      ,deferred_signal : function(signal){
         var d = $.Deferred();
         var that = this;
         var f = function(arg){
@@ -42,7 +47,7 @@
       "percentage" :  function(val,lang){return $.formatNumber(val,
                                                   {format : "0%" ,locale : lang})},
       "big-int" :  function(val,lang){return $.formatNumber(val,
-                                                  {format:"#,##0" , locale: lang})},
+                                                   {format:"#,##0" , locale: lang})},
       "int" :  function(val,lang){return val},
       "str" : function(val,lang){return val},
       "wide-str" : function(val,lang){return val},
@@ -97,20 +102,15 @@
         _.bindAll(this);
         this.app = this.options['app'];
         this.state = this.app.state;
-        this.gt = this.options['app'].get_text;
-
         this.lookup = depts;
-        APP.dispatcher.on("lang_change",this.render);
-        APP.dispatcher.on("dept_ready",this.clear);
         this.$el.typeahead({updater: this.updater});
+        this.setup(this.state.get("lang"));
+        this.listenTo(APP.dispatcher,"dept_ready",this.clear);
       }
       ,clear : function(app){
-        setTimeout(_.bind(function(){
-          this.$el.val('');
-        },this));
+        setTimeout(_.bind(function(){ this.$el.val('')},this));
       }
-      ,render:function (lang) {
-         var text = this.gt("search");
+      ,setup:function (lang) {
          // filter the departments to remove the GoC
          // data
          var values = _.filter(_.values(this.lookup),
@@ -124,27 +124,35 @@
            });
          // look departments up by name
          source = source.concat( _.pluck(_.values(this.lookup), 'accronym'));
-         this.$el.prop('placeholder',text);
          // use this method to reset the source
          this.$el.data('typeahead')['source'] = source;
          return this;
       }
       ,updater:function(val){
-        var lang = this.state.get('lang');
-        var dept = _.first(_.filter(_.values(this.lookup),
+        this.stopListening();
+        var state = this.state;
+        var lang = state.get('lang');
+        var lookup = this.lookup;
+        setTimeout(function(){ 
+          var dept = _.first(_.filter(_.values(lookup),
               function(x){ return x['dept'][lang] == val}));
-        // now search by accronym
-        if (_.isUndefined(dept)){
-            dept = _.first(_.filter(_.values(this.lookup),
-              function(x){ return x['accronym'] == val}));
-        }
-        this.state.set('dept',dept);
+          // now search by accronym
+          if (_.isUndefined(dept)){
+              dept = _.first(_.filter(_.values(lookup),
+                function(x){ return x['accronym'] == val}));
+          }
+          state.set('dept',dept)},
+        100);
         return val;
       }
     });
 
     APP.fullDeptList = Backbone.View.extend({
-      template : _.template($('#dept_list').html())
+      el : 'body'
+      ,template : _.template($('#dept_list').html())
+      ,events : {
+       "click a.dept_sel" : "render"
+      }
       ,initialize: function(){
         _.bindAll(this);
         this.app = this.options['app'];
@@ -249,20 +257,6 @@
       }
     });
 
-    APP.switchLangView = Backbone.View.extend({
-      el : $("#lang_change")
-      ,initialize: function(){
-        _.bindAll(this);
-        this.app = this.options["app"];
-        this.$el.on("click",this.app.toggle_lang);
-        APP.dispatcher.on("lang_change",this.render);
-      }
-      ,render:function (lang) {			
-        this.$el.html(this.app.get_text("lang"));
-        return this;
-      }
-    }); 
-
     APP.otherDeptsDropDown = Backbone.View.extend({
       template : _.template($('#nav_li').html())
       ,initialize: function(){
@@ -322,9 +316,7 @@
         gt : app.get_text
       })).appendTo(app.app);
 
-      setTimeout(_.bind(function(){
-        APP.dispatcher.trigger("new_org_view",this);
-      },this));
+      APP.dispatcher.trigger_a("new_org_view",this);
       return this;
     }
   });
@@ -355,6 +347,15 @@
       });
     }
   });
+
+  var ministry_total = function(depts,table){
+      var lines = _.map(depts,
+        function(dept){  //map function
+          return dept['tables'][table];
+        });
+      // flatten all these lists into one big list
+      return  _.flatten(_.compact(lines),true);
+  };
 
   DetailsView = Backbone.View.extend({
     template : _.template($('#dataview_t').html())
@@ -439,10 +440,7 @@
       
       this.drop_zone.append(this.$el);
 
-      var that = this;
-      setTimeout(function(){
-        APP.dispatcher.trigger("new_details_view",that);
-      });
+      APP.dispatcher.trigger_a("new_details_view",this);
       return this;
     }
     ,tear_down : function(e){
