@@ -12,6 +12,11 @@ $(function() {
     'last_year_2' : '2010-11',
     'p' : 9
   };
+
+  var for_each_p = function(x){
+    return _.map(_.range(TABLES.template_args.p),
+                function(){ return x})
+  };
   
 
   function make_historical_filter(source_row){
@@ -896,6 +901,240 @@ $(function() {
 
             }
           } 
+      },
+      {
+        id : "TableIS"
+        col_defs : ["int",
+                     "str",
+                     // last years period
+                     "big-int",
+                     "big-int",
+                     "big-int",
+                     "big-int",
+                     "big-int",
+                     "big-int",
+                     "big-int",
+                     "big-int",
+                     "big-int",
+                     "big-int",
+                     "big-int",
+                     "big-int",
+                     // this years period
+                     "big-int",
+                     "big-int",
+                     "big-int",
+                     "big-int",
+                     "big-int",
+                     "big-int",
+                     "big-int",
+                     "big-int",
+                     "big-int",
+                     "big-int",
+                     "big-int",
+                     "big-int",
+                     // last year's SO breakout
+                     "big-int",
+                     "big-int",
+                     "big-int",
+                     "big-int",
+                     // this year's SO breakout
+                     "big-int",
+                     "big-int",
+                     "big-int",
+                     "big-int",
+                     //comparison
+                     "big-int",
+                     "percentage",
+                     //total
+                     "big-int",
+                     "percentage",
+                     //personnel
+                     "percentage",
+                     "percentage",
+                     //non-personnel
+                     "percentage",
+                     "percentage",
+                     //revenues
+                     "wide-int",
+                     "wide-int",
+                     //net
+                     "wide-int",
+                     "wide-int"],
+        coverage : "in_year",
+        headers : { "en" : [[{"colspan" : 2,
+                             "header" : ""},
+                            {"colspan" : 12,
+                             "header" : "{{last_year}} Expenditures by Period"},
+                            {"colspan" : 12,
+                             "header" : "{{year}} Expenditures by Period"},
+                            {"colspan" : 4,
+                             "header" : "{{last_year}}-P{{p}} Expenditure Categories"},
+                            {"colspan" : 4,
+                             "header" : "{{year}}-P{{p}} Expenditure Categories"},
+                            {"colspan" : 12,
+                             "header" : "{{year}}-P{{p}} Comparisons"}
+                            ],[
+                             "Vote / Stat",
+                             "Description",
+                             "P1",
+                             "P2",
+                             "P3",
+                             "P4",
+                             "P5",
+                             "P6",
+                             "P7",
+                             "P8",
+                             "P9",
+                             "P10",
+                             "P11",
+                             "P12",
+                             "P1",
+                             "P2",
+                             "P3",
+                             "P4",
+                             "P5",
+                             "P6",
+                             "P7",
+                             "P8",
+                             "P9",
+                             "P10",
+                             "P11",
+                             "P12",
+                             "Personnel",
+                             "Professional and Special Servies",
+                             "Acquisistion of Machinery",
+                             "Other",
+                             "Personnel",
+                             "Professional and Special Servies",
+                             "Acquisistion of Machinery",
+                             "Other",
+                             "1",
+                             "2",
+                             "3",
+                             "4",
+                             "5",
+                             "6",
+                             "7",
+                             "8",
+                             "9",
+                             "10",
+                             "11",
+                             "12"
+                            ]],
+                    "fr" : [[{"colspan" : 2,
+                             "header" : ""},
+                            {"colspan" : 12,
+                             "header" : "{{last_year}} Dépenses par périod"},
+                            {"colspan" : 12,
+                             "header" : "{{year}} Dépenses par périod"},
+                            {"colspan" : 4,
+                             "header" : "{{last_year}}-P{{p}} types des dépenses"},
+                            {"colspan" : 4,
+                             "header" : "{{year}}-P{{p}} types des dépenses"},
+                            {"colspan" : 12,
+                             "header" : "{{year}}-P{{p}} Comparisons"}
+                            ],[
+                             "Crédit / leg.",
+                             "Déscription",
+                             "P1",
+                             "P2",
+                             "P3",
+                             "P4",
+                             "P5",
+                             "P6",
+                             "P7",
+                             "P8",
+                             "P9",
+                             "P10",
+                             "P11",
+                             "P12",
+                             "P1",
+                             "P2",
+                             "P3",
+                             "P4",
+                             "P5",
+                             "P6",
+                             "P7",
+                             "P8",
+                             "P9",
+                             "P10",
+                             "P11",
+                             "P12",
+                             "Personnel",
+                             "Services Professionnels et Spéciaux",
+                             "Acquisition de machinerie et matériel",
+                             "Other",
+                             "Personnel",
+                             "Services Professionnels et Spéciaux",
+                             "Acquisition de machinerie et matériel",
+                             "Other",
+                             "1",
+                             "2",
+                             "3",
+                             "4",
+                             "5",
+                             "6",
+                             "7",
+                             "8",
+                             "9",
+                             "10",
+                             "11",
+                             "12"
+                            ]]},
+          ,"name" : { 
+            en : "Internal Services"
+            ,fr : "Services Internes"
+          }
+          ,"title" : { 
+            en : "Internal Services ($000)",
+            fr : "Internal Services ($000)"
+          }
+          ,key : [0,1]
+          ,table_view : { 
+            hide_col_ids: []
+            ,sum_cols: _.range(2, 47)
+            ,min_func : TABLES.add_ministry_sum
+            ,init_row_data : function(){
+              var txt = this.gt("total");
+              this.merge_group_results(
+                [[this.row_data,
+                GROUP.fnc_on_group(
+                  this.row_data,
+                  {txt_cols : {0 : txt},
+                    func_cols : this.sum_cols,
+                    func : GROUP.sum_rows})]]);
+            }
+          }
+          ,mapper : {
+            to : function (row) {
+              if (row[1]){
+                row.splice(2,0,votes[this.def['coverage']][row[0]][row[1]][this.lang]);
+              }
+              else {
+                row.splice(2,0,'');
+              }
+              return _.rest(row,1); 
+            }
+            ,make_filter : function(source_row){
+              var type = votes[this.def['coverage']][source_row[0]][source_row[1]]['type'];
+              return _.bind(function(candidate_row){
+                var cr = candidate_row;
+                if (cr[1]){
+                  var cr_type = votes[this.def['coverage']][cr[0]][cr[1]]['type'];
+                  return ( type == cr_type);
+                }
+                return false;
+              },this);
+            }
+          }
+          ,mini_view : {
+            prep_data : function(){
+              var ttf = APP.types_to_format['big-int'];
+            }
+            ,render_data : function(){
+
+            }
+          }
       },
       {
         id : "Table4",

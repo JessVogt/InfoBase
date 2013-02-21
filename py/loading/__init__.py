@@ -5,9 +5,11 @@ from ..reporting import table_defs
 tables = table_defs.tables
 f  = 'LESWEB.XLS'
 f2 = 'CODES WEB LES.XLS'
+f3 = 'ISLED.XLS'
 
 wb = xlrd.open_workbook(f)
 wb2 = xlrd.open_workbook(f2)
+wb3 = xlrd.open_workbook(f3)
 
 def clean_data(d):
   if isinstance(d,basestring):
@@ -92,6 +94,9 @@ def load_les():
   data_sheets = dict(map(each_sheet,
                          filter(lambda x : 'Table' in x.name,
                                     wb.sheets())))
+  data_sheets.update( dict(map(each_sheet,
+                         filter(lambda x : 'Table' in x.name,
+                                    wb3.sheets()))))
   lookup_sheets = dict(map(each_sheet,
                            wb2.sheets()))
   lookup_sheets['footnotes'] = each_sheet(wb.sheet_by_name('Footnotes'))[1]
