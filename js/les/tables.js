@@ -904,7 +904,7 @@ $(function() {
       },
       {
         id : "TableIS"
-        col_defs : ["int",
+        ,col_defs : ["int",
                      "str",
                      // last years period
                      "big-int",
@@ -1080,7 +1080,7 @@ $(function() {
                              "10",
                              "11",
                              "12"
-                            ]]},
+                            ]]}
           ,"name" : { 
             en : "Internal Services"
             ,fr : "Services Internes"
