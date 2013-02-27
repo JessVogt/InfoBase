@@ -73,7 +73,7 @@ cssdata = reduce(operator.add,
 
 def make_after_check(lookups):
   def _(row,table):
-    if table in ('Table1','Table2','Table2a','Table2b','Table3'):
+    if table in ('Table1','Table2','Table2a','Table2b','Table3','TableIS'):
       lookups['depts'][row[0]].setdefault('tables',{}).setdefault(table,[]).append(row)
     else:
       lookups['depts'][row[0]].setdefault('tables',{}).setdefault(table,[]).append(row[1:])
