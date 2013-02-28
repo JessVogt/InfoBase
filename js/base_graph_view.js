@@ -21,6 +21,7 @@ $(function () {
       this.app = this.options["app"];
       this.def = this.options["def"];
 
+      this.state = this.app.state;
       this.dept = this.state.get('dept');
       this.lang = this.state.get("lang");
       this.raw_data = this.dept.tables[this.key];
