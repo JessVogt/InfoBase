@@ -100,7 +100,7 @@ $(function () {
         "bFilter": false,
         "bInfo" : false,
         "bPaginate" : false,
-        "bSort" : false
+        "bSort" : false,
     }
     ,width_map : {
       "int" : 90,
@@ -195,7 +195,7 @@ $(function () {
      }));
     }
     ,on_copy_click : function(e){
-        TABLES.excel_format( this.$el.find('table'),true);
+        TABLES.excel_format( this.for_copying.find('table'),true);
     }
     , make_headers: function () {
       _.each(_.map(this.headers, function (h) {
@@ -209,22 +209,6 @@ $(function () {
         this.header.append(hv.$el)
       },
       this)
-    }
-    , make_footers: function () {
-      if (_.size(this.row_data) > 15 ) {
-        var views = _.map(this.headers, function (h) {
-          return new headerView({
-            types : this.col_defs,
-            header: h
-          });
-        },this)
-        views.reverse();
-        _.each(views,
-        function (fv) {
-          this.footer.append(fv.$el);
-        },
-        this)
-      }
     }
     ,make_body: function () {
       _.each(_.map(this.row_data,
@@ -283,6 +267,10 @@ $(function () {
         this.datatable.fnDestroy();
       }
       var options  = _.extend({},this.data_table_args);
+      if (this.row_data.length > 10){
+        options["sScrollY"] = "400px"
+        options["bScrollCollapse"]= true
+      }
       var showing_defs  = this.col_defs;
       // hide columns 
       if (!this.details && this.hide_col_ids.length > 0){
@@ -336,7 +324,8 @@ $(function () {
 
       this.make_headers();
       this.make_body();
-      this.make_footers();
+
+      this.for_copying = this.$el.clone();
 
       var tds = this.$el.find('td div');
 
@@ -384,7 +373,10 @@ $(function () {
       })
 
       this.activate_dataTable();
-
+      var that = this;
+      setTimeout(function(){
+        APP.dispatcher.trigger("table_rendered",that);
+      });
       return this;
     }
   }) // end of BaseTableView
@@ -452,6 +444,11 @@ $(function () {
     ,trigger_click : function(){
       this.$el.find('a.details').trigger("click");
     }
+  });
+
+  APP.dispatcher.on("table_rendered",function(table_view){
+    debugger
+
   });
 
   TABLES.extract_headers = function(headers,index){
