@@ -546,12 +546,16 @@ $(function () {
 
     TABLES.build_table = function(options){
       var table = $(_.template($('#list_t').html())());
+      var id_base = _.random(0,1000000)+":";
       table.find('table').removeClass('table-striped');
       if (options.headers){
         _.each(options.headers, function(header_row){
            var row = $('<tr>');
            row.append( _.map(header_row,function(x,index){
-             return $('<th>').html(x).css(options.css[index]);
+             return $('<th>')
+             .html(x)
+             .css(options.css[index])
+             .attr("id",id_base+x) ;
            }));
            table.find('thead').append( row);
         });
@@ -559,7 +563,12 @@ $(function () {
      _.each(options.body, function(data_row){
         var row = $('<tr>');
         row.append( _.map(data_row,function(x,index){
-          return $('<td>').html(x).css(options.css[index]);
+          return $('<td>')
+          .html(x)
+          .css(options.css[index])
+          .attr("headers", _.map(options.headers, function(h){
+            return id_base+h[index];
+          }).join(" "));
         }));
         table.find('tbody').append(row);
      });
