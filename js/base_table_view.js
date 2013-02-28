@@ -9,25 +9,38 @@ $(function () {
     initialize: function () {
       _.bindAll(this);
       this.types = this.options['types'];
-      this.headers = this.options['header']; //read argument [object w/ only one key,val pair] to get headers
+      this.header = this.options['header']; //read argument [object w/ only one key,val pair] to get headers
+      this.headers = _.clone(this.options['headers']);
+      // chop the headers to just the ones above
+      this.headers
+       .splice(this.headers.indexOf(this.header)); 
+
       this.m= TABLES.m;
       this.render(); //self-rendering
     },
     render: function () {
       var args, header;
       //append each data value to tr to make a header that is ready to be appended to thead, later
-      _.each(this.headers,
+      _.each(this.header,
 
-      function (h) {
-        var header;
+      function (h,i) {
+        var header,parent_headers,id;
         if (_.isString(h)) args = {
           header: h,
           colspan: 1,
-          class_: this.types[_.indexOf(this.headers,h)]
+          class_: this.types[_.indexOf(this.header,h)]
         };
         else args = _.extend({class_: ''},h);
         args['header'] = this.m(args['header']);
-        header = this.template(args);
+        header = $(this.template(args));
+        id = header.text().trim();
+        // figure out the WCAG header link
+        if (this.headers.length > 0) {
+          parent_headers = TABLES.extract_headers(this.headers,i)
+          header.attr("headers",parent_headers.join(" "));
+          id = parent_headers.join("-")+"-"+id;
+        }
+        header.attr("id",id);
         $(this.el).append(header); //append header
       },
       this //scope of map is rowView
@@ -42,6 +55,7 @@ $(function () {
       _.bindAll(this);
       this.app = this.options['app'];
       this.row = this.options['row']; //read argument [object w/ only one key,val pair] to get row data
+      this.headers = this.options['headers'];
       this.types = this.options['types'];
       if (this.options['summary_row']) {
         this.$el.addClass('info').css('font-weight','bold');
@@ -59,10 +73,17 @@ $(function () {
       _.map(
       _.zip(this.row, this.types),
 
-      function (data_type) {
+      function (data_type,i) {
         var data = data_type.shift();
         var type = data_type.shift();
         var el = $('<td><div>');
+        // add in WCAG links
+        var headers = TABLES.extract_headers(this.headers,i);
+        headers = _.map(headers, function(header,index){
+          return _.first(headers,index+1).join("-")
+        }).join(" ");
+        el.attr("headers",headers);
+
         this.$el.append(el);
         var div = el.find('div')
         div.addClass(type);
@@ -201,7 +222,8 @@ $(function () {
       _.each(_.map(this.headers, function (h) {
         return new headerView({
           types : this.col_defs,
-          header: h
+          header: h,
+          headers : this.headers
         });
       },this),
 
@@ -217,6 +239,7 @@ $(function () {
                   row: r,
                   app : this.app,
                   types: this.col_defs,
+                  headers : this.headers,
                   summary_row: _.indexOf(this.summary_rows,r) != -1
                 });
               }, 
@@ -232,6 +255,7 @@ $(function () {
                 return new rowView({
                   row: r,
                   app : this.app,
+                  headers : this.headers,
                   types: this.col_defs,
                   min_row: true
                 });
@@ -248,6 +272,7 @@ $(function () {
                 return new rowView({
                   row: r,
                   app : this.app,
+                  headers : this.headers,
                   types: this.col_defs,
                   goc_row: true
                 });
@@ -447,7 +472,6 @@ $(function () {
   });
 
   APP.dispatcher.on("table_rendered",function(table_view){
-    debugger
 
   });
 
