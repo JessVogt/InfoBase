@@ -213,6 +213,7 @@ def html_les(dev=True):
                    "les/graph5.js",
                    "les/graph6.js",
                    "les/graph7.js",
+                   "les/graphIS.js",
                    "les/tables.js",
                    "od/od.js" ]
 

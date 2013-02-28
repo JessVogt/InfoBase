@@ -18,11 +18,17 @@ $(function () {
     ,initialize: function () {
       _.bindAll(this);
       this.key = this.options["key"];
-      this.data = this.options["data"];
       this.app = this.options["app"];
       this.def = this.options["def"];
-      this.dept = this.options['dept'];
+
+      this.dept = this.state.get('dept');
+      this.lang = this.state.get("lang");
+      this.raw_data = this.dept.tables[this.key];
+      this.mapped_objs = this.dept.mapped_objs[this.lang];
+      this.data = this.dept['mapped_data'][this.key][this.lang];
+
       this.gt = this.app.get_text;
+
       this.footnotes = this.options['footnotes'].concat(
         _.map(this.footnote_keys,
               function(key){ return this.gt(key);},
