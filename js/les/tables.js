@@ -70,10 +70,8 @@ $(function() {
       // central votes
       dv.graph_view = new dv.def.graph_view({
         key : dv.key,
-        data : dv.data,
         app : dv.app,
         def : dv.def,
-        dept : dv.dept,
         footnotes : []
       });
       dv.graph_payload.append(dv.graph_view.render().$el);
@@ -906,7 +904,8 @@ $(function() {
         "id" : "TableIS"
         ,"col_defs" : ["int",
                      "str",
-                     // last years periods
+                     "str",
+                     // periods
                      "big-int",
                      "big-int",
                      "big-int",
@@ -919,67 +918,22 @@ $(function() {
                      "big-int",
                      "big-int",
                      "big-int",
-                     // last years period 16
+                     // period 16
                      "big-int",
-                     // this years period
-                     "big-int",
-                     "big-int",
+                     // SO breakout
                      "big-int",
                      "big-int",
                      "big-int",
                      "big-int",
                      "big-int",
-                     "big-int",
-                     "big-int",
-                     "big-int",
-                     "big-int",
-                     "big-int",
-                     // this years period 16
-                     "big-int",
-                     // last year's SO breakout
-                     "big-int",
-                     "big-int",
-                     "big-int",
-                     "big-int",
-                     "big-int",
-                     // this year's SO breakout
-                     "big-int",
-                     "big-int",
-                     "big-int",
-                     "big-int",
-                     "big-int",
-                     //comparison
-                     "big-int",
-                     "percentage",
-                     //total
-                     "percentage",
-                     "percentage",
-                     //personnel
-                     "percentage",
-                     "percentage",
-                     //non-personnel
-                     "percentage",
-                     "percentage",
-                     //revenues
-                     "big-int",
-                     "big-int",
-                     //net
-                     "big-int",
-                     "big-int"
                      ],
         "coverage" : "in_year",
-        "headers" : { "en" : [[{"colspan" : 2,
+        "headers" : { "en" : [[{"colspan" : 3,
                              "header" : ""},
                             {"colspan" : 13,
-                             "header" : "{{last_year}} Expenditures by Period"},
-                            {"colspan" : 13,
-                             "header" : "{{year}} Expenditures by Period"},
+                             "header" : "Expenditures by Period"},
                             {"colspan" : 5,
-                             "header" : "{{last_year}}-P{{p}} Expenditure Categories"},
-                            {"colspan" : 5,
-                             "header" : "{{year}}-P{{p}} Expenditure Categories"},
-                            {"colspan" : 12,
-                             "header" : "{{year}}-P{{p}} Comparisons"}
+                             "header" : "Expenditures by Categories"},
                             ],[
                              "Vote / Stat",
                              "Description",
@@ -996,70 +950,22 @@ $(function() {
                              "P11",
                              "P12",
                              "P16",
-                             "P1",
-                             "P2",
-                             "P3",
-                             "P4",
-                             "P5",
-                             "P6",
-                             "P7",
-                             "P8",
-                             "P9",
-                             "P10",
-                             "P11",
-                             "P12",
-                             "P16",
                              "Personnel",
                              "Professional and Special Servies",
                              "Acquisistion of Machinery",
                              "Other",
                              'Revenue',
-                             "Personnel",
-                             "Professional and Special Servies",
-                             "Acquisistion of Machinery",
-                             "Other",
-                             'Revenue',
-                             "Difference between P{{p}}-{{last_year}}",
-                             "Percentage Difference between P{{p}}-{{last_year}}",
-                             "{{last_year}} Percentage Expended on Internal Services",
-                             "{{year}} Percentage Expended on Internal Services",
-                             "{{last_year}} Percentage Expended on Internal Services Personnel",
-                             "{{year}} Percentage Expended on Internal Services Personnel",
-                             "{{last_year}} Percentage Expended on Internal Services Non-Personnel",
-                             "{{year}} Percentage Expended on Internal Services Non-Personnel",
-                             "{{last_year}} P16 Internal Services Revenues",
-                             "{{year}} P{{p}} Internal Services Revenues",
-                             "Net {{last_year}} Internal Services Spending",
-                             "Net {{year}} Internal Services Spending",
                             ]],
-                    "fr" : [[{"colspan" : 2,
+                    "fr" : [[{"colspan" : 3,
                              "header" : ""},
                             {"colspan" : 13,
-                             "header" : "{{last_year}} Dépenses par périod"},
-                            {"colspan" : 13,
-                             "header" : "{{year}} Dépenses par périod"},
+                             "header" : "Dépenses par périod"},
                             {"colspan" : 5,
-                             "header" : "{{last_year}}-P{{p}} types des dépenses"},
-                            {"colspan" : 5,
-                             "header" : "{{year}}-P{{p}} types des dépenses"},
-                            {"colspan" : 12,
-                             "header" : "{{year}}-P{{p}} Comparisons"}
+                             "header" : "Types des dépenses"},
                             ],[
                              "Crédit / leg.",
                              "Déscription",
-                             "P1",
-                             "P2",
-                             "P3",
-                             "P4",
-                             "P5",
-                             "P6",
-                             "P7",
-                             "P8",
-                             "P9",
-                             "P10",
-                             "P11",
-                             "P12",
-                             "P16",
+                             "Année",
                              "P1",
                              "P2",
                              "P3",
@@ -1078,23 +984,6 @@ $(function() {
                              "Acquisition de machinerie et matériel",
                              "Other",
                              'Revenus',
-                             "Personnel",
-                             "Services Professionnels et Spéciaux",
-                             "Acquisition de machinerie et matériel",
-                             "Other",
-                             'Revenus',
-                             "1",
-                             "2",
-                             "3",
-                             "4",
-                             "5",
-                             "6",
-                             "7",
-                             "8",
-                             "9",
-                             "10",
-                             "11",
-                             "12"
                             ]]}
           ,"name" : { 
             en : "Internal Services"
@@ -1106,8 +995,8 @@ $(function() {
           }
           ,key : [0,1]
           ,table_view : { 
-            hide_col_ids: _.range(2,38)
-            ,sum_cols: _.range(2, 47)
+            hide_col_ids: []
+            ,sum_cols: []
             ,min_func : TABLES.add_ministry_sum
             ,init_row_data : function(){
               //var txt = this.gt("total");
