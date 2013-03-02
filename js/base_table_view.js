@@ -294,9 +294,7 @@ $(function () {
               function(key){return key!= index}))
     }
     ,render: function () {
-      if (_.isUndefined(this.details)){
-        this.details = false;
-      }
+      this.details = this.details || false;
       if (this.datatable){
         this.datatable.fnDestroy();
       }
