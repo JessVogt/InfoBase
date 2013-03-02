@@ -110,8 +110,8 @@
         ,"fr" : "English"
       }
       ,"current_year_fisc" : {
-         "en" : "Financial data for the current Fiscal Year (April 1st 2012, March 31st 2013)",
-         "fr" : "Données financières pour l'exercise (1 avril á  31 mars, 2013)"
+         "en" : "Financial data up to P9 for the current Fiscal Year (April 1st 2012 to December 31st 2012)",
+         "fr" : "Données financières jusqu'à P9 pour l'exercise courant (1 avril à 31 décembre 2012 )"
       }
       ,"previous_year_fisc" : {
          "en" : "Financial data from previous fiscal years (2009-10 to 2011-12)",
@@ -159,7 +159,7 @@
       }
       ,"title" : {
         "en": "Lapse and Expenditure Dashboard"
-        ,"fr": "Tableau de bord pour les fonds inutilisés et les dépenses"
+        ,"fr": "Tableau de bord des fonds inutilisés et des dépenses"
       }
       ,"table" : {
         "en" : "Table"

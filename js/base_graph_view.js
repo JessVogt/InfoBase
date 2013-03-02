@@ -6,7 +6,9 @@ $(function () {
   // attach all the graphs to their respective views
   APP.dispatcher.once("load_tables",function(app){
     var add_graph_view = function(table){
-      table.set("graph_view", GRAPHS.views[table.get("id")]);
+      if (_.has(GRAPHS.views, table.get("id"))){
+        table.set("graph_view", GRAPHS.views[table.get("id")]);
+      }
     }
     TABLES.tables.each(add_graph_view);
     TABLES.tables.on("add",add_graph_view);
@@ -18,11 +20,18 @@ $(function () {
     ,initialize: function () {
       _.bindAll(this);
       this.key = this.options["key"];
-      this.data = this.options["data"];
       this.app = this.options["app"];
       this.def = this.options["def"];
-      this.dept = this.options['dept'];
+
+      this.state = this.app.state;
+      this.dept = this.state.get('dept');
+      this.lang = this.state.get("lang");
+      this.raw_data = this.dept.tables[this.key];
+      this.mapped_objs = this.dept.mapped_objs[this.lang];
+      this.data = this.dept['mapped_data'][this.key][this.lang];
+
       this.gt = this.app.get_text;
+
       this.footnotes = this.options['footnotes'].concat(
         _.map(this.footnote_keys,
               function(key){ return this.gt(key);},

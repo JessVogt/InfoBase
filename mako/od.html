@@ -23,10 +23,13 @@
     text-decoration: underline;
   }
   .section-header {
+    padding-bottom : 5px;
+    margin-bottom : 10px;
     border-bottom: 1px solid #EEE;
     width: 100%
   }
   .section-footer {
+    padding-top : 5px;
     border-top: 1px solid #EEE;
     width: 100%;
 
@@ -69,7 +72,7 @@
   </%block>
 
   <div class='container'>
-    <div class="navbar span9">
+    <div class="navbar">
       <div class="navbar-inner" id='navbar'>
         <span class="brand" id='title'></span>
         <ul class='nav' id='navbar_ul'>
@@ -96,7 +99,7 @@
   <div id='app'>
     <div class='container'>
       <div class='row'>
-        <div class='span6 offset3 alert alert-info'>
+        <div class='alert alert-info' style='margin: 20px'>
           <h3 id='welcome'>
           </h3>
         </div>
@@ -186,11 +189,11 @@
         </div>
       </div>
       <div class="row widget-row" >
-        <div class="table-widget span3 well well-small" id='table1'>
-        </div>                           
-        <div class="table-widget span3 well well-small" id='table2'>
+        <div class="span4" id='table1'>
+        </div>           
+        <div class="span4" id='table2'>
         </div>      
-        <div class="table-widget span3 well well-small" id='table3'>
+        <div class="span4" id='table3'>
         </div>
       </div>
       <div class="row" >
@@ -199,11 +202,11 @@
         </div>
       </div>
       <div class="row widget-row" >
-        <div class="table-widget span3 well well-small" id='table4'>
-        </div>
-        <div class="table-widget span3 well well-small" id='table5'>
-        </div>
-        <div class="table-widget span3 well well-small" id='table6'>
+        <div class="span4" id='table4'>
+        </div>          
+        <div class="span4" id='table5'>
+        </div>          
+        <div class="span4" id='table6'>
         </div>
       </div>
     </div>
@@ -214,11 +217,11 @@
 </script>
 
 <script type='text/plain' id='mini_t'>
-  <div class='mini_t'>
+  <div class='mini_t well well-small'>
     <div class='section-header'>
-      <span class='title'></span>
+      <strong><span class='title '></span></strong>
     </div>
-    <div class='mini_payload' style='font-size: 10px'>
+    <div class='mini_payload' style='font-size: 12px'>
 
     </div>
     <div class='details_button section-footer'>
@@ -233,7 +236,7 @@
 
 <script type='text/plain' id='dataview_t'>
 <div class='row'>
-  <div class='span9 well tables'>
+  <div class='well tables'>
     <ul class='nav nav-pills'>
       <li class='back active'>
       <a href='#'><%=gt("back")%></a>
@@ -335,13 +338,6 @@
 <script type='text/plain' id='analytics_t'>
   <div>
      <div class="btn-toolbar" style='padding-left: 50px'>
-        <div class='btn-group'> 
-          <button class='btn btn-inverse copy'
-            title='<%=gt("copy_tooltip")%>' 
-            data-placement='top'>
-            <%=gt("copy")%>
-          </button>
-        </div> 
         <div class="btn-group" data-toggle="buttons-radio">
           <button type="button" class="btn btn-primary active">
               <%=gt("summary_stats")%>

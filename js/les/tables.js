@@ -12,6 +12,11 @@ $(function() {
     'last_year_2' : '2010-11',
     'p' : 9
   };
+
+  var for_each_p = function(x){
+    return _.map(_.range(TABLES.template_args.p),
+                function(){ return x})
+  };
   
 
   function make_historical_filter(source_row){
@@ -23,27 +28,28 @@ $(function() {
     }
   }
 
+  // hook on to the department title, turn it into a link
+  // and when the link is clicked, show the departmental info
+  // view
   APP.dispatcher.once("app_ready",function(app){
-    app.state.on("change:dept", function(state,dept){
+    APP.dispatcher.on("new_org_view",function(view){
+      var dept = app.state.get("dept");
       if (!_.has(dept,"website")) {
         return;
       }
-      $.when(app.org_view.rendered).done(function(){
-        
-        app.$el.find('.dept_name')
-        .addClass("clickable")
-        .on("hover", this, function(e){
-          $(e.currentTarget).toggleClass("text-info");
-        })
-        .on("click",function(){
-          (new APP.deptInfoView({app: app})).render();
-        });
+      app.$el.find('.dept_name')
+      .addClass("clickable")
+      .on("hover", this, function(e){
+        $(e.currentTarget).toggleClass("text-info");
+      })
+      .on("click",function(){
+        (new APP.deptInfoView({app: app})).render();
       });
     });
   });
 
+  // register functionality unique to the LED
   APP.dispatcher.on("new_details_view",function(dv){
-
     // setup the back button
     $('.nav-pills li.back')
       .show()
@@ -64,10 +70,8 @@ $(function() {
       // central votes
       dv.graph_view = new dv.def.graph_view({
         key : dv.key,
-        data : dv.data,
         app : dv.app,
         def : dv.def,
-        dept : dv.dept,
         footnotes : []
       });
       dv.graph_payload.append(dv.graph_view.render().$el);
@@ -584,7 +588,7 @@ $(function() {
               var sorted = _.sortBy(this.data, function(x){
                 return x[auth];
               });
-              this.rows  = _.map(_.last(sorted, 3), function(row,index){
+              this.rows  = _.map(_.last(sorted, 3).reverse(), function(row,index){
                 return [index+1,row['Program Activity'],ttf(row[auth])];
               });
             }
@@ -897,6 +901,143 @@ $(function() {
           } 
       },
       {
+        "id" : "TableIS"
+        ,"col_defs" : ["int",
+                     "str",
+                     "str",
+                     // periods
+                     "big-int",
+                     "big-int",
+                     "big-int",
+                     "big-int",
+                     "big-int",
+                     "big-int",
+                     "big-int",
+                     "big-int",
+                     "big-int",
+                     "big-int",
+                     "big-int",
+                     "big-int",
+                     // period 16
+                     "big-int",
+                     // SO breakout
+                     "big-int",
+                     "big-int",
+                     "big-int",
+                     "big-int",
+                     "big-int",
+                     ],
+        "coverage" : "in_year",
+        "headers" : { "en" : [[{"colspan" : 3,
+                             "header" : ""},
+                            {"colspan" : 13,
+                             "header" : "Expenditures by Period"},
+                            {"colspan" : 5,
+                             "header" : "Expenditures by Categories"},
+                            ],[
+                             "Vote / Stat",
+                             "Description",
+                             "P1",
+                             "P2",
+                             "P3",
+                             "P4",
+                             "P5",
+                             "P6",
+                             "P7",
+                             "P8",
+                             "P9",
+                             "P10",
+                             "P11",
+                             "P12",
+                             "P16",
+                             "Personnel",
+                             "Professional and Special Servies",
+                             "Acquisistion of Machinery",
+                             "Other",
+                             'Revenue',
+                            ]],
+                    "fr" : [[{"colspan" : 3,
+                             "header" : ""},
+                            {"colspan" : 13,
+                             "header" : "Dépenses par périod"},
+                            {"colspan" : 5,
+                             "header" : "Types des dépenses"},
+                            ],[
+                             "Crédit / leg.",
+                             "Déscription",
+                             "Année",
+                             "P1",
+                             "P2",
+                             "P3",
+                             "P4",
+                             "P5",
+                             "P6",
+                             "P7",
+                             "P8",
+                             "P9",
+                             "P10",
+                             "P11",
+                             "P12",
+                             "P16",
+                             "Personnel",
+                             "Services Professionnels et Spéciaux",
+                             "Acquisition de machinerie et matériel",
+                             "Other",
+                             'Revenus',
+                            ]]}
+          ,"name" : { 
+            en : "Internal Services"
+            ,fr : "Services Internes"
+          }
+          ,"title" : { 
+            en : "Internal Services ($000)",
+            fr : "Internal Services ($000)"
+          }
+          ,key : [0,1]
+          ,table_view : { 
+            hide_col_ids: []
+            ,sum_cols: []
+            ,min_func : TABLES.add_ministry_sum
+            ,init_row_data : function(){
+              //var txt = this.gt("total");
+              //this.merge_group_results(
+              //  [[this.row_data,
+              //  GROUP.fnc_on_group(
+              //    this.row_data,
+              //    {txt_cols : {0 : txt},
+              //      func_cols : this.sum_cols,
+              //      func : GROUP.sum_rows})]]);
+            }
+          }
+          ,mapper : {
+            to : function (row) {
+              if (_.isNumber(row[1]) ){
+                row.splice(2,0,votes[this.def['coverage']][row[0]][row[1]][this.lang]);
+              }
+              else if (row[1] == '(S)'){
+                row.splice(2,0,'');
+              }
+              return _.rest(row,1); 
+            }
+            ,make_filter : function(source_row){
+              return _.bind(function(candidate_row){
+                if (candidate_row[1]){
+                  return ( source_row[1] == candidate_row[1]);
+                }
+                return false;
+              },this);
+            }
+          }
+          ,mini_view : {
+            prep_data : function(){
+              var ttf = APP.types_to_format['big-int'];
+            }
+            ,render_data : function(){
+
+            }
+          }
+      },
+      {
         id : "Table4",
         col_defs : [ "int",
               "str",
@@ -1084,11 +1225,6 @@ $(function() {
               "big-int"
             ],
           "coverage" : "historical",
-
-
-
-
-
           "headers" : { "en" : [ [ { "colspan" : 3,
                       "header" : ""
                     },
@@ -1116,22 +1252,22 @@ $(function() {
                     "Year",
                     "Authority",
                     "Expenditures",
-                    "Gross Lapse**",
+                    "Gross Lapse*",
                     "Authority",
                     "Expenditures",
-                    "Gross Lapse**",
+                    "Gross Lapse*",
                     "Authority",
                     "Expenditures",
-                    "Gross Lapse**",
+                    "Gross Lapse*",
                     "Authority",
                     "Expenditures",
-                    "Gross Lapse**",
+                    "Gross Lapse*",
                     "Authority",
                     "Expenditures",
-                    "Gross Lapse**",
+                    "Gross Lapse*",
                     "Authority",
                     "Expenditures",
-                    "Gross Lapse**"
+                    "Gross Lapse*"
                   ]
                 ],
               "fr" : [ [ { "colspan" : 3,
@@ -1161,22 +1297,22 @@ $(function() {
                     "Année",
                     "Autorité",
                     "Dépenses",
-                    "Fonds Périmés Bruts**",
+                    "Fonds Périmés Bruts*",
                     "Autorité",
                     "Dépenses",
-                    "Fonds Périmés Bruts**",
+                    "Fonds Périmés Bruts*",
                     "Autorité",
                     "Dépenses",
-                    "Fonds Périmés Bruts**",
+                    "Fonds Périmés Bruts*",
                     "Autorité",
                     "Dépenses",
-                    "Fonds Périmés Bruts**",
+                    "Fonds Périmés Bruts*",
                     "Autorité",
                     "Dépenses",
-                    "Fonds Périmés Bruts**",
+                    "Fonds Périmés Bruts*",
                     "Autorité",
                     "Dépenses",
-                    "Fonds Périmés Bruts**"
+                    "Fonds Périmés Bruts*"
                   ]
                 ]
             },
@@ -1231,11 +1367,11 @@ $(function() {
           prep_data : function(){
             var top_headers = this.def.headers[this.lang][0];
             var ttf = APP.types_to_format['big-int'];
-            var allotments = ["Total Operating-Gross Lapse**",
-                "Capital-Gross Lapse**",
-                "Transfer Payments-Gross Lapse**",
-                "Frozen-Gross Lapse**",
-                "Special Purpose-Gross Lapse**"];
+            var allotments = ["Total Operating-Gross Lapse*",
+                "Capital-Gross Lapse*",
+                "Transfer Payments-Gross Lapse*",
+                "Frozen-Gross Lapse*",
+                "Special Purpose-Gross Lapse*"];
             var reduced = _.map(this.data, function(row){
               return _.pick.apply(this,[row,'Year'].concat(allotments)); 
             });
@@ -1307,16 +1443,16 @@ $(function() {
                     "Year",
                     "Authority",
                     "Expenditures",
-                    "Gross Lapse**",
+                    "Gross Lapse*",
                     "Authority",
                     "Expenditures",
-                    "Gross Lapse**",
+                    "Gross Lapse*",
                     "Authority",
                     "Expenditures",
-                    "Gross Lapse**",
+                    "Gross Lapse*",
                     "Authority",
                     "Expenditures",
-                    "Gross Lapse**"
+                    "Gross Lapse*"
                   ]
                 ],
               "fr" : [ [ { "colspan" : 3,
