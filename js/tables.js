@@ -10,7 +10,7 @@ $(function() {
   TABLES.tables = new col;
 
   TABLES.m = function(s){
-    return Mustache.render(s,TABLES.template_args);
+    return Handlebars.compile(s)(TABLES.template_args);
   }
 
   APP.dispatcher.on("dept_selected", function(app){

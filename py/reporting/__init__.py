@@ -50,7 +50,7 @@ js_files = ["excanvas.compiled.js",
             '01-underscore-min.js',
             '02-backbone.js',
             '03-jshashtable-2.1.js',
-            'mustache.min.js',
+            "handlebars.min.js",
             'bootstrap.min.js',
             'jquery.numberformatter-1.2.3.js',
             "jquery.dataTables.min.js",
@@ -73,7 +73,7 @@ cssdata = reduce(operator.add,
 
 def make_after_check(lookups):
   def _(row,table):
-    if table in ('Table1','Table2','Table2a','Table2b','Table3'):
+    if table in ('Table1','Table2','Table2a','Table2b','Table3','TableIS'):
       lookups['depts'][row[0]].setdefault('tables',{}).setdefault(table,[]).append(row)
     else:
       lookups['depts'][row[0]].setdefault('tables',{}).setdefault(table,[]).append(row[1:])
@@ -213,6 +213,7 @@ def html_les(dev=True):
                    "les/graph5.js",
                    "les/graph6.js",
                    "les/graph7.js",
+                   "les/graphIS.js",
                    "les/tables.js",
                    "table_builder.js",
                    "les/horizontal.js",

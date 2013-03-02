@@ -9,25 +9,37 @@ $(function () {
     initialize: function () {
       _.bindAll(this);
       this.types = this.options['types'];
-      this.headers = this.options['header']; //read argument [object w/ only one key,val pair] to get headers
+      this.header = this.options['header']; //read argument [object w/ only one key,val pair] to get headers
+      this.headers = _.clone(this.options['headers']);
+      // chop the headers to just the ones above
+      this.headers.splice(_.indexOf(this.headers,this.header)); 
+
       this.m= TABLES.m;
       this.render(); //self-rendering
     },
     render: function () {
       var args, header;
       //append each data value to tr to make a header that is ready to be appended to thead, later
-      _.each(this.headers,
+      _.each(this.header,
 
-      function (h) {
-        var header;
+      function (h,i) {
+        var header,parent_headers,id;
         if (_.isString(h)) args = {
           header: h,
           colspan: 1,
-          class_: this.types[_.indexOf(this.headers,h)]
+          class_: this.types[_.indexOf(this.header,h)]
         };
         else args = _.extend({class_: ''},h);
         args['header'] = this.m(args['header']);
-        header = this.template(args);
+        header = $(this.template(args));
+        id = header.text().replace(" ","");
+        // figure out the WCAG header link
+        if (this.headers.length > 0) {
+          parent_headers = TABLES.extract_headers(this.headers,i)
+          header.attr("headers",parent_headers.join(" "));
+          id = parent_headers.join("-")+"-"+id;
+        }
+        header.attr("id",id);
         $(this.el).append(header); //append header
       },
       this //scope of map is rowView
@@ -42,6 +54,7 @@ $(function () {
       _.bindAll(this);
       this.app = this.options['app'];
       this.row = this.options['row']; //read argument [object w/ only one key,val pair] to get row data
+      this.wcag = this.options['wcag'];
       this.types = this.options['types'];
       if (this.options['summary_row']) {
         this.$el.addClass('info').css('font-weight','bold');
@@ -57,39 +70,35 @@ $(function () {
     render: function () {
       //append each data value to tr to make a row that is ready to be appended to tbody, later
       _.map(
-      _.zip(this.row, this.types),
+        _.zip(this.wcag,this.row, this.types),
+        function (data_type) {
+          var wcag = data_type.shift();
+          var data = data_type.shift();
+          var type = data_type.shift();
+          var el = $('<td><div>');
+          el.attr("headers",wcag);
 
-      function (data_type) {
-        var data = data_type.shift();
-        var type = data_type.shift();
-        var el = $('<td><div>');
-        this.$el.append(el);
-        var div = el.find('div')
-        div.addClass(type);
-        if (_.isString(data) && data.length > 80){
-          el.attr("title", data);
-          el.attr("data-placement", "top");
-          el.attr("rel", "tooltip");
-          data = data.substring(0,77) + "...";
-        }
-        else  if (type == 'big-int') {
-          data = $.formatNumber(data, {
-            format: "#,##0",
-            locale: this.app.state.get('lang')
-          });
-        }
-        else if (type == 'percentage' && data != ''){
-          data = $.formatNumber(data, {
-            format: "0%",
-            locale: this.app.state.get('lang')
-          });
-        }
-        div.html(data);
-      },
-      this //scope of map is rowView
-      );
-      this.$el.data("row",this.row);
-      return this;
+          this.$el.append(el);
+          var div = el.find('div')
+          div.addClass(type);
+          if (_.isString(data) && data.length > 80){
+            el.attr("title", data);
+            el.attr("data-placement", "top");
+            el.attr("rel", "tooltip");
+            data = data.substring(0,77) + "...";
+          }
+          else  if (type == 'big-int') {
+            data = this.app.formater(type,data);
+          }
+          else if (type == 'percentage' && data != ''){
+            data = this.app.formater(type,data);
+          }
+          div.html(data);
+        },
+        this //scope of map is rowView
+        );
+        this.$el.data("row",this.row);
+        return this;
     }
   });
 
@@ -100,15 +109,9 @@ $(function () {
         "bFilter": false,
         "bInfo" : false,
         "bPaginate" : false,
-        "bSort" : false
-    }
-    ,width_map : {
-      "int" : 90,
-      "big-int" : 90,
-      "str" : 150,
-      "wide-str" : 300,
-      "percentage" : 90,
-      "date" : 90
+        "bSort" : false,
+        "sScrollX": "100%",
+        "sScrollXInner": "110%"
     }
     ,template: _.template($('#list_t').html())
     ,hide_col_ids: []
@@ -138,6 +141,8 @@ $(function () {
             return row;
           },
           this);
+
+      this.min_data =  this.min_func();
 
       this.row_data = this.rows;
       this.init_row_data();
@@ -178,7 +183,7 @@ $(function () {
       var txt = this.details ?  "details" : "hide";
       this.details = !this.details;
       this.details_btn.html(this.gt(txt));  
-      this.activate_dataTable();
+      this.render();
     }
     ,to_text : function(){
       var clone = this.$el.find('table').clone();
@@ -195,13 +200,14 @@ $(function () {
      }));
     }
     ,on_copy_click : function(e){
-        TABLES.excel_format( this.$el.find('table'),true);
+        TABLES.excel_format( this.for_copying.find('table'),true);
     }
-    , make_headers: function () {
+    ,make_headers: function () {
       _.each(_.map(this.headers, function (h) {
         return new headerView({
           types : this.col_defs,
-          header: h
+          header: h,
+          headers : this.headers
         });
       },this),
 
@@ -210,79 +216,47 @@ $(function () {
       },
       this)
     }
-    , make_footers: function () {
-      if (_.size(this.row_data) > 15 ) {
-        var views = _.map(this.headers, function (h) {
-          return new headerView({
-            types : this.col_defs,
-            header: h
-          });
-        },this)
-        views.reverse();
-        _.each(views,
-        function (fv) {
-          this.footer.append(fv.$el);
-        },
-        this)
-      }
-    }
     ,make_body: function () {
-      _.each(_.map(this.row_data,
+        // add in WCAG links
+      var wcag_links = _.map(this.row_data[0],function(x,i){
+        var headers = TABLES.extract_headers(this.headers,i);
+        return _.map(headers, function(header,index){
+          return _.first(headers,index+1).join("-")
+        }).join(" ");
+      },this);
+      _.each(_.map(this.row_data.concat(this.min_data).concat(this.goc_data),
               function (r) {
+                is_min = _.indexOf(this.min_data,r) != -1; 
+                is_goc = _.indexOf(this.goc_data,r) != -1;
+                if ((is_min && !this.state.get("min_tot")) ||
+                    (is_goc && !this.state.get("goc_tot"))){
+                  return;    
+                 }
+                is_summary = _.indexOf(this.summary_rows,r) != -1;
                 return new rowView({
-                  row: r,
+                  row : r,
+                  wcag : wcag_links,
+                  types : this.col_defs,
                   app : this.app,
-                  types: this.col_defs,
-                  summary_row: _.indexOf(this.summary_rows,r) != -1
+                  summary_row: is_summary,
+                  goc_row: is_goc,
+                  min_row: is_min
                 });
               }, 
               this
             ),
             function (lineview) {
+              if (!lineview){ return;}
               this.body.append(lineview.$el)
             },
-            this) ;
-      if (this.state.get('min_tot')){
-      _.each(_.map(this.min_func(),
-              function (r) {
-                return new rowView({
-                  row: r,
-                  app : this.app,
-                  types: this.col_defs,
-                  min_row: true
-                });
-              }, this
-            ),
-            function (lineview) {
-              this.body.append(lineview.$el)
-            },
-            this) ;
-      }
-      if (this.state.get('goc_tot')){
-      _.each(_.map(this.goc_data,
-              function (r) {
-                return new rowView({
-                  row: r,
-                  app : this.app,
-                  types: this.col_defs,
-                  goc_row: true
-                });
-              }, this
-            ),
-            function (lineview) {
-              this.body.append(lineview.$el)
-            },
-            this) ;
-      }
+            this
+      );
     },
     activate_dataTable : function(){
-      if (_.isUndefined(this.details)){
-        this.details = false;
-      }
-      if (this.datatable){
-        this.datatable.fnDestroy();
-      }
       var options  = _.extend({},this.data_table_args);
+      if (this.row_data.length > 10){
+        options["sScrollY"] = 400
+      }
       var showing_defs  = this.col_defs;
       // hide columns 
       if (!this.details && this.hide_col_ids.length > 0){
@@ -300,13 +274,6 @@ $(function () {
       // activate datatables
       this.datatable = $('table',this.$el).dataTable(options);
       
-      // set table widths
-      var tables_width = _.reduce(_.map(showing_defs,
-            function(def){
-               return this.width_map[def]},this),
-          function(x,y){
-            return x+y});
-      this.datatable.css({"width" : tables_width+"px"});
     }
     ,merge_group_results : function(results){
       // results is in the form of 
@@ -327,6 +294,10 @@ $(function () {
               function(key){return key!= index}))
     }
     ,render: function () {
+      this.details = this.details || false;
+      if (this.datatable){
+        this.datatable.fnDestroy();
+      }
       this.$el.children().remove();
       this.$el.append( $(this.template({
         table_title:this.title
@@ -336,7 +307,8 @@ $(function () {
 
       this.make_headers();
       this.make_body();
-      this.make_footers();
+
+      this.for_copying = this.$el.clone();
 
       var tds = this.$el.find('td div');
 
@@ -384,7 +356,10 @@ $(function () {
       })
 
       this.activate_dataTable();
-
+      var that = this;
+      setTimeout(function(){
+        APP.dispatcher.trigger("table_rendered",that);
+      });
       return this;
     }
   }) // end of BaseTableView
@@ -449,6 +424,14 @@ $(function () {
     ,trigger_click : function(){
       this.$el.find('a.details').trigger("click");
     }
+  });
+
+  APP.dispatcher.on("table_rendered",function(table_view){
+    var real_width = $('.dataTables_scrollBody table').width();
+    $('.dataTables_scrollHead').width(real_width);
+    $('.dataTables_scrollHeadInner').width(real_width);
+    $('.dataTables_scrollHead table').width(real_width);
+    $('.dataTables_scrollBody caption').appendTo($('.dataTables_scrollHead table'));
   });
 
   TABLES.extract_headers = function(headers,index){
@@ -522,12 +505,16 @@ $(function () {
 
     TABLES.build_table = function(options){
       var table = $(_.template($('#list_t').html())());
+      var id_base = _.random(0,1000000)+":";
       table.find('table').removeClass('table-striped');
       if (options.headers){
         _.each(options.headers, function(header_row){
            var row = $('<tr>');
            row.append( _.map(header_row,function(x,index){
-             return $('<th>').html(x).css(options.css[index]);
+             return $('<th>')
+             .html(x)
+             .css(options.css[index])
+             .attr("id",id_base+x) ;
            }));
            table.find('thead').append( row);
         });
@@ -535,7 +522,12 @@ $(function () {
      _.each(options.body, function(data_row){
         var row = $('<tr>');
         row.append( _.map(data_row,function(x,index){
-          return $('<td>').html(x).css(options.css[index]);
+          return $('<td>')
+          .html(x)
+          .css(options.css[index])
+          .attr("headers", _.map(options.headers, function(h){
+            return id_base+h[index];
+          }).join(" "));
         }));
         table.find('tbody').append(row);
      });
