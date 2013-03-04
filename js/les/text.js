@@ -120,8 +120,8 @@
         ,"fr" : "English"
       }
       ,"current_year_fisc" : {
-         "en" : "Financial data up to P9 for the current Fiscal Year (April 1st 2012 to December 31st 2012)",
-         "fr" : "Données financières jusqu'à P9 pour l'exercise courant (1 avril à 31 décembre 2012 )"
+         "en" : "Financial data up to P10 for the current Fiscal Year (April 1st 2012 to December 31st 2012)",
+         "fr" : "Données financières jusqu'à P10 pour l'exercise courant (1 avril à 31 décembre 2012 )"
       }
       ,"previous_year_fisc" : {
          "en" : "Financial data from previous fiscal years (2009-10 to 2011-12)",

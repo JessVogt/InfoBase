@@ -426,11 +426,11 @@ $(function () {
   });
 
   APP.dispatcher.on("table_rendered",function(table_view){
-    var real_width = $('.dataTables_scrollBody table').width();
-    $('.dataTables_scrollHead').width(real_width);
-    $('.dataTables_scrollHeadInner').width(real_width);
-    $('.dataTables_scrollHead table').width(real_width);
-    $('.dataTables_scrollBody caption').appendTo($('.dataTables_scrollHead table'));
+    //var real_width = $('.dataTables_scrollBody table').width();
+    //$('.dataTables_scrollHead').css("width","");
+    $('.dataTables_scrollHeadInner').css("width","");
+    $('.dataTables_scrollHead table').css("width","");
+    //$('.dataTables_scrollBody caption').appendTo($('.dataTables_scrollHead table'));
   });
 
   TABLES.extract_headers = function(headers,index){

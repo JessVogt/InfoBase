@@ -5,12 +5,12 @@ $(function() {
 
 
   TABLES.template_args = {
-    'month_fr' : 'décembre',
-    'month_en' : 'December',
+    'month_fr' : 'janvier',
+    'month_en' : 'January',
     'year' : '2012-13',
     'last_year' : '2011-12',
     'last_year_2' : '2010-11',
-    'p' : 9
+    'p' : 10
   };
 
   var for_each_p = function(x){
@@ -153,6 +153,7 @@ $(function() {
               "big-int",
               "big-int",
               "big-int",
+              "big-int",
               "percentage",
               "big-int",
               "percentage",
@@ -164,7 +165,7 @@ $(function() {
           en : [ [ { "colspan" : 2,
                     "header" : ""
                   },
-                  { "colspan" : 5,
+                  { "colspan" : 6,
                     "header" : "2012-13"
                   },
                   { "colspan" : 2,
@@ -177,6 +178,7 @@ $(function() {
                 [ "Vote",
                   "Description",
                   "Authority",
+                  "ARLU Reprofiles",
                   "Expenditures at Period {{p}}",
                   "Forecast Exenditures at year end",
                   "Forecast Lapse (by EACPD*)",
@@ -190,7 +192,7 @@ $(function() {
           fr : [ [ { "colspan" : 2,
                     "header" : ""
                   },
-                  { "colspan" : 5,
+                  { "colspan" : 6,
                     "header" : "2012-13"
                   },
                   { "colspan" : 2,
@@ -203,6 +205,7 @@ $(function() {
                 [ "Crédit",
                   "Nom",
                   "Autorité",
+                  "Report de fonds (MJANR)",
                   "Budgets Dépenses à la période {{p}}",
                   "Dépenses prévues à la fin de l'année",
                   "Fonds inutilisés (estimés par la DADPR*)",
@@ -896,143 +899,143 @@ $(function() {
             }
           } 
       },
-      {
-        "id" : "TableIS"
-        ,"col_defs" : ["int",
-                     "str",
-                     "str",
-                     // periods
-                     "big-int",
-                     "big-int",
-                     "big-int",
-                     "big-int",
-                     "big-int",
-                     "big-int",
-                     "big-int",
-                     "big-int",
-                     "big-int",
-                     "big-int",
-                     "big-int",
-                     "big-int",
-                     // period 16
-                     "big-int",
-                     // SO breakout
-                     "big-int",
-                     "big-int",
-                     "big-int",
-                     "big-int",
-                     "big-int",
-                     ],
-        "coverage" : "in_year",
-        "headers" : { "en" : [[{"colspan" : 3,
-                             "header" : ""},
-                            {"colspan" : 13,
-                             "header" : "Expenditures by Period"},
-                            {"colspan" : 5,
-                             "header" : "Expenditures by Categories"},
-                            ],[
-                             "Vote / Stat",
-                             "Description",
-                             "P1",
-                             "P2",
-                             "P3",
-                             "P4",
-                             "P5",
-                             "P6",
-                             "P7",
-                             "P8",
-                             "P9",
-                             "P10",
-                             "P11",
-                             "P12",
-                             "P16",
-                             "Personnel",
-                             "Professional and Special Servies",
-                             "Acquisistion of Machinery",
-                             "Other",
-                             'Revenue',
-                            ]],
-                    "fr" : [[{"colspan" : 3,
-                             "header" : ""},
-                            {"colspan" : 13,
-                             "header" : "Dépenses par périod"},
-                            {"colspan" : 5,
-                             "header" : "Types des dépenses"},
-                            ],[
-                             "Crédit / leg.",
-                             "Déscription",
-                             "Année",
-                             "P1",
-                             "P2",
-                             "P3",
-                             "P4",
-                             "P5",
-                             "P6",
-                             "P7",
-                             "P8",
-                             "P9",
-                             "P10",
-                             "P11",
-                             "P12",
-                             "P16",
-                             "Personnel",
-                             "Services Professionnels et Spéciaux",
-                             "Acquisition de machinerie et matériel",
-                             "Other",
-                             'Revenus',
-                            ]]}
-          ,"name" : { 
-            en : "Internal Services"
-            ,fr : "Services Internes"
-          }
-          ,"title" : { 
-            en : "Internal Services ($000)",
-            fr : "Internal Services ($000)"
-          }
-          ,key : [0,1]
-          ,table_view : { 
-            hide_col_ids: []
-            ,sum_cols: []
-            ,min_func : TABLES.add_ministry_sum
-            ,init_row_data : function(){
-              //var txt = this.gt("total");
-              //this.merge_group_results(
-              //  [[this.row_data,
-              //  GROUP.fnc_on_group(
-              //    this.row_data,
-              //    {txt_cols : {0 : txt},
-              //      func_cols : this.sum_cols,
-              //      func : GROUP.sum_rows})]]);
-            }
-          }
-          ,mapper : {
-            to : function (row) {
-              if (_.isNumber(row[1]) ){
-                row.splice(2,0,votes[this.def['coverage']][row[0]][row[1]][this.lang]);
-              }
-              else if (row[1] == '(S)'){
-                row.splice(2,0,'');
-              }
-              return _.rest(row,1); 
-            }
-            ,make_filter : function(source_row){
-              return _.bind(function(candidate_row){
-                if (candidate_row[1]){
-                  return ( source_row[1] == candidate_row[1]);
-                }
-                return false;
-              },this);
-            }
-          }
-          ,mini_view : {
-            prep_data : function(){
-              var ttf = APP.types_to_format['big-int'];
-            }
-            ,render_data : function(){
+      //{
+      //  "id" : "TableIS"
+      //  ,"col_defs" : ["int",
+      //               "str",
+      //               "str",
+      //               // periods
+      //               "big-int",
+      //               "big-int",
+      //               "big-int",
+      //               "big-int",
+      //               "big-int",
+      //               "big-int",
+      //               "big-int",
+      //               "big-int",
+      //               "big-int",
+      //               "big-int",
+      //               "big-int",
+      //               "big-int",
+      //               // period 16
+      //               "big-int",
+      //               // SO breakout
+      //               "big-int",
+      //               "big-int",
+      //               "big-int",
+      //               "big-int",
+      //               "big-int",
+      //               ],
+      //  "coverage" : "in_year",
+      //  "headers" : { "en" : [[{"colspan" : 3,
+      //                       "header" : ""},
+      //                      {"colspan" : 13,
+      //                       "header" : "Expenditures by Period"},
+      //                      {"colspan" : 5,
+      //                       "header" : "Expenditures by Categories"},
+      //                      ],[
+      //                       "Vote / Stat",
+      //                       "Description",
+      //                       "P1",
+      //                       "P2",
+      //                       "P3",
+      //                       "P4",
+      //                       "P5",
+      //                       "P6",
+      //                       "P7",
+      //                       "P8",
+      //                       "P9",
+      //                       "P10",
+      //                       "P11",
+      //                       "P12",
+      //                       "P16",
+      //                       "Personnel",
+      //                       "Professional and Special Servies",
+      //                       "Acquisistion of Machinery",
+      //                       "Other",
+      //                       'Revenue',
+      //                      ]],
+      //              "fr" : [[{"colspan" : 3,
+      //                       "header" : ""},
+      //                      {"colspan" : 13,
+      //                       "header" : "Dépenses par périod"},
+      //                      {"colspan" : 5,
+      //                       "header" : "Types des dépenses"},
+      //                      ],[
+      //                       "Crédit / leg.",
+      //                       "Déscription",
+      //                       "Année",
+      //                       "P1",
+      //                       "P2",
+      //                       "P3",
+      //                       "P4",
+      //                       "P5",
+      //                       "P6",
+      //                       "P7",
+      //                       "P8",
+      //                       "P9",
+      //                       "P10",
+      //                       "P11",
+      //                       "P12",
+      //                       "P16",
+      //                       "Personnel",
+      //                       "Services Professionnels et Spéciaux",
+      //                       "Acquisition de machinerie et matériel",
+      //                       "Other",
+      //                       'Revenus',
+      //                      ]]}
+      //    ,"name" : { 
+      //      en : "Internal Services"
+      //      ,fr : "Services Internes"
+      //    }
+      //    ,"title" : { 
+      //      en : "Internal Services ($000)",
+      //      fr : "Internal Services ($000)"
+      //    }
+      //    ,key : [0,1]
+      //    ,table_view : { 
+      //      hide_col_ids: []
+      //      ,sum_cols: []
+      //      ,min_func : TABLES.add_ministry_sum
+      //      ,init_row_data : function(){
+      //        //var txt = this.gt("total");
+      //        //this.merge_group_results(
+      //        //  [[this.row_data,
+      //        //  GROUP.fnc_on_group(
+      //        //    this.row_data,
+      //        //    {txt_cols : {0 : txt},
+      //        //      func_cols : this.sum_cols,
+      //        //      func : GROUP.sum_rows})]]);
+      //      }
+      //    }
+      //    ,mapper : {
+      //      to : function (row) {
+      //        if (_.isNumber(row[1]) ){
+      //          row.splice(2,0,votes[this.def['coverage']][row[0]][row[1]][this.lang]);
+      //        }
+      //        else if (row[1] == '(S)'){
+      //          row.splice(2,0,'');
+      //        }
+      //        return _.rest(row,1); 
+      //      }
+      //      ,make_filter : function(source_row){
+      //        return _.bind(function(candidate_row){
+      //          if (candidate_row[1]){
+      //            return ( source_row[1] == candidate_row[1]);
+      //          }
+      //          return false;
+      //        },this);
+      //      }
+      //    }
+      //    ,mini_view : {
+      //      prep_data : function(){
+      //        var ttf = APP.types_to_format['big-int'];
+      //      }
+      //      ,render_data : function(){
 
-            }
-          }
-      },
+      //      }
+      //    }
+      //},
       {
         id : "Table4",
         col_defs : [ "int",
@@ -1639,7 +1642,7 @@ $(function() {
           ,key : [0,1,2]
           ,table_view : { 
             hide_col_ids: [4,5,6,7,8,9,10,,11,13,14]
-            ,sum_cols: _.range(3, 19)
+            ,sum_cols: _.range(3, 18)
             ,min_func : TABLES.add_ministry_year_sums
             ,init_row_data : function(){
               var txt = this.gt("sub_avg");

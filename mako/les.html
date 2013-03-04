@@ -28,6 +28,9 @@
     border-bottom: 1px solid #EEE;
     width: 100%
   }
+  .bottom-border {
+    border-bottom: 1px solid #EEE;
+  }
   .section-footer {
     border-top: 1px solid #EEE;
     width: 100%;
@@ -319,7 +322,7 @@
           </div>
         {{/if}}
         {{#rows}}
-          <h4> {{header}} </h4>
+          <div class='span12 bottom-border'>
           {{#cols}}
             <div class='well span{{span}}'>
               <div id="{{id}}" style='height:{{height}}px;'>
@@ -327,6 +330,7 @@
               <div id="{{id}}_fn"></div>
             </div>
           {{/cols}}
+        </div>
         {{/rows}}
       </div>
     </div>
