@@ -3,8 +3,10 @@ $(function () {
   var APP = ns('APP');
   var GROUP = ns('GROUP');
 
+  var table_template = Handlebars.compile($('#list_t').html());
+
   var headerView = Backbone.View.extend({
-    template: _.template($('#header_t').html()),
+    template: Handlebars.compile($('#header_t').html()),
     tagName: "tr",
     initialize: function () {
       _.bindAll(this);
@@ -113,7 +115,6 @@ $(function () {
         "sScrollX": "100%",
         "sScrollXInner": "110%"
     }
-    ,template: _.template($('#list_t').html())
     ,hide_col_ids: []
     ,initialize: function () {
       _.bindAll(this);
@@ -135,12 +136,14 @@ $(function () {
       this.dept = this.state.get('dept')
        // set up holders for different types of rows
       this.summary_rows = [];
+
       this.goc_data = _.map(this.options['goc_data'], 
           function(row){
             row[0] = this.gt('goc_total');
             return row;
           },
-          this);
+          this
+      );
 
       this.min_data =  this.min_func();
 
@@ -182,7 +185,7 @@ $(function () {
     ,on_details_click : function(){
       var txt = this.details ?  "details" : "hide";
       this.details = !this.details;
-      this.details_btn.html(this.gt(txt));  
+      this.details_btn.html(this.app.get_text(txt));  
       this.render();
     }
     ,to_text : function(){
@@ -299,8 +302,8 @@ $(function () {
         this.datatable.fnDestroy();
       }
       this.$el.children().remove();
-      this.$el.append( $(this.template({
-        table_title:this.title
+      this.$el.append( $(table_template({
+        title:this.title
       })));
       this.setup_useful_this_links();
       this.setup_event_listeners();
@@ -366,7 +369,7 @@ $(function () {
 
   TABLES.miniTableVew = Backbone.View.extend({
 
-    template : _.template($('#mini_t').html())
+    template : Handlebars.compile($('#mini_t').html())
     ,initialize : function(){
       this.table = this.options['table'];
       this.def = this.table.attributes;
@@ -401,11 +404,7 @@ $(function () {
       this.$el.find('a.details').remove();
     }
     ,render : function(){
-      this.$el.append(
-       $(this.template({
-         gt : this.app.get_text       
-       }))
-      );
+      this.$el.append(this.template());
       this.make_title();
       if (this.data){
         this.prep_data();
@@ -504,7 +503,7 @@ $(function () {
     }
 
     TABLES.build_table = function(options){
-      var table = $(_.template($('#list_t').html())());
+      var table = $(table_template({title:false}));
       var id_base = _.random(0,1000000)+":";
       table.find('table').removeClass('table-striped');
       if (options.headers){

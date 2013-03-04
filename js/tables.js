@@ -10,7 +10,10 @@ $(function() {
   TABLES.tables = new col;
 
   TABLES.m = function(s){
-    return Handlebars.compile(s)(TABLES.template_args);
+    if (s){
+      return Handlebars.compile(s)(TABLES.template_args);
+    }
+    return '';
   }
 
   APP.dispatcher.on("dept_selected", function(app){

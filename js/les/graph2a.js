@@ -5,8 +5,7 @@ $(function () {
   var BGV = GRAPHS.BaseGraphView;
 
   GRAPHS.views["Table2a"] = BGV.extend({
-    template : _.template($("#graph_grid_t").html())
-    ,prep_data : function(){
+    prep_data : function(){
       // grab the first column
       this.pas = this.get_col(this.data,0);
       this.paa_map = {}

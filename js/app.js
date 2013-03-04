@@ -149,7 +149,7 @@
 
     APP.fullDeptList = Backbone.View.extend({
       el : 'body'
-      ,template : _.template($('#dept_list').html())
+      ,template : Handlebars.compile($('#dept_list').html())
       ,events : {
        "click a.dept_sel" : "render"
       }
@@ -179,7 +179,7 @@
           });
 
         var cols = this.ministry_to_cols(mins);
-        this.$el = $(this.template({cols: cols, lang:lang}));
+        this.$el = $(this.template({cols: cols}));
         this.$el.find('a').on("click",this.onClick);
         $('body').append(this.$el);
         
@@ -219,7 +219,7 @@
     });
 
     APP.deptInfoView = Backbone.View.extend({
-      template : _.template($('#dept_info_t').html())
+      template : Handlebars.compile($('#dept_info_t').html())
       ,initialize: function(){
         _.bindAll(this);
         // retrieve passed in data
@@ -229,14 +229,7 @@
         this.state = this.app.state;
       }
       ,render : function(){
-        var dept = this.state.get("dept");
-        var lang = this.state.get('lang');
-
-        body = $(this.template({
-          lang : lang,
-          gt : this.gt,
-          dept: dept
-        }));
+        var body = $(this.template({ dept: this.state.get("dept") }));
 
         this.search_box = body.find('input.site-search');
         this.search_button = body.find('a.site-search');
@@ -258,7 +251,7 @@
     });
 
     APP.otherDeptsDropDown = Backbone.View.extend({
-      template : _.template($('#nav_li').html())
+      template : Handlebars.compile($('#nav_li').html())
       ,initialize: function(){
         _.bindAll(this);
         this.app = this.options["app"];
@@ -298,23 +291,17 @@
     });
 
   APP.OrgView = Backbone.View.extend({
-    template : _.template($('#main_t').html())
-    ,template2 : _.template($('#panels_t').html())
+    template : Handlebars.compile($('#main_t').html())
+    ,template2 : Handlebars.compile($('#panels_t').html())
     ,initialize: function(){
       _.bindAll(this);
     }
     ,render : function(app){
       var org = app.state.get("dept");
-      var lang = app.state.get("lang");
       // render the main template
       app.app.children().remove();
-      $(this.template({
-        org : org,   
-        lang : lang,
-        gt : app.get_text
-      })).append(this.template2({
-        gt : app.get_text
-      })).appendTo(app.app);
+      $(this.template({ org : org })).appendTo(app.app);
+      $(this.template2()).appendTo($('.panels',app.app));
 
       APP.dispatcher.trigger_a("new_org_view",this);
       return this;
@@ -322,7 +309,7 @@
   });
 
   APP.footnoteView = Backbone.View.extend({
-    template : _.template($('#footnotes_t').html())
+    template : Handlebars.compile($('#footnotes_t').html())
     ,initialize: function(){
       _.bindAll(this);
       // retrieve passed in data
@@ -336,8 +323,7 @@
     ,render : function () {
       var gt = this.app.get_text;
       var html = $(this.template({
-        fns : this.footnotes,
-        lang  : this.lang
+        fns : this.footnotes
       }));
 
       this.app.modal_view.render({
@@ -358,7 +344,7 @@
   };
 
   DetailsView = Backbone.View.extend({
-    template : _.template($('#dataview_t').html())
+    template : Handlebars.compile($('#dataview_t').html())
     ,initialize: function(){
       _.bindAll(this);
       // retrieve passed in data
@@ -402,7 +388,6 @@
       }
 
       this.$el = $(this.template({
-        "gt" : this.app.get_text,
         "key" : this.key,
         "min_tot" : this.app.state.get("min_tot"),
         "goc_tot" : this.app.state.get("goc_tot"),

@@ -4,9 +4,9 @@ $(function () {
   var TABLES = ns('TABLES');
 
   TABLES.AnalyticsView = Backbone.View.extend({
-    template : _.template($('#list_t').html())
-    ,template2 : _.template($('#analytics_t').html())
-    ,row_template : _.template($("#stat_tr").html())
+    template : Handlebars.compile($('#list_t').html())
+    ,template2 : Handlebars.compile($('#analytics_t').html())
+    ,row_template : Handlebars.compile($("#stat_tr").html())
     ,initialize: function () {
 
       _.bindAll(this);
@@ -291,7 +291,7 @@ $(function () {
       // empty out current table
       this.$el.find('.table_div').children().remove();
       //create new empty table
-      var empty_table = $(this.template());
+      var empty_table = $(this.template({title:false}));
       this.$el.find('.table_div').append(empty_table);           
 
       this.create_footer();

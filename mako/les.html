@@ -104,8 +104,8 @@
 </script>
 <script type='text/plain' id='ver_navbar_t'>
 <ul class='nav'>
-  <li> <a href='#' class='home'><%= gt("home")%></a> </li>
-  <li> <a href='#' class='dept_sel'> <%= gt("select")%></a> </li>
+  <li> <a href='#' class='home'>{{gt "home"}}</a> </li>
+  <li> <a href='#' class='dept_sel'> {{gt "select"}}</a> </li>
   <form class="navbar-search pull-left">
     <input type="text" class='search-query span2 dept_search' />
   </form>
@@ -114,20 +114,15 @@
 </script>
 <script type='text/plain' id='hori_navbar_t'>
 <ul class='nav'>
-  <li> <a href='#' class='home'><%= gt("home")%></a> </li>
+  <li> <a href='#' class='home'>{{gt "home" }}</a> </li>
 </ul>
 </script>
 <script type='text/plain' id='home_t'>
 <div>
   <div class='container home'>
     <div class='row'>
-      <div class='well span4'>
-        <%=gt("welcome") %>
-      </div>
-      <div class='well span4 horizontal'>
-        <p class='lead'>
-          <%=gt("horizontal")%>
-        </p>
+      <div class='well span4 offset2'>
+        {{{gt "welcome" }}}
       </div>
     </div>
   </div>
@@ -141,57 +136,58 @@
       <a href='#' ></a>
     </li>
     <li class="active">
-      <a href="#" class='dept_name'><%=org['dept'][lang]%></a> 
+    <a href="#" class='dept_name'>{{lang org.dept}}</a> 
     </li>
     <li class='dropdown active'>
       <a class="dropdown-toggle" data-toggle="dropdown" href="#">
         <span class="caret" ></span>
       </a>
       <ul class="dropdown-menu" id='other_depts_list'>
-        <li class="nav-header"><%=gt("other_in_min")%></li>
+        <li class="nav-header"> {{gt "other_in_min"}} </li>
       </ul>
     </li>
   </ul>
+  <div class='panels'>
+
+  </div>
+</div>
+<div class='table_content'>
+
 </div>
 </script>
 <script type='text/plain' id='panels_t'>
-    <div class='panels'>
-      <p class='lead'><%=gt('current_year_fisc') %></p>
-      <div class="row widget-row" >
-          <div class="span4" id='Table1'>
-          </div>                       
-          <div class="span4" id='Table2'>
-          </div>                       
-          <div class="span4" id='Table2a'>
-          </div>                       
-      </div>                           
-      <p></p>                          
-      <div class="row widget-row" >    
-          <div class="span4" id='Table2b'>
-          </div>                       
-          <div class="span4" id='Table3'>
-          </div>
-          <div class="span4" id='TableIS'>
-          </div>
+  <p class='lead'> {{gt 'current_year_fisc'}} </p>
+  <div class="row widget-row" >
+      <div class="span4" id='Table1'>
+      </div>                       
+      <div class="span4" id='Table2'>
+      </div>                       
+      <div class="span4" id='Table2a'>
+      </div>                       
+  </div>                           
+  <p></p>                          
+  <div class="row widget-row" >    
+      <div class="span4" id='Table2b'>
+      </div>                       
+      <div class="span4" id='Table3'>
       </div>
-      <p></p>
-      <p class='lead'><%=gt('previous_year_fisc') %></p>
-      <div class='row widget-row'>
-          <div class="span4" id='Table4'>
-          </div>                       
-          <div class="span4" id='Table5'>
-          </div>                       
-          <div class="span4" id='Table6'>
-          </div>                       
-      </div>                           
-      <p></p>                          
-      <div class="row widget-row" >    
-          <div class="span4" id='Table7'>
-          </div>
+      <div class="span4" id='TableIS'>
       </div>
-    </div>
-  <div class='table_content'>
-
+  </div>
+  <p></p>
+  <p class='lead'> {{gt 'previous_year_fisc'}} </p>
+  <div class='row widget-row'>
+      <div class="span4" id='Table4'>
+      </div>                       
+      <div class="span4" id='Table5'>
+      </div>                       
+      <div class="span4" id='Table6'>
+      </div>                       
+  </div>                           
+  <p></p>                          
+  <div class="row widget-row" >    
+      <div class="span4" id='Table7'>
+      </div>
   </div>
 </script>
 <script type='text/plain' id='mini_t'>
@@ -203,26 +199,26 @@
 
     </div>
     <div class='details_button section-footer'>
-      <a class='btn btn-link btn-small details pull-right'><%=gt('details')%></a>
+      <a class='btn btn-link btn-small details pull-right'> {{gt 'details'}} </a>
     </div>
   </div>
 </script>
 <script type='text/plain' id='nav_li'>
-  <li><a><%=text%></a></li>
+  <li><a>{{ text}}</a></li>
 </script>
 
 <script type='text/plain' id='print_view_t'>
   <div class='print_view'>
     <div class="alert fade in" style='width: 25%;'>
       <button type="button" class="close" data-dismiss="alert">&times;</button>
-      <%=help_text%>
+      {{gt "print_help"}}
     </div>
     <div class='btn-group'> 
       <button class='btn btn-primary print_view_print'>
-        <%=print_text%>
+      {{gt "print_text"}}
       </button>
       <button class='btn btn-danger print_view_close'>
-        <%=close_text%>
+      {{gt "close"}}
       </button>
     </div>
     <div class='table_area'>
@@ -232,51 +228,51 @@
 <script type='text/plain' id='dataview_t'>
   <div>
     <ul class="nav nav-tabs">
-      <li><a href="#<%=key%>_tables" data-toggle="tab"><%=gt("table")%></a></li>
-      <li><a href="#<%=key%>_graphs" data-toggle="tab"><%=gt("graphs")%></a></li>
+      <li><a href="#{{key}}_tables" data-toggle="tab"> {{gt "table"}} </a></li>
+      <li><a href="#{{key}}_graphs" data-toggle="tab"> {{gt "graphs"}} </a></li>
     </ul>
     <div class='tab-content'>
-      <div class='tab-pane active tables table_content' id='<%=key%>_tables'>
+      <div class='tab-pane active tables' id='{{key}}_tables'>
           <ul class='nav nav-pills'>
             <li>
               <a href='#' class='details'
-                title='<%=gt("details_help")%>' 
+                title='{{gt "details_help"}}' 
                 data-placement='top'>
-                <%=gt("details")%>
+                {{gt "details" }}
               </a>
             </li>
             <li>
               <a href='#' class='copy'
-                 title='<%=gt("copy_tooltip")%>' 
+                title='{{gt "copy_tooltip"}}' 
                  data-placement='top'>
-                  <%=gt("copy")%>
+                {{gt "copy" }}
               </a>
             </li>
             <li>
               <a href='#' class='about'>
-                <%=gt("about")%>
+                {{gt "about"}}
               </a>
             </li>
             <li>
               <a href='#' class='print'>
-                <%=gt("print")%>
+                {{gt "print"}}
               </a>
             </li>
-            <% if (footnotes){ %>
+            {{#if footnotes}}
             <li>
               <a class='fn' href='#'>
-                <%=gt("footnotes")%>
+                {{gt "footnotes"}}
               </a>
             </li>
-            <% } %>
-            <li class="<%=min_tot ? 'active' : ''%>">
+            {{/if}}
+            <li class="{{#if min_tot}}active{{/if}}">
               <a class="min_tot" href='#'>
-                  <%=gt("min_total")%>
+                {{gt "min_total"}}
               </a>
             </li>
-            <li class="<%=goc_tot ? 'active' : ''%>">
+            <li class="{{#if goc_tot}}active{{/if}}">
               <a class="goc_tot " href='#'>
-                  <%=gt("goc_total")%>
+                {{gt "goc_total"}}
               </a>
             </li>
           </ul>
@@ -284,7 +280,7 @@
 
         </div>
       </div>
-      <div class='tab-pane graph_content' id='<%=key%>_graphs'>
+      <div class='tab-pane graph_content' id='{{key}}_graphs'>
         <div class='graph_payload'>
 
         </div>
@@ -297,12 +293,12 @@
     <div class='footnotes well well-small'>
       <table class="table-condensed">
         <tbody>
-        <% for (var fn in fns) { %>
+        {{#each fns}}
           <tr>
-          <td><%=fns[fn].symbol %></td>
-          <td><%=fns[fn].note[lang]%></dd>
-        </tr>
-        <% } %>
+            <td> {{this.symbol}} </td>
+            <td>{{lang this.note }} </td>
+          </tr>
+        {{/each}}
         </tbody>
       </table>
     </div>
@@ -310,62 +306,60 @@
 
 <script type='text/plain' id='graph_grid_t'>
   <div class='container-fluid'>
-      <% for (var i in rows) { %>
-        <% var row = rows[i] %>
-        <div class="row-fluid">
-          <h4> <%=row.header%> </h4>
-          <% if (sidebar_header != false && i == 0) { %>
-            <div class='span2 well'>
-              <ul class="nav nav-list">
-                <li class="nav-header"> <%=sidebar_header%> </li>
-                <% for (var x=0;x<items.length;x++) { %>
-                  <li><a href="#"><%=items[x]%></a></li>
-                <% } %>
-              </ul>
-            </div>
-          <%}%>
-          <% for (var j in row.cols) { %>
-            <% var cell = row.cols[j] %>
-              <div class='well span<%=cell.span%> offset<%=cell.offset%>'>
-                <div id="<%=cell.id%>" style='height:<%=cell.height%>px;'>
-                </div>
-                <div id="<%=cell.id + '_fn'%>"></div>
-              </div>
-          <%}%>
-         </div>
-      <%}%>
-  </div>
-</script>
-<script type='text/plain' id='dept_list'>
-  <div class='well dept_menu'>
-  <div class='container-fluid'>
     <div class="row-fluid">
-      <% for (var col_id in cols){ %>
-        <div class='span2'>
-        <% for (var m_id in cols[col_id]){ %>
-        <ul class="nav nav-list unstyled" >
-          <li class='nav-header'><%=cols[col_id][m_id][0].min[lang]%></li>
-          <% for (var d_id in cols[col_id][m_id]){ %>
-            <% var dept = cols[col_id][m_id][d_id] %>
-            <% if (_.has(dept,'org_type') && dept['org_type']['en'] === 'Departments') { %>
-              <li><strong><a href='#'><%=dept['dept'][lang]%></a></strong></li>
-              <% } else { %>
-              <li><a href='#'><%=dept['dept'][lang]%></a></li>
-            <%}%>
-          <%}%>
-        </ul>
-        <%}%>
-        </div>
-      <%}%>
+      <div class='sidescroll'>
+        {{#if sidebar_header}}
+          <div class='span2 well'>
+            <ul class="nav nav-list">
+              <li class="nav-header"> {{sidebar_header}} </li>
+              {{#items}}
+              <li><a href="#">{{.}}</a></li>
+              {{/items}}
+            </ul>
+          </div>
+        {{/if}}
+        {{#rows}}
+          <h4> {{header}} </h4>
+          {{#cols}}
+            <div class='well span{{span}}'>
+              <div id="{{id}}" style='height:{{height}}px;'>
+                </div>
+              <div id="{{id}}_fn"></div>
+            </div>
+          {{/cols}}
+        {{/rows}}
+      </div>
     </div>
   </div>
+</script>
+
+<script type='text/plain' id='dept_list'>
+<div class='well dept_menu'>
+  <div class='container-fluid'>
+    <div class="row-fluid">
+      {{#each cols}}
+        <div class='span2'>
+        {{#each this}} {{! this = array of ministries }}
+        <ul class="nav nav-list unstyled" >
+          <li class='nav-header'> {{lang this.0.min}} </li>
+          {{#each this }} {{! this = ministry }}
+            {{#is_dept this}} {{! this = dept }}
+               <li><strong><a href='#'>{{dept}}</a></strong></li>
+            {{else}}
+            <li><a href='#'>{{dept}}</a></li>
+            {{/is_dept}}
+          {{/each}}
+        </ul>
+        {{/each}}
+        </div>
+      {{/each}}
+    </div>
   </div>
+</div>
 </script>
 <script type='text/plain' id='list_t'>
   <table class='table table-striped table-condensed'>
-    <% if (typeof table_title != "undefined"){ %>
-      <caption><%=table_title%></caption>
-    <%}%>
+    {{#title}} <caption>{{title}}</caption> {{/title}}
     <thead></thead>
     <tbody></tbody>
     <tfoot></tfoot>
@@ -377,20 +371,20 @@
      <div class="btn-toolbar" style='padding-left: 50px'>
         <div class='btn-group'> 
           <button class='btn btn-inverse copy'
-            title='<%=gt("copy_tooltip")%>' 
+            title='{{gt "copy_tooltip"}}' 
             data-placement='top'>
-            <%=gt("copy")%>
+            {{gt "copy"}}%>
           </button>
         </div> 
         <div class="btn-group" data-toggle="buttons-radio">
           <button type="button" class="btn btn-primary active">
-              <%=gt("summary_stats")%>
+            {{gt "summary_stats"}}
           </button>
           <button type="button" class="btn btn-primary">
-              <%=gt("ministry_stats")%>
+            {{gt "ministry_stats"}}
           </button>
           <button type="button" class="btn btn-primary">
-              <%=gt("government_stats")%>
+            {{gt "government_stats"}}
           </button>
         </div>
       </div>
@@ -401,73 +395,72 @@
   </div>
 </script>
 <script type='text/plain' id='stat_tr'>
-  <tr <%= active_dept ? "class='info'" : "" %>>
+  <tr {{#active_dept}}class='info'{{/active_dept}}>
     <td>
-      <%= index %>
+      {{ index }}
     </td>
     <td>
-      <a href='#'><%=dept_name%> </a> 
+      <a href='#'>{{dept_name}} </a> 
     </td>
     <td>
-      <%= col %>
+      {{ col }}
     </td>
     </tr>
 </script>
 <script type='text/plain' id='dept_info_t'>
-  <p><%=dept['dept'][lang]%> in the 
-  <a href='http://www.google.com/search?tbm=nws&q=<%=encodeURI(dept["dept"][lang])%>'
+  <p>{{lang dept.dept}} in the 
+  <a href='http://www.google.com/search?tbm=nws&q={{encodeURI dept.dept}}'
     target=_blank>
     news.
   </a>
-  <br />
+  </p>
   <form class='form-inline'>
     <label> 
-      <a href="http://<%=dept['website'][lang]%>" target=_blank>
-        <%= gt("website")%> 
+      <a href="http://{{{lang dept.website}}}" target=_blank>
+        {{gt  "website"}}
       </a>
     </label>
     <input type='text' class='input-xlarge site-search'
-    placeholder='<%=gt("search_site")%>'></input>  
+    placeholder='{{gt "search_site"}}'></input>  
     <a href='#' class='btn btn-primary btn-small site-search'>
-      <%=gt("search_go")%>
+      {{gt "search_go"}}
       </a>
   </form>
   <p> 
-  <a href='<%=gt("IGOC_site")%>' target='_new'>
-      <%=gt("org_info")%>
+  <a href='{{{gt "IGOC_site"}}}' target='_new'>
+    {{gt "org_info"}}
     </a>
   </p>
  <table class='table table-striped table-condensed'>
    <tbody>
      <tr>
-       <th> <%= gt("legal_name")%> </th>
-       <td> <%=dept['legal_name'][lang]%>  </td>
+       <th> {{gt "legal_name"}} </th>
+       <td> {{lang dept.legal_name }}  </td>
      </tr>
      <tr>
-       <th> <%= gt("applied_title")%> </th>
-       <td> <%=dept['applied_title'][lang]%>  </td>
+       <th> {{gt "applied_title" }} </th>
+       <td> {{lang dept.applied_title}}  </td>
      </tr>
      <tr>
-       <th> <%= gt("minister")%> </th>
-       <td> <%=dept['minister'][lang]%>  </td>
+       <th> {{gt "minister" }} </th>
+       <td> {{lang dept.minister}}  </td>
      </tr>
      <tr>
-       <th> <%= gt("org_head")%> </th>
-       <td> <%=dept['org_head'][lang]%>  </td>
+       <th> {{gt "org_head" }} </th>
+       <td> {{lang dept.org_head}}  </td>
      </tr>
      <tr>
-       <th> <%= gt("mandate")%> </th>
-       <td> <%=dept['mandate'][lang]%>  </td>
+       <th> {{gt "mandate"}} </th>
+       <td> {{lang dept.mandate}}>  </td>
      </tr>
      <tr>
-       <th> <%= gt("legislation")%> </th>
+       <th> {{gt "legislation"}} </th>
        <td>
-
-         <% for (var l_index in dept['legislation']) {%> 
-         <a href='http://google.com/search?q=<%=encodeURI(dept["legislation"][l_index][lang])%>' target=_blank>
-              <%=dept['legislation'][l_index][lang]%>  
-            </a>
-         <%}%>
+         {{#dept.legislation}}
+         <a href='http://google.com/search?q={{encodeURI .}}' target=_blank>
+           {{lang .}}
+         </a>
+         {{/dept.legislation}}
        </td>
      </tr>
      <tr>
@@ -480,7 +473,7 @@
  </table>
 </script>
 <script type='text/plain' id='header_t'>
-  <th colspan='<%=colspan%>'><div class='<%=class_%>' > <%=header%> </div></th>
+  <th colspan='{{colspan}}'><div class='{{class_}}'> {{header}} </div></th>
 </script>
 </%text>
 <%include file='help_text.html'/>
@@ -490,6 +483,32 @@
       var APP = ns('APP');
 
       APP.dispatcher.once("app_ready", function(app){
+
+        Handlebars.registerHelper("gt",function(context){
+          return app.get_text(context);
+        });
+        Handlebars.registerHelper("uri",function(context){
+          return encodeURI(context[app.state.get("lang")]);
+        });
+        Handlebars.registerHelper("lang",function(context){
+          return context[app.state.get("lang")];
+        });
+        Handlebars.registerHelper("encodeURI",function(context,options){
+          if (_.has(context,'en') && _.has(context,"fr")){
+            context = context[app.state.get("lang")];
+          }
+          return encodeURI(context);
+        });
+        Handlebars.registerHelper("is_dept",function(context,options){
+          var dept = context['dept'][app.state.get("lang")];
+          if (_.has(context,'org_type') && context['org_type']['en'] === 'Departments') {
+            return options.fn({dept:dept});
+          }else{
+            return options.inverse({dept:dept});
+          }
+        });
+
+
         app.state.set("lang","en");
       });
 

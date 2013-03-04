@@ -8,7 +8,7 @@
   /************APP VIEW***********/
   APP.appView = Backbone.View.extend({
     el : $('body')
-    ,template : _.template($('#home_t').html())
+    ,template : Handlebars.compile($('#home_t').html())
     ,events : {
       "click #lang_change" : "toggle_lang"
       ,"click a.home" : "reset"
@@ -77,9 +77,7 @@
       var gt = this.get_text;
       this.change_lang.html(gt("lang"));
       this.title.html(gt("title"));
-      this.app.html(this.template({
-        gt : gt
-      }));
+      this.app.html(this.template({}));
 
       APP.dispatcher.trigger_a("home",this);
     }
@@ -112,11 +110,9 @@
   });
 
   APP.dispatcher.on("dept_ready",function(app){
-    var vertical_navbar = _.template($('#ver_navbar_t').html());
+    var vertical_navbar = Handlebars.compile($('#ver_navbar_t').html());
     $('.nav_bar_ul').children().remove();
-    $('.nav_bar_ul').append(vertical_navbar({
-      gt : app.get_text
-    }));
+    $('.nav_bar_ul').append(vertical_navbar());
     if (app.auto_complete){
       app.auto_complete.stopListening();
     }
@@ -166,6 +162,7 @@
     });
   });
 
+  // go directly to a table if there one is already active
   APP.dispatcher.on("mini_tables_rendered", function(ctx){
     if (ctx.current_view){
       APP.dispatcher.trigger_a("table_selected",ctx.current_view.table);

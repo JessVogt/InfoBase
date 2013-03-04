@@ -5,8 +5,7 @@ $(function () {
   var BGV = GRAPHS.BaseGraphView;
 
   GRAPHS.views["Table1"] = BGV.extend({
-    template : _.template($("#graph_grid_t").html())
-    ,prep_data : function(){
+    prep_data : function(){
       this.sidebar_header = this.headings[1][0];
       this.sidebar_items = _.map(this.data,
         function(row){

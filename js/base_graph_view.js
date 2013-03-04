@@ -15,8 +15,8 @@ $(function () {
   });
 
   GRAPHS.BaseGraphView = Backbone.View.extend({
-
-    central_votes : true
+    template : Handlebars.compile($("#graph_grid_t").html())
+    ,central_votes : true
     ,initialize: function () {
       _.bindAll(this);
       this.key = this.options["key"];

@@ -7,8 +7,7 @@ $(function () {
 
 
   GRAPHS.views["Table7"] = BGV.extend({
-    template : _.template($("#graph_grid_t").html())
-    ,footnote_keys : ['graph7_footnote']
+    footnote_keys : ['graph7_footnote']
     ,prep_data : function(){
 
       this.footnotes = this.footnotes.concat(

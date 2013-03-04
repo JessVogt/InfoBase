@@ -5,7 +5,6 @@ $(function () {
   var BGV = GRAPHS.BaseGraphView;
 
   //GRAPHS.views["Table6"] = BGV.extend({
-  //  template : _.template($("#graph_grid_t").html())
   //  ,render: function () {
   //    this.$el = $(this.template({
   //      rows : this.layout,

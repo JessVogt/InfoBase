@@ -5,8 +5,7 @@ $(function () {
   var BGV = GRAPHS.BaseGraphView;
 
   GRAPHS.views["TableIS"] = BGV.extend({
-    template : _.template($("#graph_grid_t").html())
-    ,prep_data : function(){
+    prep_data : function(){
       this.votes = _.pluck(this.mapped_objs,"Description");
       this.periods = _.map(_.range(1,13).concat([16]), function(x){
         return 'P'+x;

@@ -95,7 +95,7 @@ $(function() {
   });
 
   APP.printView = Backbone.View.extend({
-    template : _.template($('#print_view_t').html())
+    template : Handlebars.compile($('#print_view_t').html())
     ,initialize : function(){
       _.bindAll(this);
       this.app = this.options['app'];
@@ -107,11 +107,7 @@ $(function() {
     }
     ,render : function(){
       var gt = APP.app.get_text;
-      this.$el = $(this.template({
-        close_text : gt('close'),
-        print_text : gt('print'),
-        help_text : gt('print_help')
-      }));
+      this.$el = $(this.template());
       this.$el.
         find('.table_area')
         .append(this.table);
