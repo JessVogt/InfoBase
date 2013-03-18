@@ -224,7 +224,7 @@ def html_les(dev=True):
   full_js = "\n".join([js_libs, js_data, js_app])
   full_css = cssdata
   t = lookup.get_template('les.html')
-  with open("led_tbfid.html",'w') as leshtml:
+  with open("led_tbfd.html",'w') as leshtml:
     leshtml.write(t.render(full_js = full_js,
                            #js_root = './',
                            full_css = full_css,
@@ -328,7 +328,7 @@ def od(dev=True):
   full_css = cssdata
 
   t = lookup.get_template('od.html')
-  with open("od_do.html",'w') as leshtml:
+  with open("../open_data_wet/index.html",'w') as leshtml:
     leshtml.write(t.render(full_js = full_js,
                            #js_root = './',
                            full_css = full_css,
