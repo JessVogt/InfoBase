@@ -99,14 +99,11 @@ $(function() {
     ,initialize : function(){
       _.bindAll(this);
       this.app = this.options['app'];
-      this.state = this.app.state;
-      this.lang = this.state.get('lang');
       this.table = $(this.options['table']);
       this.table.attr('id','');
       this.render();
     }
     ,render : function(){
-      var gt = APP.app.get_text;
       this.$el = $(this.template());
       this.$el.
         find('.table_area')
@@ -180,7 +177,7 @@ $(function() {
                   "Authority",
                   "ARLU Reprofiles",
                   "Expenditures at Period {{p}}",
-                  "Forecast Exenditures at year end",
+                  "Forecast Expenditures at year end",
                   "Forecast Lapse (by EACPD*)",
                   "Forecast Lapse % (by EACPD*)",
                   "Gross Lapse",
@@ -429,7 +426,7 @@ $(function() {
             }
             ,render_data : function(){
               this.content = TABLES.build_table({
-                headers : [['','Athority','Expenditure']],
+                headers : [['',this.gt('authorities'),this.gt('expenditures')]],
                 body : this.rows,
                 css : [{'font-weight' : 'bold'}, 
                         {'text-align' : 'right'},
@@ -781,7 +778,7 @@ $(function() {
                     "Transfers from TB Vote 25 OBCF  ",
                     "Transfers from TB Vote 30 Paylist Requirements ",
                     "Transfers from TB Vote 33 CBCF ",
-                    "PT",
+                    "Other",
                     "Net Total"
                   ]
                 ],
@@ -815,7 +812,7 @@ $(function() {
                     "Transferts du crédit 25 du CT (Report du budget de fonctionnement)",
                     "Transferts du crédit 30 du CT (Besoins en matière de rémunération)",
                     "Transferts du crédit 30 du CT (Report du budget d'immobilisations)",
-                    "PT",
+                    "Autres",
                     "Total net"
                   ]
                 ]
@@ -1131,7 +1128,7 @@ $(function() {
           ,key : [0,1,2]
           ,table_view : { 
             hide_col_ids: [6,7,10,11,12]
-            ,sum_cols: [3,4,5,6,7,8,10,11,12,13,14]
+            ,sum_cols: [3,4,5,6,7,8,10,11,12,13]
             ,min_func : TABLES.add_ministry_year_sums
             ,init_row_data : function(){
               var txt = this.gt("sub_avg");
@@ -1701,7 +1698,7 @@ $(function() {
               "Acquisition of machinery and equipment",    
               "Transfer Payments",                         
               "Public Debt Charges",                       
-              "Other subsidies and payment" ];
+              "Other subsidies and payments" ];
             var reduced = _.map(this.data, function(row){
               return _.pick.apply(this,[row,'Year'].concat(sos)); 
             });

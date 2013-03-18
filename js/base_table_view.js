@@ -111,9 +111,7 @@ $(function () {
         "bFilter": false,
         "bInfo" : false,
         "bPaginate" : false,
-        "bSort" : false,
-        "sScrollX": "100%",
-        "sScrollXInner": "110%"
+        "bSort" : false
     }
     ,hide_col_ids: []
     ,initialize: function () {
@@ -152,6 +150,9 @@ $(function () {
       //
       this.headers = this.def['headers'][this.lang];
       this.title = TABLES.m(this.dept.dept[this.lang] +  " - " + this.def['title'][this.lang]);
+
+      $(document).on("hover", '.table_content td div', this.on_hover);
+      $(document).on("click", '.table_content td div', this.on_td_click);
     }
     ,setup_useful_this_links : function(){
       //
@@ -254,12 +255,24 @@ $(function () {
             },
             this
       );
-    },
-    activate_dataTable : function(){
-      var options  = _.extend({},this.data_table_args);
-      if (this.row_data.length > 10){
-        options["sScrollY"] = 400
+    }
+    ,make_footer: function () {
+      if (_.size(this.row_data) > 15 ) {
+        _.each(_.map(this.headers, function (h) {
+          return new headerView({
+            types : this.col_defs,
+            header: h,
+            headers : this.headers
+          });
+        },this).reverse(),
+        function (hv) {
+          this.footer.append(hv.$el)
+        },
+        this);
       }
+    }
+    ,activate_dataTable : function(){
+      var options  = _.extend({},this.data_table_args);
       var showing_defs  = this.col_defs;
       // hide columns 
       if (!this.details && this.hide_col_ids.length > 0){
@@ -302,6 +315,7 @@ $(function () {
         this.datatable.fnDestroy();
       }
       this.$el.children().remove();
+
       this.$el.append( $(table_template({
         title:this.title
       })));
@@ -310,53 +324,12 @@ $(function () {
 
       this.make_headers();
       this.make_body();
+      this.make_footer();
 
       this.for_copying = this.$el.clone();
 
       var tds = this.$el.find('td div');
 
-      tds.on("hover",this,function(event){
-        var view = event.data
-        var td = $(event.target).parents('td')
-        var tr = td.parent();
-        var row = tr.data('row');
-        if (_.indexOf(view.row_data,row) == -1 || tr.hasClass("info")){
-          return;
-        }
-        var index_ar = view.datatable.fnGetPosition(td.get(0));
-        var index = index_ar[2];
-        if (view.is_clickable(td)){
-          $(event.target).toggleClass("clickable alert-success")
-        }
-      });
-
-      tds.on("click", this,function(event){
-        var view = event.data;
-        var td = $(event.target).parents('td');
-        var tr = td.parent();
-        var row = tr.data('row');
-        if (_.indexOf(view.row_data,row) == -1 || tr.hasClass("info")){
-          return;
-        }
-
-        if (view.is_clickable(td)){
-          // return an array, where the last index is what
-          // we need
-          var index_ar = view.datatable.fnGetPosition(td.get(0));
-          var index = index_ar[2];
-          
-          var av = new TABLES.AnalyticsView({
-            dept : view.dept,
-            key : view.key,
-            row : row,
-            col_index : index,
-            app : view.app,
-            def : view.def,
-            mapper : view.mapper
-          });
-          av.render();
-        }
-      })
 
       this.activate_dataTable();
       var that = this;
@@ -364,6 +337,49 @@ $(function () {
         APP.dispatcher.trigger("table_rendered",that);
       });
       return this;
+    }
+    ,on_hover : function(event) {
+      var td = $(event.target).parents('td')
+      var tr = td.parent();
+      var row = tr.data('row');
+      if (_.indexOf(this.row_data,row) == -1 || tr.hasClass("info")){
+        return;
+      }
+      var index_ar = this.datatable.fnGetPosition(td.get(0));
+      var index = index_ar[2];
+      if (this.is_clickable(td)){
+        $(event.target).toggleClass("clickable alert-success")
+      }
+    }
+    ,on_td_click : function(event){
+      var td = $(event.target).parents('td');
+      var tr = td.parent();
+      var row = tr.data('row');
+      if (_.indexOf(this.row_data,row) == -1 || tr.hasClass("info")){
+        return;
+      }
+
+      if (this.is_clickable(td)){
+        // return an array, where the last index is what
+        // we need
+        var index_ar = this.datatable.fnGetPosition(td.get(0));
+        var index = index_ar[2];
+        
+        var av = new TABLES.AnalyticsView({
+          dept : this.dept,
+          key : this.key,
+          row : row,
+          col_index : index,
+          app : this.app,
+          def : this.def,
+          mapper : this.mapper
+        });
+        av.render();
+      }
+    }
+    ,remove : function(){
+      $(document).off("click", '.table_content td div');
+      $(document).off("hover", '.table_content td div');
     }
   }) // end of BaseTableView
 
@@ -428,8 +444,8 @@ $(function () {
   APP.dispatcher.on("table_rendered",function(table_view){
     //var real_width = $('.dataTables_scrollBody table').width();
     //$('.dataTables_scrollHead').css("width","");
-    $('.dataTables_scrollHeadInner').css("width","");
-    $('.dataTables_scrollHead table').css("width","");
+    //$('.dataTables_scrollHeadInner').css("width","");
+    //$('.dataTables_scrollHead table').css("width","");
     //$('.dataTables_scrollBody caption').appendTo($('.dataTables_scrollHead table'));
   });
 

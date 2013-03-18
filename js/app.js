@@ -186,7 +186,7 @@
       }
       // recursive function to assign the column layout
       // of the departments presented by ministry
-      // assumes mins is in format of [ [dept1,dept2],[dept1,dept2,dept3],...
+      // assumes mins is in format of [ [dept1,dept2],[dept1,dept2,dept3],...]
       ,ministry_to_cols : function(mins,cols){
         cols = cols || [[]];
         if (mins.length == 0){
@@ -352,12 +352,12 @@
       this.def = this.options["def"];
 
       this.drop_zone = this.app.$el.find('.table_content');
-      this.mapper = this.def.mapper.en;
       this.key = this.def["id"];
       this.gt = this.app.get_text;
       this.state = this.app.state;
       this.dept = this.state.get("dept");
       this.lang = this.state.get("lang");
+      this.mapper = this.def.mapper[this.lang];
       this.data = this.dept['mapped_data'][this.key][this.lang];
       var other_depts = this.state.get("other_depts");
       // set some useful state based on these inputs
@@ -429,6 +429,7 @@
       return this;
     }
     ,tear_down : function(e){
+       this.table_view.remove();
        this.remove();
        this.app.state.unset("table");
         $('.panels').show();

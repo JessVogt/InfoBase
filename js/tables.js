@@ -62,8 +62,9 @@ $(function() {
   };
 
   APP.dispatcher.once("app_ready", function(app){
-    // get ready to adjust the heights and signal the readiness
+    // e ee ready to adjust the heights and signal the readiness
     // of the mini views
+    debugger;
 
     TABLES.tables.on("add", function(table){
 

@@ -56,12 +56,8 @@
         ,"fr" : "Affectation"
       }
       ,"welcome" : {
-        "en" : "<p class='lead'><a class='btn-link dept_sel'>Click</a> to select from a list of organisations</p>  \
-<span class='badge badge-info'>OR</span><p class='lead'></p> \
-<form><input class='input-xlarge dept_search' type='text' placeholder='start typing the name of an organization'></input></form>"
-        ,"fr" : "<p class='lead'><a class='btn-link dept_sel'>Cliquez</a> pour sélectionner parmi une liste d’organisations</p> \
-<span class='badge badge-info'>OU</span><p class='lead'></p>\
-<form><input class='input-xlarge dept_search' type='text' placeholder='commencez par taper une organisation'></input></form>"
+        "en" : "<p class='lead'><a class='btn-link dept_sel'>Click</a> to select from a list of organisations</p><span class='badge badge-info'>OR</span><p class='lead'></p><form><input class='input-xlarge dept_search' type='text' placeholder='start typing the name of an organization'></input></form>"
+        ,"fr" : "<p class='lead'><a class='btn-link dept_sel'>Cliquez</a> pour sélectionner parmi une liste d’organisations</p> <span class='badge badge-info'>OU</span><p class='lead'></p> <form><input class='input-xlarge dept_search' type='text' placeholder='commencez par taper une organisation'></input></form>"
       }
       ,"no_data" : {
         "en" : "No data avilable for this table"
@@ -120,8 +116,8 @@
         ,"fr" : "English"
       }
       ,"current_year_fisc" : {
-         "en" : "Financial data up to P10 for the current Fiscal Year (April 1st 2012 to December 31st 2012)",
-         "fr" : "Données financières jusqu'à P10 pour l'exercise courant (1 avril à 31 décembre 2012 )"
+         "en" : "Financial data up to P10 for the current Fiscal Year (April 1st 2012 to January 31st 2012)",
+         "fr" : "Données financières jusqu'à P10 pour l'exercice courant (du 1er avril à 31 janvier 2012 )"
       }
       ,"previous_year_fisc" : {
          "en" : "Financial data from previous fiscal years (2009-10 to 2011-12)",

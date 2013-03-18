@@ -137,7 +137,7 @@ $(function () {
           highlightMouseOver: options['highlight'] || false
           }
       }
-      ,title : options['title'] || ""
+      ,title : TABLES.m(options['title'] || "")
     };
   $('#'+id).html("");
   $('#'+id+"_fn").html("");
@@ -150,6 +150,7 @@ $(function () {
   };
 
   GRAPHS.bar = function(id,data,options){
+    options['ticks'] = _.map(options.ticks,TABLES.m);
     var o = {
       seriesColors : seriesColors
       ,legend : options['legend'] || {
@@ -172,7 +173,9 @@ $(function () {
       ,title : options['title'] || ""
     };
     if (_.has(options,'series')){
-      o['series'] = options['series'];
+      o['series'] =  _.map( options['series'],function(obj){
+        return {label : TABLES.m(obj.label)}
+      });
     }
     if (_.has(options,'stackSeries')){
       o['stackSeries'] = options['stackSeries'];

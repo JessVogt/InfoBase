@@ -76,6 +76,7 @@ $(function () {
           var mapped_lines = this.mapper.map(dept_lines[1]);
           // reduce each line to just the line key + the selected
           // data
+
           return _.map(mapped_lines,
             function(mapped_line) {
               var line_key = _.map(this.def.key,

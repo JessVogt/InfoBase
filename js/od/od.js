@@ -70,15 +70,15 @@
        $(e.currentTarget).toggleClass('alert-info');
     }
     ,render: function(model,attr){
-      if (this.state.get("dept")){ return;}
-      this.remove();
       // get faster reference 
       this.lang = attr;
       var gt = this.get_text;
       this.change_lang.html(gt("lang"));
       this.title.html(gt("title"));
-      this.app.html(this.template({}));
 
+      if (this.state.get("dept")){ return;}
+      this.remove();
+      this.app.html(this.template({}));
       APP.dispatcher.trigger_a("home",this);
     }
     ,horizontal_explore : function(){

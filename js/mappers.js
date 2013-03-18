@@ -23,7 +23,7 @@ $(function () {
       return mapped_row;
     },this);
   }
-  mapper.prototype.find_similar = function(row,depts){
+  mapper.prototype.FIND_SIMILAr = function(row,depts){
     // map the departments to filter down to just the relevant
     // lines for each dept
     var filter = this.make_filter(row);

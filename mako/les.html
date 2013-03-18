@@ -91,27 +91,25 @@
 
   <div class="modal hide large" id="modal_skeleton" tabindex="-1" role='dialog'>
     <div class="modal-header">
-      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&#215;</button>
       <h3></h3>
     </div>
     <div class="modal-body">
       <p></p>
     </div>
     <div class="modal-footer">
-      <a href="#" class="btn" class="close" data-dismiss="modal"></a>
+      <a href="#" class="btn close" data-dismiss="modal"></a>
     </div>
   </div>
 <%text filter="n">
-<script type='text/plain' id='breadcrumb_el'>
-  <li><a href="#"><%=link%></a> <span class="divider">/</span></li>
-</script>
 <script type='text/plain' id='ver_navbar_t'>
 <ul class='nav'>
-  <li> <a href='#' class='home'>{{gt "home"}}</a> </li>
+  <li> <a href='#' class='home'>{{{gt "home"}}}</a> </li>
   <li> <a href='#' class='dept_sel'> {{gt "select"}}</a> </li>
-  <form class="navbar-search pull-left">
-    <input type="text" class='search-query span2 dept_search' />
-  </form>
+  <li>
+    <form class="navbar-search pull-left">
+      <input type="text" class='search-query span2 dept_search' />
+    </form>
   </li>
 </ul>
 </script>
@@ -124,7 +122,7 @@
 <div>
   <div class='container home'>
     <div class='row'>
-      <div class='well span4 offset2'>
+      <div class='well span4 offset3'>
         {{{gt "welcome" }}}
       </div>
     </div>
@@ -213,12 +211,12 @@
 <script type='text/plain' id='print_view_t'>
   <div class='print_view'>
     <div class="alert fade in" style='width: 25%;'>
-      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      <button type="button" class="close" data-dismiss="alert">&#215;</button>
       {{gt "print_help"}}
     </div>
     <div class='btn-group'> 
       <button class='btn btn-primary print_view_print'>
-      {{gt "print_text"}}
+      {{gt "print"}}
       </button>
       <button class='btn btn-danger print_view_close'>
       {{gt "close"}}
@@ -279,7 +277,7 @@
               </a>
             </li>
           </ul>
-        <div class='well table_payload'>
+        <div class='well table_payload sidescroll'>
 
         </div>
       </div>
@@ -310,30 +308,30 @@
 <script type='text/plain' id='graph_grid_t'>
   <div class='container-fluid'>
     <div class="row-fluid">
-      <div class='sidescroll'>
-        {{#if sidebar_header}}
-          <div class='span2 well'>
-            <ul class="nav nav-list">
-              <li class="nav-header"> {{sidebar_header}} </li>
-              {{#items}}
-              <li><a href="#">{{.}}</a></li>
-              {{/items}}
-            </ul>
-          </div>
-        {{/if}}
-        {{#rows}}
-          <div class='span12 bottom-border'>
+      {{#if sidebar_header}}
+        <div class='span2 well'>
+          <ul class="nav nav-list">
+            <li class="nav-header"> {{sidebar_header}} </li>
+            {{#items}}
+            <li><a href="#">{{.}}</a></li>
+            {{/items}}
+          </ul>
+        </div>
+      {{/if}}
+      {{#rows}}
+        <div class='span10 bottom-border'>
           {{#cols}}
-            <div class='well span{{span}}'>
-              <div id="{{id}}" style='height:{{height}}px;'>
-                </div>
+            <div class='span{{span}}'>
+              <div  class='well'> 
+                <div style='height:{{height}}px;'  id="{{id}}" ></div>
+              </div>
               <div id="{{id}}_fn"></div>
             </div>
           {{/cols}}
         </div>
-        {{/rows}}
-      </div>
+      {{/rows}}
     </div>
+    <p></p>
   </div>
 </script>
 
@@ -363,7 +361,7 @@
 </script>
 <script type='text/plain' id='list_t'>
   <table class='table table-striped table-condensed'>
-    {{#title}} <caption>{{title}}</caption> {{/title}}
+    {{#title}} <caption>{{.}}</caption> {{/title}}
     <thead></thead>
     <tbody></tbody>
     <tfoot></tfoot>
@@ -377,7 +375,7 @@
           <button class='btn btn-inverse copy'
             title='{{gt "copy_tooltip"}}' 
             data-placement='top'>
-            {{gt "copy"}}%>
+            {{gt "copy"}}
           </button>
         </div> 
         <div class="btn-group" data-toggle="buttons-radio">
@@ -399,7 +397,7 @@
   </div>
 </script>
 <script type='text/plain' id='stat_tr'>
-  <tr {{#active_dept}}class='info'{{/active_dept}}>
+  <tr class='{{#active_dept}}info{{/active_dept}}'>
     <td>
       {{ index }}
     </td>
@@ -413,14 +411,13 @@
 </script>
 <script type='text/plain' id='dept_info_t'>
   <p>{{lang dept.dept}} in the 
-  <a href='http://www.google.com/search?tbm=nws&q={{encodeURI dept.dept}}'
-    target=_blank>
+  <a href="http://www.google.com/search?tbm=nws&q={{encodeURI dept.dept}}" target="_blank">
     news.
   </a>
   </p>
   <form class='form-inline'>
     <label> 
-      <a href="http://{{{lang dept.website}}}" target=_blank>
+      <a href="http://{{{lang dept.website}}}" target="_blank">
         {{gt  "website"}}
       </a>
     </label>
@@ -455,23 +452,17 @@
      </tr>
      <tr>
        <th> {{gt "mandate"}} </th>
-       <td> {{lang dept.mandate}}>  </td>
+       <td> {{{lang dept.mandate}}}  </td>
      </tr>
      <tr>
        <th> {{gt "legislation"}} </th>
        <td>
          {{#dept.legislation}}
-         <a href='http://google.com/search?q={{encodeURI .}}' target=_blank>
-           {{lang .}}
+         <a href='http://google.com/search?q={{encodeURI .}}' target="_blank">
+           {{{lang .}}}
          </a>
          {{/dept.legislation}}
        </td>
-     </tr>
-     <tr>
-       <th> 
-      </th>
-       <td> 
-      </td>
      </tr>
    </tbody>
  </table>
