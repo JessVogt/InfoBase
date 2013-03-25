@@ -2,8 +2,11 @@
     var LANG = ns("LANG");
 
     var lookups = {
-      // IGOC headers
-      "legal_name" : {
+      "horizontal_table" : {
+        "en" : "Horizontal comparison of the selected value across all departments"
+        ,"fr" : "Comparaison horizontale de la valeur sélectionnée dans tous les ministères"
+      }
+      ,"legal_name" : {
         "en" : "Legal Name",
         "fr" : "Nom légal"
       }
@@ -35,6 +38,10 @@
         "en" : "About this table"
         ,"fr" : "À propos de ce tableau"
       }
+      ,'type' : {
+        "en" : "Type"
+        ,"fr" : "Type"
+      }
       ,"select" : {
         "en" : "Select"
         ,"fr" : "Sélectionner"
@@ -43,15 +50,13 @@
         "en" : "http://www.tbs-sct.gc.ca/reports-rapports/cc-se/index-eng.asp"
         ,"fr" : "http://www.tbs-sct.gc.ca/reports-rapports/cc-se/index-fra.asp"
       }
-      ,"welcome" : {
-        "en" : ["Click to select from a list of organisations ",
-                "<span class='badge badge-info'>OR</span>",
-                 " start typing the name of an organisation or its acronym."
-                ].join("")
-        ,"fr" : ["Cliquez pour sélectionner parmi une liste d’organisations ",
-                 "<span class='badge badge-info'>OU</span>",
-                 " commencez par entrer le nom d'une organisation ou son acronyme."
-                ].join("")
+      ,"click" : {
+        "en" : "Click",
+        "fr" : "Cliquez"
+      }
+      ,"to_select" : {
+        "en" : "to select from a list of organisations or",
+        "fr" : "pour sélectionner parmi une liste d’organisations"
       }
       ,"current_year_fisc" : {
          "en" : "Financial data for the current Fiscal Year (April 1st 2012, March 31st 2013)",
@@ -69,17 +74,13 @@
         "en" : "Clicking this button will automatically select and copy the table. You can then switch over to Excel and paste in the table"
         ,"fr" : "En cliquant sur ce bouton, le tableau va automatiquement être sélectionné et copié. Vous pouvez ensuite ouvrir Excel et coller le tableau sélectionné"
       }
-      ,"pie_chart_per" : {
-        "en" : "Percentages under 2% are not labeled"
-        ,"fr" : "Les pourcentages inférieurs à 2% ne seront pas affichés"
-      }
       ,"details" : {
         "en" : "Details"
         ,"fr": "Détails"
       }
       ,"back" : {
-        "en" : "Back"
-        ,"fr": "Retour"
+        "en" : "&larr; Back"
+        ,"fr": "&larr; Retour"
       }
       ,"org_info" : {
         "en" : "Data from Inventory of Government of Canada Organizations"
@@ -130,7 +131,7 @@
         ,"fr" : "Imprimer"
       }
       ,"other_in_min" : {
-       "en" :  "Other Organisations in ministry"
+       "en" :  "Other Organisations in same Ministry"
       ,"fr" : "Autres organisations dans le portefeuille"
       }
       ,"print_help" : {
@@ -189,17 +190,17 @@
         "en" : "Copy table"
         ,"fr": "Copiez le tableau"
       }
+      ,"cancel" : {
+        "en" : "Cancel"
+        ,"fr": "Annuler"
+      }
       ,"search_site" : {
         "en": "Search their site"
         ,"fr": "Cherchez dans leur site web"
       }
-      ,"search_go" : {
-        "en": "Search"
-        ,"fr": "Cherchez"
-      }
       ,"search" : {
-        "en": "Organisation search..."
-        ,"fr": "Cherchez une organisation"
+        "en": "Start typing here to find a department"
+        ,"fr": "Écris ici pour trouver un ministère"
       }
       ,"other" : {
         "en": "Other"
@@ -217,22 +218,6 @@
        'en' : 'Program',
        'fr' : 'Programme'
       }
-      ,"graph2b_title" : {
-        "en": "Comparison of Authorities and Expenditures Between This Period and the Same from the Previous Fiscal year"
-        ,"fr": "Comparaison des crédits et dépenses entre cette période et la même à partir de l'exercice précédent"
-      }
-      ,"graph7_title_1" : {
-        "en": "5 Year Average of Major Standard Objects"
-        ,"fr": "Le moyenne de cinq ans des articles courants principaux"
-      }
-      ,"graph7_title_2" : {
-        "en": "5 Year Average of Major Standard Objects by Vote/Stat"
-        ,"fr": "Le moyenne de cinq ans des articles courants principaux par crédits votés/législatifs"
-      }
-      ,"graph7_footnote" : {
-        "en" :  "Major standard objects are those represnting more than 5% of total expenditures."
-        ,"fr" : " Les objets courants principaux sont ceux qui représentent plus de 5% des dépenses totales."  
-      }
       ,"votestat" : {
         "en": "Vote / Stat"
         ,"fr": "Crédit / Législatif"
@@ -245,29 +230,13 @@
         "en": "Voted Expenditure Breakout For"
         ,"fr": "Détail des dépenses votées pour"
       }
-      ,"exp_breakout" : {
-        "en": "Expenditure Breakout"
-        ,"fr": "Détail des dépenses"
-      }
-      ,"graph5_title_1" : {
-        "en" :  "5 Year Average for Voted Expenditures by Allotment"
-        ,"fr" : "Le moyenne des 5 années des détails des dépenses votées par affection"
-      }
       ,"expenditure_by_vote" : {
         "en" :  "Expenditure by Vote"
         ,"fr" : " Dépenses par crédit voté "
       }
-      , "net_lapse" : {
-        "en" :  "Net Lapse"
-        ,"fr" : "Fonds inutilisés nets"
-      }
       , "approp_by_auth" : {
         "en" : "Appropriation by Authority"
         ,"fr" :"Crédit par autorisation"
-      }
-      , "central_vote_transfer" : {
-        "en" :  "Central Vote Transfers"
-        ,"fr" : "Transferts des crédits centraux"
       }
       ,"history_spend" : {
         "en" :  "Historical Expenditures"
@@ -305,10 +274,6 @@
       ,"details_help"  : {
         "en" :  "Due to the size of this table, some columns are hidden by default"
         ,"fr" : "En raison de la taille de ce tableau, certaines colonnes sont masquées par défaut"  
-      }
-      ,"graph2_title" : {
-        "en" :  "Comparison of current spending to authorities"
-        ,"fr" : "Comparaison des dépenses courantes aux crédits"
       }
       ,"gross" : {
         "en" :  "Gross"

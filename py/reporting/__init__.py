@@ -79,6 +79,35 @@ def make_after_check(lookups):
       lookups['depts'][row[0]].setdefault('tables',{}).setdefault(table,[]).append(row[1:])
   return _
 
+
+def replace_nulls(row,from_index=0):
+  def fixnull(x):
+    if isinstance(x,basestring) and not x:
+      return 0
+    return x
+  return row[:from_index]+[fixnull(x) for x in row[from_index:]]
+
+
+def make_open_data_after_check(lookups):
+  reverse_so = {v['en'] : k for k,v in lookups['sos'].iteritems()}
+  def _(row,table):
+    root = lookups['depts'][row[0]].setdefault('tables',{}).setdefault(table,[])
+    if table.endswith('4'):
+      row = replace_nulls(row,3)
+      root.append([row[0]]+row[3:])
+    if table.endswith('6'):
+      row = replace_nulls(row,3)
+      root.append([row[0]]+row[3:])
+    if table.endswith('5'):
+      row = replace_nulls(row,5)
+      if row[0] != 'ZGOC':
+        key = reverse_so[row[3]]
+      else:
+        key = None
+      root.append([row[0],key]+row[5:])
+  return _
+
+
 def check(data,lookups,after_check=lambda x:x):
   errors = set()
   for table in data:
@@ -108,8 +137,6 @@ def check(data,lookups,after_check=lambda x:x):
         #  assert lookups['votes'][historical][row[0]][row[1]]
         after_check(row,table)
       except Exception,e:
-        import pdb
-        pdb.set_trace()
         errors.add( (table,) + tuple(row[:2]) )
   for row in errors:
     print(*row,sep="\t")
@@ -231,101 +258,29 @@ def html_les(dev=True):
                            no_auto_js = True,
                            no_auto_css = True))
 
-def fake_data(lookups):
-  import numpy
-  rand = numpy.random.randint
-  for key in lookups['depts']:
-    dept = lookups['depts'][key]
-    dept['tables'] = {
-      'table1' : [ ],
-      'table2' : [
-       [key,1] +  rand(10000,10000000,4).tolist(),
-       [key,2 ] + rand(10000,10000000,4).tolist(),
-       [key,3 ] + rand(10000,10000000,4).tolist(),
-       [key,4 ] + rand(10000,10000000,4).tolist(),
-       [key,5 ] + rand(10000,10000000,4).tolist(),
-       [key,6 ] + rand(10000,10000000,4).tolist(),
-       [key,7 ] + rand(10000,10000000,4).tolist(),
-       [key,8 ] + rand(10000,10000000,4).tolist(),
-       [key,9 ] + rand(10000,10000000,4).tolist(),
-       [key,10] + rand(10000,10000000,4).tolist(),
-       [key,11] + rand(10000,10000000,4).tolist(),
-       [key,12] + rand(10000,10000000,4).tolist(),
-       [key,21] + rand(10000,10000000,4).tolist(), 
-       [key,22] + rand(10000,10000000,4).tolist() 
-      ],
-      'table3' : [
-       [key,'Program EN1','Program FR1'] + rand(10000,10000000,4).tolist(),
-       [key,'Program EN2','Program FR2'] + rand(10000,10000000,4).tolist(),
-       [key,'Program EN3','Program FR3'] + rand(10000,10000000,4).tolist(),
-       [key,'Program EN4','Program FR4'] + rand(10000,10000000,4).tolist(),
-       [key,'Program EN5','Program FR5'] + rand(10000,10000000,4).tolist(),
-       [key,'Internal Services','Services Internes'] + rand(10000,10000000,4).tolist(),
-      ],
-      'table4' : [
-       [key,1,1,'2009-10'] +  rand(10000,10000000,7-3).tolist(),
-       [key,1,1,'2010-11'] +  rand(10000,10000000,7-3).tolist(),
-       [key,1,1,'2011-12'] +  rand(10000,10000000,7-3).tolist(),
-       [key,5,2,'2009-10'] +  rand(10000,10000000,7-3).tolist(),
-       [key,5,2,'2010-11'] +  rand(10000,10000000,7-3).tolist(),
-       [key,5,2,'2011-12'] +  rand(10000,10000000,7-3).tolist(),
-       [key,10,3,'2009-10'] + rand(10000,10000000,7-3).tolist(),
-       [key,10,3,'2010-11'] + rand(10000,10000000,7-3).tolist(),
-       [key,10,3,'2011-12'] + rand(10000,10000000,7-3).tolist(),
-      ],
-      'table5' : [
-       [key,1 ] +  rand(10000,10000000,3).tolist(),
-       [key,2 ] + rand(10000,10000000,3).tolist(),
-       [key,3 ] + rand(10000,10000000,3).tolist(),
-       [key,4 ] + rand(10000,10000000,3).tolist(),
-       [key,5 ] + rand(10000,10000000,3).tolist(),
-       [key,6 ] + rand(10000,10000000,3).tolist(),
-       [key,7 ] + rand(10000,10000000,3).tolist(),
-       [key,8 ] + rand(10000,10000000,3).tolist(),
-       [key,9 ] + rand(10000,10000000,3).tolist(),
-       [key,10] + rand(10000,10000000,3).tolist(),
-       [key,11] + rand(10000,10000000,3).tolist(),
-       [key,12] + rand(10000,10000000,3).tolist(),
-       [key,21] + rand(10000,10000000,3).tolist(), 
-       [key,22] + rand(10000,10000000,3).tolist() 
-      ],
-      'table6' : [
-       [key,'Program EN1','Program FR1'] + rand(10000,10000000,3).tolist(),
-       [key,'Program EN2','Program FR2'] + rand(10000,10000000,3).tolist(),
-       [key,'Program EN3','Program FR3'] + rand(10000,10000000,3).tolist(),
-       [key,'Program EN4','Program FR4'] + rand(10000,10000000,3).tolist(),
-       [key,'Program EN5','Program FR5'] + rand(10000,10000000,3).tolist(),
-       [key,'Internal Services','Services Internes'] + rand(10000,10000000,3).tolist(),
-      ]
-    }
-    for vote in lookups['votes']['in_year'][key]:
-      v = lookups['votes']['in_year'][key][vote]
-      dept['tables']['table1'].append([key,vote,v['type']] + rand(10000,10000000,19-2).tolist())
 
 def od(dev=True):
-  lookups,data = load_od()
-  lookups['depts']['ZGOC'] = {'accronym' : 'ZGOC',
-                              'dept' : {'en' : 'Government of Canada',
-                                        'fr' : 'Gouvernement du Canada'},
-                              'min' : {'en' : 'Government of Canada',
-                                        'fr' : 'Gouvernement du Canada'}
-                             }
-  add_dept_data(lookups['depts'])
+  #lookups,data = load_od()
+  #check(data,lookups, make_open_data_after_check(lookups))
 
-  fake_data(lookups)
-  js_data = ";\n".join(
-    [u'{}={}'.format(k,json.dumps(lookups[k]))
-     for k in lookups]
-  )+";\n"
+  #lookups['depts'] = {k:v for k,v in lookups['depts'].iteritems()
+  #                    if 'tables' in v}
+  #
+  #add_dept_data(lookups['depts'])
 
-  app_js_files = list(my_js_files)
-  app_js_files += ["od/text.js",
-                   "od/tables.js",
-                   "od/od.js"]
-  js_app = process_my_js(app_js_files, dev=dev)
+  #js_data = ";\n".join(
+  #  [u'{}={}'.format(k,json.dumps(lookups[k]))
+  #   for k in lookups]
+  #)+";\n"
 
-  full_js = "\n".join([js_libs, js_data, js_app])
-  full_css = cssdata
+  #app_js_files = list(my_js_files)
+  #app_js_files += ["od/text.js",
+  #                 "od/tables.js",
+  #                 "od/od.js"]
+  #js_app = process_my_js(app_js_files, dev=dev)
+
+  full_js = ''#full_js = "\n".join([js_data])
+  full_css = ''#full_css = cssdata
 
   t = lookup.get_template('od.html')
   with open("../open_data_wet/index.html",'w') as leshtml:

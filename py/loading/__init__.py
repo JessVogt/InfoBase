@@ -10,6 +10,8 @@ f3 = 'ISLED.XLS'
 wb = xlrd.open_workbook(f)
 wb2 = xlrd.open_workbook(f2)
 wb3 = xlrd.open_workbook(f3)
+wb4 = xlrd.open_workbook("open data.xls")
+wb5 = xlrd.open_workbook("open data lookups.XLS")
 
 def clean_data(d):
   if isinstance(d,basestring):
@@ -77,15 +79,15 @@ def footnotes(lines):
 
 
 def load_od():
-
-  data_sheets = None
-
+  data_sheets = dict(map(each_sheet,
+                         filter(lambda x : 'table' in x.name,
+                                    wb4.sheets())))
   lookup_sheets = dict(map(each_sheet,
-                           wb2.sheets()))
+                           wb5.sheets()))
   lookup_sheets['footnotes'] = each_sheet(wb.sheet_by_name('Footnotes'))[1]
   lookups = {
     'depts': depts(lookup_sheets['DEPTCODE_MINCODE']),
-    'votes': votes(lookup_sheets['VOTES']),
+    #'votes': votes(lookup_sheets['VOTES']),
     'sos' : sos(lookup_sheets['SO'])
   }
   return lookups,data_sheets

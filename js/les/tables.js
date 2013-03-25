@@ -27,6 +27,47 @@ $(function() {
               candidate_row[2] == year);
     }
   }
+   
+  APP.dispatcher.on("home", function(app){
+    // ensure the two panels are equal sized 
+    app.app.find('.well').height(
+      _.max(app.app.find('.well').map(function(x,y){return $(y).height()}))
+    );
+    // remove the narbar elements
+    $('.nav_bar_ul').children().remove()
+    // shutdown the existing auto-complete and setup the new one
+    if (app.auto_complete){
+      app.auto_complete.stopListening();
+    }
+    app.auto_complete = new APP.autocompleteView({
+      el : $('.home .dept_search')
+      ,app : app
+    });
+  });
+
+  APP.dispatcher.on("dept_ready",function(app){
+    var vertical_navbar = Handlebars.compile($('#ver_navbar_t').html());
+    $('.nav_bar_ul').children().remove();
+    $('.nav_bar_ul').append(vertical_navbar());
+    if (app.auto_complete){
+      app.auto_complete.stopListening();
+    }
+    app.auto_complete = new APP.autocompleteView({
+      el : $('.nav_bar_ul .dept_search')
+      ,app : app
+    });
+  });
+
+  // customize the final app initialization by activating
+  // selected gui elements
+  APP.dispatcher.once("app_ready",function(app){
+    app.modal_view = new APP.modalView({app: app});
+    app.dept_info_view  = new APP.deptInfoView({app: app});
+    app.full_dept_list = new APP.fullDeptList({
+      app: app
+      ,target : $('body')
+    });
+  });
 
   // hook on to the department title, turn it into a link
   // and when the link is clicked, show the departmental info

@@ -4,14 +4,16 @@ $(function () {
   var TABLES = ns('TABLES');
 
   TABLES.AnalyticsView = Backbone.View.extend({
-    template : Handlebars.compile($('#list_t').html())
-    ,template2 : Handlebars.compile($('#analytics_t').html())
-    ,row_template : Handlebars.compile($("#stat_tr").html())
+    template : APP.t('#list_t')
+    ,template2 : APP.t('#analytics_t')
+    ,row_template :APP.t("#stat_tr")
     ,initialize: function () {
 
       _.bindAll(this);
 
       this.m = TABLES.m;
+
+      this.r = _.random(10000);
 
       this.dept = this.options['dept'];
       this.key = this.options['key'];
@@ -162,9 +164,12 @@ $(function () {
         var div = $('<div>')
           .addClass(type)
           .html(this.m(h))
-        $('<th>')
+        var th = $('<th>')
           .append(div)
           .appendTo(tr)
+        if (!_.isEmpty(h)){
+          th.attr("id",this.r+h);
+        }
       },this);
       return tr;
     }
@@ -180,25 +185,27 @@ $(function () {
       var tr = $('<tr>');
 
       if ( _.isEqual(row,this.table_line)) {
-          tr.addClass("info");
+          tr.addClass("background-highlight");
        }
 
       _.each(_.zip(this.types,mapped_row),function(type_val,index){
-
+        var header_links = _.map(_.pluck(this.combined_headers,index),
+          function(h){ return h ? this.r+h : null},this);
         var type = type_val[0];
         var val = type_val[1];
         var td = $('<td class="'+type+'"><div>');
+        td.attr("headers", header_links.join(" "));
         var div = td.find('div');
         div.addClass(type);
         if (index === 1){
           div.append("<a href='#' >"+val+"</a>");
         } else {
-          if (_.isString(val) && val.length > 80){
-            div.attr("title", val);
-            div.attr("data-placement", "top");
-            div.attr("rel", "tooltip");
-            val = val.substring(0,77) + "...";
-          }
+          //if (_.isString(val) && val.length > 80){
+          //  div.attr("title", val);
+          //  div.attr("data-placement", "top");
+          //  div.attr("rel", "tooltip");
+          //  val = val.substring(0,77) + "...";
+          //}
           val = val || 0;
           val = this.formater(type,val);
           div.html(val);
@@ -209,8 +216,8 @@ $(function () {
 
       tr.find('a').on("click",
           function(e){
+            $.colorbox.close();
             self.$el.find('a').off("click");
-            self.app.modal_view.hide(); 
             self.app.state.set("dept",dept);
           }
       );
@@ -219,27 +226,38 @@ $(function () {
     ,render : function (){
       this.$el.append(this.template2({gt : this.gt}));
 
-      this.app.modal_view.render({
-        body: this.$el,
-        header: this.gt("statistics"),
-        footer :this.gt("close")
+      $.colorbox({html: 
+        this.$el,width:"70%"
+        ,height: "80%"
+        ,transition: "none"
+        ,speed : 0
+        ,fixed : true
       });
 
-      this.$el.find('.btn-group:last button').on("click",
+      this.$el.find('button').on("click",
           this.on_button_click);
       this.$el.find('.copy').on("click",
           this.on_copy_click);
+      //this.$el.find('button:first').trigger("click");
+      this.on_button_click("government_stats");
 
-      this.$el.find('button.active').trigger("click");
+      var self = this;
+      setTimeout(function(){
+        $.colorbox.resize({
+          innerWidth : self.$el.find('table').width()+40
+          ,innerHeight : self.$el.find('table').height+20
+        });
+      });  
     }
     ,on_copy_click : function(e){
         TABLES.excel_format( this.$el.find('table'));
     }
     ,on_button_click : function(e){
-      $(e.target).siblings().removeClass("active");
-      $(e.target).addClass("active");
-
-      var button_text = $.trim($(e.target).html()); 
+      if (_.isString(e)){
+        button_text = e
+      } else {
+        var button_text = $.trim($(e.target).html()); 
+      }
       /// horrible, fix  below
       if (button_text == this.gt('summary_stats')){
         if (this.type === 'percentage'){
@@ -292,7 +310,10 @@ $(function () {
       // empty out current table
       this.$el.find('.table_div').children().remove();
       //create new empty table
-      var empty_table = $(this.template({title:false}));
+      var empty_table = $(this.template({
+        title:this.gt("horizontal_table")
+        ,extra_table_classes : 'wet-boew-zebra table-medium'
+      }));
       this.$el.find('.table_div').append(empty_table);           
 
       this.create_footer();

@@ -29,6 +29,7 @@ $(function() {
     APP.dispatcher.on_these(signals, function(){
       var views = _.map(arguments,_.identity);
       var current_table = app.state.get("table");
+      // figure out the currently selected table, if any
       if (current_table){
         var current_view = _.first(_.filter(views,function(v){
           return v.def.id === current_table.get('id');
@@ -39,7 +40,7 @@ $(function() {
       $('.widget-row').each(function(i,row){
         $('.mini_t',row)
         .height(_.max($('.mini_t',row).map(function(x,y){
-          return $(y).height();
+          return $(y).height() + 25;
         })));
         $('.section-header',row)
         .height(_.max($('.section-header',row).map(function(x,y){
@@ -64,7 +65,6 @@ $(function() {
   APP.dispatcher.once("app_ready", function(app){
     // e ee ready to adjust the heights and signal the readiness
     // of the mini views
-    debugger;
 
     TABLES.tables.on("add", function(table){
 

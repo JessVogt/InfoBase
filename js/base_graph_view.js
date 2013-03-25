@@ -9,13 +9,16 @@ $(function () {
       if (_.has(GRAPHS.views, table.get("id"))){
         table.set("graph_view", GRAPHS.views[table.get("id")]);
       }
+      else if (table.get("graph_view")){
+        table.set("graph_view", GRAPHS.BaseGraphView.extend(table.get("graph_view")));
+      }
     }
     TABLES.tables.each(add_graph_view);
     TABLES.tables.on("add",add_graph_view);
   });
 
   GRAPHS.BaseGraphView = Backbone.View.extend({
-    template : Handlebars.compile($("#graph_grid_t").html())
+    template : APP.t("#graph_grid_t")
     ,central_votes : true
     ,initialize: function () {
       _.bindAll(this);
@@ -27,7 +30,7 @@ $(function () {
       this.dept = this.state.get('dept');
       this.lang = this.state.get("lang");
       this.raw_data = this.dept.tables[this.key];
-      this.mapped_objs = this.dept.mapped_objs[this.lang];
+      this.mapped_objs = this.dept.mapped_objs[this.key][this.lang];
       this.data = this.dept['mapped_data'][this.key][this.lang];
 
       this.gt = this.app.get_text;
@@ -73,6 +76,13 @@ $(function () {
             return this.get_col(rows,index);
           },this));
     }
+    ,set_side_bar_highlight : function(event){
+      $(event.target).parent().siblings().removeClass("background-medium");
+      $(event.target).parent().addClass("background-medium");
+    }
+    ,remove : function(event){
+      this.$el.off("click");
+    }
   });
 
   GRAPHS.views = {}
@@ -80,7 +90,7 @@ $(function () {
   var make_axes = function(ticks){
     // trim any long ticks down to no more than 50
     // characters
-    ticks = _.map(ticks,
+    var ticks = _.map(ticks,
         function(tick){
           if (tick.length > 50) {
             return tick.substring(0,30)+"...";
@@ -95,15 +105,16 @@ $(function () {
           }
           ,yaxis: { 
             tickOptions: { formatString: "$%'d",fontSize: "10px" } 
-            ,label : "$K"
+            ,label : "$K   "
           }
     };
   };
 
 
-  var seriesColors =  [
+  var seriesColors =  ['#4d4d4d',
   '#2b6c7b', '#a3d6e3', '#3e97ab', '#cfc7a9',
   '#919191', '#e0e0e0', '#c3e4ec', '#595959' ];
+  var negativeSeries =  ['#cc2e29']
 
   GRAPHS.pie = function(id,data,options){
     if (_.any(data[0], function(point){ return point[1] < 0 })) {
@@ -153,6 +164,7 @@ $(function () {
     options['ticks'] = _.map(options.ticks,TABLES.m);
     var o = {
       seriesColors : seriesColors
+      ,negativeSeriesColors  :  negativeSeries
       ,legend : options['legend'] || {
         show:true 
         ,placement: "outsideGrid"
@@ -160,18 +172,22 @@ $(function () {
         ,rendererOptions: { numberRows: 1 }
         ,location:'s'
       }
-      ,stackSeries : true
+      ,stackSeries : false
       ,seriesDefaults : {
         fillToZero: true
         ,renderer:$.jqplot.BarRenderer
         ,rendererOptions: {
           highlightMouseOver: options['highlight'] || false
-          ,barWidth: 30
+          ,barWidth: options['barWidth'] || 30
         }
       }
       ,axes : make_axes(options['ticks']) || {}
       ,title : options['title'] || ""
     };
+    if (_.has(options,'rotate')){
+      o['axes']['xaxis']['tickRenderer'] = $.jqplot.CanvasAxisTickRenderer;
+      o['axes']['xaxis']['tickOptions']['angle'] = -30;
+    }
     if (_.has(options,'series')){
       o['series'] =  _.map( options['series'],function(obj){
         return {label : TABLES.m(obj.label)}

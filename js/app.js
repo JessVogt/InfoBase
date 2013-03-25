@@ -2,6 +2,10 @@
     var APP = ns('APP');
     var LANG = ns('LANG');
 
+    APP.t = function(id){
+      return Handlebars.compile($.trim($(id).html()));
+    }
+
     APP.dispatcher = _.extend({
       trigger_a : function(signal,context){
         setTimeout(_.bind(function(){
@@ -67,7 +71,6 @@
       initialize: function(){
         _.bindAll(this);
         this.app = this.options["app"];
-
         this.gt = this.app.get_text;
         this.state = this.app.state;
         this.modal = $("#modal_skeleton");
@@ -94,6 +97,45 @@
           keyboard: false
         });
          return this
+      }
+    });
+
+    APP.WETautocompleteView = Backbone.View.extend({
+      initialize: function(){
+        this.template = APP.t('#wet_autocomplete_t');
+        _.bindAll(this);
+        this.app = this.options['app'];
+        this.state = this.app.state;
+        this.lookup = depts;
+        this.render(this.state.get("lang"));
+        this.listenTo(APP.dispatcher,"dept_ready",this.clear);
+      }
+      ,clear : function(app){
+        setTimeout(_.bind(function(){ this.$el.val('')},this));
+      }
+      ,render:function (lang) {
+        this.$el = $('input.dept_search');
+        // remove any previously created datalist
+        $('#suggestions').remove();
+         var values = _.filter(_.values(this.lookup),
+           function(val){
+             return val.accronym != 'ZGOC';
+         });
+         // look departments up by name
+         var source = _.map(values, 
+           function(x) {
+             return  x['dept'][lang];
+         });
+         var datalist = $(this.template({orgs : source}));
+         datalist.attr("id","org_suggestions");
+         this.$el.after(datalist);
+         if (!Modernizr.datalistelem){
+          this.$el.datalist();
+         }
+         this.$el.change(this.change);
+        }
+      ,change : function(event){
+        console.log(this.$el.val());
       }
     });
 
@@ -149,18 +191,46 @@
 
     APP.fullDeptList = Backbone.View.extend({
       el : 'body'
-      ,template : Handlebars.compile($('#dept_list').html())
+      ,template : APP.t('#org_list_t')
       ,events : {
-       "click a.dept_sel" : "render"
+       "click button.dept_sel" : "render"
+       ,"click button.dept_sel_cancel" : "cancel"
+       ,"click a.org_select" : "onClick"
       }
       ,initialize: function(){
         _.bindAll(this);
         this.app = this.options['app'];
+        this.cols = this.options['cols'];
+        this.target = this.options['target'];
         this.state = this.app.state;
         this.lookup = depts;
+        this.height = 28;
       }
-      ,render : function(){
-        $('body').find(".dept_menu").remove();
+      ,cancel : function(){
+       this.controller_button
+         .html(this.app.get_text("click"))
+         .removeClass("dept_sel_cancel")
+         .addClass("dept_sel");
+        this.drop_zone.find(".org_list").remove();
+        this.app.app.show();
+      }
+      ,render : function(event){
+        this.app.app.hide();
+        this.controller_button = $(event.currentTarget);
+        // in case the target was a selector string
+        if (_.isString(this.target)){
+          this.drop_zone = $(this.target);
+        } else { 
+          this.drop_zone = this.target;
+        }
+
+        this.controller_button
+          .html(this.app.get_text("cancel"))
+          .removeClass("dept_sel")
+          .addClass("dept_sel_cancel");
+
+        this.drop_zone.children().remove();
+
         var lang = this.state.get('lang');
         var mins = _.groupBy(depts, function(x){return x['min'][lang]});
         // remove the empty GoC ministry
@@ -178,11 +248,13 @@
                })
           });
 
+        if (this.cols){
+          this.height = _.keys(this.lookup).length/2+1;
+        }
+
         var cols = this.ministry_to_cols(mins);
-        this.$el = $(this.template({cols: cols}));
-        this.$el.find('a').on("click",this.onClick);
-        $('body').append(this.$el);
-        
+        var el = $($.trim(this.template({cols: cols})));
+        this.drop_zone.append(el);
       }
       // recursive function to assign the column layout
       // of the departments presented by ministry
@@ -197,7 +269,7 @@
           return this.ministry_to_cols(_.tail(mins),cols);
         }
         else {
-          if (_.flatten(_.last(cols),true).length + _.head(mins).length <= 28){
+          if (_.flatten(_.last(cols),true).length + _.head(mins).length <= this.height){
             _.last(cols).push(_.head(mins));
             return this.ministry_to_cols(_.tail(mins),cols);
           }
@@ -207,20 +279,23 @@
         }
       }
       ,onClick : function(event){
-        this.$el.find('a').off("click",this.onClick);
         var lang = this.state.get('lang');
-        var dept = $(event.target).text();
+        var dept = $.trim($(event.target).text());
         dept = _.first(_.filter(_.values(this.lookup),
               function(x){ return x['dept'][lang] == dept}));
         this.state.unset("dept",{silent: true});
-        $('body').find(".dept_menu").remove();
+        this.cancel();
         this.state.set('dept',dept);
       }
     });
 
+    // the popup window for the LED which displays the departmental 
+    // information with search tools
     APP.deptInfoView = Backbone.View.extend({
-      template : Handlebars.compile($('#dept_info_t').html())
-      ,initialize: function(){
+      initialize: function(){
+      
+        this.template = APP.t('#dept_info_t');
+
         _.bindAll(this);
         // retrieve passed in data
         this.app = this.options["app"];
@@ -251,7 +326,7 @@
     });
 
     APP.otherDeptsDropDown = Backbone.View.extend({
-      template : Handlebars.compile($('#nav_li').html())
+      template : APP.t('#nav_li')
       ,initialize: function(){
         _.bindAll(this);
         this.app = this.options["app"];
@@ -263,7 +338,6 @@
         var other_depts = state.get("other_depts");
         var other_depts_list = $('#other_depts_list');
         var template = this.template;
-
         if (other_depts.length > 0){
           _.each(_.sortBy(other_depts,
                           function(d){return d.dept[lang]})
@@ -290,9 +364,10 @@
       }
     });
 
+  // 
   APP.OrgView = Backbone.View.extend({
-    template : Handlebars.compile($('#main_t').html())
-    ,template2 : Handlebars.compile($('#panels_t').html())
+    template : APP.t('#main_t')
+    ,template2 : APP.t('#panels_t')
     ,initialize: function(){
       _.bindAll(this);
     }
@@ -303,13 +378,17 @@
       $(this.template({ org : org })).appendTo(app.app);
       $(this.template2()).appendTo($('.panels',app.app));
 
+      // remove the paragraph text
+      var mandate = app.app.find('[headers="__mandate"]');
+      mandate.html($.trim(mandate.text()));
+        
       APP.dispatcher.trigger_a("new_org_view",this);
       return this;
     }
   });
 
   APP.footnoteView = Backbone.View.extend({
-    template : Handlebars.compile($('#footnotes_t').html())
+    template : APP.t('#footnotes_t')
     ,initialize: function(){
       _.bindAll(this);
       // retrieve passed in data
@@ -344,7 +423,7 @@
   };
 
   DetailsView = Backbone.View.extend({
-    template : Handlebars.compile($('#dataview_t').html())
+    template : APP.t('#dataview_t')
     ,initialize: function(){
       _.bindAll(this);
       // retrieve passed in data

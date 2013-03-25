@@ -3,10 +3,10 @@ $(function () {
   var APP = ns('APP');
   var GROUP = ns('GROUP');
 
-  var table_template = Handlebars.compile($('#list_t').html());
+  var table_template = APP.t('#list_t');
 
   var headerView = Backbone.View.extend({
-    template: Handlebars.compile($('#header_t').html()),
+    template: APP.t('#header_t'),
     tagName: "tr",
     initialize: function () {
       _.bindAll(this);
@@ -58,14 +58,11 @@ $(function () {
       this.row = this.options['row']; //read argument [object w/ only one key,val pair] to get row data
       this.wcag = this.options['wcag'];
       this.types = this.options['types'];
-      if (this.options['summary_row']) {
-        this.$el.addClass('info').css('font-weight','bold');
-      }
-      else if (this.options['min_row']) {
-        this.$el.addClass('warning').css('font-weight','bold');
-      }
-      else if (this.options['goc_row']) {
-        this.$el.addClass('success').css('font-weight','bold');
+      this.table = this.options['table'];
+      if (this.options['summary_row']
+          ||this.options['min_row']
+          ||this.options['goc_row']) {
+        this.$el.addClass('background-medium').css('font-weight','bold');
       }
       this.render(); //self-rendering
     },
@@ -73,7 +70,8 @@ $(function () {
       //append each data value to tr to make a row that is ready to be appended to tbody, later
       _.map(
         _.zip(this.wcag,this.row, this.types),
-        function (data_type) {
+        function (data_type,index) {
+
           var wcag = data_type.shift();
           var data = data_type.shift();
           var type = data_type.shift();
@@ -83,6 +81,16 @@ $(function () {
           this.$el.append(el);
           var div = el.find('div')
           div.addClass(type);
+          // add the anchor element which can be clicked on 
+          // if this data element isn't a table key
+          if (this.table.not_key(index) 
+              && !this.options['min_row']
+              && !this.options['summary_row']
+              && !this.options['goc_row']){
+            div.addClass('table_a');
+            div.append("<a href='#'></a>");
+            div = div.find("a");
+          }
           if (_.isString(data) && data.length > 80){
             el.attr("title", data);
             el.attr("data-placement", "top");
@@ -151,8 +159,9 @@ $(function () {
       this.headers = this.def['headers'][this.lang];
       this.title = TABLES.m(this.dept.dept[this.lang] +  " - " + this.def['title'][this.lang]);
 
-      $(document).on("hover", '.table_content td div', this.on_hover);
-      $(document).on("click", '.table_content td div', this.on_td_click);
+      $(document).on("mouseenter", '.table_content td .table_a', this.on_enter);
+      $(document).on("mouseleave", '.table_content td .table_a', this.on_leave);
+      $(document).on("click", '.table_content td .table_a', this.on_td_click);
     }
     ,setup_useful_this_links : function(){
       //
@@ -242,6 +251,7 @@ $(function () {
                   wcag : wcag_links,
                   types : this.col_defs,
                   app : this.app,
+                  table : this,
                   summary_row: is_summary,
                   goc_row: is_goc,
                   min_row: is_min
@@ -257,7 +267,7 @@ $(function () {
       );
     }
     ,make_footer: function () {
-      if (_.size(this.row_data) > 15 ) {
+      if (_.size(this.row_data) > 15 && this.state.get("use_footer")) {
         _.each(_.map(this.headers, function (h) {
           return new headerView({
             types : this.col_defs,
@@ -303,9 +313,7 @@ $(function () {
             return result[0].concat([result[1]]);
           }),true);
     }
-    ,is_clickable : function(td){
-        var index_ar = this.datatable.fnGetPosition(td.get(0));
-        var index = index_ar[2];
+    ,not_key : function(index){
         return (_.all(this.def.key, 
               function(key){return key!= index}))
     }
@@ -318,6 +326,7 @@ $(function () {
 
       this.$el.append( $(table_template({
         title:this.title
+        ,extra_table_classes : 'wet-boew-zebra table-medium'
       })));
       this.setup_useful_this_links();
       this.setup_event_listeners();
@@ -338,54 +347,49 @@ $(function () {
       });
       return this;
     }
-    ,on_hover : function(event) {
-      var td = $(event.target).parents('td')
-      var tr = td.parent();
-      var row = tr.data('row');
-      if (_.indexOf(this.row_data,row) == -1 || tr.hasClass("info")){
-        return;
-      }
-      var index_ar = this.datatable.fnGetPosition(td.get(0));
-      var index = index_ar[2];
-      if (this.is_clickable(td)){
-        $(event.target).toggleClass("clickable alert-success")
-      }
+    ,on_enter : function(event) {
+      $(event.target).addClass("clickable background-highlight")
+    }
+    ,on_leave : function(event) {
+      $(event.target)
+          .parents("tbody")
+          .find('.background-highlight')
+          .removeClass('clickable background-highlight');
     }
     ,on_td_click : function(event){
       var td = $(event.target).parents('td');
       var tr = td.parent();
       var row = tr.data('row');
-      if (_.indexOf(this.row_data,row) == -1 || tr.hasClass("info")){
+      if (_.indexOf(this.row_data,row) == -1 || tr.hasClass("background-highlight")){
         return;
       }
 
-      if (this.is_clickable(td)){
-        // return an array, where the last index is what
-        // we need
-        var index_ar = this.datatable.fnGetPosition(td.get(0));
-        var index = index_ar[2];
-        
-        var av = new TABLES.AnalyticsView({
-          dept : this.dept,
-          key : this.key,
-          row : row,
-          col_index : index,
-          app : this.app,
-          def : this.def,
-          mapper : this.mapper
-        });
-        av.render();
-      }
+      // return an array, where the last index is what
+      // we need
+      var index_ar = this.datatable.fnGetPosition(td.get(0));
+      var index = index_ar[2];
+      
+      var av = new TABLES.AnalyticsView({
+        dept : this.dept,
+        key : this.key,
+        row : row,
+        col_index : index,
+        app : this.app,
+        def : this.def,
+        mapper : this.mapper
+      });
+      av.render();
     }
     ,remove : function(){
-      $(document).off("click", '.table_content td div');
-      $(document).off("hover", '.table_content td div');
+      $(document).off("click", '.table_content td a.table_a ');
+      $(document).off("mouseenter", '.table_content td .table_a');
+      $(document).off("mouseleave", '.table_content td .table_a');
     }
   }) // end of BaseTableView
 
   TABLES.miniTableVew = Backbone.View.extend({
 
-    template : Handlebars.compile($('#mini_t').html())
+    template : APP.t('#mini_t')
     ,initialize : function(){
       this.table = this.options['table'];
       this.def = this.table.attributes;
@@ -415,6 +419,9 @@ $(function () {
     ,make_title : function(){
       this.$el.find('.title').append(this.def['name'][this.lang]);
     }
+    ,add_description: function(){
+      this.$el.find('.description').append(this.description[this.lang]);
+    }
     ,set_no_content : function(){
       this.content = $("<p >").html(this.gt("no_data"));
       this.$el.find('a.details').remove();
@@ -422,6 +429,7 @@ $(function () {
     ,render : function(){
       this.$el.append(this.template());
       this.make_title();
+      this.add_description();
       if (this.data){
         this.prep_data();
         this.render_data();

@@ -23,12 +23,15 @@ $(function () {
       return mapped_row;
     },this);
   }
-  mapper.prototype.FIND_SIMILAr = function(row,depts){
+  mapper.prototype.find_similar = function(row,depts){
     // map the departments to filter down to just the relevant
     // lines for each dept
     var filter = this.make_filter(row);
     var relevant_depts = _.map(depts,
         function(dept){
+          if (dept.accronym == 'ZGOC'){
+            return
+          }
           if (_.has(dept.tables, this.key)){
             return [dept,
                   _.filter(dept.tables[this.key],filter)];
