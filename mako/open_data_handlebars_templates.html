@@ -1,0 +1,301 @@
+<script type='text/plain' id='ver_navbar_t'>
+<ul class='nav'>
+  <li> <a href='#' class='home'>{{{gt "home"}}}</a> </li>
+  <li> <a href='#' class='dept_sel'> {{gt "select"}}</a> </li>
+  <li>
+    <form class="navbar-search pull-left">
+      <input type="text" class='search-query span2 dept_search' />
+    </form>
+  </li>
+</ul>
+</script>
+<script type='text/plain' id='hori_navbar_t'>
+<ul class='nav'>
+  <li> <a href='#' class='home'>{{gt "home" }}</a> </li>
+</ul>
+</script>
+<script type='text/plain' id='home_t'>
+<div>
+  <div class='span-8 background-light align-middle border-all'>
+    <div class='span-1 margin-top-medium margin-bottom-medium' id='back_button'>
+    </div>
+    <div class='span-3 margin-top-medium margin-bottom-medium'>
+      <label for='org_search' style='display:inline-block'>
+        {{gt "search"}} 
+      </label>
+      <input id='org_search' class='dept_search width-50 margin-bottom-none' 
+        type='text' style='display:inline-block'
+        list='org_suggestions'></input>
+    </div>
+    <div class='span-2 margin-top-medium margin-bottom-medium'>
+      <a class='dept_sel ui-link'>
+        {{{gt "to_select"}}}
+      </a>
+    </div>
+    <div class='span-1 margin-top-medium margin-bottom-medium'>
+      <button id='lang_change' class='button button-dark'>
+          {{{gt "lang"}}}
+      </button>
+    </div>
+  </div>
+  <div class='org_list_by_min span-8'>
+
+
+  </div>
+  <div class='dept_zone'>
+    <div class=' span-6'>
+      Greeting text with instructions
+    </div>
+  </div>
+</div>
+</script>
+<script type='text/plain' id='wet_autocomplete_t'><datalist>
+<!--[if lte IE 9]><select><![endif]-->
+  {{#orgs}}<option label="" value="{{.}}"></option>{{/orgs}}
+ <!--[if lte IE 9]></select><![endif]-->
+</datalist>
+</script>
+<script type='text/plain' id='main_t'>
+  <h1>
+    {{gt 'fin_data'}} {{lang org.dept}}
+  </h1>
+
+<div class='span-5 margin-bottom-none'>
+  <div class='margin-top-none margin-bottom-none margin-right-medium margin-left-medium' 
+    style='padding: 0px;outline: 1px solid #ccc'>
+    <p class='background-medium' style='margin: 0px'>
+        {{gt "supplementary_data"}} {{lang org.dept}} 
+      <a href='{{{gt "IGOC_site"}}}'  target='_new'>
+        {{gt "igoc_from"}}
+      </a>
+    </p>
+    <table class='well-table table-medium margin-top-none margin-bottom-none'>
+      <tbody>
+        <tr>
+          <th id='__legal_name'> {{gt "legal_name"}} </th>
+          <td headers='__legal_name'> {{lang org.legal_name }}  </td>
+        </tr>
+        <tr>
+          <th id='__dept_type'> {{gt "type"}} </th>
+          <td headers='__dept_type'> {{lang org.org_type }}  </td>
+        </tr>
+        <tr>
+          <th id='__website'> {{gt "website"}} </th>
+          <td headers='__website'> <a href="http://{{{lang org.website}}}" class='dept_name' target='_blank'>{{lang org.dept}}</a>  </td>
+        </tr>
+        <tr>
+          <th id='__minister'> {{gt "minister" }} </th>
+          <td headers='__minister'> {{lang org.minister}}  </td>
+        </tr>
+        <tr>
+          <th id='__mandate'> {{gt "mandate"}} </th>
+          <td headers='__mandate'> {{{lang org.mandate}}}  </td>
+        </tr>
+        <tr>
+          <th id='__legislation'> {{gt "legislation"}} </th>
+          <td headers='__legislation'>
+            {{#org.legislation}}
+            <a href='http://google.com/search?q={{encodeURI .}}' target="_blank">
+              {{{lang .}}}
+            </a>
+            {{/org.legislation}}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<div class=' span-3 margin-bottom-none'> 
+  <div class='module-menu-section border-all margin-left-large'>
+  <p class=''>{{gt "other_in_min"}}</p>
+  <ul class="list-bullet-none" style='margin-top:0px!important' id='other_depts_list'>
+  </ul>
+  </div>
+</div>
+<div class='clear'></div>
+<div class='panels'>
+
+</div>
+<div class='table_content'>
+
+</div>
+</script>
+<script type='text/plain' id='panels_t'>
+  <!--
+  <h2 class='font-xlarge'> {{gt 'current_year_fisc'}} </h2>
+  <div class="row widget-row" >
+      <div class='span-1'></div>
+      <div class="span-2 border-all well" id='table1'>
+      </div>                      
+      <div class="span-2 border-all well" id='table2'>
+      </div>                      
+      <div class="span-2 border-all well" id='table3'>
+      </div>                       
+  </div>                           
+  <div class="clear"></div>
+  -->
+  <h2 class='font-xlarge'> {{gt 'previous_year_fisc'}} </h2>
+  <div class='row widget-row'>
+      <div class="float-left border-all well margin-top-large margin-right-large margin-left-large" id='table4'>
+      </div>                       
+      <div class="float-left border-all well margin-top-large " id='table5'>
+      </div>                       
+      <div class="float-left border-all well margin-top-large margin-left-large"  id='table6'>
+      </div>                       
+  </div>                           
+</script>
+<script type='text/plain' id='mini_t'>
+  <div class='mini_t '>
+    <div class='section-header'>
+      <strong><h3 class='title '></h3></strong>
+    </div>
+    <div class='margin-left-large'>
+      <span class='description '></span>
+    </div>
+    <div class='mini_payload margin-bottom-large font-small' >
+
+    </div>
+    <div class='clear'></div>
+    <div class='details_button section-footer'>
+      <a class='button button-none details float-right' href='#'
+        title='{{details_title}}' > 
+            {{gt 'details'}} </a>
+    </div>
+  </div>
+</script>
+<script type='text/plain' id='nav_li'>
+  <li><a href='#' class='ui-link'>{{text}}</a></li>
+</script>
+<script type='text/plain' id='dataview_t'>
+<div class='tables margin-top-large'>
+  <div class='border-bottom span-8' style='position:relative'>
+    <div class='span-6' style='margin:0px'>
+      <h2>{{title}}</h2>
+    </div>
+    <div style='margin:0px;position:absolute;bottom:15px;right:0px'>
+      <ul class='button-group' style='margin:0px'>
+        <li>
+        <a href='#' class='back button button-dark'>{{{gt "back"}}}</a>
+        </li>
+        <li> <a href='#' class='button'> {{gt "open_data_link"}} </a> </li>
+      </ul>
+    </div>
+  </div>
+  <div class='clear'></div>
+
+  <div id='__desc__' class='table_description span-6'>
+  </div>
+  <div class="span-2 module-table-contents margin-top-medium">
+    <h2>{{gt "toc"}}</h2>
+    <ul>
+	   <li><a href="#__graph__" class='page-nav' >{{gt "graphs"}}</a></li>
+	   <li><a href="#__data__" class='page-nav' >{{gt "data"}}</a></li>
+    </ul>
+  </div>
+
+
+  <div class='clear'></div>
+  <div id='__graph__' class='span-8 border-bottom'>
+    <h3 class='float-left margin-top-none margin-bottom-none'> {{gt "graphs"}} </h3>
+    <a href="#__desc__" class='margin-top-medium float-right page-nav margin-right-large' >{{gt "top"}}</a>
+  </div>
+  <div class='graph_payload'>
+
+  </div>
+  <div id='__data__' class='span-8 border-bottom'>
+    <h3  class='float-left margin-top-none margin-bottom-none'> {{gt "data" }} </h3>
+    <a href="#__desc__" class='margin-top-medium float-right page-nav margin-right-large' >{{gt "top"}}</a>
+  </div>
+  <div class='clear'></div>
+  <div class='table_payload sidescroll' style='font-size: 12px'>
+
+  </div>
+</div>
+</script>
+<script type='text/plain' id='footnotes_t'> 
+<div class='footnotes well well-small'>
+  <table class="table-condensed">
+    <tbody>
+    {{#each fns}}
+      <tr>
+        <td> {{this.symbol}} </td>
+        <td>{{lang this.note }} </td>
+      </tr>
+    {{/each}}
+    </tbody>
+  </table>
+</div>
+</script>
+<script type='text/plain' id='org_list_t'>
+<div class='org_list'>
+  <div class='span-1'></div>
+{{#each cols}}<div class='span-3'>
+  <ul class='list-bullet-none'>
+      {{#each this}}                    {{! this = array of ministries }}
+      <li><strong>{{lang this.0.min}}</strong> 
+      <ul class='list-bullet-none'>
+        {{#each this }}                 {{! this = ministry }}
+          {{#is_dept this}}             {{! this = dept }}
+          <li><strong><a class='org_select' href='#'>{{dept}}</a></strong></li>
+        {{else}}
+          <li><a class='org_select' href='#'>{{dept}}</a></li>
+        {{/is_dept}}
+      {{/each}}
+      </ul>
+  {{/each}}
+  </ul>
+  </div>
+{{/each}}
+</div>
+</script>
+<script type='text/plain' id='list_t'>
+  <table class='{{extra_table_classes}} table well-table table-condensed '>
+    {{#title}} <caption>{{.}}</caption> {{/title}}
+    <thead></thead>
+    {{#tfoot}}<tfoot></tfoot>{{/tfoot}}
+    <tbody></tbody>
+  </table>
+</script>
+<script type='text/plain' id='graph_grid_t'>
+  <p>{{description}}</p>
+  <div class='span-2 well sidebar border-all'  id='{{id}}_sidebar'
+          style='height:500px;overflow-y:auto'>
+    <p class='margin-bottom-none margin-top-none nav-header'>{{header}}</p>
+    <ul class='list-bullet-none margin-bottom-none margin-top-none margin-left-small hover'>
+      {{#items}}
+      <li><a href='#{{id}}'>{{.}}</a></li>
+      {{/items}}
+    </ul>
+  </div>
+  <div class='span-6 border-all'>
+    <div class='well graph'>
+      <div style='height:500px' id="{{id}}">
+      </div>
+    </div>
+  </div>
+  <div class='clear'></div>
+</script>
+<script type='text/plain' id='analytics_t'>
+<div>
+    <div class='table_div'>
+
+    </div>
+</div>
+</script>
+<script type='text/plain' id='stat_tr'>
+  <tr class='{{#active_dept}}info{{/active_dept}}'>
+    <td>
+      {{ index }}
+    </td>
+    <td>
+      <a href='#'>{{dept_name}} </a> 
+    </td>
+    <td>
+      {{ col }}
+    </td>
+    </tr>
+</script>
+<script type='text/plain' id='header_t'>
+  <{{el}} colspan='{{colspan}}'><div class='{{class_}}'> {{header}} </div></{{el}}>
+</script>
+
