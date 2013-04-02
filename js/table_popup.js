@@ -164,7 +164,7 @@ $(function () {
         var div = $('<div>')
           .addClass(type)
           .html(this.m(h))
-        var th = $('<th>')
+        var th = (h ? $('<th>') : $('<td>'))
           .append(div)
           .appendTo(tr)
         if (!_.isEmpty(h)){
@@ -190,7 +190,10 @@ $(function () {
 
       _.each(_.zip(this.types,mapped_row),function(type_val,index){
         var header_links = _.map(_.pluck(this.combined_headers,index),
-          function(h){ return h ? this.r+h : null},this);
+          function(h){ 
+            return h ? this.r+h.replace(/\W/,"").replace(" ",""): null
+          },
+          this);
         var type = type_val[0];
         var val = type_val[1];
         var td = $('<td class="'+type+'"><div>');
@@ -200,12 +203,6 @@ $(function () {
         if (index === 1){
           div.append("<a href='#' >"+val+"</a>");
         } else {
-          //if (_.isString(val) && val.length > 80){
-          //  div.attr("title", val);
-          //  div.attr("data-placement", "top");
-          //  div.attr("rel", "tooltip");
-          //  val = val.substring(0,77) + "...";
-          //}
           val = val || 0;
           val = this.formater(type,val);
           div.html(val);
@@ -224,7 +221,9 @@ $(function () {
       return tr;
     }
     ,render : function (){
-      this.$el.append(this.template2({gt : this.gt}));
+      this.$el.append(this.template2({
+        gt : this.gt
+      }));
 
       $.colorbox({html: 
         this.$el,width:"70%"
@@ -311,7 +310,8 @@ $(function () {
       this.$el.find('.table_div').children().remove();
       //create new empty table
       var empty_table = $(this.template({
-        title:this.gt("horizontal_table")
+        tfoot : true
+        ,title:this.gt("horizontal_table")
         ,extra_table_classes : 'wet-boew-zebra table-medium'
       }));
       this.$el.find('.table_div').append(empty_table);           

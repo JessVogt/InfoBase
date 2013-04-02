@@ -2,9 +2,37 @@
     var LANG = ns("LANG");
 
     var lookups = {
-      "horizontal_table" : {
+      "data" : {
+         "en" : "Data",
+         "fr" : "Données" 
+      }
+      ,'top' : {
+         "en" : "To Top",
+         "fr" : "Haut" 
+      }
+      ,'toc' : {
+       'en' : 'Table of contents',
+        "fr" : "Table des matières" 
+      }
+      ,"description" :{
+         "en" : "Description",
+         "fr" : "Déscription" 
+      }
+      ,"supplementary_data" :{
+         "en" : "Supplementary information about",
+         "fr" : "Données supplementaires pour" 
+      }
+      ,"igoc_from" : {
+        "en" : "from the Inventory of Government of Canada Organizations"
+        ,"fr": "pris de l'Inventaire des organisations du gouvernement du Canada"
+      }
+      ,"horizontal_table" : {
         "en" : "Horizontal comparison of the selected value across all departments"
-        ,"fr" : "Comparaison horizontale de la valeur sélectionnée dans tous les ministères"
+        ,"fr" : "Comparaison horizontale entre toutes les organisations pour la valeur sélectionnée"
+      }
+      ,"horizontal_compare" : {
+        "en" : "Horizontal comparison for this value across all departments"
+        ,"fr" : "Comparaison horizontale entre toutes les organisations pour la valeur sélectionnée"
       }
       ,"legal_name" : {
         "en" : "Legal Name",
@@ -55,9 +83,13 @@
         "fr" : "Cliquez"
       }
       ,"to_select" : {
-        "en" : "to select from a list of organisations or",
-        "fr" : "pour sélectionner parmi une liste d’organisations"
+        "en" : "Click to select from a list of organisations or",
+        "fr" : "Cliquez pour sélectionner parmi une liste d’organisations"
       }
+      ,"fin_data"  : {
+        "en" : "Financial data for",
+        "fr" : "Données financières pour"
+      }           
       ,"current_year_fisc" : {
          "en" : "Financial data for the current Fiscal Year (April 1st 2012, March 31st 2013)",
          "fr" : "Données financières pour l'exercise (1 avril á  31 mars, 2013)"
@@ -74,6 +106,10 @@
         "en" : "Clicking this button will automatically select and copy the table. You can then switch over to Excel and paste in the table"
         ,"fr" : "En cliquant sur ce bouton, le tableau va automatiquement être sélectionné et copié. Vous pouvez ensuite ouvrir Excel et coller le tableau sélectionné"
       }
+      ,"more_details" : {
+        "en" : "More details for"
+        ,"fr": "Plus de détails pour"
+      }
       ,"details" : {
         "en" : "Details"
         ,"fr": "Détails"
@@ -81,10 +117,6 @@
       ,"back" : {
         "en" : "&larr; Back"
         ,"fr": "&larr; Retour"
-      }
-      ,"org_info" : {
-        "en" : "Data from Inventory of Government of Canada Organizations"
-        ,"fr": "Données pris de l'Inventaire des organisations du gouvernement du Canada"
       }
       ,"hide" : {
         "en" : "Hide detail"
@@ -213,6 +245,7 @@
       ,"so" : {
         "en": "Standard Objects"
         ,"fr": "Articles courants"
+
       }
       ,"program" : {
        'en' : 'Program',

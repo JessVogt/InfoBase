@@ -31,7 +31,7 @@ $(function () {
       this.lang = this.state.get("lang");
       this.raw_data = this.dept.tables[this.key];
       this.mapped_objs = this.dept.mapped_objs[this.key][this.lang];
-      this.data = this.dept['mapped_data'][this.key][this.lang];
+      this.data = this.options['data'];
 
       this.gt = this.app.get_text;
 

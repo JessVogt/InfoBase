@@ -1,4 +1,3 @@
-
 <%text filter="n">
 <script type='text/plain' id='ver_navbar_t'>
 <ul class='nav'>
@@ -17,7 +16,7 @@
 </ul>
 </script>
 <script type='text/plain' id='home_t'>
-<div>
+<div class='dept_zone'>
   <div class='container home'>
     <div class='row'>
       <div class='well span4 offset3'>
@@ -25,6 +24,10 @@
       </div>
     </div>
   </div>
+</div>
+<div class='org_list_by_min'>
+
+
 </div>
 </script>
 
@@ -234,7 +237,7 @@
 </script>
 
 <script type='text/plain' id='org_list_t'>
-<div class='well dept_menu'>
+<div class='well org_list'>
   <div class='container-fluid'>
     <div class="row-fluid">
       {{#each cols}}
@@ -244,9 +247,9 @@
           <li class='nav-header'> {{lang this.0.min}} </li>
           {{#each this }} {{! this = ministry }}
             {{#is_dept this}} {{! this = dept }}
-               <li><strong><a href='#'>{{dept}}</a></strong></li>
+               <li><strong><a class='org_select' href='#'>{{dept}}</a></strong></li>
             {{else}}
-            <li><a href='#'>{{dept}}</a></li>
+            <li><a href='#' class='org_select'>{{dept}}</a></li>
             {{/is_dept}}
           {{/each}}
         </ul>

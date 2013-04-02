@@ -1,6 +1,14 @@
-(function() {
+if (typeof exports === 'undefined') {
+  window.node = false;
+}
+else {
+  global.node = true;
+}
 
-  window.root_namespace = function(root) {
+
+
+(function(root) {
+  root_namespace = function(root) {
     var ns;
     return ns = function(ns_string, context) {
       var parts;
@@ -16,12 +24,21 @@
     };
   };
 
-  window.ns = window.root_namespace({});
+  if (typeof exports === 'undefined') {
+    root.ns = root_namespace({});
+  }
+  else {
+    exports['ns'] = root_namespace({});
+  }
 
-}).call(this);
+})(this);
 
-(function() {
-   var UTILS = ns('UTILS');
+(function(root) {
+  if (typeof exports === 'undefined') {
+    var UTILS = ns('UTILS');
+  } else {
+    var UTILS = exports['ns']('UTILS');
+  }
 
    UTILS.to_obj = function(ar1,ar2){
      var new_obj = {}
@@ -53,5 +70,5 @@
         });
    }
 
-}).call(this);
+})(this);
 

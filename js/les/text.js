@@ -6,9 +6,29 @@
         "en" : "Explore horizonally across departments",
         "fr" : "Explorez les données entre les ministères"
       }
+      ,"horizontal_compare" : {
+        "en" : "Horizontal comparison for this value across all departments"
+        ,"fr" : "Comparaison horizontale entre toutes les organisations pour la valeur sélectionnée"
+      }
+      ,"table" : {
+        "en" : "Table"
+        ,"fr" : "Tableau"
+      }
+      ,"cancel" : {
+        "en" : "Cancel"
+        ,"fr": "Annuler"
+      }
+      ,"more_details" : {
+        "en" : "More details for"
+        ,"fr": "Plus de détails pour"
+      }
       ,"vertical" : {
         "en" : "Select a department",
         "fr" : "Sélectionnez un ministère"
+      }
+      ,"to_select" : {
+        "en" : "Click to select from a list of organisations or",
+        "fr" : "Cliquez pour sélectionner parmi une liste d’organisations"
       }
       // IGOC headers
       ,"legal_name" : {

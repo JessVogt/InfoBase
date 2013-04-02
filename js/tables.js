@@ -1,4 +1,4 @@
-$(function() {
+(function() {
   var APP = ns('APP');
   var LANG = ns('LANG');
   var TABLES = ns('TABLES');
@@ -37,7 +37,13 @@ $(function() {
       } else {
         var current_view = undefined;
       }
+
       $('.widget-row').each(function(i,row){
+        $('.mini_t',row).each(function(i){
+          if ($(this).width() > 380){
+            $(this).width(380);
+          }
+        });
         $('.mini_t',row)
         .height(_.max($('.mini_t',row).map(function(x,y){
           return $(y).height() + 25;
@@ -63,64 +69,59 @@ $(function() {
   };
 
   APP.dispatcher.once("app_ready", function(app){
-    // e ee ready to adjust the heights and signal the readiness
-    // of the mini views
+    APP.dispatcher.trigger("load_tables",app);
+    APP.dispatcher.trigger("tables_loaded",app);
+  });
 
-    TABLES.tables.on("add", function(table){
+  TABLES.tables.on("add", function(table){
+    if (node){
+      var depts = {};
+    } else {
+      var depts = window.depts; 
+    }
 
-      var BTV = TABLES.BaseTableView;
-      var BGV = GRAPHS.BaseGraphView;
+    var BTV = TABLES.BaseTableView;
+    var BGV = GRAPHS.BaseGraphView;
+    var id = table.get("id");
 
-      var id = table.get("id");
-
-      _.each(depts,function(org){
-        org['mapped_data'][id] = {};
-        org['mapped_objs'][id] = {};
-      });
-
-      // setup the mappers
-      MAPPERS.maps[table.get("id")] = table.get("mapper");
-      table.set('mapper' , {
-       'en' : new MAPPERS.mapper('en',table.attributes,id)
-       ,'fr' : new MAPPERS.mapper('fr',table.attributes,id)
-      }); 
-
-      // setup the table views
-      table.set('table_view', BTV.extend(table.get('table_view')));
-
-      // setup lookups for the headers
-      table.set("header_lookup" , {
-        'en' : {},
-        'fr' : {}
-      });
-
-      table.set("unique_headers", {}); 
-      _.each(["en","fr"], function(lang){
-        var all_headers = table.get("headers")[lang];
-        var last_header = _.last(table.get("headers")[lang]);
-        table.get("unique_headers")[lang] = _.map(last_header,
-          function(header,index){
-            if (_.filter(last_header, function(x){
-              return _.isEqual(x,header);
-            }).length >1){
-              return TABLES.extract_headers(all_headers,index).join("-");
-            }
-            return header;
-          });
-      });
-
-      _.each(['en','fr'], function(lang){
-        _.each(table.get('unique_headers')[lang],function(header,index){
-          table.get("header_lookup")[lang][header] = index;
-        });
-      });
-
-
+    _.each(depts,function(org){
+      org['mapped_data'][id] = {};
+      org['mapped_objs'][id] = {};
     });
 
+    // setup the mappers
+    MAPPERS.maps[table.get("id")] = table.get("mapper");
+    table.set('mapper' , {
+     'en' : new MAPPERS.mapper('en',table.attributes,id)
+     ,'fr' : new MAPPERS.mapper('fr',table.attributes,id)
+    }); 
 
-  APP.dispatcher.trigger("load_tables",app);
-  APP.dispatcher.trigger("tables_loaded",app);
+    // setup lookups for the headers
+    table.set("header_lookup" , {
+      'en' : {},
+      'fr' : {}
+    });
+
+    table.set("unique_headers", {}); 
+    _.each(["en","fr"], function(lang){
+      var all_headers = table.get("headers")[lang];
+      var last_header = _.last(table.get("headers")[lang]);
+      table.get("unique_headers")[lang] = _.map(last_header,
+        function(header,index){
+          if (_.filter(last_header, function(x){
+            return _.isEqual(x,header);
+          }).length >1){
+            return TABLES.extract_headers(all_headers,index).join("-");
+          }
+          return header;
+        });
+    });
+
+    _.each(['en','fr'], function(lang){
+      _.each(table.get('unique_headers')[lang],function(header,index){
+        table.get("header_lookup")[lang][header] = index;
+      });
+    });
 
   });
 
@@ -152,5 +153,5 @@ $(function() {
     APP.dispatcher.trigger("mapped");
   });
 
-});
+})(this);
 

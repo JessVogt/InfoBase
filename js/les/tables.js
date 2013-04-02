@@ -45,34 +45,20 @@ $(function() {
     });
   });
 
-  APP.dispatcher.on("dept_ready",function(app){
-    var vertical_navbar = Handlebars.compile($('#ver_navbar_t').html());
-    $('.nav_bar_ul').children().remove();
-    $('.nav_bar_ul').append(vertical_navbar());
-    if (app.auto_complete){
-      app.auto_complete.stopListening();
-    }
-    app.auto_complete = new APP.autocompleteView({
-      el : $('.nav_bar_ul .dept_search')
-      ,app : app
-    });
-  });
 
-  // customize the final app initialization by activating
-  // selected gui elements
   APP.dispatcher.once("app_ready",function(app){
+    // customize the final app initialization by activating
+    // selected gui elements
     app.modal_view = new APP.modalView({app: app});
     app.dept_info_view  = new APP.deptInfoView({app: app});
     app.full_dept_list = new APP.fullDeptList({
       app: app
-      ,target : $('body')
+      ,target : '.org_list_by_min'
     });
-  });
 
-  // hook on to the department title, turn it into a link
-  // and when the link is clicked, show the departmental info
-  // view
-  APP.dispatcher.once("app_ready",function(app){
+    // hook on to the department title, turn it into a link
+    // and when the link is clicked, show the departmental info
+    // view
     APP.dispatcher.on("new_org_view",function(view){
       var dept = app.state.get("dept");
       if (!_.has(dept,"website")) {
@@ -86,6 +72,19 @@ $(function() {
       .on("click",function(){
         (new APP.deptInfoView({app: app})).render();
       });
+    });
+  });
+
+  APP.dispatcher.on("dept_ready",function(app){
+    var vertical_navbar = Handlebars.compile($('#ver_navbar_t').html());
+    $('.nav_bar_ul').children().remove();
+    $('.nav_bar_ul').append(vertical_navbar());
+    if (app.auto_complete){
+      app.auto_complete.stopListening();
+    }
+    app.auto_complete = new APP.autocompleteView({
+      el : $('.nav_bar_ul .dept_search')
+      ,app : app
     });
   });
 
@@ -1766,7 +1765,6 @@ $(function() {
                        {'text-align' : 'right'} 
                      ]
              });
-
           }
         } 
      }]);

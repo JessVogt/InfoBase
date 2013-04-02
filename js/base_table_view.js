@@ -1,7 +1,17 @@
-$(function () {
+(function(root) {
   var TABLES = ns('TABLES');
   var APP = ns('APP');
   var GROUP = ns('GROUP');
+
+  // attach all the tables to their respective views
+  APP.dispatcher.once("load_tables",function(app){
+    var add_table_view = function(table){
+      // setup the table views
+      table.set('table_view', TABLES.BaseTableView.extend(table.get('table_view')));
+    }
+    TABLES.tables.each(add_table_view);
+    TABLES.tables.on("add",add_table_view);
+  });
 
   var table_template = APP.t('#list_t');
 
@@ -26,13 +36,19 @@ $(function () {
 
       function (h,i) {
         var header,parent_headers,id;
-        if (_.isString(h)) args = {
-          header: h,
-          colspan: 1,
-          class_: this.types[_.indexOf(this.header,h)]
-        };
-        else args = _.extend({class_: ''},h);
+        if (_.isString(h)) {
+          args = {
+            header: h
+            ,colspan: 1
+            ,class_: this.types[_.indexOf(this.header,h)]};
+          args['el'] = h ? "th" : "td";
+        }
+        else {
+          args = _.extend({class_: ''},h);
+          args['el'] = h.header ? "th" : "td";
+        }
         args['header'] = this.m(args['header']);
+
         header = $(this.template(args));
         id = header.text().replace(" ","");
         // figure out the WCAG header link
@@ -86,18 +102,13 @@ $(function () {
           if (this.table.not_key(index) 
               && !this.options['min_row']
               && !this.options['summary_row']
-              && !this.options['goc_row']){
+              && !this.options['goc_row']) {
             div.addClass('table_a');
             div.append("<a href='#'></a>");
             div = div.find("a");
+            div.attr("title",this.app.get_text("horizontal_compare"));
           }
-          if (_.isString(data) && data.length > 80){
-            el.attr("title", data);
-            el.attr("data-placement", "top");
-            el.attr("rel", "tooltip");
-            data = data.substring(0,77) + "...";
-          }
-          else  if (type == 'big-int') {
+          if (type == 'big-int') {
             data = this.app.formater(type,data);
           }
           else if (type == 'percentage' && data != ''){
@@ -420,14 +431,18 @@ $(function () {
       this.$el.find('.title').append(this.def['name'][this.lang]);
     }
     ,add_description: function(){
-      this.$el.find('.description').append(this.description[this.lang]);
+      if (this.description){
+        this.$el.find('.description').append(this.description[this.lang]);
+      }
     }
     ,set_no_content : function(){
       this.content = $("<p >").html(this.gt("no_data"));
       this.$el.find('a.details').remove();
     }
     ,render : function(){
-      this.$el.append(this.template());
+      this.$el.append(this.template({
+        details_title : this.gt("more_details") + " " + this.def.name[this.lang]
+      }));
       this.make_title();
       this.add_description();
       if (this.data){
@@ -527,6 +542,7 @@ $(function () {
     }
 
     TABLES.build_table = function(options){
+      options.classes = options.classes || new Array(options.css.length);
       var table = $(table_template({title:false}));
       var id_base = _.random(0,1000000)+":";
       table.find('table').removeClass('table-striped');
@@ -534,10 +550,15 @@ $(function () {
         _.each(options.headers, function(header_row){
            var row = $('<tr>');
            row.append( _.map(header_row,function(x,index){
-             return $('<th>')
-             .html(x)
-             .css(options.css[index])
-             .attr("id",id_base+x) ;
+             if (!x){
+               el = $('<td>')
+             } else {
+               el = $('<th>')
+             }
+             return el
+              .html(x)
+              .css(options.css[index])
+              .attr("id",id_base+x) ;
            }));
            table.find('thead').append( row);
         });
@@ -548,8 +569,9 @@ $(function () {
           return $('<td>')
           .html(x)
           .css(options.css[index])
+          .addClass(options.classes[index])
           .attr("headers", _.map(options.headers, function(h){
-            return id_base+h[index];
+            return id_base+h[index].replace(/\W/,"").replace(" ","");
           }).join(" "));
         }));
         table.find('tbody').append(row);
@@ -557,5 +579,5 @@ $(function () {
      return table;
     }
 
-}); // end of scope
+})(this); // end of scope
 

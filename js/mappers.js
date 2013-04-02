@@ -1,7 +1,5 @@
-$(function () {
+(function(root) {
   var MAPPERS = ns('MAPPERS');
-
-  var depts = window.depts;
 
   dup_row = function(row){
     return _.map(row,function(x){return x});};
@@ -59,4 +57,4 @@ $(function () {
   MAPPERS.mapper = mapper;
   MAPPERS.maps = {}
 
-});
+})(this);

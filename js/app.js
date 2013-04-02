@@ -107,7 +107,7 @@
         this.app = this.options['app'];
         this.state = this.app.state;
         this.lookup = depts;
-        this.render(this.state.get("lang"));
+        this.listenTo(APP.dispatcher,'lang_change',this.render);
         this.listenTo(APP.dispatcher,"dept_ready",this.clear);
       }
       ,clear : function(app){
@@ -117,6 +117,7 @@
         this.$el = $('input.dept_search');
         // remove any previously created datalist
         $('#suggestions').remove();
+        this.$el.off('*');
          var values = _.filter(_.values(this.lookup),
            function(val){
              return val.accronym != 'ZGOC';
@@ -132,10 +133,18 @@
          if (!Modernizr.datalistelem){
           this.$el.datalist();
          }
-         this.$el.change(this.change);
+         this.$el.on("input",this.on_input);
         }
-      ,change : function(event){
-        console.log(this.$el.val());
+      ,on_input : function(event){
+        var val = $(event.target).val();
+        var state = this.state;
+        var lang = state.get('lang');
+        var lookup = this.lookup;
+        var dept = _.first(_.filter(_.values(lookup),
+              function(x){ return x['dept'][lang] == val})); 
+        if (dept){
+          state.set('dept',dept);
+        }
       }
     });
 
@@ -193,8 +202,8 @@
       el : 'body'
       ,template : APP.t('#org_list_t')
       ,events : {
-       "click button.dept_sel" : "render"
-       ,"click button.dept_sel_cancel" : "cancel"
+       "click a.dept_sel" : "render"
+       ,"click a.dept_sel_cancel" : "cancel"
        ,"click a.org_select" : "onClick"
       }
       ,initialize: function(){
@@ -206,14 +215,6 @@
         this.lookup = depts;
         this.height = 28;
       }
-      ,cancel : function(){
-       this.controller_button
-         .html(this.app.get_text("click"))
-         .removeClass("dept_sel_cancel")
-         .addClass("dept_sel");
-        this.drop_zone.find(".org_list").remove();
-        this.app.app.show();
-      }
       ,render : function(event){
         this.app.app.hide();
         this.controller_button = $(event.currentTarget);
@@ -223,13 +224,12 @@
         } else { 
           this.drop_zone = this.target;
         }
+        this.drop_zone.children().remove();
 
         this.controller_button
           .html(this.app.get_text("cancel"))
           .removeClass("dept_sel")
           .addClass("dept_sel_cancel");
-
-        this.drop_zone.children().remove();
 
         var lang = this.state.get('lang');
         var mins = _.groupBy(depts, function(x){return x['min'][lang]});
@@ -277,6 +277,14 @@
             return this.ministry_to_cols(mins,cols.concat([[]]));
           }
         }
+      }
+      ,cancel : function(){
+       this.controller_button
+         .html(this.app.get_text("to_select"))
+         .removeClass("dept_sel_cancel")
+         .addClass("dept_sel");
+        this.drop_zone.find(".org_list").remove();
+        this.app.app.show();
       }
       ,onClick : function(event){
         var lang = this.state.get('lang');
@@ -374,6 +382,7 @@
     ,render : function(app){
       var org = app.state.get("dept");
       // render the main template
+      debugger
       app.app.children().remove();
       $(this.template({ org : org })).appendTo(app.app);
       $(this.template2()).appendTo($('.panels',app.app));
@@ -438,6 +447,9 @@
       this.lang = this.state.get("lang");
       this.mapper = this.def.mapper[this.lang];
       this.data = this.dept['mapped_data'][this.key][this.lang];
+      if (_.has(this.def,"sort")){
+        this.data = this.def.sort(this.data,this.lang);
+      }
       var other_depts = this.state.get("other_depts");
       // set some useful state based on these inputs
       var ministry_depts = other_depts.concat([this.dept]);
@@ -447,6 +459,7 @@
       //collect goc data
       var raw_goc_data = window.depts['ZGOC']['tables'][this.key];
       this.goc_data = this.mapper.map(raw_goc_data);
+
     }
 
     ,render: function(){
@@ -467,6 +480,7 @@
       }
 
       this.$el = $(this.template({
+        "title" : this.def.name[this.lang],
         "key" : this.key,
         "min_tot" : this.app.state.get("min_tot"),
         "goc_tot" : this.app.state.get("goc_tot"),

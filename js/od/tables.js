@@ -1,4 +1,14 @@
-$(function() {
+(function(root){
+
+  if (typeof exports != 'undefined') {
+    var node = true;
+    var ns = global.ns;
+    var _ = global._;
+  } else {
+   var ns = window.ns;
+   var _ = window._;
+  }
+
   var GRAPHS = ns('GRAPHS');
   var GROUP = ns('GROUP');
   var APP = ns('APP');
@@ -25,6 +35,10 @@ $(function() {
       ,cols : 2
       ,target: '.org_list_by_min'
     });
+    app.auto_complete = new APP.WETautocompleteView({
+      el : $('.home .dept_search')
+      ,app : app
+    });
   });
 
   APP.dispatcher.on("dept_ready",function(app){
@@ -37,13 +51,6 @@ $(function() {
 
   APP.dispatcher.on("home", function(app){
     $('#back_button').find("button").remove();
-    if (app.auto_complete){
-      app.auto_complete.stopListening();
-    }
-    app.auto_complete = new APP.WETautocompleteView({
-      el : $('.home .dept_search')
-      ,app : app
-    });
   });
 
   APP.dispatcher.on("new_details_view",function(dv){
@@ -54,6 +61,10 @@ $(function() {
       {'height' : $('.sidescroll').children().height()+40 +'px'
     });
 
+    // add the description
+    dv.description = dv.$el.find('.table_description');
+    dv.description.html($('#'+dv.def.id+"_"+dv.lang).html());
+
     // create the graph
     dv.graph_payload = dv.$el.find('.graph_payload');
     // check if department is TBS and then remove the
@@ -62,15 +73,14 @@ $(function() {
       key : dv.key,
       app : dv.app,
       def : dv.def,
+      data : dv.data,
       footnotes : []
     });
     dv.graph_payload.append(dv.graph_view.render().$el);
   });
 
   APP.dispatcher.on("load_tables",function(app){
-
     var m = TABLES.m;
-
     TABLES.tables.add([
     //  {
     //  id: 'table1',
@@ -479,19 +489,19 @@ $(function() {
       ],
       "coverage" : "historical",
       "headers" : {"en" :[[
-         { "colspan" : 2,                   
-         "header" : ""                      
-         },                                 
-         { "colspan" : 2,                  
-         "header" : "{{last_year_3}}"  
-         },                                 
-         { "colspan" : 2,                   
-         "header" : "{{last_year_2}}" 
-         },                                 
-         { "colspan" : 2,                   
-         "header" : "{{last_year}}"         
-         }                                  
-         ],
+        { "colspan" : 2,                   
+        "header" : ""                      
+        },                                 
+        { "colspan" : 2,                  
+        "header" : "{{last_year_3}}"  
+        },                                 
+        { "colspan" : 2,                   
+        "header" : "{{last_year_2}}" 
+        },                                 
+        { "colspan" : 2,                   
+        "header" : "{{last_year}}"         
+        }                                  
+        ],
         [
           "Vote {{last_year}}/ Statutory",
           "Description",
@@ -520,12 +530,12 @@ $(function() {
           [
           "Crédit {{last_year}} / Légis.",
           "Description",
-          "Autorisation budgétaire totale utilisable",
-          "Autorisation budgétaire utilisée",
-          "Autorisation budgétaire totale utilisable",
-          "Autorisation budgétaire utilisée",
-          "Autorisation budgétaire totale utilisable",
-          "Autorisation budgétaire utilisée"
+          "Autorisations budgétaires disponible pour l'emploi",
+          "Autorisations budgétaires employées au cours d'exercise",
+          "Autorisations budgétaires disponible pour l'emploi",
+          "Autorisations budgétaires employées au cours d'exercise",
+          "Autorisations budgétaires totale utilisable",
+          "Autorisations budgétaires employées au cours d'exercise"
         ]]},
       "link" : {
         "en" : "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-eng.asp",
@@ -534,8 +544,22 @@ $(function() {
       "name" : { "en" : "Authorities and Expenditures",
         "fr" : "Autorisations et dépenses"
       },
-      "title" : { "en" : "Authorities and Actual Expenditures ($000)",
+        "title" : { "en" : "Authorities and Actual Expenditures ($000)",
         "fr" : "Autorisations et dépenses réelles ($000)"
+      }
+      ,"sort" : function(mapped_rows,lang){
+          var grps = _.groupBy(mapped_rows,function(row){ return _.isNumber(row[0])});
+          if (_.has(grps,true)) {
+            grps[true] = _.sortBy(grps[true],function(row){ return row[0]});
+          } else {
+            grps[true] = [];
+          }
+          if (_.has(grps,false)) {
+            grps[false] = _.sortBy(grps[false],function(row){ return row[1]; });
+          } else {
+            grps[false] = [];
+          }
+          return grps[true].concat(grps[false]);
       }
       ,"key" : [0,1]
       ,mapper : {
@@ -586,17 +610,17 @@ $(function() {
       }
       ,mini_view : {
         description : {
-          "en" : "Description here",
-          "fr" : "Description ici"
+          "en" : "Total budgetary voted and statutory authorities",
+          "fr" : "Montant total des autorisations budgétaires votées et législatives"
         }
         ,prep_data : function(){
           var ttf = this.app.formater
           var total = _.map([ "{{last_year_3}}-Total budgetary authority available for use",
-                             "{{last_year_3}}-Budgetary authority used",
-                             "{{last_year_2}}-Total budgetary authority available for use", 
-                             "{{last_year_2}}-Budgetary authority used",
-                             "{{last_year}}-Total budgetary authority available for use", 
-                             "{{last_year}}-Budgetary authority used"],
+                            "{{last_year_3}}-Budgetary authority used",
+                            "{{last_year_2}}-Total budgetary authority available for use", 
+                            "{{last_year_2}}-Budgetary authority used",
+                            "{{last_year}}-Total budgetary authority available for use", 
+                            "{{last_year}}-Budgetary authority used"],
                 function(col){ 
                   return _.reduce(_.pluck(this.data,col),
                     function(x,y){
@@ -618,28 +642,29 @@ $(function() {
             css : [{'font-weight' : 'bold'}, 
                     {'text-align' : 'right'},
                   {'text-align' : 'right'}]
+            ,classes : ['','','wrap-none']
             });
         }
       },
       graph_view : {
         titles : {
           1 : {
-            "en" : "Title for this graph",
-            "fr" : "Titre pour cette graphique"
+            "en" : "Net Authorities / Expenditures by Fiscal Year ($000)",
+            "fr" : "Autorisations/dépenses nettes par exercice (en milliers de dollars)"
           },
           2 : {
-            "en" : "Title for this graph",
-            "fr" : "Titre pour cette graphique"
+            "en" : "Detailed Net Expenditures by Voted/Statutory Item ($000)",
+            "fr" : "Détail des dépenses nettes par crédit voté/poste législatif (en milliers de dollars)"
           }
         }
         ,descriptions : {
           1 : {
-            "en" : "Description for this graph",
-            "fr" : "Description pour cette graphique"
+            "en" : "Graph 1 presents net authorities or expenditures (depending on user selection) for fiscal years 2009–10 to 2011–12.",
+            "fr" : "Le graphique 1 présente les autorisations et dépenses nettes (selon le choix effectué par l’utilisateur) pour les exercices 2009‑2010 à 2011-2012."
           },
           2 : {
-            "en" : "Description for this graph",
-            "fr" : "Description pour cette graphique"
+            "en" : "Graph 2 presents detailed net expenditures by voted or statutory item for fiscal years 2009–10 to 2011–12.",
+            "fr" : "Le graphique 2 présente le détail des dépenses nettes par crédit voté ou poste législatif pour les exercices 2009‑2010 à 2011-2012."
           }
         }
         ,prep_data : function(){
@@ -652,7 +677,7 @@ $(function() {
               function(x){
                 return _.isNumber(x['Vote {{last_year}}/ Statutory']);
               }
-         );
+        );
           this.map_reduce_v_s = function(col){
             return _.map(v_s, function(group){
               return _.reduce(group, function(x,y){
@@ -667,7 +692,7 @@ $(function() {
                   }));
             return [line['{{last_year_3}}'+exp],
                     line['{{last_year_2}}'+exp],
-                   line['{{last_year}}'+exp]];
+                  line['{{last_year}}'+exp]];
           };
         }
         ,render : function(){
@@ -685,7 +710,7 @@ $(function() {
             id : this.make_id(2)
             ,description : this.descriptions[2][this.lang]
             ,header : this.gt("votestat")
-            ,items : _.pluck(this.mapped_objs,"Description")
+            ,items : _.pluck(this.data,1)
           }));                 
           this.$el.append(by_year_graph);
           this.$el.append(by_item_graph);
@@ -753,6 +778,7 @@ $(function() {
         "fr" : "Dépenses par article courant de {{last_year_3}} à {{last_year}} ($000)"
       }
       ,"key" : [0]
+      , "sort" : function(rows,lang){return rows}
       ,mapper : {
         to : function(row){
           if (row[0] != 'ZGOC'){
@@ -770,20 +796,20 @@ $(function() {
         sum_cols : [1,2,3]
         ,min_func : TABLES.add_ministry_sum
         ,init_row_data : function(){
-           var txt = this.gt("total");
-           this.merge_group_results(
-             [[this.row_data,
-             GROUP.fnc_on_group(
-               this.row_data,
-               {txt_cols : {0 : txt},
-                 func_cols : this.sum_cols,
-                 func : GROUP.sum_rows})]]);
+          var txt = this.gt("total");
+          this.merge_group_results(
+            [[this.row_data,
+            GROUP.fnc_on_group(
+              this.row_data,
+              {txt_cols : {0 : txt},
+                func_cols : this.sum_cols,
+                func : GROUP.sum_rows})]]);
         }
       }
       ,mini_view : {
         description : {
-          "en" : "Description here",
-          "fr" : "Description ici"
+          "en" : "An organization’s standard object with the greatest expenditures for the specified year",
+          "fr" : "Article courant de l’organisation le plus important sur les plan des dépenses pour l’exercice indiqué"
         }
         ,prep_data : function(){
           var ttf = this.app.formater
@@ -806,38 +832,39 @@ $(function() {
             return -d[1];
           }).shift();
           this.rows = [
-           [m('{{last_year_short}}'),top_last_year[0] ,  ttf("big-int",top_last_year[1]/1000)],
-           [m('{{last_year_2_short}}'),top_last_year_2[0], ttf("big-int",top_last_year_2[1]/1000)],
-           [m('{{last_year_3_short}}'),top_last_year_3[0],  ttf("big-int",top_last_year_3[1]/1000)]
+          [m('{{last_year_short}}'),top_last_year[0] ,  ttf("big-int",top_last_year[1]/1000)],
+          [m('{{last_year_2_short}}'),top_last_year_2[0], ttf("big-int",top_last_year_2[1]/1000)],
+          [m('{{last_year_3_short}}'),top_last_year_3[0],  ttf("big-int",top_last_year_3[1]/1000)]
           ];
         }
         ,render_data : function(){
           this.content = TABLES.build_table({
             headers : [[this.gt("year"),this.gt("so"),'($000)']],
             body : this.rows,
-            css : [{'font-weight' : 'bold'},{}, {'text-align' : 'right'}]
+            css : [{'font-weight' : 'bold'},{}, {'text-align' : 'left'},{'text-align' : 'right'}]
+            ,classes : ['','','wrap-none']
           });
         }
       },
       graph_view : {
         titles : {
           1 : {
-            "en" : "Title for this graph",
-            "fr" : "Title for this graph",
+            "en" : "Standard Object Expenditures, by Fiscal Year ($000)",
+            "fr" : "Articles courants de dépense, par exercice (en milliers de dollars)"
           },
           2 : {
-            "en" : "Title for this graph",
-            "fr" : "Title for this graph",
+            "en" : "Expenditures by Standard Object, 2009–10 to 2011–12 ($000)",
+            "fr" : "Dépenses par article courant, 2009-2010 à 2011-2012 (en milliers de dollars)"
           }
         }
         ,descriptions : {
           1 : {
-            "en" : "Description for this graph",
-            "fr" : "Description pour cette graphique",
+            "en" : "",
+            "fr" : ""
           },
           2 : {
-            "en" : "Description for this graph",
-            "fr" : "Description pour cette graphique",
+            "en" : "",
+            "fr" : ""
           }
         }
         ,prep_data : function(){
@@ -938,12 +965,15 @@ $(function() {
         "fr" : ""
       },
       "name" : { "en" : "Expenditures by Program",
-        "fr" : "Dépenses par article courant"
+        "fr" : "Dépenses par programme"
       },
       "title" : { "en" : "Expenditures by Program from {{last_year_3}} to {{last_year}} ($000)",
         "fr" : "Dépenses par Program de {{last_year_3}} à {{last_year}} ($000)"
       }
       ,"key" : [0]
+      ,"sort" : function(mapped_rows,lang) {
+        return _.sortBy(mapped_rows,function(row){return row[0]});
+      }
       ,mapper : {
         to : function(row){
           if (this.lang == 'en'){
@@ -970,20 +1000,20 @@ $(function() {
         sum_cols : [1,2,3]
         ,min_func : TABLES.add_ministry_sum
         ,init_row_data : function(){
-           var txt = this.gt("total");
-           this.merge_group_results(
-             [[this.row_data,
-             GROUP.fnc_on_group(
-               this.row_data,
-               {txt_cols : {0 : txt},
-                 func_cols : this.sum_cols,
-                 func : GROUP.sum_rows})]]);
+          var txt = this.gt("total");
+          this.merge_group_results(
+            [[this.row_data,
+            GROUP.fnc_on_group(
+              this.row_data,
+              {txt_cols : {0 : txt},
+                func_cols : this.sum_cols,
+                func : GROUP.sum_rows})]]);
         }
       }
       ,mini_view : {
         description : {
-          "en" : "Description here",
-          "fr" : "Description ici"
+          "en" : "An organization’s program with the greatest expenditures for the specified year",
+          "fr" : "Programme de l’organisation le plus important sur le plan des dépenses pour l’exercice indiqué"
         }
         ,prep_data: function(){
           var ttf = this.app.formater
@@ -1006,30 +1036,31 @@ $(function() {
             return -d[1];
           }).shift();
           this.rows = [
-           [m('{{last_year_short}}'),top_last_year[0] , ttf("big-int",top_last_year[1]/1000)],
-           [m('{{last_year_2_short}}'),top_last_year_2[0],ttf("big-int",top_last_year_2[1]/1000)],
-           [m('{{last_year_3_short}}'),top_last_year_3[0],ttf("big-int",top_last_year_3[1]/1000)]
+          [m('{{last_year_short}}'),top_last_year[0] , ttf("big-int",top_last_year[1]/1000)],
+          [m('{{last_year_2_short}}'),top_last_year_2[0],ttf("big-int",top_last_year_2[1]/1000)],
+          [m('{{last_year_3_short}}'),top_last_year_3[0],ttf("big-int",top_last_year_3[1]/1000)]
           ];
         }
         ,render_data : function(){
           this.content = TABLES.build_table({
             headers : [[this.gt("year"),this.gt("program"),'($000)']],
             body : this.rows,
-            css : [{'font-weight' : 'bold'}, {},{'text-align' : 'right'}]
+            css : [{'font-weight' : 'bold'}, {'text-align' : 'left'},{'text-align' : 'right'}]
+            ,classes : ['','','wrap-none']
           });
         }
       },
       graph_view : {
         titles : {
           1 : {
-            "en" : "Title for this graph",
-            "fr" : "Titre pour cette graphique"
+            "en" : "Net Expenditures by Program ($000)",
+            "fr" : "Dépenses nettes par programme (en milliers de dollars)"
           }
         }
         ,descriptions : {
           1 : {
-            "en" : "Description for this graph",
-            "fr" : "Description pour cette graphique"
+            "en" : "",
+            "fr" : ""
           }
         }
         ,prep_data : function(){
@@ -1050,7 +1081,7 @@ $(function() {
             id : this.make_id(2)
             ,description : this.descriptions[1][this.lang]
             ,header : this.gt("program")
-            ,items : _.pluck(this.mapped_objs,"Program")
+            ,items : _.sortBy(_.pluck(this.mapped_objs,"Program"),_.identity)
           }));                 
           this.$el.append(by_item_graph);
           this.$el.on("click","#"+this.make_id(2)+"_sidebar a",this.item_click);
@@ -1076,9 +1107,7 @@ $(function() {
 
         }
       }
-    }]);
-
-  });
-
-});
-
+    }
+   ]);
+ });
+})(this);

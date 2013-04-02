@@ -14,6 +14,7 @@
       ,"click a.home" : "reset"
       ,"hover .horizontal" : "highlighter"
       ,"click .horizontal" : "horizontal_explore"
+      ,"click a.page-nav" : "nav"
     }
     ,initialize: function(){
       _.bindAll(this);
@@ -32,10 +33,17 @@
       APP.dispatcher.trigger("dept_selected",this);
       APP.dispatcher.trigger("dept_ready",this);
     }
+    ,nav : function(event){
+      var id = $(event.target).attr("href");
+      var el = $(id);
+      if (!el){
+        return;
+      }
+      window.scrollTo(0,el.position().top);
+    }
     ,setup_useful_this_links : function(){
       this.nav_bar_ul = $('#navbar_ul');
       this.title = $('#title');
-      this.change_lang = $('#lang_change');
       this.app_area = $('#app');
     }
     ,formater : function(format,val){
@@ -66,17 +74,18 @@
        $(e.currentTarget).toggleClass('alert-info');
     }
     ,render: function(model,attr){
+      this.change_lang = $('#lang_change');
       // get faster reference 
       this.lang = attr;
       var gt = this.get_text;
-      this.change_lang.html(gt("lang"));
       this.title.html(gt("title"));
-
-      if (this.state.get("dept")){ return;}
       this.remove();
       this.app_area.html(this.template({}));
-
       this.app = this.app_area.find('.dept_zone');
+
+      if (this.state.get("dept")){ 
+        return;
+      }
       APP.dispatcher.trigger_a("home",this);
     }
     ,horizontal_explore : function(){

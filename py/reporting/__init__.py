@@ -1,10 +1,14 @@
 from __future__ import print_function
+try:
+  from urllib.request import urlopen  # Python 3
+except ImportError:
+  from urllib2 import urlopen # Python 2
+import lxml
 import codecs
 import subprocess
 import operator
 import functools
 import os
-import operator
 import json
 import mako.lookup
 from ..loading import load_les, load_od
@@ -35,14 +39,14 @@ def process_my_js(files,dev=False):
   return js_str
 
 my_js_files = ["sandbox.js",
+               "app.js",
+               "tables.js",
+               "mappers.js",
                "base_graph_view.js",
                "base_table_view.js",
                "datatables.js",
                "group_funcs.js",
                "table_popup.js",
-               "mappers.js",
-               "tables.js",
-               "app.js",
                ]
 
 js_files = ["excanvas.compiled.js",
@@ -231,6 +235,8 @@ def html_les(dev=True):
 
   app_js_files = list(my_js_files)
   app_js_files += ["les/text.js",
+                   "od/od.js",
+                   "les/tables.js",
                    "les/graph1.js",
                    "les/graph2a.js",
                    "les/graph2b.js",
@@ -241,10 +247,9 @@ def html_les(dev=True):
                    "les/graph6.js",
                    "les/graph7.js",
                    "les/graphIS.js",
-                   "les/tables.js",
                    "table_builder.js",
                    #"les/horizontal.js",
-                   "od/od.js" ]
+                   ]
 
   js_app = process_my_js(app_js_files, dev=dev)
 
@@ -258,6 +263,22 @@ def html_les(dev=True):
                            no_auto_js = True,
                            no_auto_css = True))
 
+
+def od_static():
+  lookups,data = load_od()
+  check(data,lookups, make_open_data_after_check(lookups))
+
+  lookups['depts'] = {k:v for k,v in lookups['depts'].iteritems()
+                      if 'tables' in v}
+
+  add_dept_data(lookups['depts'])
+  # carve up od.html file
+  # extract the templates to be sent across to the node server
+  # create static page skeleton
+
+  for dept in depts.itervalues():
+    pass
+    # run table maps
 
 def od(dev=True):
   #lookups,data = load_od()
