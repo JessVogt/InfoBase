@@ -83,7 +83,7 @@
         "fr" : "Cliquez"
       }
       ,"to_select" : {
-        "en" : "Click to select from a list of organisations or",
+        "en" : "Click to select from a list of organisations",
         "fr" : "Cliquez pour sélectionner parmi une liste d’organisations"
       }
       ,"fin_data"  : {
@@ -216,7 +216,7 @@
       }
       ,"goc_total": {
         "en": "Government Total"
-        ,"fr": "Total pour le Gouvernment"
+        ,"fr": "Total pour le Gouvernement"
       }
       ,"copy" : {
         "en" : "Copy table"
@@ -230,9 +230,13 @@
         "en": "Search their site"
         ,"fr": "Cherchez dans leur site web"
       }
-      ,"search" : {
-        "en": "Start typing here to find a department"
+      ,"search_instrucitons" : {
+        "en": "Start typing here to find a department. Click Search if the department is not automatically selected."
         ,"fr": "Écris ici pour trouver un ministère"
+      }
+      ,"search" : {
+        "en": "Search"
+        ,"fr": "Cherchez"
       }
       ,"other" : {
         "en": "Other"

@@ -12,6 +12,7 @@ wb2 = xlrd.open_workbook(f2)
 wb3 = xlrd.open_workbook(f3)
 wb4 = xlrd.open_workbook("open data.xls")
 wb5 = xlrd.open_workbook("open data lookups.XLS")
+wb6 = xlrd.open_workbook("Enhanced Inventory of Government data.xls")
 
 def clean_data(d):
   if isinstance(d,basestring):
@@ -78,6 +79,19 @@ def footnotes(lines):
           for grp in grps}
 
 
+def load_igoc():
+  def each_line(line):
+    # remove html
+    # separate commas into list
+
+    key = line[0]
+    val = {}
+    return key, val
+  row_values = wb6.sheet_by_index(0).row_values
+  nrows = wb6.sheet_by_index(0).nrows
+  return dict([each_line(row_values(i)) for i in
+                                  xrange(1, nrows)])
+
 def load_od():
   data_sheets = dict(map(each_sheet,
                          filter(lambda x : 'table' in x.name,
@@ -89,6 +103,7 @@ def load_od():
     'depts': depts(lookup_sheets['DEPTCODE_MINCODE']),
     #'votes': votes(lookup_sheets['VOTES']),
     'sos' : sos(lookup_sheets['SO'])
+    'igoc' : load_igoc()
   }
   return lookups,data_sheets
 

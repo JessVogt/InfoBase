@@ -16,12 +16,14 @@
     return '';
   }
 
-  APP.dispatcher.on("dept_selected", function(app){
+  APP.listen_for_tables = function(app){
     var signals = TABLES.tables.map(function(table){
       return 'table_' + table.get("id") +"_rendered";
     })
     APP.size_panels(app,signals)
-  });
+  };
+
+  APP.dispatcher.on("dept_selected", APP.listen_for_tables);
 
   APP.size_panels = function(app,signals){
     // once all the mini table signals have been sent
@@ -40,17 +42,25 @@
 
       $('.widget-row').each(function(i,row){
         $('.mini_t',row).each(function(i){
-          if ($(this).width() > 380){
-            $(this).width(380);
+          if ($(this).width() > 365){
+            $(this).width(365);
           }
         });
-        $('.mini_t',row)
-        .height(_.max($('.mini_t',row).map(function(x,y){
-          return $(y).height() + 25;
-        })));
         $('.section-header',row)
         .height(_.max($('.section-header',row).map(function(x,y){
           return $(y).height();
+        })));
+        $('p.description',row)
+        .height(_.max($('p.description',row).map(function(x,y){
+          return $(y).height();
+        })));
+        $('th',row)
+        .height(_.max($('th',row).map(function(x,y){
+          return $(y).height();
+        })));
+        $('.mini_t',row)
+        .height(_.max($('.mini_t',row).map(function(x,y){
+          return $(y).height() + 10;
         })));
       });
       $('.mini_t').css({
@@ -74,14 +84,7 @@
   });
 
   TABLES.tables.on("add", function(table){
-    if (node){
-      var depts = {};
-    } else {
-      var depts = window.depts; 
-    }
 
-    var BTV = TABLES.BaseTableView;
-    var BGV = GRAPHS.BaseGraphView;
     var id = table.get("id");
 
     _.each(depts,function(org){

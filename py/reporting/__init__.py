@@ -3,7 +3,8 @@ try:
   from urllib.request import urlopen  # Python 3
 except ImportError:
   from urllib2 import urlopen # Python 2
-import lxml
+from urllib import urlencode
+from lxml import html
 import codecs
 import subprocess
 import operator
@@ -265,9 +266,9 @@ def html_les(dev=True):
 
 
 def od_static():
+  t = lookup.get_template('od_static.html')
   lookups,data = load_od()
   check(data,lookups, make_open_data_after_check(lookups))
-
   lookups['depts'] = {k:v for k,v in lookups['depts'].iteritems()
                       if 'tables' in v}
 
@@ -276,9 +277,22 @@ def od_static():
   # extract the templates to be sent across to the node server
   # create static page skeleton
 
-  for dept in depts.itervalues():
-    pass
+
+  handlebars_ts = html.parse("./mako/od_handlebars_templates.html")
+  json_data = {
+    'main_t' :  handlebars_ts.xpath("//script[@id='main_t']")[0].text,
+    'dataview_t' :  handlebars_ts.xpath("//script[@id='dataview_t']")[0].text,
+    'org_list_t' :  handlebars_ts.xpath("//script[@id='org_list_t']")[0].text,
+    'graph_grid_t' : handlebars_ts.xpath("//script[@id='graph_grid_t']")[0].text,
+    'sos' : lookups['sos']
+  }
+  for dept in lookups['depts'].itervalues():
+    json_data['dept'] = dept['accronym']
+    data = {"json" : json.dumps(json_data)}
+    print(urlopen("http://localhost:8888",urlencode(data)).read())
     # run table maps
+    #with open("../open_data_static/{}.html".format(dept['accronym']),'w') as output:
+    #  output.write(t.render())
 
 def od(dev=True):
   #lookups,data = load_od()

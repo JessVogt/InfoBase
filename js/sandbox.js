@@ -5,8 +5,6 @@ else {
   global.node = true;
 }
 
-
-
 (function(root) {
   root_namespace = function(root) {
     var ns;

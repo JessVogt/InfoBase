@@ -3,6 +3,9 @@
     var LANG = ns('LANG');
 
     APP.t = function(id){
+      if (node){
+        return Handlebars.compile(" ");
+      }
       return Handlebars.compile($.trim($(id).html()));
     }
 
@@ -61,7 +64,7 @@
     APP.find_all_in_ministry = function(dept,lang){
       // find all departments with a ministry name, matching
       // the ministry AND that has data for the requested table
-      return _.filter(window.depts,
+      return _.filter(depts,
             function(d){
               return d['min'][lang] == dept['min'][lang];
       });
@@ -108,6 +111,7 @@
         this.state = this.app.state;
         this.lookup = depts;
         this.listenTo(APP.dispatcher,'lang_change',this.render);
+        this.listenTo(APP.dispatcher,'lang_change',this.clear);
         this.listenTo(APP.dispatcher,"dept_ready",this.clear);
       }
       ,clear : function(app){
@@ -134,14 +138,15 @@
           this.$el.datalist();
          }
          this.$el.on("input",this.on_input);
+         $('button.dept_search').on("click",this.on_input);
         }
       ,on_input : function(event){
-        var val = $(event.target).val();
+        var val = this.$el.val();
         var state = this.state;
         var lang = state.get('lang');
         var lookup = this.lookup;
         var dept = _.first(_.filter(_.values(lookup),
-              function(x){ return x['dept'][lang] == val})); 
+              function(x){ return x['dept'][lang].toLowerCase() == val.toLowerCase()})); 
         if (dept){
           state.set('dept',dept);
         }
@@ -382,7 +387,6 @@
     ,render : function(app){
       var org = app.state.get("dept");
       // render the main template
-      debugger
       app.app.children().remove();
       $(this.template({ org : org })).appendTo(app.app);
       $(this.template2()).appendTo($('.panels',app.app));
@@ -431,7 +435,7 @@
       return  _.flatten(_.compact(lines),true);
   };
 
-  DetailsView = Backbone.View.extend({
+  APP.DetailsView = Backbone.View.extend({
     template : APP.t('#dataview_t')
     ,initialize: function(){
       _.bindAll(this);
@@ -457,9 +461,8 @@
       var raw_min_data = ministry_total(ministry_depts,this.key);
       this.min_data = this.mapper.map(raw_min_data);
       //collect goc data
-      var raw_goc_data = window.depts['ZGOC']['tables'][this.key];
+      var raw_goc_data = depts['ZGOC']['tables'][this.key];
       this.goc_data = this.mapper.map(raw_goc_data);
-
     }
 
     ,render: function(){
@@ -472,12 +475,12 @@
 
       // add the footnotes
       var footnotes = [];
-      if (_.has(window,"footnotes") && _.has(window.footnotes,this.key)){
-        footnotes = footnotes.concat(window.footnotes[this.key]);  
-      }
-      if (_.has(this.dept,"footnotes") &&_.has(this.dept.footnotes, this.key)){
-        footnotes = footnotes.concat(this.dept.footnotes[this.key]);  
-      }
+      //if (typeof footnotes != 'undefined' && _.has(window.footnotes,this.key)){
+      //  footnotes = footnotes.concat(window.footnotes[this.key]);  
+      //}
+      //if (_.has(this.dept,"footnotes") &&_.has(this.dept.footnotes, this.key)){
+      //  footnotes = footnotes.concat(this.dept.footnotes[this.key]);  
+      //}
 
       this.$el = $(this.template({
         "title" : this.def.name[this.lang],

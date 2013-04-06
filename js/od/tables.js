@@ -649,7 +649,7 @@
       graph_view : {
         titles : {
           1 : {
-            "en" : "Net Authorities / Expenditures by Fiscal Year ($000)",
+            "en" : "Split of Net Expenditures between Voted and Statutory by Fiscal Year ($000)",
             "fr" : "Autorisations/dépenses nettes par exercice (en milliers de dollars)"
           },
           2 : {
@@ -659,12 +659,12 @@
         }
         ,descriptions : {
           1 : {
-            "en" : "Graph 1 presents net authorities or expenditures (depending on user selection) for fiscal years 2009–10 to 2011–12.",
-            "fr" : "Le graphique 1 présente les autorisations et dépenses nettes (selon le choix effectué par l’utilisateur) pour les exercices 2009‑2010 à 2011-2012."
+            "en" : "Graph 1 presents total department voted and statutory net expenditures in each fiscal year from 2009-10 to 2011-12. Voted expenditures reflect spending that received parliamentary approval through an appropriation bill, while statutory expenditures reflect spending whose authority was granted through other legislation. Select the fiscal year in the left side-bar to plot the expenditures on the graph.",
+            "fr" : ""
           },
           2 : {
-            "en" : "Graph 2 presents detailed net expenditures by voted or statutory item for fiscal years 2009–10 to 2011–12.",
-            "fr" : "Le graphique 2 présente le détail des dépenses nettes par crédit voté ou poste législatif pour les exercices 2009‑2010 à 2011-2012."
+            "en" : "Graph 2 presents the net expenditure trend for individual voted and statutory items from fiscal year 2009-10 to 2011-12. Select an individual item in the left side-bar to plot an expenditure on the graph.",
+            "fr" : ""
           }
         }
         ,prep_data : function(){
@@ -859,11 +859,11 @@
         }
         ,descriptions : {
           1 : {
-            "en" : "",
+            "en" : "Graph 1 compares total departmental expenditures by Standard Object category for each fiscal year from 2009-10 to 2011-12. Standard Object categories reflect expenditures on major items such as transfer payments and personnel. Select a fiscal year in the left side-bar to plot the expenditure on the graph.",
             "fr" : ""
           },
           2 : {
-            "en" : "",
+            "en" : "Graph 2 presents the expenditure trend for individual Standard Object items from fiscal year 2009-10 to 2011-12. Select an individual Standard Object in the left side-bar to plot the expenditure on the graph.",
             "fr" : ""
           }
         }
@@ -1059,7 +1059,7 @@
         }
         ,descriptions : {
           1 : {
-            "en" : "",
+            "en" : "Graph 1 presents the net expenditure trend for individual programs from fiscal year 2009-10 to 2011-12. Select an individual program in the left side-bar to plot the expenditure on the graph.",
             "fr" : ""
           }
         }

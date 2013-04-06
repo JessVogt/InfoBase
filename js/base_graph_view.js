@@ -104,7 +104,7 @@ $(function () {
             ,tickOptions : {fontSize: "10px"}
           }
           ,yaxis: { 
-            tickOptions: { formatString: "$%'d",fontSize: "10px" } 
+            tickOptions: { formatString: "%'d",fontSize: "10px" } 
             ,label : "$K   "
           }
     };

@@ -17,8 +17,8 @@
 $(function(){
     var APP = ns('APP');
 
+    <%include file='handlebars_helpers.js'/>
     APP.dispatcher.on("app_ready", function(app){
-      <%include file='handlebars_helpers.js'>
       app.state.set("lang","en");
       app.state.set("use_footer",false);
       app.state.set("min_tot",true);

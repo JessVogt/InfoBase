@@ -1,4 +1,5 @@
 (function(root) {
+  
   var TABLES = ns('TABLES');
   var APP = ns('APP');
   var GROUP = ns('GROUP');
@@ -78,7 +79,7 @@
       if (this.options['summary_row']
           ||this.options['min_row']
           ||this.options['goc_row']) {
-        this.$el.addClass('background-medium').css('font-weight','bold');
+        this.$el.addClass('info-row').css('font-weight','bold');
       }
       this.render(); //self-rendering
     },
@@ -170,9 +171,9 @@
       this.headers = this.def['headers'][this.lang];
       this.title = TABLES.m(this.dept.dept[this.lang] +  " - " + this.def['title'][this.lang]);
 
-      $(document).on("mouseenter", '.table_content td .table_a', this.on_enter);
-      $(document).on("mouseleave", '.table_content td .table_a', this.on_leave);
-      $(document).on("click", '.table_content td .table_a', this.on_td_click);
+      this.$el.on("mouseenter", 'td .table_a', this.on_enter);
+      this.$el.on("mouseleave", 'td .table_a', this.on_leave);
+      this.$el.on("click", 'td .table_a', this.on_td_click);
     }
     ,setup_useful_this_links : function(){
       //
@@ -392,9 +393,9 @@
       av.render();
     }
     ,remove : function(){
-      $(document).off("click", '.table_content td a.table_a ');
-      $(document).off("mouseenter", '.table_content td .table_a');
-      $(document).off("mouseleave", '.table_content td .table_a');
+      this.$el.off("click");
+      this.$el.off("mouseenter");
+      this.$el.off("mouseleave");
     }
   }) // end of BaseTableView
 

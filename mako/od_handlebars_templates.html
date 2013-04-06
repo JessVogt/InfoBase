@@ -5,11 +5,15 @@
     </div>
     <div class='span-3 margin-top-medium margin-bottom-medium'>
       <label for='org_search' style='display:inline-block'>
-        {{gt "search"}} 
+        {{gt "search_instrucitons"}} 
       </label>
       <input id='org_search' class='dept_search width-50 margin-bottom-none' 
         type='text' style='display:inline-block'
         list='org_suggestions'></input>
+        <button title='{{gt "search"}}' href='#' 
+          class='dept_search button button-dark'>
+           {{gt "search"}}
+        </button>
     </div>
     <div class='span-2 margin-top-medium margin-bottom-medium'>
       <a class='dept_sel ui-link'>
@@ -26,13 +30,71 @@
 
 
   </div>
-  <div class='dept_zone'>
+  <div class='dept_zone span-8'>
+    <div class='span-1'></div>
     <div class=' span-6'>
-      Greeting text with instructions
+      {{{greeting}}}
     </div>
   </div>
 </div>
 </script>
+<script type='text/plain' id='greeting_en'>
+  <h1>Welcome to FINPOINT.</h1>
+
+  <p>To start searching, click “Select” to choose a government organization from a list organized by ministry, or type the organization’s name in the search box and press “Enter.” Users will be directed to the organization’s overview page.</p>
+
+  <h2>Navigation</h2>
+<ul >
+  <li>The overview page of each organization contains brief summary information about that organization: legal name, minister, role (or mandate) in government, and a link to the organization’s enabling legislation.</li>
+  <li> Historical financial information for 2009‒10 to 2011‒12 is summarized in three panels on the overview page:
+      <ol>
+        <li>Authorities and Expenditures</li>
+        <li>Expenditures by Standard Object</li>
+        <li>Expenditures by Program</li>
+      </ol>
+  </li>
+  <li>Details: Each financial panel expands to show further details (click on the “Details” link). The expanded panel offers various details, including the following:
+      <ol>
+        <li>Voted or statutory item categories</li>
+        <li>Standard object information</li>
+        <li>Programs</li>
+        <li>Ministry totals</li>
+        <li>Government totals</li>
+      </ol>
+  </li>
+  <li>Horizontal comparison: Within the expanded panels, users can click on any value to view a table comparing that organization’s data to all other organizations in the federal government.</li>
+  <li>Users on the overview page can also choose from a list of other organizations that are part of the same ministerial portfolio.</li>
+</ul>
+</script>
+<script type='text/plain' id='greeting_fr'>
+  <h1> </h1>
+
+  <h2> </h2>
+
+<ul>
+  <li></li>
+  <li> 
+      <ol>
+        <li> </li>
+        <li> </li>
+        <li> </li>
+      </ol>
+  </li>
+  <li>
+      <ol>
+        <li> </li>
+        <li> </li>
+        <li> </li>
+        <li> </li>
+        <li> </li>
+      </ol>
+  </li>
+  <li> </li>
+  <li> </li>
+</ul>
+</script>
+
+
 <script type='text/plain' id='wet_autocomplete_t'><datalist>
 <!--[if lte IE 9]><select><![endif]-->
   {{#orgs}}<option label="" value="{{.}}"></option>{{/orgs}}
@@ -44,7 +106,7 @@
     {{gt 'fin_data'}} {{lang org.dept}}
   </h1>
 
-<div class='span-5 margin-bottom-none'>
+<div class='span-5 margin-bottom-none margin-right-none'>
   <div class='margin-top-none margin-bottom-none margin-right-medium margin-left-medium' 
     style='padding: 0px;outline: 1px solid #ccc'>
     <p class='background-medium' style='margin: 0px'>
@@ -89,7 +151,7 @@
     </table>
   </div>
 </div>
-<div class=' span-3 margin-bottom-none'> 
+<div class='span-3 margin-bottom-none margin-left-none'> 
   <div class='module-menu-section border-all margin-left-large'>
   <p class=''>{{gt "other_in_min"}}</p>
   <ul class="list-bullet-none" style='margin-top:0px!important' id='other_depts_list'>
@@ -133,8 +195,8 @@
     <div class='section-header'>
       <strong><h3 class='title '></h3></strong>
     </div>
-    <div class='margin-left-large'>
-      <span class='description '></span>
+    <div class='margin-left-medium'>
+      <p class='description '></p>
     </div>
     <div class='mini_payload margin-bottom-large font-small' >
 
@@ -167,9 +229,9 @@
   </div>
   <div class='clear'></div>
 
-  <div id='__desc__' class='table_description span-6'>
+  <div id='__desc__' class='table_description span-6 margin-right-none'>
   </div>
-  <div class="span-2 module-table-contents margin-top-medium">
+  <div class="span-2 module-table-contents margin-left-none margin-top-medium">
     <h2>{{gt "toc"}}</h2>
     <ul>
 	   <li><a href="#__graph__" class='page-nav' >{{gt "graphs"}}</a></li>
@@ -191,8 +253,9 @@
     <a href="#__desc__" class='margin-top-medium float-right page-nav margin-right-large' >{{gt "top"}}</a>
   </div>
   <div class='clear'></div>
-  <div class='table_payload sidescroll' style='font-size: 12px'>
-
+  <div class='span-8 margin-left-large margin-right-large'>
+    <div class='table_payload sidescroll' style='font-size: 12px'> 
+    </div>
   </div>
 </div>
 </script>
@@ -242,7 +305,7 @@
 </script>
 <script type='text/plain' id='graph_grid_t'>
   <p>{{description}}</p>
-  <div class='span-2 well sidebar border-all'  id='{{id}}_sidebar'
+  <div class='span-2 well sidebar border-all margin-right-none'  id='{{id}}_sidebar'
           style='height:500px;overflow-y:auto'>
     <p class='margin-bottom-none margin-top-none nav-header'>{{header}}</p>
     <ul class='list-bullet-none margin-bottom-none margin-top-none margin-left-small hover'>
@@ -251,7 +314,7 @@
       {{/items}}
     </ul>
   </div>
-  <div class='span-6 border-all'>
+  <div class='span-6 border-all margin-left-none'>
     <div class='well graph'>
       <div style='height:500px' id="{{id}}">
       </div>

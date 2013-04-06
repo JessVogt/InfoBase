@@ -8,7 +8,7 @@
   /************APP VIEW***********/
   APP.appView = Backbone.View.extend({
     el : $('body')
-    ,template : Handlebars.compile($('#home_t').html())
+    ,template : APP.t('#home_t')
     ,events : {
       "click #lang_change" : "toggle_lang"
       ,"click a.home" : "reset"
@@ -35,6 +35,9 @@
     }
     ,nav : function(event){
       var id = $(event.target).attr("href");
+      if (id[0] != '#'){
+        id = '#' + id.split("#")[1];
+      }
       var el = $(id);
       if (!el){
         return;
@@ -80,7 +83,10 @@
       var gt = this.get_text;
       this.title.html(gt("title"));
       this.remove();
-      this.app_area.html(this.template({}));
+
+      this.app_area.html(this.template({
+        greeting : $('#greeting_'+this.lang).html()
+      }));
       this.app = this.app_area.find('.dept_zone');
 
       if (this.state.get("dept")){ 
@@ -131,7 +137,7 @@
       setTimeout(function(){scrollTo(0,0)});
       app.state.set({'table':table});
 
-      var dv = new DetailsView({
+      var dv = new APP.DetailsView({
         app : app,
         def: table.attributes
       });
