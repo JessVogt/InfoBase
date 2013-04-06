@@ -17,14 +17,24 @@
   var MAPPERS = ns('MAPPERS');
 
   TABLES.template_args = {
-    'year' : '2012-13',
-    'last_year' : '2011-12',
-    'last_year_short' : '2012',
-    'last_year_2' : '2010-11',
-    'last_year_2_short' : '2011',
-    'last_year_3' : '2009-10',
-    'last_year_3_short' : '2010',
-    'month' : 9
+    'common' : {
+      'last_year_short' : '2012',
+      'last_year_2_short' : '2011',
+      'last_year_3_short' : '2010',
+      'month' : 9
+    },
+    'en' : {
+      'year' : '2012-13',
+      'last_year' : '2011-12',
+      'last_year_2' : '2010-11',
+      'last_year_3' : '2009-10'
+    },
+    'fr' : {
+      'year' : '2012-2013',
+      'last_year' : '2011-2012',
+      'last_year_2' : '2010-2011',
+      'last_year_3' : '2009-2010'
+    }
   };
 
   // customize the final app initialization by activating

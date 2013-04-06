@@ -5,6 +5,18 @@
   var MAPPERS = ns('MAPPERS');
   var LANG = ns('LANG');
 
+  var create_template_func = function(app) {
+      TABLES.m = function(s){
+        var lang = app.state.get('lang');
+        var args = TABLES.template_args['common'];
+        _.extend(args,TABLES.template_args[lang]);
+        if (s){
+          return Handlebars.compile(s)(args);
+        }
+        return '';
+      }
+  }
+
   /************APP VIEW***********/
   APP.appView = Backbone.View.extend({
     el : $('body')
@@ -27,6 +39,7 @@
         .on("change:lang", this.reset_dept)
         .on("change:lang", this.lang_change)
         .on("change:dept",this.dept_change);
+      create_template_func(this);
       APP.dispatcher.trigger_a("app_ready",this);
     }
     ,dept_change : function(model, attr){
