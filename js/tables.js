@@ -9,12 +9,6 @@
 
   TABLES.tables = new col;
 
-  TABLES.m = function(s){
-    if (s){
-      return Handlebars.compile(s)(TABLES.template_args);
-    }
-    return '';
-  }
 
   APP.listen_for_tables = function(app){
     var signals = TABLES.tables.map(function(table){
@@ -41,11 +35,9 @@
       }
 
       $('.widget-row').each(function(i,row){
-        $('.mini_t',row).each(function(i){
-          if ($(this).width() > 365){
-            $(this).width(365);
-          }
-        });
+        var panels =  $('.mini_t',row);
+        var p = $(this).parents('.dept_zone');
+        panels.width( (p.width() - panels.length*20)/panels.length  - 1);
         $('.section-header',row)
         .height(_.max($('.section-header',row).map(function(x,y){
           return $(y).height();

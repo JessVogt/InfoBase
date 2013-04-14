@@ -104,8 +104,7 @@ $(function () {
             ,tickOptions : {fontSize: "10px"}
           }
           ,yaxis: { 
-            tickOptions: { formatString: "%'d",fontSize: "10px" } 
-            ,label : "$K   "
+            tickOptions: { fontSize: "11px" } 
           }
     };
   };
@@ -203,7 +202,12 @@ $(function () {
         $('#'+id+'_fn').append("<p><small>"+fn+"</small></p>");
        }
    );
-   return $.jqplot(id,data, o);
+   var plot =  $.jqplot(id,data, o);
+   var app = ns().APP.app;
+   $('#'+id+' .jqplot-yaxis-tick').html(function(){
+     return app.formater('big-int',$(this).html());
+   });
+   return plot
   };
 });
 

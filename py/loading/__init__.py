@@ -1,4 +1,7 @@
 import collections
+import urllib, urllib2
+from io import StringIO
+from lxml import html
 import itertools
 import xlrd
 from ..reporting import table_defs
@@ -62,11 +65,6 @@ def sos(lines):
   return {l[0]: {'en' : l[1],'fr' : l[2]}
           for l in lines}
 
-def stat(lines):
-  def _(line):
-    return line[0],{'en' : line[1],'fr':line[2]}
-  return dict(map(_,lines))
-
 def footnotes(lines):
   grps = itertools.groupby(sorted(lines,
                                     key = lambda l : l[0]),
@@ -80,17 +78,58 @@ def footnotes(lines):
 
 
 def load_igoc():
-  def each_line(line):
-    # remove html
-    # separate commas into list
+  def make_bilingual(line,en,fr,force_array=False,join=False):
+    if isinstance(en,list):
+      return {
+        "en" : ", ".join([line[x] for x in en if line[x] != 'NULL']),
+        "fr":  ", ".join([line[x] for x in fr if line[x] != 'NULL'])
+      }
+    else:
+      if force_array:
+        if not isinstance(line[en],list):
+          line[en] = [line[en]]
+          line[fr] = [line[fr]]
+        return [ {
+                  "en" :line[en][i],
+                  "fr": line[fr][i]
+                } for i in xrange(len(line[en]))]
+      elif join:
+        if not isinstance(line[en],list):
+          line[en] = [line[en]]
+          line[fr] = [line[fr]]
+        return {
+                "en" :",".join(line[en]),
+                "fr": ",".join(line[fr])
+              }
+      else:
+        return {
+                "en" :line[en],
+                "fr": line[fr]
+              }
 
+  def each_item(x):
+    if '*,*' in x:
+      return x.split("*,*")
+    elif '<p>' in x:
+     return [x.text_content() for x in html.parse(StringIO(x)).xpath("//p")]
+    else:
+      return x
+  def each_line(line):
     key = line[0]
-    val = {}
-    return key, val
+    line = map(each_item,line)
+    return key,{
+      "legal_name" : make_bilingual(line,3,4,join=True),
+      "type" : make_bilingual(line,23,24),
+      "website" : make_bilingual(line,27,28,True),
+      "minister" : make_bilingual(line,[8,10,12],[14,16,18]),
+      "mandate" : make_bilingual(line,21,22,True),
+      "legislation" : make_bilingual(line,25,26,True)
+    }
   row_values = wb6.sheet_by_index(0).row_values
   nrows = wb6.sheet_by_index(0).nrows
   return dict([each_line(row_values(i)) for i in
-                                  xrange(1, nrows)])
+                                  xrange(1, nrows)
+              if row_values(i)[0] ])
 
 def load_od():
   data_sheets = dict(map(each_sheet,
@@ -102,7 +141,7 @@ def load_od():
   lookups = {
     'depts': depts(lookup_sheets['DEPTCODE_MINCODE']),
     #'votes': votes(lookup_sheets['VOTES']),
-    'sos' : sos(lookup_sheets['SO'])
+    'sos' : sos(lookup_sheets['SO']),
     'igoc' : load_igoc()
   }
   return lookups,data_sheets
@@ -120,7 +159,6 @@ def load_les():
   lookups = {
     'depts': depts(lookup_sheets['DEPTCODE_MINCODE']),
     'votes': votes(lookup_sheets['VOTES']),
-    #'stat': stat(lookup_sheets['STATUTORY'])
     'footnotes' : footnotes(lookup_sheets['footnotes'])
   }
   return lookups,data_sheets

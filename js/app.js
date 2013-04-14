@@ -118,9 +118,10 @@
         setTimeout(_.bind(function(){ this.$el.val('')},this));
       }
       ,render:function (lang) {
+        $('<datalist></datalist>').appendTo($('body')).remove();
         this.$el = $('input.dept_search');
         // remove any previously created datalist
-        $('#suggestions').remove();
+        $('#org_suggestions').remove();
         this.$el.off('*');
          var values = _.filter(_.values(this.lookup),
            function(val){
@@ -134,12 +135,18 @@
          var datalist = $(this.template({orgs : source}));
          datalist.attr("id","org_suggestions");
          this.$el.after(datalist);
-         if (!Modernizr.datalistelem){
-          this.$el.datalist();
+         if (!pe.polyfills.polyfill.datalist.support_check){
+           $('input#org_search').datalist(); 
+           $('button.dept_search').on("keyup",this.keyup);      
          }
          this.$el.on("input",this.on_input);
          $('button.dept_search').on("click",this.on_input);
         }
+      ,keyup : function(event){
+        if (event.keyCode == 13){
+          this.on_input(event);
+        }
+      }
       ,on_input : function(event){
         var val = this.$el.val();
         var state = this.state;
@@ -391,10 +398,6 @@
       $(this.template({ org : org })).appendTo(app.app);
       $(this.template2()).appendTo($('.panels',app.app));
 
-      // remove the paragraph text
-      var mandate = app.app.find('[headers="__mandate"]');
-      mandate.html($.trim(mandate.text()));
-        
       APP.dispatcher.trigger_a("new_org_view",this);
       return this;
     }

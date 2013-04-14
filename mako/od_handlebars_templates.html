@@ -1,31 +1,27 @@
 <script type='text/plain' id='home_t'>
 <div>
-  <div class='span-8 background-light align-middle border-all'>
-    <div class='span-1 margin-top-medium margin-bottom-medium' id='back_button'>
+  <div class='border-bottom margin-left-large span-8' style='padding-bottom:5px'>
+    <div class='margin-left-none margin-right-none margin-right-large span-2'  >
     </div>
-    <div class='span-3 margin-top-medium margin-bottom-medium'>
+    <div class='margin-left-none margin-right-none margin-bottom-none span-4' >
       <label for='org_search' style='display:inline-block'>
-        {{gt "search_instrucitons"}} 
+        {{gt "search_instrucitons"}}
       </label>
-      <input id='org_search' class='dept_search width-50 margin-bottom-none' 
-        type='text' style='display:inline-block'
-        list='org_suggestions'></input>
-        <button title='{{gt "search"}}' href='#' 
-          class='dept_search button button-dark'>
-           {{gt "search"}}
-        </button>
-    </div>
-    <div class='span-2 margin-top-medium margin-bottom-medium'>
-      <a class='dept_sel ui-link'>
+      <input id='org_search' class='dept_search width-70' type='text' list='org_suggestions'/>
+      <button title='{{gt "search"}}' class='dept_search button button-dark'>
+         {{gt "search"}}
+      </button>
+      <div class='clear'></div>
+      <a class='dept_sel ui-link clickable'>
         {{{gt "to_select"}}}
       </a>
     </div>
-    <div class='span-1 margin-top-medium margin-bottom-medium'>
-      <button id='lang_change' class='button button-dark'>
-          {{{gt "lang"}}}
-      </button>
+    <div class='margin-left-none margin-right-none margin-bottom-none span-1' >
+    </div>
+    <div class='margin-left-none margin-right-none margin-bottom-medium span-1' id='back_button' >
     </div>
   </div>
+  <div class='clear'></div>
   <div class='org_list_by_min span-8'>
 
 
@@ -39,10 +35,10 @@
 </div>
 </script>
 <script type='text/plain' id='greeting_en'>
-  <h1>Welcome to FINPOINT.</h1>
+  <h1>Welcome to the Expenditure Database.</h1>
 
   <p>To start searching, click “Select” to choose a government organization from a list organized by ministry, or type the organization’s name in the search box and press “Enter.” Users will be directed to the organization’s overview page.</p>
-
+                                                
   <h2>Navigation</h2>
 <ul >
   <li>The overview page of each organization contains brief summary information about that organization: legal name, minister, role (or mandate) in government, and a link to the organization’s enabling legislation.</li>
@@ -67,30 +63,30 @@
 </ul>
 </script>
 <script type='text/plain' id='greeting_fr'>
-  <h1> </h1>
-
-  <h2> </h2>
+  <h1>Bienvenue sur la Base de données des dépenses.</h1>
+  <p>Pour lancer la recherche, cliquez sur « Choisir » pour sélectionner une organisation gouvernementale dans la liste alphabétique des portefeuilles ministériels, ou inscrivez le nom de l’organisation dans la fenêtre de recherche et appuyez sur « Entrer ». Les utilisateurs seront dirigés vers la page « Aperçu » de l’organisation concernée.</p>
+  <h2>Navigation</h2>
 
 <ul>
-  <li></li>
-  <li> 
+  <li>La page « Aperçu » de chaque organisation présente un court résumé de cette dernière  — appellation légale, ministre, rôle (ou mandat) au sein du gouvernement — et contient un lien vers la loi habilitante de cette organisation.</li>
+  <li>Les informations financières historiques pour les exercices 2009-2010 à 2011-2012 sont résumées dans trois tableaux : 
       <ol>
-        <li> </li>
-        <li> </li>
-        <li> </li>
+        <li>Autorisations et dépenses; </li>
+        <li>Dépenses par article courant; </li>
+        <li>Dépenses par programme. </li>
       </ol>
   </li>
-  <li>
+  <li>a. Détails : Chaque tableau s’agrandit pour fournir davantage de détails (cliquez sur le lien « Détails »). Le tableau ainsi agrandit présente notamment :
       <ol>
-        <li> </li>
-        <li> </li>
-        <li> </li>
-        <li> </li>
-        <li> </li>
+        <li>les catégories de crédits votés et de postes législatifs</li>
+        <li>de l’information sur les articles courants </li>
+        <li>les programmes </li>
+        <li>les montants totaux pour le portefeuille ministériel </li>
+        <li>les montants totaux pour le gouvernement </li>
       </ol>
   </li>
-  <li> </li>
-  <li> </li>
+  <li>Comparaison horizontale : À l’intérieur des tableaux agrandis, les utilisateurs peuvent cliquer sur une valeur pour consulter un tableau comparant les données de cette organisation avec celles de toutes les autres organisations fédérales. </li>
+  <li>Dans la page « Aperçu », les utilisateurs peuvent également choisir, dans une liste, d’autres organisations qui font partie du même portefeuille ministériel. </li>
 </ul>
 </script>
 
@@ -106,10 +102,10 @@
     {{gt 'fin_data'}} {{lang org.dept}}
   </h1>
 
-<div class='span-5 margin-bottom-none margin-right-none'>
+<div class='span-5 margin-bottom-none margin-right-none margin-left-none'>
   <div class='margin-top-none margin-bottom-none margin-right-medium margin-left-medium' 
     style='padding: 0px;outline: 1px solid #ccc'>
-    <p class='background-medium' style='margin: 0px'>
+    <p class='well section-header' style='margin: 0px'>
         {{gt "supplementary_data"}} {{lang org.dept}} 
       <a href='{{{gt "IGOC_site"}}}'  target='_new'>
         {{gt "igoc_from"}}
@@ -117,33 +113,43 @@
     </p>
     <table class='well-table table-medium margin-top-none margin-bottom-none'>
       <tbody>
-        <tr>
-          <th id='__legal_name'> {{gt "legal_name"}} </th>
-          <td headers='__legal_name'> {{lang org.legal_name }}  </td>
+        <tr class='well'>
+          <th id='legal_name__'> {{gt "legal_name"}} </th>
+          <td headers='legal_name__'> {{lang org.legal_name }}  </td>
         </tr>
-        <tr>
-          <th id='__dept_type'> {{gt "type"}} </th>
-          <td headers='__dept_type'> {{lang org.org_type }}  </td>
+        <tr class='well'>
+          <th id='dept_type__'> {{gt "type"}} </th>
+          <td headers='dept_type__'> {{lang org.type }}  </td>
         </tr>
-        <tr>
-          <th id='__website'> {{gt "website"}} </th>
-          <td headers='__website'> <a href="http://{{{lang org.website}}}" class='dept_name' target='_blank'>{{lang org.dept}}</a>  </td>
+        <tr class='well'>
+          <th id='website__'> {{gt "website"}} </th>
+          <td headers='website__'> 
+            {{#org.website}}
+            <p class='margin-top-none'><a href="http://{{lang .}}" target='_blank'>{{lang .}}</a></p>
+            {{/org.website}}
+          </td>
         </tr>
-        <tr>
-          <th id='__minister'> {{gt "minister" }} </th>
-          <td headers='__minister'> {{lang org.minister}}  </td>
+        <tr class='well'>
+          <th id='minister__'> {{gt "minister" }} </th>
+          <td headers='minister__'> {{lang org.minister}}  </td>
         </tr>
-        <tr>
-          <th id='__mandate'> {{gt "mandate"}} </th>
-          <td headers='__mandate'> {{{lang org.mandate}}}  </td>
+        <tr class='well'>
+          <th id='mandate__'> {{gt "mandate"}} </th>
+          <td headers='mandate__'> 
+            {{#org.mandate}}
+            <p class='margin-top-none'>{{{lang .}}}</p>  
+            {{/org.mandate}}
+          </td>
         </tr>
-        <tr>
-          <th id='__legislation'> {{gt "legislation"}} </th>
-          <td headers='__legislation'>
+        <tr class='well'>
+          <th id='legislation__'> {{gt "legislation"}} </th>
+          <td headers='legislation__'>
             {{#org.legislation}}
-            <a href='http://google.com/search?q={{encodeURI .}}' target="_blank">
-              {{{lang .}}}
-            </a>
+            <p class='margin-top-none'>
+              <a href='http://google.com/search?q={{encodeURI .}}' target="_blank">
+                {{{lang .}}}
+              </a>
+            </p>
             {{/org.legislation}}
           </td>
         </tr>
@@ -180,7 +186,10 @@
   </div>                           
   <div class="clear"></div>
   -->
-  <h2 class='font-xlarge'> {{gt 'previous_year_fisc'}} </h2>
+  <div class='span-6 border-bottom'>
+    <h2 class='font-xlarge'> {{gt 'previous_year_fisc'}} </h2>
+  </div>
+  <div class="clear"></div>
   <div class='row widget-row'>
       <div class="float-left border-all well margin-top-large margin-right-large margin-left-large" id='table4'>
       </div>                       
@@ -193,10 +202,10 @@
 <script type='text/plain' id='mini_t'>
   <div class='mini_t '>
     <div class='section-header'>
-      <strong><h3 class='title '></h3></strong>
+      <strong><h3 class='title margin-left-medium'></h3></strong>
     </div>
     <div class='margin-left-medium'>
-      <p class='description '></p>
+      <p class='description '>  </p>
     </div>
     <div class='mini_payload margin-bottom-large font-small' >
 
@@ -223,37 +232,38 @@
         <li>
         <a href='#' class='back button button-dark'>{{{gt "back"}}}</a>
         </li>
-        <li> <a href='#' class='button'> {{gt "open_data_link"}} </a> </li>
+        <li> <a href='#' class='button od_link'> {{gt "open_data_link"}} </a> </li>
       </ul>
     </div>
   </div>
   <div class='clear'></div>
 
-  <div id='__desc__' class='table_description span-6 margin-right-none'>
+  <div id='desc__' class='table_description span-6 margin-right-none'>
   </div>
-  <div class="span-2 module-table-contents margin-left-none margin-top-medium">
-    <h2>{{gt "toc"}}</h2>
-    <ul>
-	   <li><a href="#__graph__" class='page-nav' >{{gt "graphs"}}</a></li>
-	   <li><a href="#__data__" class='page-nav' >{{gt "data"}}</a></li>
-    </ul>
+  <div class='span-2 margin-left-none'>
+    <div class="module-table-contents margin-top-medium margin-left-medium">
+      <h2>{{gt "toc"}}</h2>
+      <ul>
+      <li><a href="#graph__" class='page-nav' >{{gt "graphs"}}</a></li>
+      <li><a href="#data__" class='page-nav' >{{gt "data"}}</a></li>
+      </ul>
+    </div>
   </div>
-
-
   <div class='clear'></div>
-  <div id='__graph__' class='span-8 border-bottom'>
+
+  <div id='graph__' class='span-8 border-bottom'>
     <h3 class='float-left margin-top-none margin-bottom-none'> {{gt "graphs"}} </h3>
-    <a href="#__desc__" class='margin-top-medium float-right page-nav margin-right-large' >{{gt "top"}}</a>
+    <a href="#desc__" class='margin-top-medium float-right page-nav margin-right-large' >{{gt "top"}}</a>
   </div>
-  <div class='graph_payload'>
-
+  <div class='graph_payload span-8'>
   </div>
-  <div id='__data__' class='span-8 border-bottom'>
+  <div id='data__' class='span-8 border-bottom'>
     <h3  class='float-left margin-top-none margin-bottom-none'> {{gt "data" }} </h3>
-    <a href="#__desc__" class='margin-top-medium float-right page-nav margin-right-large' >{{gt "top"}}</a>
+    <a href="#desc__" class='margin-top-medium float-right page-nav margin-right-large' >{{gt "top"}}</a>
   </div>
   <div class='clear'></div>
-  <div class='span-8 margin-left-large margin-right-large'>
+  <div class='span-8 '>
+    <p class='margin-left-medium'>{{gt "data_table_instructions"}}</p>
     <div class='table_payload sidescroll' style='font-size: 12px'> 
     </div>
   </div>
@@ -304,9 +314,10 @@
   </table>
 </script>
 <script type='text/plain' id='graph_grid_t'>
-  <p>{{description}}</p>
-  <div class='span-2 well sidebar border-all margin-right-none'  id='{{id}}_sidebar'
-          style='height:500px;overflow-y:auto'>
+  <p class='margin-left-medium'>{{description}}</p>
+  <div class='span-2 well sidebar border-all margin-right-none'  
+    id='{{id}}_sidebar'
+    style='height:450px;overflow-y:auto'>
     <p class='margin-bottom-none margin-top-none nav-header'>{{header}}</p>
     <ul class='list-bullet-none margin-bottom-none margin-top-none margin-left-small hover'>
       {{#items}}
@@ -315,8 +326,9 @@
     </ul>
   </div>
   <div class='span-6 border-all margin-left-none'>
-    <div class='well graph'>
-      <div style='height:500px' id="{{id}}">
+    <div class='well graph'
+    style='padding-left : 20px'>
+      <div style='height:450px' id="{{id}}">
       </div>
     </div>
   </div>

@@ -1,52 +1,43 @@
 <!DOCTYPE html>
-<!--[if IE 7]><html lang="en" class="no-js ie7"><![endif]-->
-<!--[if IE 8]><html lang="en" class="no-js ie8"><![endif]-->
+<!--[if IE 7]> <html lang="en" class="no-js ie7"> <![endif]-->
+<!--[if IE 8]> <html lang="en" class="no-js ie8"> <![endif]-->
 <!--[if gt IE 8]><!-->
 <html lang="en" class="no-js">
 <!--<![endif]-->
 <head>
 <meta charset="utf-8" />
-<!-- Web Experience Toolkit (WET) / Boîte à outils de l'expérience Web (BOEW)
-wet-boew.github.com/wet-boew/License-eng.txt / wet-boew.github.com/wet-boew/Licence-fra.txt -->
-<title>Web Experience Toolkit (WET)</title>
-
+www.tbs.gc.cadist/terms / www.sct.gc.cadist/conditions -->
+<title></title>
 <link rel="shortcut icon" href="dist/theme-gcwu-fegc/images/favicon.ico" />
-<meta name="description" content="Web Experience Toolkit (WET) includes reusable components for building and maintaining innovative Web sites that are accessible, usable, and interoperable. These reusable components are open source software and free for use by departments and external Web communities." />
 <meta name="dcterms.creator" content="Government of Canada, Treasury Board of Canada Secretariat, Chief Information Officer Branch, IT Project Review and Oversight, Web Standards Office" />
-<meta name="dcterms.title" content="Web Experience Toolkit (WET)" />
-<meta name="dcterms.issued" title="W3CDTF" content="2012-05-11" />
-<meta name="dcterms.modified" title="W3CDTF" content="2012-12-21" />
+<meta name="dcterms.issued" title="W3CDTF" content="2012-01-25" />
+<meta name="dcterms.modified" title="W3CDTF" content="2012-10-01" />
 <meta name="dcterms.subject" title="gccore" content="Internet;Standards;Design" />
+<meta name="dcterms.subject" title="cio" content="Common Look and Feel" />
 <meta name="dcterms.language" title="ISO639-2" content="eng" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-
+<!--	<meta name="dcterms.type" title="gctype" content="guide" /> -->
+<script src="dist/js/jquery.min.js"></script>
 <!--[if lte IE 8]>
-<script src="dist/js/jquery-ie.min.js"></script>
 <script src="dist/js/polyfills/html5shiv-min.js"></script>
-<link rel="stylesheet" href="dist/theme-gcwu-fegc/css/jquery.mobile-ie-min.css" />
 <link rel="stylesheet" href="dist/grids/css/util-ie-min.css" />
 <link rel="stylesheet" href="dist/js/css/pe-ap-ie-min.css" />
 <link rel="stylesheet" href="dist/theme-gcwu-fegc/css/theme-ie-min.css" />
-<noscript><link rel="stylesheet" href="dist/theme-gcwu-fegc/css/theme-ns-ie-min.css" /></noscript>
+<link rel="stylesheet" href="dist/theme-ie-min.css" />
 <![endif]-->
 <!--[if gt IE 8]><!-->
-<script src="dist/js/jquery.min.js"></script>
 <link rel="stylesheet" href="dist/grids/css/util-min.css" />
 <link rel="stylesheet" href="dist/js/css/pe-ap-min.css" />
 <link rel="stylesheet" href="dist/theme-gcwu-fegc/css/theme-min.css" />
-<noscript><link rel="stylesheet" href="dist/theme-gcwu-fegc/css/theme-ns-min.css" /></noscript>
+<link rel="stylesheet" href="dist/theme-min.css" />
 <!--<![endif]-->
-
 <link rel="stylesheet" href="extra-css/jquery.jqplot.min.css" />
-<!-- CustomScriptsCSSStart -->
+<noscript><link rel="stylesheet" href="dist/theme-gcwu-fegc/css/theme-ns-min.css" /></noscript>
     <style type='text/css'>
       <%block name="extracss"/> 
     </style>
-<!-- CustomScriptsCSSEnd -->
 </head>
-
 <body><div id="wb-body">
-<div id="wb-body-sec">
 <div id="wb-skip">
 <ul id="wb-tphp">
 <li id="wb-skip1"><a href="#wb-cont">Skip to main content</a></li>
@@ -62,7 +53,7 @@ wet-boew.github.com/wet-boew/License-eng.txt / wet-boew.github.com/wet-boew/Lice
 <li id="gcwu-gcnb1"><a rel="external" href="http://www.canada.gc.ca/home.html">Canada.gc.ca</a></li>
 <li id="gcwu-gcnb2"><a rel="external" href="http://www.servicecanada.gc.ca/eng/home.shtml">Services</a></li>
 <li id="gcwu-gcnb3"><a rel="external" href="http://www.canada.gc.ca/depts/major/depind-eng.html">Departments</a></li>
-<li id="gcwu-gcnb-lang"><a href="dist/wa-aw/index-fra.asp" lang="fr">Français</a></li>
+<li id="gcwu-gcnb-lang"><a href="/ws-nw/wa-aw/wet-boew/index-fra.asp" lang="fr">Français</a></li>
 </ul>
 </div></div></div></nav>
 
@@ -81,7 +72,7 @@ wet-boew.github.com/wet-boew/License-eng.txt / wet-boew.github.com/wet-boew/Lice
 
 <nav role="navigation">
 <div id="gcwu-psnb"><h2><span>Site</span> menu</h2><div id="gcwu-psnb-in"><div class="wet-boew-menubar mb-mega"><div>
-<ul class="mb-menu" >
+<ul class="mb-menu" data-ajax-replace="dist/inc/menu-eng.txt"> 
 <li><div><a href="http://www.tbs-sct.gc.ca/tbs-sct/cmn/activity-activites-eng.asp">Departmental Activities</a></div></li>
 <li><div><a href="http://www.tbs-sct.gc.ca/pol/index-eng.aspx">Policy Suite</a></div></li>
 <li><div><a href="http://www.tbs-sct.gc.ca/tbs-sct/audience-auditoire/wso-bnrw/info-aud-eng.asp">Information for</a></div></li>
@@ -92,7 +83,8 @@ wet-boew.github.com/wet-boew/License-eng.txt / wet-boew.github.com/wet-boew/Lice
 <div id="gcwu-bc"><h2>Breadcrumb trail</h2><div id="gcwu-bc-in">
 <ol>
 <li><a href="http://www.tbs-sct.gc.ca/tbs-sct/index-eng.asp">Home</a></li>
-<li>FINPOINT</li>
+<li><a href="http://www.tbs-sct.gc.ca/ems-sgd/index-eng.asp">Expenditure Management</a></li>
+<li>Expenditure Database</li>
 </ol>
 </div></div>
 </nav>
@@ -103,70 +95,74 @@ wet-boew.github.com/wet-boew/License-eng.txt / wet-boew.github.com/wet-boew/Lice
 <div id="wb-main" role="main"><div id="wb-main-in">
 <!-- MainContentStart -->
     ${next.body()}                 
+<dl id="gcwu-date-mod" role="contentinfo">
+<dt>Date modified:</dt><dd><span><time>2013-04-14</time></span></dd>
+</dl>
+<div class="clear"></div>
 <!-- MainContentEnd -->
 </div></div>
 </div></div>
 
-<div id="wb-foot"><div id="wb-foot-in"><footer><h2 id="wb-nav">Footer</h2>
+<div id="wb-foot"><div id="wb-foot-in"><footer><h2>Footer</h2>
 <!-- FooterStart -->
 <nav role="navigation"><div id="gcwu-sft"><h3>Site footer</h3><div id="gcwu-sft-in">
 <div id="gcwu-tctr">
 <ul>
-<li class="gcwu-tc"><a href="License-eng.txt" rel="license">Terms and conditions</a></li>
-<li class="gcwu-tr"><a href="http://www.tbs-sct.gc.ca/pd-dp/gr-rg/index-eng.asp">Transparency</a></li>
+<li class="gcwu-tc"><a href="http://www.tbs-sct.gc.ca/tbs-sct/cmn/notices-avis-eng.asp" rel="license">Terms and conditions</a></li>
+<li class="gcwu-tr"><a href="http://www.tbs-sct.gc.ca/pd-dp/index-eng.asp">Transparency</a></li>
 </ul>
 </div>
 <div class="clear"></div>
-<section><div class="span-2"><h4 class="gcwu-col-head"><a href="#">About us</a></h4>
+<section><div class="span-2"><h4 class="gcwu-col-head"><a href="http://www.tbs-sct.gc.ca/tbs-sct/abu-ans/tbs-sct/abu-ans-eng.asp">About us</a></h4>
 <ul>
-<li><a href="#">Our Mandate</a></li>
-<li><a href="#">The Minister</a></li>
+<li><a href="http://www.tbs-sct.gc.ca/tbs-sct/abu-ans/tb-ct/president-eng.asp">The Minister</a></li>
+<li><a href="http://www.tbs-sct.gc.ca/tbs-sct/abu-ans/tb-ct/abu-ans-eng.asp">About the Treasury Board</a></li>
+<li><a href="http://www.tbs-sct.gc.ca/tbs-sct/organization-organisation/organization-organisation-eng.asp">Our Organization</a></li>
+<li><a href="http://www.tbs-sct.gc.ca/tbsrp-prsct/index-eng.asp">Recruitment Initiatives</a></li>
 </ul>
 </div></section>
-<section><div class="span-2"><h4 class="gcwu-col-head"><a href="#">News</a></h4>
+<section><div class="span-2"><h4 class="gcwu-col-head"><a href="http://www.tbs-sct.gc.ca/media/index-eng.asp">News</a></h4>
 <ul>
-<li><a href="#">News releases</a></li>
-<li><a href="#">Media advisories</a></li>
-<li><a href="#">Multimedia</a></li>
+<li><a href="http://www.tbs-sct.gc.ca/media/info-eng.asp?from=/media/nr-cp/2011&amp;year=2011">News Releases</a></li>
+<li><a href="http://www.tbs-sct.gc.ca/media/info-eng.asp?from=/media/ps-dp/2011&amp;year=2011">Speeches</a></li>
+<li><a href="http://www.tbs-sct.gc.ca/media/info-eng.asp?from=/media/ma-am/2011&amp;year=2011">Media Advisories</a></li>
+<li><a href="http://www.tbs-sct.gc.ca/media/pg-gp/menu-eng.asp">Photo Gallery</a></li>
 </ul>
 </div></section>
-<section><div class="span-2"><h4 class="gcwu-col-head"><a href="#">Contact us</a></h4>
-<address>
+<section><div class="span-2"><h4 class="gcwu-col-head"><a href="http://www.tbs-sct.gc.ca/tbs-sct/cmn/contact-eng.asp">Contact us</a></h4>
 <ul>
-<li><a href="#">Phone numbers</a></li>
-<li><a href="#">Office locations</a></li>
-</ul>
-</address>
-</div></section>
-<section><div class="span-2"><h4 class="gcwu-col-head"><a href="#">Stay connected</a></h4>
-<ul>
-<li><a rel="external" href="#">YouTube</a></li>
-<li><a rel="external" href="#">Twitter</a></li>
-<li><a href="#">Feeds</a></li>
+<li><a href="http://www.tbs-sct.gc.ca/tbs-sct/cmn/faq-eng.asp">Frequently Asked Questions</a></li>
+<li><a href="http://www.tbs-sct.gc.ca/tbs-sct/cmn/contact-eng.asp#enquiries">General and Technical Enquiries</a></li>
 </ul>
 </div></section>
-</div></div></nav>
-
-<nav role="navigation"><div id="gcwu-gcft"><h3>Government of Canada footer</h3><div id="gcwu-gcft-in"><div id="gcwu-gcft-fip">
+<section><div class="span-2"><h4 class="gcwu-col-head"><a href="http://www.tbs-sct.gc.ca/tbs-sct/cmn/sc-rc-eng.asp">Stay connected</a></h4>
+<ul>
+<li><a href="http://www.tbs-sct.gc.ca/tbs-sct/cmn/sc-rc-eng.asp#twitter">Twitter</a></li>
+<li><a href="http://www.tbs-sct.gc.ca/tbs-sct/cmn/sc-rc-eng.asp#webfeeds">Web Feeds</a></li>
+<li><a href="http://www.tbs-sct.gc.ca/tbs-sct/cmn/sc-rc-eng.asp#emailalert">Email Alerts</a></li>
+</ul>
+</div></section>
+</div></div></nav><nav role="navigation"><div id="gcwu-gcft"><h3>Government of Canada footer</h3><div id="gcwu-gcft-in"><div id="gcwu-gcft-fip">
 <ul>
 <li><a rel="external" href="http://healthycanadians.gc.ca/index-eng.php"><span>Health</span><br />healthycanadians.gc.ca</a></li>
 <li><a rel="external" href="http://www.voyage.gc.ca/index-eng.asp"><span>Travel</span><br />travel.gc.ca</a></li>
 <li><a rel="external" href="http://www.servicecanada.gc.ca/eng/home.shtml"><span>Service Canada</span><br />servicecanada.gc.ca</a></li>
 <li><a rel="external" href="http://www.jobbank.gc.ca/intro-eng.aspx"><span>Jobs</span><br />jobbank.gc.ca</a></li>
-<li><a rel="external" href="http://actionplan.gc.ca/en"><span>Economy</span><br />actionplan.gc.ca</a></li>
-<li id="gcwu-gcft-ca"><div><a rel="external" href="http://www.canada.gc.ca/menu-eng.html">Canada.gc.ca</a></div></li>
+<li><a rel="external" href="http://actionplan.gc.ca/eng/index.asp"><span>Economy</span><br />actionplan.gc.ca</a></li>
+<li id="gcwu-gcft-ca"><div><a rel="external" href="http://www.canada.gc.ca/home.html">Canada.gc.ca</a></div></li>
 </ul>
 </div></div></div></nav>
 <!-- FooterEnd -->
 </footer>
 </div></div></div>
-<!-- ScriptsStart -->
+
+<!-- Scripts Start -->
 <%block name="templates"/> 
 <%block name='scripts'/>
 <script type='text/javascript'>
 <%block name="extrajs"/> 
 </script>
 
-
+<!-- Scripts End -->
 </body>
 </html>

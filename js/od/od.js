@@ -29,6 +29,7 @@
       ,"click a.page-nav" : "nav"
     }
     ,initialize: function(){
+      pe.wb_load({"poly" : ["datalist"]});
       _.bindAll(this);
       this.state = new APP.stateModel({app:this})
       //initialize views
@@ -83,8 +84,14 @@
       this.state.set('dept',dept)
     }
     ,reset : function() {
+      var min_tot = this.state.get("min_tot");
+      var goc_tot = this.state.get("goc_tot");
       this.state.clear({silent:true});
-      this.state.set({lang : this.lang});
+      this.state.set({
+        lang : this.lang
+        ,min_tot : min_tot
+        ,goc_tot : goc_tot
+      });
     }
     ,highlighter : function(e){
        $(e.currentTarget).toggleClass('alert-info');

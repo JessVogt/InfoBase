@@ -7,6 +7,9 @@ span.clickable:hover,
 p.clickable:hover {
   text-decoration: underline;
 }
+a.ui-link {
+  text-decoration: underline;
+}
 .section-header {
   padding-bottom : 5px;
   margin-bottom : 10px;
@@ -34,7 +37,7 @@ th.sorting_desc {
   background-color:#D9EDF7;
  }
 div.int{width: 90px;text-align:center;}
-div.big-int{width: 120px;text-align:right;}
+div.big-int{width: 100px;text-align:right;}
 .table-medium th div.str {
   color: white;  /* overide the WET standard for .str */
 }
@@ -55,6 +58,9 @@ table thead tr th div.big-int{text-align: center;}
 .table_a a, .table_a a:visited{
   text-decoration : none;
   color: #000;
+}
+.table_a a:hover{
+  text-decoration : underline;
 }
 tr.odd:not(.info-row){
  background-color: #f9f9f9;
@@ -90,4 +96,6 @@ table.table-medium thead td {
   color: white;
   text-shadow: 0 1px 1px #222;
 }
-
+.jqplot-yaxis-label {
+  margin-right: 30px;
+}

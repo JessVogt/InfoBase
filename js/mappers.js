@@ -9,7 +9,9 @@
     this.def = def;
     this.key = key;
     _.extend(this,_.pick(MAPPERS.maps[this.key],
-                        ['to','make_filter','line_key']));
+                        ['to',
+                        'make_filter',
+                        'line_key']));
   }
 
 

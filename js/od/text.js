@@ -1,3 +1,4 @@
+
 (function() {
     var LANG = ns("LANG");
 
@@ -5,6 +6,14 @@
       "data" : {
          "en" : "Data",
          "fr" : "Données" 
+      }
+      ,"restart" : {
+         "en" : "Restart",
+         "fr" : "Recommence" 
+      }
+      ,"data_table_instructions" :{
+         "en" : "Any number in the table below can be clicked to produce a horizontal comparison across all organizations.",
+         "fr" : "Vous pouvez cliquer sur n’importe quel chiffre figurant dans le tableau ci-dessous pour établir une comparaison horizontale entre toutes les organisations." 
       }
       ,'top' : {
          "en" : "To Top",
@@ -20,23 +29,23 @@
       }
       ,"supplementary_data" :{
          "en" : "Supplementary information about",
-         "fr" : "Données supplementaires pour" 
+         "fr" : "Données supplémentaires pour" 
       }
       ,"igoc_from" : {
         "en" : "from the Inventory of Government of Canada Organizations"
-        ,"fr": "pris de l'Inventaire des organisations du gouvernement du Canada"
+        ,"fr": "provenant de l'Inventaire des organisations du gouvernement du Canada"
       }
       ,"horizontal_table" : {
-        "en" : "Horizontal comparison of the selected value across all departments"
+        "en" : "Horizontal comparison of the selected value across all organizations"
         ,"fr" : "Comparaison horizontale entre toutes les organisations pour la valeur sélectionnée"
       }
       ,"horizontal_compare" : {
-        "en" : "Horizontal comparison for this value across all departments"
+        "en" : "Horizontal comparison for this value across all organizations"
         ,"fr" : "Comparaison horizontale entre toutes les organisations pour la valeur sélectionnée"
       }
       ,"legal_name" : {
-        "en" : "Legal Name",
-        "fr" : "Nom légal"
+        "en" : "Legal Title",
+        "fr" : "Titre légal"
       }
       ,"applied_title": {
         "en" : "Applied Title",
@@ -67,8 +76,8 @@
         ,"fr" : "À propos de ce tableau"
       }
       ,'type' : {
-        "en" : "Type"
-        ,"fr" : "Type"
+        "en" : "Institutional Form"
+        ,"fr" : "Type d’institution"
       }
       ,"select" : {
         "en" : "Select"
@@ -83,8 +92,8 @@
         "fr" : "Cliquez"
       }
       ,"to_select" : {
-        "en" : "Click to select from a list of organisations",
-        "fr" : "Cliquez pour sélectionner parmi une liste d’organisations"
+        "en" : "Or click here to select from a list of organizations",
+        "fr" : "Ou cliquez ici pour sélectionner parmi une liste d’organisations"
       }
       ,"fin_data"  : {
         "en" : "Financial data for",
@@ -92,19 +101,15 @@
       }           
       ,"current_year_fisc" : {
          "en" : "Financial data for the current Fiscal Year (April 1st 2012, March 31st 2013)",
-         "fr" : "Données financières pour l'exercise (1 avril á  31 mars, 2013)"
+         "fr" : "Données financières pour l'exercices (1 avril á  31 mars, 2013)"
       }
       ,"previous_year_fisc" : {
          "en" : "Financial data from previous fiscal years (2009-10 to 2011-12)",
-         "fr" : "Données financières pour les exercises (2009-10 to 2011-12)"
+         "fr" : "Données financières pour les exercices antérieurs (2009-10 to 2011-12)"
       }
       ,"close" : {
         "en" : "close"
         ,"fr" : "fermer"
-      }
-      ,"copy_tooltip" : {
-        "en" : "Clicking this button will automatically select and copy the table. You can then switch over to Excel and paste in the table"
-        ,"fr" : "En cliquant sur ce bouton, le tableau va automatiquement être sélectionné et copié. Vous pouvez ensuite ouvrir Excel et coller le tableau sélectionné"
       }
       ,"more_details" : {
         "en" : "More details for"
@@ -147,7 +152,7 @@
         ,"fr" : "Notes"
       }
       ,"org" :{
-       "en" : "Organisation"
+       "en" : "Organization"
        ,"fr" : "Organisation"
       }
       ,"open_data_link" : {
@@ -163,8 +168,8 @@
         ,"fr" : "Imprimer"
       }
       ,"other_in_min" : {
-       "en" :  "Other Organisations in same Ministry"
-      ,"fr" : "Autres organisations dans le portefeuille"
+       "en" :  "Other Organizations in same Ministry"
+      ,"fr" : "Autres organisations dans le portefeuille ministériel"
       }
       ,"print_help" : {
         "en" : "For long tables, use landscape/legal"
@@ -199,7 +204,7 @@
         ,"fr" : "Tableaux"
       }
       ,"total": {
-        "en": "Org Total"
+        "en": "Organization Total"
         ,"fr": "Total pour l’organisation"
       }
       ,"year": {
@@ -226,17 +231,13 @@
         "en" : "Cancel"
         ,"fr": "Annuler"
       }
-      ,"search_site" : {
-        "en": "Search their site"
-        ,"fr": "Cherchez dans leur site web"
-      }
       ,"search_instrucitons" : {
-        "en": "Start typing here to find a department. Click Search if the department is not automatically selected."
-        ,"fr": "Écris ici pour trouver un ministère"
+        "en": "Start typing below to find an organization. Click Search if the organization is not automatically selected."
+        ,"fr": "Commencer à écrire ci-dessous pour trouver une organisation. Cliquer sur Recherche si l’organisation n’est pas sélectionnée automatiquement."
       }
       ,"search" : {
         "en": "Search"
-        ,"fr": "Cherchez"
+        ,"fr": "Recherche"
       }
       ,"other" : {
         "en": "Other"
@@ -256,7 +257,7 @@
        'fr' : 'Programme'
       }
       ,"votestat" : {
-        "en": "Vote / Stat"
+        "en": "Vote / Statutory"
         ,"fr": "Crédit / Législatif"
       }
       ,"vote_stat" : {

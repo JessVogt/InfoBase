@@ -8,7 +8,6 @@ $(function () {
     ,template2 : APP.t('#analytics_t')
     ,row_template :APP.t("#stat_tr")
     ,initialize: function () {
-
       _.bindAll(this);
 
       this.m = TABLES.m;
@@ -117,32 +116,32 @@ $(function () {
 
       // summary_lines will be a sparse array, all the null values
       // will be filtered ignored during render
-      this.summary_lines = _.map(this.sorted_lines,
-        function(val,index,list){
-          if (index <= 2 ||
-              (index <= Math.round(this.total_num/2)+1 && 
-              index >= Math.round(this.total_num/2) -1) ||
-              index >= this.total_num-2 || 
-              index == this.index) {
-               return val
-          }
-        },
-        this
-      );
-      // extract just the ministry lines
-      this.ministry_lines = _.filter(this.sorted_lines,
-          function(line){
-            return _.indexOf(this.ministry_depts,line[0]) != -1
-          },
-          this
-      );
-      this.min_total = _.reduce(this.min_lines,
-          function(memo,val){
-            return memo + _.last(val);
-          },
-          0
-      );
-      this.min_average = this.all_total / this.all_lines.length;
+      //this.summary_lines = _.map(this.sorted_lines,
+      //  function(val,index,list){
+      //    if (index <= 2 ||
+      //        (index <= Math.round(this.total_num/2)+1 && 
+      //        index >= Math.round(this.total_num/2) -1) ||
+      //        index >= this.total_num-2 || 
+      //        index == this.index) {
+      //         return val
+      //    }
+      //  },
+      //  this
+      //);
+      //// extract just the ministry lines
+      //this.ministry_lines = _.filter(this.sorted_lines,
+      //    function(line){
+      //      return _.indexOf(this.ministry_depts,line[0]) != -1
+      //    },
+      //    this
+      //);
+      //this.min_total = _.reduce(this.min_lines,
+      //    function(memo,val){
+      //      return memo + _.last(val);
+      //    },
+      //    0
+      //);
+      //this.min_average = this.all_total / this.all_lines.length;
 
       // sort the lines based on the selected detail
       // calculate some basic stats like total and average
@@ -154,7 +153,7 @@ $(function () {
           },
           0
       );
-      this.all_average = this.all_total / this.all_lines.length;
+      //this.all_average = this.all_total / this.all_lines.length;
 
     }
     ,create_th : function(header,index,headers){
@@ -221,32 +220,31 @@ $(function () {
       return tr;
     }
     ,render : function (){
+      var self = this;
       this.$el.append(this.template2({
         gt : this.gt
-      }));
-
-      $.colorbox({html: 
-        this.$el,width:"70%"
-        ,height: "80%"
-        ,transition: "none"
-        ,speed : 0
-        ,fixed : true
-      });
-
-      this.$el.find('button').on("click",
-          this.on_button_click);
-      this.$el.find('.copy').on("click",
-          this.on_copy_click);
-      //this.$el.find('button:first').trigger("click");
-      this.on_button_click("government_stats");
-
-      var self = this;
-      setTimeout(function(){
-        $.colorbox.resize({
-          innerWidth : self.$el.find('table').width()+40
-          ,innerHeight : self.$el.find('table').height+20
+      }))
+      self.on_button_click("government_stats");
+        $.colorbox({
+          html: self.$el
+          ,width:"70%"
+          ,height: "80%"
+          ,transition: "none"
+          ,speed : 0
+          ,fixed : true
         });
-      });  
+
+        //self.$el.find('button').on("click",
+        //    self.on_button_click);
+        //self.$el.find('.copy').on("click",
+        //    self.on_copy_click);
+
+        setTimeout(function(){
+          $.colorbox.resize({
+            innerWidth : self.$el.find('table').width()+40
+            ,innerHeight : self.$el.find('table').height+20
+          });
+        });  
     }
     ,on_copy_click : function(e){
         TABLES.excel_format( this.$el.find('table'));
@@ -261,10 +259,10 @@ $(function () {
       if (button_text == this.gt('summary_stats')){
         if (this.type === 'percentage'){
           this.display_total = null;
-          this.display_average = this.all_average;
+          //this.display_average = this.all_average;
         }else {
           this.display_total = this.all_total;
-          this.display_average = this.all_average;
+          //this.display_average = this.all_average;
         }
         this.render_table(this.summary_lines);
       }else if (button_text == this.gt('ministry_stats')){
@@ -279,10 +277,10 @@ $(function () {
       }else {
         if (this.type === 'percentage'){
           this.display_total = null;
-          this.display_average = this.all_average;
+          //this.display_average = this.all_average;
           }else {
           this.display_total = this.all_total;
-          this.display_average = this.all_average;
+          //this.display_average = this.all_average;
         }
         this.render_table(this.sorted_lines);
       }

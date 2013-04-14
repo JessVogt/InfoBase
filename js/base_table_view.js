@@ -171,8 +171,6 @@
       this.headers = this.def['headers'][this.lang];
       this.title = TABLES.m(this.dept.dept[this.lang] +  " - " + this.def['title'][this.lang]);
 
-      this.$el.on("mouseenter", 'td .table_a', this.on_enter);
-      this.$el.on("mouseleave", 'td .table_a', this.on_leave);
       this.$el.on("click", 'td .table_a', this.on_td_click);
     }
     ,setup_useful_this_links : function(){
@@ -359,43 +357,32 @@
       });
       return this;
     }
-    ,on_enter : function(event) {
-      $(event.target).addClass("clickable background-highlight")
-    }
-    ,on_leave : function(event) {
-      $(event.target)
-          .parents("tbody")
-          .find('.background-highlight')
-          .removeClass('clickable background-highlight');
-    }
     ,on_td_click : function(event){
+      var self = this;
       var td = $(event.target).parents('td');
       var tr = td.parent();
       var row = tr.data('row');
       if (_.indexOf(this.row_data,row) == -1 || tr.hasClass("background-highlight")){
         return;
       }
+      var index_ar = self.datatable.fnGetPosition(td.get(0));
+      var index = index_ar[2];
 
       // return an array, where the last index is what
       // we need
-      var index_ar = this.datatable.fnGetPosition(td.get(0));
-      var index = index_ar[2];
-      
       var av = new TABLES.AnalyticsView({
-        dept : this.dept,
-        key : this.key,
+        dept : self.dept,
+        key : self.key,
         row : row,
         col_index : index,
-        app : this.app,
-        def : this.def,
-        mapper : this.mapper
+        app : self.app,
+        def : self.def,
+        mapper : self.mapper
       });
       av.render();
     }
     ,remove : function(){
       this.$el.off("click");
-      this.$el.off("mouseenter");
-      this.$el.off("mouseleave");
     }
   }) // end of BaseTableView
 
@@ -483,7 +470,7 @@
           return header_group[index];
         } else {
           var counter = -1;
-          for (var i in header_group){
+          for (var i=0;i< header_group.length;i++){
             counter += header_group[i].colspan
             if (counter >= index){
               return header_group[i].header

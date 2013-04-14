@@ -30,10 +30,10 @@
       'last_year_3' : '2009-10'
     },
     'fr' : {
-      'year' : '2012-2013',
-      'last_year' : '2011-2012',
-      'last_year_2' : '2010-2011',
-      'last_year_3' : '2009-2010'
+      'year' : '2012‒2013',
+      'last_year' : '2011‒2012',
+      'last_year_2' : '2010‒2011',
+      'last_year_3' : '2009‒2010'
     }
   };
 
@@ -53,9 +53,13 @@
 
   APP.dispatcher.on("dept_ready",function(app){
     $('#back_button').children().remove();
-    $('<button class="button button-dark">')
-      .html(app.get_text("back"))
+    $('<button class="button button-alert">')
+      .html(app.get_text("restart"))
       .on("click",app.reset)
+      .css({
+        'position' : 'absolute',
+        'right' : 0
+      })
       .appendTo($('#back_button'));
   });
 
@@ -71,9 +75,13 @@
       {'height' : $('.sidescroll').children().height()+40 +'px'
     });
 
+
     // add the description
     dv.description = dv.$el.find('.table_description');
     dv.description.html($('#'+dv.def.id+"_"+dv.lang).html());
+
+    // setup the open datalinks ** must be after the description setup
+    $('a.od_link').attr("href",dv.def.link[dv.lang]);
 
     // create the graph
     dv.graph_payload = dv.$el.find('.graph_payload');
@@ -226,10 +234,10 @@
     //      var exp = "{{year}} Expenditures-Year to date used at quarter-end";
     //      var auth_total = _.reduce(
     //          _.pluck(this.data,auth),
-    //          function(x,y){return x+y})/1000;
+    //          function(x,y){return x+y});
     //      var exp_total = _.reduce(
     //          _.pluck(this.data,exp),
-    //          function(x,y){return x+y})/1000;
+    //          function(x,y){return x+y});
     //      this.rows = [
     //        [m(this.to_lang(auth)), ttf("big-int",auth_total) ],
     //        [this.to_lang(exp), ttf("big-int",exp_total) ]
@@ -296,10 +304,10 @@
     //    "en" : "",
     //    "fr" : ""
     //  },
-    //  name : { "en" : "Departmental budgetary expenditures by Standard Object",
+    //  name : { "en" : "Budgetary expenditures by Standard Object",
     //    "fr" : "Dépenses ministérielles budgétaires par article courant"
     //  },
-    //  title : { "en" : "Departmental budgetary expenditures by Standard Object ($000)",
+    //  title : { "en" : "Budgetary expenditures by Standard Object ($000)",
     //    "fr" : "Dépenses ministérielles budgétaires par article courant ($000)"
     //  }
     //  ,key : [0]
@@ -342,7 +350,7 @@
     //      ];
     //      this.rows = _.map(this.rows, function(row){
     //        if (_.isNumber(row[1])){
-    //          return [row[0], ttf("big-int",row[1]/1000)];
+    //          return [row[0], ttf("big-int",row[1])];
     //        } else {
     //          return [row[0], row[1]]
     //        }
@@ -410,10 +418,10 @@
     //    "en" : "",
     //    "fr" : ""
     //  },
-    //  "name" : { "en" : "Departmental budgetary expenditures by Program",
+    //  "name" : { "en" : "Budgetary expenditures by Program",
     //    "fr" : "Dépenses ministérielles budgétaires par program"
     //  },
-    //  "title" : { "en" : "Departmental budgetary expenditures by Program ($000)",
+    //  "title" : { "en" : "Budgetary expenditures by Program ($000)",
     //    "fr" : "Dépenses ministérielles budgétaires par program ($000)"
     //  }
     //  ,"key" : [0] 
@@ -465,7 +473,7 @@
     //      ];
     //      this.rows = _.map(this.rows, function(row){
     //        if (_.isNumber(row[1])){
-    //          return [row[0], ttf("big-int",row[1]/1000)];
+    //          return [row[0], ttf("big-int",row[1])];
     //        } else {
     //          return [row[0], row[1]];
     //        }
@@ -516,11 +524,11 @@
           "Vote {{last_year}}/ Statutory",
           "Description",
           "Total budgetary authority available for use",
-          "Budgetary authority used",
+          "Expenditures",
           "Total budgetary authority available for use",
-          "Budgetary authority used",
+          "Expenditures",
           "Total budgetary authority available for use",
-          "Budgetary authority used"
+          "Expenditures"
         ]],
         "fr": [
               [
@@ -540,12 +548,12 @@
           [
           "Crédit {{last_year}} / Légis.",
           "Description",
-          "Autorisations budgétaires disponible pour l'emploi",
-          "Autorisations budgétaires employées au cours d'exercise",
-          "Autorisations budgétaires disponible pour l'emploi",
-          "Autorisations budgétaires employées au cours d'exercise",
-          "Autorisations budgétaires totale utilisable",
-          "Autorisations budgétaires employées au cours d'exercise"
+          "Autorisations budgétaires disponibles pour l'emploi",
+          "Dépenses",
+          "Autorisations budgétaires disponibles pour l'emploi",
+          "Dépenses",
+          "Autorisations budgétaires disponibles pour l'emploi",
+          "Dépenses"
         ]]},
       "link" : {
         "en" : "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-eng.asp",
@@ -575,22 +583,21 @@
       ,mapper : {
         to : function(row){
           if (this.lang == 'en'){
-            row.splice(2,1);
-            row.splice(2,1);
-          } else {
-            row.splice(1,1);
             row.splice(3,1);
+            row.splice(3,1);
+          } else {
+            row.splice(2,1);
+            row.splice(4,1);
           }
-          // remove acronym
-          return _.tail(row);
+          // remove acronym and vote type
+          return _.tail(row,2);
         }
         ,make_filter : function(source_row){
-          var vote_or_stat = typeof source_row[1]
           return function(candidate_row){
-            if (vote_or_stat === 'string'){
-              return  candidate_row[3] == source_row[3];
+            if (typeof source_row[2] === 'string'){
+              return  candidate_row[4] == source_row[4];
             } else {
-              return typeof candidate_row[1] === vote_or_stat;
+              return candidate_row[1] === source_row[1];
             }
           }
         }
@@ -624,20 +631,20 @@
           "fr" : "Montant total des autorisations budgétaires votées et législatives"
         }
         ,prep_data : function(){
-          var ttf = this.app.formater
-          var total = _.map([ "{{last_year_3}}-Total budgetary authority available for use",
-                            "{{last_year_3}}-Budgetary authority used",
+          var ttf = this.app.formater;
+          var total = _.map(["{{last_year_3}}-Total budgetary authority available for use",
+                            "{{last_year_3}}-Expenditures",
                             "{{last_year_2}}-Total budgetary authority available for use", 
-                            "{{last_year_2}}-Budgetary authority used",
+                            "{{last_year_2}}-Expenditures",
                             "{{last_year}}-Total budgetary authority available for use", 
-                            "{{last_year}}-Budgetary authority used"],
+                            "{{last_year}}-Expenditures"],
                 function(col){ 
                   return _.reduce(_.pluck(this.data,col),
                     function(x,y){
                       return x+y;
                     });
                 },this);
-          total = _.map(total, function(x){return ttf("big-int",x/1000)});
+          total = _.map(total, function(x){return ttf("big-int",x)});
           this.rows = [
             [m('{{last_year_short}}'),total[4],total[5]],
             [m('{{last_year_2_short}}'),total[2],total[3]],
@@ -650,8 +657,8 @@
                         this.gt("expenditures")+' ($000)' ]],
             body : this.rows,
             css : [{'font-weight' : 'bold'}, 
-                    {'text-align' : 'right'},
-                  {'text-align' : 'right'}]
+                   {'text-align' : 'right'},
+                   {'text-align' : 'right'}]
             ,classes : ['','','wrap-none']
             });
         }
@@ -659,8 +666,8 @@
       graph_view : {
         titles : {
           1 : {
-            "en" : "Split of Net Expenditures between Voted and Statutory by Fiscal Year ($000)",
-            "fr" : "Autorisations/dépenses nettes par exercice (en milliers de dollars)"
+            "en" : "Total Organisation Voted and Statutory Net Expenditures($000)",
+            "fr" : "Le total des dépenses votées et des dépenses législatives nettes (en milliers de dollars)"
           },
           2 : {
             "en" : "Detailed Net Expenditures by Voted/Statutory Item ($000)",
@@ -669,16 +676,16 @@
         }
         ,descriptions : {
           1 : {
-            "en" : "Graph 1 presents total department voted and statutory net expenditures in each fiscal year from 2009-10 to 2011-12. Voted expenditures reflect spending that received parliamentary approval through an appropriation bill, while statutory expenditures reflect spending whose authority was granted through other legislation. Select the fiscal year in the left side-bar to plot the expenditures on the graph.",
-            "fr" : ""
+            "en" : "Graph 1 presents total organisation voted and statutory net expenditures in each fiscal year from 2009‒10 to 2011‒12. Voted expenditures reflect spending that received parliamentary approval through an appropriation bill, while statutory expenditures reflect spending whose authority was granted through other legislation. Select the fiscal year in the left side-bar to plot the expenditures on the graph.",
+            "fr" : "Le graphique 1 montre le total des dépenses votées et des dépenses législatives nettes pour chaque exercice de 2009‒2010 à 2011‒2012. Les dépenses votées sont les dépenses qui ont été approuvées par le Parlement au moyen d’un projet de loi de crédits tandis que les dépenses législatives sont des dépenses qui ont été autorisées par une autre loi. Choisissez l’exercice dans le menu de gauche pour en représenter les dépenses."
           },
           2 : {
-            "en" : "Graph 2 presents the net expenditure trend for individual voted and statutory items from fiscal year 2009-10 to 2011-12. Select an individual item in the left side-bar to plot an expenditure on the graph.",
-            "fr" : ""
+            "en" : "Graph 2 presents the net expenditure trend for individual voted and statutory items from fiscal year 2009‒10 to 2011‒12. Select an individual item in the left side-bar to plot an expenditure on the graph.",
+            "fr" : "Le graphique 2 présente le profil des dépenses nettes de chaque poste voté et législatif des exercices 2009‒2010 à 2011‒2012. Choisissez un poste dans le menu de gauche pour en représenter les dépenses."
           }
         }
         ,prep_data : function(){
-          var exp = "-Budgetary authority used";
+          var exp = "-Expenditures";
           this.years = ['{{last_year_3}}',
                         '{{last_year_2}}',
                         "{{last_year}}"];
@@ -686,13 +693,12 @@
           var v_s= _.groupBy(this.mapped_objs,
               function(x){
                 return _.isNumber(x['Vote {{last_year}}/ Statutory']);
-              }
-        );
+          });
           this.map_reduce_v_s = function(col){
             return _.map(v_s, function(group){
               return _.reduce(group, function(x,y){
                 return x + y[col+exp];
-              },0)/1000;
+              },0);
             });
           };
           this.get_year_vals = function(description){
@@ -749,7 +755,7 @@
         ,item_click : function(event){
           var years = this.get_year_vals($(event.target).html());
           GRAPHS.bar(this.make_id(2), 
-              [_.map(years,function(x){return x/1000})],
+              [_.map(years,function(x){return x})],
               {title: this.titles[2][this.lang]
               ,legend : {show: false} 
               ,barWidth : 100
@@ -778,8 +784,8 @@
         "{{last_year}}"
         ]]},
       "link" : {
-        "en" : "",
-        "fr" : ""
+        "en" : "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-eng.asp",
+        "fr" : "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-fra.asp"
       },
       "name" : { "en" : "Expenditures by Standard Object",
         "fr" : "Dépenses par article courant"
@@ -819,7 +825,7 @@
       ,mini_view : {
         description : {
           "en" : "An organization’s standard object with the greatest expenditures for the specified year",
-          "fr" : "Article courant de l’organisation le plus important sur les plan des dépenses pour l’exercice indiqué"
+          "fr" : "L'article courant de l’organisation le plus important sur le plan des dépenses pour l’exercice indiqué"
         }
         ,prep_data : function(){
           var ttf = this.app.formater
@@ -842,9 +848,9 @@
             return -d[1];
           }).shift();
           this.rows = [
-          [m('{{last_year_short}}'),top_last_year[0] ,  ttf("big-int",top_last_year[1]/1000)],
-          [m('{{last_year_2_short}}'),top_last_year_2[0], ttf("big-int",top_last_year_2[1]/1000)],
-          [m('{{last_year_3_short}}'),top_last_year_3[0],  ttf("big-int",top_last_year_3[1]/1000)]
+          [m('{{last_year_short}}'),top_last_year[0] ,  ttf("big-int",top_last_year[1])],
+          [m('{{last_year_2_short}}'),top_last_year_2[0], ttf("big-int",top_last_year_2[1])],
+          [m('{{last_year_3_short}}'),top_last_year_3[0],  ttf("big-int",top_last_year_3[1])]
           ];
         }
         ,render_data : function(){
@@ -864,17 +870,17 @@
           },
           2 : {
             "en" : "Expenditures by Standard Object, 2009–10 to 2011–12 ($000)",
-            "fr" : "Dépenses par article courant, 2009-2010 à 2011-2012 (en milliers de dollars)"
+            "fr" : "Dépenses par article courant, 2009–2010 à 2011–2012 (en milliers de dollars)"
           }
         }
         ,descriptions : {
           1 : {
-            "en" : "Graph 1 compares total departmental expenditures by Standard Object category for each fiscal year from 2009-10 to 2011-12. Standard Object categories reflect expenditures on major items such as transfer payments and personnel. Select a fiscal year in the left side-bar to plot the expenditure on the graph.",
-            "fr" : ""
+            "en" : "Graph 1 compares total organizational expenditures by Standard Object category for each fiscal year from 2009-10 to 2011-12. Standard Object categories reflect expenditures on major items such as transfer payments and personnel. Select a fiscal year in the left side-bar to plot the expenditure on the graph.",
+            "fr" : "Le graphique 1 montre une comparaison du total des dépenses par article courant des exercices de 2009-2010 à 2011-2012. Les articles courants sont les grandes catégories de dépenses telles que les paiements de transfert et le personnel. Choisissez un exercice dans le menu de gauche pour en représenter les dépenses sur le graphique."
           },
           2 : {
             "en" : "Graph 2 presents the expenditure trend for individual Standard Object items from fiscal year 2009-10 to 2011-12. Select an individual Standard Object in the left side-bar to plot the expenditure on the graph.",
-            "fr" : ""
+            "fr" : "Le graphique 2 présente le profil de chaque article courant pour les exercices 2009‑2010 à 2011‑2012. Choisissez un article courant dans le menu de gauche pour en représenter les dépenses."
           }
         }
         ,prep_data : function(){
@@ -929,7 +935,7 @@
         ,year_click : function(event){
           var sos = this.extract_for_year(this.to_years[$(event.target).html()]);
           GRAPHS.bar(this.make_id(1), 
-              [_.map(_.pluck(sos,1),function(x){return x/1000})],
+              [_.map(_.pluck(sos,1),function(x){return x})],
               {title: this.titles[1][this.lang]
               ,legend : {show: false} 
               ,rotate : true
@@ -940,8 +946,8 @@
         ,item_click : function(event){
           var years = this.get_year_vals($(event.target).html());
           GRAPHS.bar(this.make_id(2), 
-              [_.map(years,function(x){return x/1000})],
-              {title:  this.titles[1][this.lang]
+              [_.map(years,function(x){return x})],
+              {title:  this.titles[2][this.lang]
               ,legend : {show: false} 
               ,barWidth : 100
               ,footnotes : this.footnotes
@@ -971,14 +977,14 @@
           "{{last_year}}"
         ]]},
       "link" : {
-        "en" : "",
-        "fr" : ""
+        "en" : "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-eng.asp",
+        "fr" : "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-fra.asp"
       },
       "name" : { "en" : "Expenditures by Program",
         "fr" : "Dépenses par programme"
       },
       "title" : { "en" : "Expenditures by Program from {{last_year_3}} to {{last_year}} ($000)",
-        "fr" : "Dépenses par Program de {{last_year_3}} à {{last_year}} ($000)"
+        "fr" : "Dépenses par programme de {{last_year_3}} à {{last_year}} ($000)"
       }
       ,"key" : [0]
       ,"sort" : function(mapped_rows,lang) {
@@ -994,17 +1000,11 @@
           return _.tail(row);
         }
         ,make_filter : function(source_row){
-          if (source_row[1] === 'Internal Services'){
             return function(candidate_row){ 
-              return candidate_row[1] == 'Internal Services'
-            }
-          }else {
-            return function(candidate_row){
-              return (candidate_row[1] != 'Internal Services' &&
+              return (candidate_row[1] == source_row[1] &&
                       candidate_row[0] != 'ZGOC');
             }
-          }
-        }
+         }
       }
       ,table_view : { 
         sum_cols : [1,2,3]
@@ -1023,7 +1023,7 @@
       ,mini_view : {
         description : {
           "en" : "An organization’s program with the greatest expenditures for the specified year",
-          "fr" : "Programme de l’organisation le plus important sur le plan des dépenses pour l’exercice indiqué"
+          "fr" : "Le programme de l’organisation le plus important sur le plan des dépenses pour l’exercice indiqué"
         }
         ,prep_data: function(){
           var ttf = this.app.formater
@@ -1046,9 +1046,9 @@
             return -d[1];
           }).shift();
           this.rows = [
-          [m('{{last_year_short}}'),top_last_year[0] , ttf("big-int",top_last_year[1]/1000)],
-          [m('{{last_year_2_short}}'),top_last_year_2[0],ttf("big-int",top_last_year_2[1]/1000)],
-          [m('{{last_year_3_short}}'),top_last_year_3[0],ttf("big-int",top_last_year_3[1]/1000)]
+          [m('{{last_year_short}}'),top_last_year[0] , ttf("big-int",top_last_year[1])],
+          [m('{{last_year_2_short}}'),top_last_year_2[0],ttf("big-int",top_last_year_2[1])],
+          [m('{{last_year_3_short}}'),top_last_year_3[0],ttf("big-int",top_last_year_3[1])]
           ];
         }
         ,render_data : function(){
@@ -1069,8 +1069,8 @@
         }
         ,descriptions : {
           1 : {
-            "en" : "Graph 1 presents the net expenditure trend for individual programs from fiscal year 2009-10 to 2011-12. Select an individual program in the left side-bar to plot the expenditure on the graph.",
-            "fr" : ""
+            "en" : "Graph 1 presents the net expenditure trend for individual programs from fiscal year 2009‒10 to 2011‒12. Select an individual program in the left side-bar to plot the expenditure on the graph.",
+            "fr" : "Le graphique 1 montre le profil des dépenses nettes par programme pour les exercices de 2009‒2010 à 2011‒2012. Choisissez un programme dans le menu de gauche pour en représenter les dépenses."
           }
         }
         ,prep_data : function(){
@@ -1107,14 +1107,13 @@
         ,item_click : function(event){
           var years = this.get_year_vals($(event.target).html());
           GRAPHS.bar(this.make_id(2), 
-              [_.map(years,function(x){return x/1000})],
+              [_.map(years,function(x){return x})],
               {title: this.titles[1][this.lang]
               ,legend : {show: false} 
               ,footnotes : this.footnotes
               ,barWidth : 100
               ,ticks : _.map(this.years,m)
               });
-
         }
       }
     }

@@ -297,11 +297,25 @@ def od_static():
 def od(dev=True):
   #lookups,data = load_od()
   #check(data,lookups, make_open_data_after_check(lookups))
-
   #lookups['depts'] = {k:v for k,v in lookups['depts'].iteritems()
   #                    if 'tables' in v}
-  #
-  #add_dept_data(lookups['depts'])
+  #for dept in lookups['depts']:
+  #  tables =  lookups['depts'][dept]['tables']
+
+  #  for row in tables['table4']:
+  #    for i,data in enumerate(row[6:],6):
+  #      row[i] = int(round(data/1000.0))
+  #  for row in tables['table5']:
+  #    for i,data in enumerate(row[2:],2):
+  #      row[i] = int(round(data/1000.0))
+  #  for row in tables['table6']:
+  #    for i,data in enumerate(row[3:],3):
+  #      row[i] = int(round(data/1000.0))
+
+  #  if dept != 'ZGOC':
+  #    lookups['depts'][dept].update(lookups['igoc'][dept])
+
+  #del lookups['igoc']
 
   #js_data = ";\n".join(
   #  [u'{}={}'.format(k,json.dumps(lookups[k]))
@@ -318,7 +332,14 @@ def od(dev=True):
   full_css = ''#full_css = cssdata
 
   t = lookup.get_template('od.html')
-  with open("../open_data_wet/index.html",'w') as leshtml:
+  with open("../open_data_wet/index-eng.html",'w') as leshtml:
+    leshtml.write(t.render(full_js = full_js,
+                           #js_root = './',
+                           full_css = full_css,
+                           no_auto_js = True,
+                           no_auto_css = True))
+  t = lookup.get_template('od_fr.html')
+  with open("../open_data_wet/index-fra.html",'w') as leshtml:
     leshtml.write(t.render(full_js = full_js,
                            #js_root = './',
                            full_css = full_css,
