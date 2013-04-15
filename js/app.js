@@ -217,6 +217,7 @@
        "click a.dept_sel" : "render"
        ,"click a.dept_sel_cancel" : "cancel"
        ,"click a.org_select" : "onClick"
+      ,"click .org_list .sort_buttons a" : "sort"
       }
       ,initialize: function(){
         _.bindAll(this);
@@ -225,11 +226,11 @@
         this.target = this.options['target'];
         this.state = this.app.state;
         this.lookup = depts;
-        this.height = 28;
+        this.sort_func = 'min_sort';
       }
       ,render : function(event){
         this.app.app.hide();
-        this.controller_button = $(event.currentTarget);
+        this.controller_button = $('a.dept_sel');
         // in case the target was a selector string
         if (_.isString(this.target)){
           this.drop_zone = $(this.target);
@@ -240,61 +241,68 @@
 
         this.controller_button
           .html(this.app.get_text("cancel"))
-          .removeClass("dept_sel")
-          .addClass("dept_sel_cancel");
+          .addClass("dept_sel_cancel")
 
         var lang = this.state.get('lang');
-        var mins = _.groupBy(depts, function(x){return x['min'][lang]});
-        // remove the empty GoC ministry
-        if (lang == 'fr'){
-          delete mins["Gouvernement du Canada"];
-        }else {
-          delete mins["Government of Canada"];
-        }
 
-        mins =  _.map(_.keys(mins).sort(),
-          function(min){
-             return _.sortBy(mins[min],
-               function(dept){
-                 return dept['dept'][lang]
-               })
-          });
-
-        if (this.cols){
-          this.height = _.keys(this.lookup).length/2+1;
-        }
-
-        var cols = this.ministry_to_cols(mins);
-        var el = $($.trim(this.template({cols: cols})));
+        var el = $($.trim(this.template({
+          depts : this[this.sort_func]['group_by'](lang)
+        })));
         this.drop_zone.append(el);
+        //enable listview
+        el.find('ul.orgs').listview({
+          autodividers:true,
+          filter:true,
+          autodividersSelector : this[this.sort_func]['dividers_func']
+        });
+        // add the class
+        el.find('a[sort-func-name="'+this.sort_func+'"]')
+          .addClass('button-accent');
       }
-      // recursive function to assign the column layout
-      // of the departments presented by ministry
-      // assumes mins is in format of [ [dept1,dept2],[dept1,dept2,dept3],...]
-      ,ministry_to_cols : function(mins,cols){
-        cols = cols || [[]];
-        if (mins.length == 0){
-          return cols;
+      ,min_sort : {
+        group_by : function(lang){
+          return _.sortBy(_.filter(_.values(depts),function(dept){
+            if (lang == 'fr'){
+              return dept.dept[lang] != "Gouvernement du Canada";
+            }else {
+              return dept.dept[lang] != "Gouvernement du Canada";
+            }
+          }),function(dept){
+             return   dept.min[lang];
+          }); 
         }
-        if (_.last(cols).length == 0){
-          _.last(cols).push(_.head(mins));
-          return this.ministry_to_cols(_.tail(mins),cols);
+       , dividers_func : function(li){ 
+          return $(li).attr("min");
         }
-        else {
-          if (_.flatten(_.last(cols),true).length + _.head(mins).length <= this.height){
-            _.last(cols).push(_.head(mins));
-            return this.ministry_to_cols(_.tail(mins),cols);
-          }
-          else{
-            return this.ministry_to_cols(mins,cols.concat([[]]));
-          }
+      }                       
+      ,alpha_sort : {
+        group_by : function(lang){
+          return _.sortBy(_.filter(_.values(depts),function(dept){
+            if (lang == 'fr'){
+              return dept.dept[lang] != "Gouvernement du Canada";
+            }else {
+              return dept.dept[lang] != "Gouvernement du Canada";
+            }
+          }),function(dept){
+             return   dept.dept[lang];
+          });
         }
+        ,dividers_func : function(li){ 
+          return $(li).text()[0];
+        }
+      }                       
+      ,fin_size_sort : function(li){ 
+          return $(li).attr("fin_size");
+      }                       
+      ,sort : function(event){
+        var btn = $(event.target);
+        this.sort_func =  btn.attr("sort-func-name");
+        this.render();
       }
       ,cancel : function(){
        this.controller_button
          .html(this.app.get_text("to_select"))
          .removeClass("dept_sel_cancel")
-         .addClass("dept_sel");
         this.drop_zone.find(".org_list").remove();
         this.app.app.show();
       }

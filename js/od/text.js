@@ -3,9 +3,26 @@
     var LANG = ns("LANG");
 
     var lookups = {
+
       "data" : {
          "en" : "Data",
          "fr" : "Données" 
+      }
+      ,"arrange_by" : {
+         "en" : "Arrange by",
+         "fr" : "Arrange par" 
+      }
+      ,"alphabetical" : {
+         "en" : "Alphabetical",
+         "fr" : "Alphabetique" 
+      }
+      ,"ministry" : {
+         "en" : "Ministry",
+         "fr" : "Ministère" 
+      }
+      ,"financial_size" : {
+         "en" : "2012 Expenditures",
+         "fr" : "Dépenses de 2012" 
       }
       ,"restart" : {
          "en" : "Restart",
@@ -92,8 +109,8 @@
         "fr" : "Cliquez"
       }
       ,"to_select" : {
-        "en" : "Or click here to select from a list of organizations",
-        "fr" : "Ou cliquez ici pour sélectionner parmi une liste d’organisations"
+        "en" : "Click here to select from a list of organizations",
+        "fr" : "Cliquez ici pour sélectionner parmi une liste d’organisations"
       }
       ,"fin_data"  : {
         "en" : "Financial data for",

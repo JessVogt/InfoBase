@@ -55,16 +55,16 @@
     $('#back_button').children().remove();
     $('<button class="button button-alert">')
       .html(app.get_text("restart"))
-      .on("click",app.reset)
-      .css({
-        'position' : 'absolute',
-        'right' : 0
-      })
+      .on("vclick",app.reset)
       .appendTo($('#back_button'));
   });
 
   APP.dispatcher.on("home", function(app){
     $('#back_button').find("button").remove();
+  });
+
+  APP.dispatcher.on("new_org_view",function(dv){
+    window.scrollTo(0,$('h1.dept').position().top);
   });
 
   APP.dispatcher.on("new_details_view",function(dv){

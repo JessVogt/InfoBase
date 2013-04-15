@@ -1,24 +1,11 @@
 <script type='text/plain' id='home_t'>
 <div>
-  <div class='border-bottom margin-left-large span-8' style='padding-bottom:5px'>
-    <div class='margin-left-none margin-right-none margin-right-large span-2'  >
-    </div>
-    <div class='margin-left-none margin-right-none margin-bottom-none span-4' >
-      <label for='org_search' style='display:inline-block'>
-        {{gt "search_instrucitons"}}
-      </label>
-      <input id='org_search' class='dept_search width-70' type='text' list='org_suggestions'/>
-      <button title='{{gt "search"}}' class='dept_search button button-dark'>
-         {{gt "search"}}
-      </button>
-      <div class='clear'></div>
+  <div class='border-bottom span-8' 
+    style='padding-bottom:5px;'>
       <a class='dept_sel ui-link clickable'>
         {{{gt "to_select"}}}
       </a>
-    </div>
-    <div class='margin-left-none margin-right-none margin-bottom-none span-1' >
-    </div>
-    <div class='margin-left-none margin-right-none margin-bottom-medium span-1' id='back_button' >
+    <div class='span-1' id='back_button'>
     </div>
   </div>
   <div class='clear'></div>
@@ -98,7 +85,7 @@
 </datalist>
 </script>
 <script type='text/plain' id='main_t'>
-  <h1>
+  <h1 class='dept'>
     {{gt 'fin_data'}} {{lang org.dept}}
   </h1>
 
@@ -285,24 +272,18 @@
 </script>
 <script type='text/plain' id='org_list_t'>
 <div class='org_list'>
-  <div class='span-1'></div>
-{{#each cols}}<div class='span-3'>
-  <ul class='list-bullet-none'>
-      {{#each this}}                    {{! this = array of ministries }}
-      <li><strong>{{lang this.0.min}}</strong> 
-      <ul class='list-bullet-none'>
-        {{#each this }}                 {{! this = ministry }}
-          {{#is_dept this}}             {{! this = dept }}
-          <li><strong><a class='org_select' href='#'>{{dept}}</a></strong></li>
-        {{else}}
-          <li><a class='org_select' href='#'>{{dept}}</a></li>
-        {{/is_dept}}
-      {{/each}}
-      </ul>
-  {{/each}}
-  </ul>
+  <div class='sort_buttons'>
+    <ul class="menu-horizontal margin-top-none margin-bottom-medium">
+      <li><a href="#" sort-func-name='min_sort' class="button">{{gt "ministry"}}</a></li>
+      <li><a href="#" sort-func-name='alpha_sort' class="button">{{gt "alphabetical"}}</a></li>
+      <li><a href="#" sort-func-name='fin_size_sort' class="button">{{gt "financial_size"}}</a></li>
+    </ul>
   </div>
-{{/each}}
+  <ul class='list-bullet-none orgs'>
+    {{#each depts}}
+       <li min='{{lang this.min}}'><a class='org_select' href='#' >{{lang this.dept}}</a></li>
+    {{/each}}
+  </ul>
 </div>
 </script>
 <script type='text/plain' id='list_t'>
