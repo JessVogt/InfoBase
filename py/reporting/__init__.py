@@ -300,17 +300,8 @@ def od(dev=True):
   #lookups['depts'] = {k:v for k,v in lookups['depts'].iteritems()
   #                    if 'tables' in v}
   #for dept in lookups['depts']:
-  #  tables =  lookups['depts'][dept]['tables']
-
-  #  for row in tables['table4']:
-  #    for i,data in enumerate(row[6:],6):
-  #      row[i] = int(round(data/1000.0))
-  #  for row in tables['table5']:
-  #    for i,data in enumerate(row[2:],2):
-  #      row[i] = int(round(data/1000.0))
-  #  for row in tables['table6']:
-  #    for i,data in enumerate(row[3:],3):
-  #      row[i] = int(round(data/1000.0))
+  #  d = lookups['depts'][dept]
+  #  d['fin_size'] = sum(x[-1] for x in d['tables']['table4'])
 
   #  if dept != 'ZGOC':
   #    lookups['depts'][dept].update(lookups['igoc'][dept])
@@ -327,6 +318,8 @@ def od(dev=True):
   #                 "od/tables.js",
   #                 "od/od.js"]
   #js_app = process_my_js(app_js_files, dev=dev)
+  #import IPython
+  #IPython.embed()
 
   full_js = ''#full_js = "\n".join([js_data])
   full_css = ''#full_css = cssdata

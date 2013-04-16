@@ -53,7 +53,7 @@
     APP.types_to_format = {
       "percentage" :  function(val,lang){return $.formatNumber(val,
                                                   {format : "0%" ,locale : lang})},
-      "big-int" :  function(val,lang){return $.formatNumber(val,
+      "big-int" :  function(val,lang){return $.formatNumber(Math.round(val/1000),
                                                    {format:"#,##0" , locale: lang})},
       "int" :  function(val,lang){return val},
       "str" : function(val,lang){return val},
@@ -246,53 +246,77 @@
         var lang = this.state.get('lang');
 
         var el = $($.trim(this.template({
-          depts : this[this.sort_func]['group_by'](lang)
+          depts : this[this.sort_func]['group_by'](lang,this)
         })));
         this.drop_zone.append(el);
         //enable listview
         el.find('ul.orgs').listview({
-          autodividers:true,
-          filter:true,
-          autodividersSelector : this[this.sort_func]['dividers_func']
+          autodividers:true
+          ,filter:true
+          ,autodividersSelector : this[this.sort_func]['dividers_func'](this)
+          ,filterPlaceholder : this.app.get_text("search")
         });
         // add the class
         el.find('a[sort-func-name="'+this.sort_func+'"]')
           .addClass('button-accent');
       }
       ,min_sort : {
-        group_by : function(lang){
+        group_by : function(lang,view){
           return _.sortBy(_.filter(_.values(depts),function(dept){
-            if (lang == 'fr'){
-              return dept.dept[lang] != "Gouvernement du Canada";
-            }else {
-              return dept.dept[lang] != "Gouvernement du Canada";
-            }
+            return dept.accronym != 'ZGOC';
           }),function(dept){
-             return   dept.min[lang];
+            return   dept.min[lang];
           }); 
         }
-       , dividers_func : function(li){ 
-          return $(li).attr("min");
-        }
+       , dividers_func : function(app){
+         return function(li){ 
+            return $(li).attr("min");
+          }
+       }
       }                       
       ,alpha_sort : {
-        group_by : function(lang){
+        group_by : function(lang,view){
           return _.sortBy(_.filter(_.values(depts),function(dept){
-            if (lang == 'fr'){
-              return dept.dept[lang] != "Gouvernement du Canada";
-            }else {
-              return dept.dept[lang] != "Gouvernement du Canada";
-            }
+            return dept.accronym != 'ZGOC';
           }),function(dept){
              return   dept.dept[lang];
           });
         }
-        ,dividers_func : function(li){ 
-          return $(li).text()[0];
+        ,dividers_func : function(view){
+          return function(li){ 
+            return $(li).text()[0];
+          }
         }
       }                       
-      ,fin_size_sort : function(li){ 
-          return $(li).attr("fin_size");
+      ,fin_size_sort : {
+        group_by  : function(lang,view){
+          return _.sortBy(_.filter(_.values(depts),function(dept){
+            return dept.accronym != 'ZGOC';
+          }),function(dept){
+             return  dept.fin_size
+          }).reverse();
+        }
+        ,dividers_func : function(view){
+          var app = view.app;
+          return function(li){ 
+            var fin_size =  parseFloat($(li).attr("fin-size"));
+            var sizes = [ 10000000000,
+                          7500000000,
+                          5000000000,
+                          2500000000,
+                          1000000000,
+                          500000000,
+                          100000000,
+                          50000000,
+                          10000000];
+            for (var i=0;i<sizes.length;i++){
+              if (fin_size >= sizes[i]){
+                return app.get_text("greater_than") +app.formater("big-int",sizes[i]);
+              }
+            }
+            return  app.get_text("less_than") + app.formater("big-int",_.last(sizes));
+          }
+        }
       }                       
       ,sort : function(event){
         var btn = $(event.target);

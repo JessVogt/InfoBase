@@ -21,8 +21,16 @@
          "fr" : "Ministère" 
       }
       ,"financial_size" : {
-         "en" : "2012 Expenditures",
-         "fr" : "Dépenses de 2012" 
+         "en" : "2012 Expenditures $(000)",
+         "fr" : "Dépenses de 2012 en milliers" 
+      }
+      ,"greater_than" : {
+         "en" : "Greater than ",
+         "fr" : "Plus que " 
+      }
+      ,"less_than" : {
+         "en" : "Less than ",
+         "fr" : "Moins que " 
       }
       ,"restart" : {
          "en" : "Restart",
@@ -248,13 +256,9 @@
         "en" : "Cancel"
         ,"fr": "Annuler"
       }
-      ,"search_instrucitons" : {
-        "en": "Start typing below to find an organization. Click Search if the organization is not automatically selected."
-        ,"fr": "Commencer à écrire ci-dessous pour trouver une organisation. Cliquer sur Recherche si l’organisation n’est pas sélectionnée automatiquement."
-      }
       ,"search" : {
-        "en": "Search"
-        ,"fr": "Recherche"
+        "en": "Search..."
+        ,"fr": "Recherche..."
       }
       ,"other" : {
         "en": "Other"
