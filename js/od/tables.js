@@ -55,6 +55,7 @@
     $('#back_button').children().remove();
     $('<button class="button button-alert">')
       .html(app.get_text("restart"))
+      .attr("href" , "#")
       .on("vclick",app.reset)
       .appendTo($('#back_button'));
   });

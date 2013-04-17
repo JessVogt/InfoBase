@@ -12,7 +12,7 @@ $(function () {
 
       this.m = TABLES.m;
 
-      this.r = _.random(10000);
+      this.r = "r"+_.random(10000);
 
       this.dept = this.options['dept'];
       this.key = this.options['key'];
@@ -167,7 +167,7 @@ $(function () {
           .append(div)
           .appendTo(tr)
         if (!_.isEmpty(h)){
-          th.attr("id",this.r+h);
+          th.attr("id",(this.r+h).replace(/\W/g,""));
         }
       },this);
       return tr;
@@ -190,13 +190,13 @@ $(function () {
       _.each(_.zip(this.types,mapped_row),function(type_val,index){
         var header_links = _.map(_.pluck(this.combined_headers,index),
           function(h){ 
-            return h ? this.r+h.replace(/\W/,"").replace(" ",""): null
+            return h ? this.r+h.replace(/\W/g,""): null
           },
           this);
         var type = type_val[0];
         var val = type_val[1];
         var td = $('<td class="'+type+'"><div>');
-        td.attr("headers", header_links.join(" "));
+        td.attr("headers", $.trim(header_links.join(" ")));
         var div = td.find('div');
         div.addClass(type);
         if (index === 1){

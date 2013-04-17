@@ -36,7 +36,7 @@
       _.each(this.header,
 
       function (h,i) {
-        var header,parent_headers,id;
+        var header,parent_headers,header_id;
         if (_.isString(h)) {
           args = {
             header: h
@@ -48,17 +48,17 @@
           args = _.extend({class_: ''},h);
           args['el'] = h.header ? "th" : "td";
         }
+        var header_id = args['header'].replace(/\W|_/g,"");
         args['header'] = this.m(args['header']);
-
         header = $(this.template(args));
-        id = header.text().replace(" ","");
         // figure out the WCAG header link
         if (this.headers.length > 0) {
           parent_headers = TABLES.extract_headers(this.headers,i)
-          header.attr("headers",parent_headers.join(" "));
-          id = parent_headers.join("-")+"-"+id;
+          parent_headers = _.map(parent_headers ,function(s){return s.replace(/\W|_/g,"")});
+          header.attr("headers",$.trim(parent_headers.join(" ")));
+          header_id = parent_headers.join(" ")+header_id;
         }
-        header.attr("id",id);
+        header.attr("id",header_id);
         $(this.el).append(header); //append header
       },
       this //scope of map is rowView
@@ -243,9 +243,9 @@
         // add in WCAG links
       var wcag_links = _.map(this.row_data[0],function(x,i){
         var headers = TABLES.extract_headers(this.headers,i);
-        return _.map(headers, function(header,index){
-          return _.first(headers,index+1).join("-")
-        }).join(" ");
+        return $.trim(_.map(headers, function(header,index){
+          return _.first(headers,index+1).join("").replace(/\W|_/g,"");
+        }).join(" "));
       },this);
       _.each(_.map(this.row_data.concat(this.min_data).concat(this.goc_data),
               function (r) {
@@ -532,7 +532,7 @@
     TABLES.build_table = function(options){
       options.classes = options.classes || new Array(options.css.length);
       var table = $(table_template({title:false}));
-      var id_base = _.random(0,1000000)+":";
+      var id_base = _.random(0,1000000);
       table.find('table').removeClass('table-striped');
       if (options.headers){
         _.each(options.headers, function(header_row){
@@ -546,7 +546,7 @@
              return el
               .html(x)
               .css(options.css[index])
-              .attr("id",id_base+x) ;
+              .attr("id",(id_base+x).replace(/\W|_| /g,"")) ;
            }));
            table.find('thead').append( row);
         });
@@ -559,7 +559,7 @@
           .css(options.css[index])
           .addClass(options.classes[index])
           .attr("headers", _.map(options.headers, function(h){
-            return id_base+h[index].replace(/\W/,"").replace(" ","");
+            return id_base+h[index].replace(/\W|_| /g,"")
           }).join(" "));
         }));
         table.find('tbody').append(row);
