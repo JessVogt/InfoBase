@@ -532,7 +532,7 @@
     TABLES.build_table = function(options){
       options.classes = options.classes || new Array(options.css.length);
       var table = $(table_template({title:false}));
-      var id_base = _.random(0,1000000);
+      var id_base = "r"+_.random(0,1000000);
       table.find('table').removeClass('table-striped');
       if (options.headers){
         _.each(options.headers, function(header_row){

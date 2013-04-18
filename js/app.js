@@ -256,6 +256,13 @@
           ,autodividersSelector : this[this.sort_func]['dividers_func'](this)
           ,filterPlaceholder : this.app.get_text("search")
         });
+        // add WCAG required label
+        el.find('div.ui-input-search input')
+          .attr("id","dept_search_filter")
+          .before($('<label>')
+                  .attr("for","dept_search_filter")
+                  .addClass("wb-invisible")
+                  .html(this.app.get_text("search")));
         // add the class
         el.find('a[sort-func-name="'+this.sort_func+'"]')
           .addClass('button-accent');
