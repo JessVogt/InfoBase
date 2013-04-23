@@ -2,9 +2,11 @@
 <div>
   <div class='border-bottom span-8' 
     style='padding-bottom:5px;'>
+    <div class='span-5'>
       <a href='#' class='dept_sel ui-link clickable'>
         {{{gt "to_select"}}}
       </a>
+    </div>
     <div class='span-1' id='back_button'>
     </div>
   </div>
@@ -24,7 +26,7 @@
 <script type='text/plain' id='greeting_en'>
   <h1>Welcome to the Expenditure Database.</h1>
 
-  <p>To start searching, click “Select” to choose a government organization from a list organized by ministry, or type the organization’s name in the search box and press “Enter.” Users will be directed to the organization’s overview page.</p>
+  <p><a class='dept_sel ui-link clickable' href='#'>{{gt "to_select"}}</a> from a list presented either by ministry,alphabetically or by 2011-12 budgetary net expenditures.  Users will then be directed to the organization’s overview page.</p>
                                                 
   <h2>Navigation</h2>
 <ul >
@@ -51,7 +53,7 @@
 </script>
 <script type='text/plain' id='greeting_fr'>
   <h1>Bienvenue sur la Base de données des dépenses.</h1>
-  <p>Pour lancer la recherche, cliquez sur « Choisir » pour sélectionner une organisation gouvernementale dans la liste alphabétique des portefeuilles ministériels, ou inscrivez le nom de l’organisation dans la fenêtre de recherche et appuyez sur « Entrer ». Les utilisateurs seront dirigés vers la page « Aperçu » de l’organisation concernée.</p>
+  <p><a class='dept_sel ui-link clickable' href='#'>{{gt "to_select"}}</a>  dans une liste présentée soit par portefeuille ministériel ou sous forme alphabétique ou encore selon les dépenses nettes pour l’exercice 2011-2012.  Les utilisateurs seront ensuite dirigés vers la page « Aperçu » de l’organisation concernée.</p>
   <h2>Navigation</h2>
 
 <ul>
@@ -252,6 +254,8 @@
   <div class='span-8 '>
     <p class='margin-left-medium'>{{gt "data_table_instructions"}}</p>
     <div class='table_payload sidescroll' style='font-size: 12px'> 
+    </div>
+    <div class='horizontal_instructions span-4'>
     </div>
   </div>
 </div>

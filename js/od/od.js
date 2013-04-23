@@ -105,7 +105,7 @@
       this.remove();
 
       this.app_area.html(this.template({
-        greeting : $('#greeting_'+this.lang).html()
+        greeting : Handlebars.compile($('#greeting_'+this.lang).html())()
       }));
       this.app = this.app_area.find('.dept_zone');
 

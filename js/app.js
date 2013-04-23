@@ -264,8 +264,11 @@
                   .addClass("wb-invisible")
                   .html(this.app.get_text("search")));
         // add the class
+        // to the active button
         el.find('a[sort-func-name="'+this.sort_func+'"]')
           .addClass('button-accent');
+        // focus the cursor on the cancel button
+        $('.dept_sel_cancel:first').focus();
       }
       ,min_sort : {
         group_by : function(lang,view){

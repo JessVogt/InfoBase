@@ -1,14 +1,19 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <!--[if IE 7]> <html lang="en" class="no-js ie7"> <![endif]-->
 <!--[if IE 8]> <html lang="en" class="no-js ie8"> <![endif]-->
 <!--[if gt IE 8]><!-->
 <html lang="en" class="no-js">
-<!--<![endif]-->
-<head>
+<!--<![endif]--><head>
 <meta charset="utf-8" />
-www.tbs.gc.cadist/terms / www.sct.gc.cadist/conditions -->
+<!--www.tbs.gc.cadist/terms / www.sct.gc.cadist/conditions -->
+
 <title></title>
 <link rel="shortcut icon" href="dist/theme-gcwu-fegc/images/favicon.ico" />
+
+<noscript>
+  <meta http-equiv="refresh" content="0; url=http://authoring.publiservice.tbs-sct.gc.ca/ems-sgd/edb-bdd/non-js-eng.asp" />
+</noscript>
+
 <meta name="dcterms.creator" content="Government of Canada, Treasury Board of Canada Secretariat, Chief Information Officer Branch, IT Project Review and Oversight, Web Standards Office" />
 <meta name="dcterms.issued" title="W3CDTF" content="2012-01-25" />
 <meta name="dcterms.modified" title="W3CDTF" content="2012-10-01" />
@@ -33,9 +38,26 @@ www.tbs.gc.cadist/terms / www.sct.gc.cadist/conditions -->
 <!--<![endif]-->
 <link rel="stylesheet" href="extra-css/jquery.jqplot.min.css" />
 <noscript><link rel="stylesheet" href="dist/theme-gcwu-fegc/css/theme-ns-min.css" /></noscript>
-    <style type='text/css'>
+<style type='text/css'>
       <%block name="extracss"/> 
-    </style>
+</style>
+<script type="text/javascript" src="http://www.tbs-sct.gc.ca/cioscripts/js/ga/gaAddons-2.1.2.min.js"></script>
+
+<script type="text/javascript">
+	var _gaq = _gaq || [];
+	_gaq.push(
+	    ['_setAccount', 'UA-19331166-1'],
+	    ['_trackDownload'],
+	    ['_gat._anonymizeIp']
+	); 
+	_gaq.push(['_trackPageview']);
+	(function() {
+		var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+		ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+	})();
+</script>
+
 </head>
 <body><div id="wb-body">
 <div id="wb-skip">
@@ -53,13 +75,13 @@ www.tbs.gc.cadist/terms / www.sct.gc.cadist/conditions -->
 <li id="gcwu-gcnb1"><a rel="external" href="http://www.canada.gc.ca/home.html">Canada.gc.ca</a></li>
 <li id="gcwu-gcnb2"><a rel="external" href="http://www.servicecanada.gc.ca/eng/home.shtml">Services</a></li>
 <li id="gcwu-gcnb3"><a rel="external" href="http://www.canada.gc.ca/depts/major/depind-eng.html">Departments</a></li>
-<li id="gcwu-gcnb-lang"><a href="/ws-nw/wa-aw/wet-boew/index-fra.asp" lang="fr">Français</a></li>
+<li id="gcwu-gcnb-lang"><a href="index-fra.html" lang="fr">Français</a></li>
 </ul>
 </div></div></div></nav>
 
 <div id="gcwu-bnr" role="banner"><div id="gcwu-bnr-in">
 <div id="gcwu-wmms"><div id="gcwu-wmms-in"><div id="gcwu-wmms-fip" title="Symbol of the Government of Canada"><img src="dist/theme-gcwu-fegc/images/wmms.gif" width="126" height="30"  alt="Symbol of the Government of Canada" /></div></div></div>
-<div id="gcwu-title"><p id="gcwu-title-in"><a href="http://www.tbs-sct.gc.ca/tbs-sct/index-eng.asp">Treasury Board of Canada Secretariat</a></p></div>
+<div id="gcwu-title"><p id="gcwu-title-in"><a href="/tbs-sct/index-eng.asp">Treasury Board of Canada Secretariat</a></p></div>
 
 <section role="search"><div id="gcwu-srchbx"><h2>Search</h2>
 <form action="http://www.tbs-sct.gc.ca/search-recherche/query-recherche-eng.aspx" method="get"><div id="gcwu-srchbx-in">
@@ -72,18 +94,19 @@ www.tbs.gc.cadist/terms / www.sct.gc.cadist/conditions -->
 
 <nav role="navigation">
 <div id="gcwu-psnb"><h2><span>Site</span> menu</h2><div id="gcwu-psnb-in"><div class="wet-boew-menubar mb-mega"><div>
-<ul class="mb-menu" data-ajax-replace="dist/inc/menu-eng.txt"> 
-<li><div><a href="http://www.tbs-sct.gc.ca/tbs-sct/cmn/activity-activites-eng.asp">Departmental Activities</a></div></li>
-<li><div><a href="http://www.tbs-sct.gc.ca/pol/index-eng.aspx">Policy Suite</a></div></li>
-<li><div><a href="http://www.tbs-sct.gc.ca/tbs-sct/audience-auditoire/wso-bnrw/info-aud-eng.asp">Information for</a></div></li>
-<li><div><a href="http://www.tbs-sct.gc.ca/tbs-sct/audience-auditoire/wso-bnrw/res-cen-res-eng.asp">Resource Centre</a></div></li>
+<ul class="mb-menu" data-ajax-replace="dist/inc/menu-eng.txt">
+ 
+<li><div><a href="/tbs-sct/cmn/activity-activites-eng.asp">Departmental Activities</a></div></li>
+<li><div><a href="/pol/index-eng.aspx">Policy Suite</a></div></li>
+<li><div><a href="/tbs-sct/audience-auditoire/wso-bnrw/info-aud-eng.asp">Information for</a></div></li>
+<li><div><a href="/tbs-sct/audience-auditoire/wso-bnrw/res-cen-res-eng.asp">Resource Centre</a></div></li>
 </ul>
 </div></div></div></div>
 
 <div id="gcwu-bc"><h2>Breadcrumb trail</h2><div id="gcwu-bc-in">
 <ol>
-<li><a href="http://www.tbs-sct.gc.ca/tbs-sct/index-eng.asp">Home</a></li>
-<li><a href="http://www.tbs-sct.gc.ca/ems-sgd/index-eng.asp">Expenditure Management</a></li>
+<li><a href="/tbs-sct/index-eng.asp">Home</a></li>
+<li><a href="/ems-sgd/index-eng.asp">Expenditure Management</a></li>
 <li>Expenditure Database</li>
 </ol>
 </div></div>
@@ -94,9 +117,12 @@ www.tbs.gc.cadist/terms / www.sct.gc.cadist/conditions -->
 <div id="wb-core"><div id="wb-core-in" class="equalize">
 <div id="wb-main" role="main"><div id="wb-main-in">
 <!-- MainContentStart -->
+    
     ${next.body()}                 
+
+                 
 <dl id="gcwu-date-mod" role="contentinfo">
-<dt>Date modified:</dt><dd><span><time>2013-04-14</time></span></dd>
+<dt>Date modified:</dt><dd><span><time>2013-04-22</time></span></dd>
 </dl>
 <div class="clear"></div>
 <!-- MainContentEnd -->
@@ -108,38 +134,38 @@ www.tbs.gc.cadist/terms / www.sct.gc.cadist/conditions -->
 <nav role="navigation"><div id="gcwu-sft"><h3>Site footer</h3><div id="gcwu-sft-in">
 <div id="gcwu-tctr">
 <ul>
-<li class="gcwu-tc"><a href="http://www.tbs-sct.gc.ca/tbs-sct/cmn/notices-avis-eng.asp" rel="license">Terms and conditions</a></li>
-<li class="gcwu-tr"><a href="http://www.tbs-sct.gc.ca/pd-dp/index-eng.asp">Transparency</a></li>
+<li class="gcwu-tc"><a href="/tbs-sct/cmn/notices-avis-eng.asp" rel="license">Terms and conditions</a></li>
+<li class="gcwu-tr"><a href="/pd-dp/index-eng.asp">Transparency</a></li>
 </ul>
 </div>
 <div class="clear"></div>
-<section><div class="span-2"><h4 class="gcwu-col-head"><a href="http://www.tbs-sct.gc.ca/tbs-sct/abu-ans/tbs-sct/abu-ans-eng.asp">About us</a></h4>
+<section><div class="span-2"><h4 class="gcwu-col-head"><a href="/tbs-sct/abu-ans/tbs-sct/abu-ans-eng.asp">About us</a></h4>
 <ul>
-<li><a href="http://www.tbs-sct.gc.ca/tbs-sct/abu-ans/tb-ct/president-eng.asp">The Minister</a></li>
-<li><a href="http://www.tbs-sct.gc.ca/tbs-sct/abu-ans/tb-ct/abu-ans-eng.asp">About the Treasury Board</a></li>
-<li><a href="http://www.tbs-sct.gc.ca/tbs-sct/organization-organisation/organization-organisation-eng.asp">Our Organization</a></li>
-<li><a href="http://www.tbs-sct.gc.ca/tbsrp-prsct/index-eng.asp">Recruitment Initiatives</a></li>
+<li><a href="/tbs-sct/abu-ans/tb-ct/president-eng.asp">The Minister</a></li>
+<li><a href="/tbs-sct/abu-ans/tb-ct/abu-ans-eng.asp">About the Treasury Board</a></li>
+<li><a href="/tbs-sct/organization-organisation/organization-organisation-eng.asp">Our Organization</a></li>
+<li><a href="/tbsrp-prsct/index-eng.asp">Recruitment Initiatives</a></li>
 </ul>
 </div></section>
-<section><div class="span-2"><h4 class="gcwu-col-head"><a href="http://www.tbs-sct.gc.ca/media/index-eng.asp">News</a></h4>
+<section><div class="span-2"><h4 class="gcwu-col-head"><a href="/media/index-eng.asp">News</a></h4>
 <ul>
-<li><a href="http://www.tbs-sct.gc.ca/media/info-eng.asp?from=/media/nr-cp/2011&amp;year=2011">News Releases</a></li>
-<li><a href="http://www.tbs-sct.gc.ca/media/info-eng.asp?from=/media/ps-dp/2011&amp;year=2011">Speeches</a></li>
-<li><a href="http://www.tbs-sct.gc.ca/media/info-eng.asp?from=/media/ma-am/2011&amp;year=2011">Media Advisories</a></li>
-<li><a href="http://www.tbs-sct.gc.ca/media/pg-gp/menu-eng.asp">Photo Gallery</a></li>
+<li><a href="/media/info-eng.asp?from=/media/nr-cp/2013&amp;year=2013">News Releases</a></li>
+<li><a href="/media/info-eng.asp?from=/media/ps-dp/2013&amp;year=2013">Speeches</a></li>
+<li><a href="/media/info-eng.asp?from=/media/ma-am/2013&amp;year=2013">Media Advisories</a></li>
+<li><a href="/media/pg-gp/menu-eng.asp">Photo Gallery</a></li>
 </ul>
 </div></section>
-<section><div class="span-2"><h4 class="gcwu-col-head"><a href="http://www.tbs-sct.gc.ca/tbs-sct/cmn/contact-eng.asp">Contact us</a></h4>
+<section><div class="span-2"><h4 class="gcwu-col-head"><a href="/tbs-sct/cmn/contact-eng.asp">Contact us</a></h4>
 <ul>
-<li><a href="http://www.tbs-sct.gc.ca/tbs-sct/cmn/faq-eng.asp">Frequently Asked Questions</a></li>
-<li><a href="http://www.tbs-sct.gc.ca/tbs-sct/cmn/contact-eng.asp#enquiries">General and Technical Enquiries</a></li>
+<li><a href="/tbs-sct/cmn/faq-eng.asp">Frequently Asked Questions</a></li>
+<li><a href="/tbs-sct/cmn/contact-eng.asp#enquiries">General and Technical Enquiries</a></li>
 </ul>
 </div></section>
-<section><div class="span-2"><h4 class="gcwu-col-head"><a href="http://www.tbs-sct.gc.ca/tbs-sct/cmn/sc-rc-eng.asp">Stay connected</a></h4>
+<section><div class="span-2"><h4 class="gcwu-col-head"><a href="/tbs-sct/cmn/sc-rc-eng.asp">Stay connected</a></h4>
 <ul>
-<li><a href="http://www.tbs-sct.gc.ca/tbs-sct/cmn/sc-rc-eng.asp#twitter">Twitter</a></li>
-<li><a href="http://www.tbs-sct.gc.ca/tbs-sct/cmn/sc-rc-eng.asp#webfeeds">Web Feeds</a></li>
-<li><a href="http://www.tbs-sct.gc.ca/tbs-sct/cmn/sc-rc-eng.asp#emailalert">Email Alerts</a></li>
+<li><a href="/tbs-sct/cmn/sc-rc-eng.asp#twitter">Twitter</a></li>
+<li><a href="/tbs-sct/cmn/sc-rc-eng.asp#webfeeds">Web Feeds</a></li>
+<li><a href="/tbs-sct/cmn/sc-rc-eng.asp#emailalert">Email Alerts</a></li>
 </ul>
 </div></section>
 </div></div></nav><nav role="navigation"><div id="gcwu-gcft"><h3>Government of Canada footer</h3><div id="gcwu-gcft-in"><div id="gcwu-gcft-fip">
@@ -155,14 +181,12 @@ www.tbs.gc.cadist/terms / www.sct.gc.cadist/conditions -->
 <!-- FooterEnd -->
 </footer>
 </div></div></div>
-
 <!-- Scripts Start -->
 <%block name="templates"/> 
 <%block name='scripts'/>
 <script type='text/javascript'>
 <%block name="extrajs"/> 
 </script>
-
 <!-- Scripts End -->
 </body>
 </html>

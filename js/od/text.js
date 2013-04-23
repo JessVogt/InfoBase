@@ -26,7 +26,7 @@
       }
       ,"greater_than" : {
          "en" : "Greater than ",
-         "fr" : "Plus que " 
+         "fr" : "Plus de " 
       }
       ,"less_than" : {
          "en" : "Less than ",
@@ -117,8 +117,8 @@
         "fr" : "Cliquez"
       }
       ,"to_select" : {
-        "en" : "Click here to select from a list of organizations",
-        "fr" : "Cliquez ici pour sélectionner parmi une liste d’organisations"
+        "en" : "Click here to choose a government organization",
+        "fr" : "Cliquez ici pour sélectionner une organisation gouvernementale"
       }
       ,"fin_data"  : {
         "en" : "Financial data for",

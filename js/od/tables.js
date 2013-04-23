@@ -52,16 +52,18 @@
   });
 
   APP.dispatcher.on("dept_ready",function(app){
+    // add the reset button
     $('#back_button').children().remove();
-    $('<button class="button button-alert">')
+    $('<a class="button button-alert"></a>')
       .html(app.get_text("restart"))
       .attr("href" , "#")
       .on("vclick",app.reset)
-      .appendTo($('#back_button'));
+      .appendTo($('#back_button'))
+      .focus()
   });
 
   APP.dispatcher.on("home", function(app){
-    $('#back_button').find("button").remove();
+    $('#back_button').find("a").remove();
   });
 
   APP.dispatcher.on("new_org_view",function(dv){
@@ -96,6 +98,10 @@
       footnotes : []
     });
     dv.graph_payload.append(dv.graph_view.render().$el);
+
+    // append the horizontal table text below the table
+    //$('.horizontal_instructions')
+    //  .append($('#'+ dv.def.id+'_horizontal_instructions_' + dv.lang).html());
   });
 
   APP.dispatcher.on("load_tables",function(app){
