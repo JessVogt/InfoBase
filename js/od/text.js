@@ -34,7 +34,7 @@
       }
       ,"restart" : {
          "en" : "Restart",
-         "fr" : "Recommence" 
+         "fr" : "Recommencer" 
       }
       ,"data_table_instructions" :{
          "en" : "Any number in the table below can be clicked to produce a horizontal comparison across all organizations.",

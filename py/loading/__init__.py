@@ -19,7 +19,9 @@ wb6 = xlrd.open_workbook("Enhanced Inventory of Government data.xls")
 
 def clean_data(d):
   if isinstance(d,basestring):
-    d = d.strip('*').strip().replace(u"\xad","-")
+    if u"  " in d:
+      print d
+    d = d.strip('*').strip().replace(u"\xad","-").replace("  "," ")
     # try and convert to an integer
     # if it fails, then return the string
     try:
