@@ -319,8 +319,8 @@ def od(dev=True):
   #                 "od/od.js"]
   #js_app = process_my_js(app_js_files, dev=dev)
 
-  #full_js = ''#full_js = "\n".join([js_data])
-  #full_css = ''#full_css = cssdata
+  full_js = ''#full_js = "\n".join([js_data])
+  full_css = ''#full_css = cssdata
 
   t = lookup.get_template('od.html')
   with open("../open_data_wet/index-eng.html",'w') as leshtml:

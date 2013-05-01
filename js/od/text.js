@@ -22,7 +22,7 @@
       }
       ,"financial_size" : {
          "en" : "2012 Expenditures $(000)",
-         "fr" : "Dépenses de 2012 en milliers" 
+         "fr" : "Dépenses de 2012 $(000)" 
       }
       ,"greater_than" : {
          "en" : "Greater than ",
@@ -38,7 +38,7 @@
       }
       ,"data_table_instructions" :{
          "en" : "Any number in the table below can be clicked to produce a horizontal comparison across all organizations.",
-         "fr" : "Vous pouvez cliquer sur n’importe quel chiffre figurant dans le tableau ci-dessous pour établir une comparaison horizontale entre toutes les organisations." 
+         "fr" : "Vous pouvez cliquer sur n’importe quelle valeur figurant dans le tableau ci-dessous pour établir une comparaison horizontale entre toutes les organisations." 
       }
       ,'top' : {
          "en" : "To Top",
@@ -89,8 +89,8 @@
         "fr" : "Premier(ère) dirigeant(e)"
       }
       ,"legislation": {
-        "en" : "Legislation",
-        "fr" : "Instrument(s) habilitant(s)"
+        "en" : "Enabling <span class='wrap-none'>Instrument(s)</span>",
+        "fr" : "<span class='wrap-none'> Instrument(s) </span> <span class='wrap-none'> habilitant(s)</span>"
       }
       ,"website": {
         "en" : "Website",
@@ -126,11 +126,11 @@
       }           
       ,"current_year_fisc" : {
          "en" : "Financial data for the current Fiscal Year (April 1st 2012, March 31st 2013)",
-         "fr" : "Données financières pour l'exercices (1 avril á  31 mars, 2013)"
+         "fr" : "Données financières pour l'exercices (1 avril à 31 mars, 2013)"
       }
       ,"previous_year_fisc" : {
          "en" : "Financial data from previous fiscal years (2009-10 to 2011-12)",
-         "fr" : "Données financières pour les exercices antérieurs (2009-10 to 2011-12)"
+         "fr" : "Données financières pour les exercices antérieurs (2009-10 à 2011-12)"
       }
       ,"close" : {
         "en" : "close"
@@ -165,8 +165,8 @@
         ,"fr": "Plein écran"
       }
       ,"graphs" : {
-        "en" : "Graphs"
-        ,"fr" : "Graphiques"
+        "en" : "Graph(s)"
+        ,"fr" : "Graphique(s)"
       }
       ,"lang" : {
         "en" : "Français"
