@@ -20,6 +20,10 @@
          "en" : "Ministry",
          "fr" : "Ministère" 
       }
+      ,"no_data" : {
+        "en" : "No data avilable for this table"
+        ,"fr" : "Pas de données disponibles pour cette table"
+      }
       ,"financial_size" : {
          "en" : "2012 Expenditures $(000)",
          "fr" : "Dépenses de 2012 $(000)" 
@@ -261,8 +265,8 @@
         ,"fr": "Recherche..."
       }
       ,"other" : {
-        "en": "Other"
-        ,"fr": "Autre"
+        "en": "Other(s)"
+        ,"fr": "Autre(s)"
       }
       ,"remainder" : {
         "en": "Remainder"

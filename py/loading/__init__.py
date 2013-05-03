@@ -16,7 +16,7 @@ wb3 = xlrd.open_workbook(f3)
 wb4 = xlrd.open_workbook("open data.xls")
 wb5 = xlrd.open_workbook("open data lookups.XLS")
 wb6 = xlrd.open_workbook("Enhanced Inventory of Government data.xls")
-
+wb7 = xlrd.open_workbook("g_and_c.xlsx")
 def clean_data(d):
   if isinstance(d,basestring):
     if u"  " in d:
@@ -137,6 +137,9 @@ def load_od():
   data_sheets = dict(map(each_sheet,
                          filter(lambda x : 'table' in x.name,
                                     wb4.sheets())))
+  data_sheets.update( dict(map(each_sheet,
+                         filter(lambda x : 'table' in x.name,
+                                    wb7.sheets()))))
   lookup_sheets = dict(map(each_sheet,
                            wb5.sheets()))
   lookup_sheets['footnotes'] = each_sheet(wb.sheet_by_name('Footnotes'))[1]

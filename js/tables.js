@@ -23,12 +23,17 @@
     // once all the mini table signals have been sent
     // do some prettying up on the page
     APP.dispatcher.on_these(signals, function(){
+      var dept = app.state.get("dept");
       var views = _.map(arguments,_.identity);
       var current_table = app.state.get("table");
       // figure out the currently selected table, if any
       if (current_table){
         var current_view = _.first(_.filter(views,function(v){
-          return v.def.id === current_table.get('id');
+          // compare the views table deifnition with the current
+          // table AND make sure the currently selected 
+          // department has data for that kind of table
+          return (v.def.id === current_table.get('id') && 
+                  _.has(dept.tables,v.def.id));
         }));
       } else {
         var current_view = undefined;
@@ -37,7 +42,7 @@
       $('.widget-row').each(function(i,row){
         var panels =  $('.mini_t',row);
         var p = $(this).parents('.dept_zone');
-        panels.width( (p.width() - panels.length*20)/panels.length  - 1);
+        panels.width( (p.width() - 60)/3  - 1);
         $('.section-header',row)
         .height(_.max($('.section-header',row).map(function(x,y){
           return $(y).height();

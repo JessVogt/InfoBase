@@ -57,8 +57,10 @@ else {
      }
      return new_obj;
    }
-   UTILS.sum_ar = function(ar){
-     ar = _.filter(ar,function(x){return _.isNumber(x)});
+   UTILS.sum_ar = function(ar,iterator){
+     iterator = iterator || _.identity
+     ar = _.filter(_.map(ar,iterator),
+         function(x){return _.isNumber(x)});
      return _.reduce(ar,function(x,y){return x+y});
    }
    UTILS.zip_obj = function(obj){

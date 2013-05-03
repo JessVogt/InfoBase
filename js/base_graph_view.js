@@ -19,6 +19,23 @@ $(function () {
 
   GRAPHS.BaseGraphView = Backbone.View.extend({
     template : APP.t("#graph_grid_t")
+    ,events : {
+     'keyup input.filter' : "filter_search"
+    }
+    ,filter_search : function(event){
+      var input = $(event.target);
+      var val = input.val();
+      var lis = input.parents(".sidebar").find("li");
+      if ( val.length < 3){
+        lis.removeClass("ui-screen-hidden");
+        return;
+      }
+      lis.each(function(){
+        if ($(this).text().toLowerCase().search(val) == -1){
+          $(this).addClass("ui-screen-hidden");
+        }
+      });
+    }
     ,central_votes : true
     ,initialize: function () {
       _.bindAll(this);
@@ -62,6 +79,7 @@ $(function () {
       this.prep_data();
       //this.gc = function(indexes){return this.get_col(this.data,indexes)};
     }
+    
     ,prep_data : function(){
     }
     ,make_id : function(suffix){
@@ -129,6 +147,7 @@ $(function () {
     }
     var o = {
       seriesColors : seriesColors
+      ,diameter : 400
       ,legend : {
         show:true 
         ,placement: "outsideGrid"
@@ -156,7 +175,10 @@ $(function () {
         $('#'+id+'_fn').append("<p><small>"+fn+"</small></p>");
        }
    );
-   return $.jqplot(id,data, o);
+   var plot =  $.jqplot(id,data, o);
+   //$('#'+id+ ' table.jqplot-table-legend').width('50%');
+   debugger
+   return plot;
   };
 
   GRAPHS.bar = function(id,data,options){

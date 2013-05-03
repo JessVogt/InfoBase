@@ -187,6 +187,11 @@
       <div class="float-left border-all well margin-top-large margin-left-large"  id='table6'>
       </div>                       
   </div>                           
+  <div class='row widget-row'>
+      <div class="float-left border-all well margin-top-large margin-left-large"  id='table7'>
+      </div>                       
+  </div>                           
+
 </script>
 <script type='text/plain' id='mini_t'>
   <div class='mini_t '>
@@ -304,6 +309,10 @@
     id='{{id}}_sidebar'
     style='height:450px;overflow-y:auto'>
     <p class='margin-bottom-none margin-top-none nav-header'>{{header}}</p>
+    {{#filter}}
+    <label for='{{id}}_search' class='wb-invisible'>{{gt "search"}}</label>
+    <input id='{{id}}_search' class='filter' placeholder='{{gt "search"}}'>
+    {{/filter}}
     <ul class='list-bullet-none margin-bottom-none margin-top-none margin-left-small hover'>
       {{#items}}
       <li><a href='#{{id}}'>{{.}}</a></li>

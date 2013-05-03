@@ -425,7 +425,8 @@
     }
     ,set_no_content : function(){
       this.content = $("<p >").html(this.gt("no_data"));
-      this.$el.find('a.details').remove();
+      this.$el.find('div.details_button').remove();
+      this.$el.find('p.description').remove();
     }
     ,render : function(){
       this.$el.append(this.template({
