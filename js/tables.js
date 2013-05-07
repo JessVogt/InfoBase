@@ -24,7 +24,7 @@
     // do some prettying up on the page
     APP.dispatcher.on_these(signals, function(){
       var dept = app.state.get("dept");
-      var views = _.map(arguments,_.identity);
+      var views = _.toArray(arguments);
       var current_table = app.state.get("table");
       // figure out the currently selected table, if any
       if (current_table){

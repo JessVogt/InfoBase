@@ -268,34 +268,22 @@ def html_les(dev=True):
                            no_auto_css = True))
 
 
-def od_static():
-  t = lookup.get_template('od_static.html')
-  lookups,data = load_od()
-  check(data,lookups, make_open_data_after_check(lookups))
-  lookups['depts'] = {k:v for k,v in lookups['depts'].iteritems()
-                      if 'tables' in v}
-
-  add_dept_data(lookups['depts'])
-  # carve up od.html file
-  # extract the templates to be sent across to the node server
-  # create static page skeleton
-
-
-  handlebars_ts = html.parse("./mako/od_handlebars_templates.html")
-  json_data = {
-    'main_t' :  handlebars_ts.xpath("//script[@id='main_t']")[0].text,
-    'dataview_t' :  handlebars_ts.xpath("//script[@id='dataview_t']")[0].text,
-    'org_list_t' :  handlebars_ts.xpath("//script[@id='org_list_t']")[0].text,
-    'graph_grid_t' : handlebars_ts.xpath("//script[@id='graph_grid_t']")[0].text,
-    'sos' : lookups['sos']
-  }
-  for dept in lookups['depts'].itervalues():
-    json_data['dept'] = dept['accronym']
-    data = {"json" : json.dumps(json_data)}
-    print(urlopen("http://localhost:8888",urlencode(data)).read())
-    # run table maps
-    #with open("../open_data_static/{}.html".format(dept['accronym']),'w') as output:
-    #  output.write(t.render())
+def check_g_and_c(depts):
+  offset_so = 2
+  offset = 5
+  for key,dept in depts.items():
+    if 'table7' in dept['tables'] and key != 'ZGOC':
+      so_tp = [x for x in dept['tables']['table5']
+               if x[1] == 10]
+      assert so_tp
+      so_tp = so_tp[0]
+      for year in [0,1,2]:
+        so_tp_total = so_tp[year+ offset_so]
+        gc_total = sum(x[year*2 + offset+1] for x in dept['tables']['table7'])
+        try:
+          assert gc_total - so_tp_total != 0
+        except:
+          print("{}: G and C Total: {}, SP TP: {}".format(key,gc_total,so_tp_total))
 
 def od(dev=True):
   lookups,data = load_od()
@@ -311,6 +299,8 @@ def od(dev=True):
 
   del lookups['igoc']
 
+  check_g_and_c(lookups['depts'])
+
   js_data = ";\n".join(
     [u'{}={}'.format(k,json.dumps(lookups[k]))
      for k in lookups]
@@ -321,8 +311,6 @@ def od(dev=True):
                    "od/tables.js",
                    "od/od.js"]
   js_app = process_my_js(app_js_files, dev=dev)
-  import IPython
-  IPython.embed()
 
   full_js = ''#full_js = "\n".join([js_data])
   full_css = ''#full_css = cssdata

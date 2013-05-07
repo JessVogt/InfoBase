@@ -147,18 +147,18 @@ $(function () {
     }
     var o = {
       seriesColors : seriesColors
-      ,diameter : 400
       ,legend : {
         show:true 
-        ,placement: "outsideGrid"
         ,fontSize : "10px"
-        ,location:'e'
+        ,location:'s'
+        ,rendererOptions: {numberColumns: 2}
       }
       ,seriesDefaults : {
         renderer:$.jqplot.PieRenderer, 
         trendline:{ show:false }, 
         rendererOptions: { 
           dataLabelThreshold:2,
+          diameter : 200,
           padding: 40,
           sliceMargin: 0,
           dataLabelPositionFactor: 1.1,
@@ -177,7 +177,6 @@ $(function () {
    );
    var plot =  $.jqplot(id,data, o);
    //$('#'+id+ ' table.jqplot-table-legend').width('50%');
-   debugger
    return plot;
   };
 
@@ -190,7 +189,7 @@ $(function () {
         show:true 
         ,placement: "outsideGrid"
         ,fontSize : "10px"
-        ,rendererOptions: { numberRows: 1 }
+        ,rendererOptions: { numberColumns: 2 ,numberRows:1}
         ,location:'s'
       }
       ,stackSeries : false

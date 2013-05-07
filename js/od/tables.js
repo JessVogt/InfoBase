@@ -1282,8 +1282,9 @@
           }
         }
         ,prep_data : function(){
-          var exp = "-Expenditures";
-          this.years = ['{{last_year_3}}',
+          var auth =  "-"+this.def.headers['en'][1][2];
+          var exp = "-"+this.def.headers['en'][1][3];
+          var years = this.years = ['{{last_year_3}}',
                         '{{last_year_2}}',
                         "{{last_year}}"];
           this.to_years = _.object(_.map(this.years,m),this.years);
@@ -1309,10 +1310,12 @@
                   function(obj){
                     return obj['Grant / Contribution'] == name;
                   }));
-            return [line['{{last_year_3}}'+exp],
-                    line['{{last_year_2}}'+exp],
-                    line['{{last_year}}'+exp]];
-          }
+            return _.map([auth,exp],function(x){
+              return _.map(years,function(year){
+                return line[year+x];
+              });
+            });
+          };
         }
         ,render : function(){
           var by_year_graph = $(
@@ -1353,9 +1356,12 @@
         ,item_click : function(event){
           var years = this.name_to_years($(event.target).text());
           GRAPHS.bar(this.make_id(2), 
-              [_.map(years,function(x){return x})],
+              years,
               {title: ''//this.titles[2][this.lang]
-              ,legend : {show: false} 
+              ,series : [
+                {label: this.def.headers[this.lang][1][2]}, 
+                {label: this.def.headers[this.lang][1][3]}, 
+              ]
               ,barWidth : 100
               ,ticks : _.map(this.years,m)
               });
