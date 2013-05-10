@@ -295,29 +295,31 @@ def od_static():
     #  output.write(t.render())
 
 def od(dev=True):
-  #lookups,data = load_od()
-  #check(data,lookups, make_open_data_after_check(lookups))
-  #lookups['depts'] = {k:v for k,v in lookups['depts'].iteritems()
-  #                    if 'tables' in v}
-  #for dept in lookups['depts']:
-  #  d = lookups['depts'][dept]
-  #  d['fin_size'] = sum(x[-1] for x in d['tables']['table4'])
+  lookups,data = load_od()
+  check(data,lookups, make_open_data_after_check(lookups))
+  lookups['depts'] = {k:v for k,v in lookups['depts'].iteritems()
+                      if 'tables' in v}
+  for dept in lookups['depts']:
+    d = lookups['depts'][dept]
+    d['fin_size'] = sum(x[-1] for x in d['tables']['table4'])
 
-  #  if dept != 'ZGOC':
-  #    lookups['depts'][dept].update(lookups['igoc'][dept])
+    if dept != 'ZGOC':
+      lookups['depts'][dept].update(lookups['igoc'][dept])
 
-  #del lookups['igoc']
+  del lookups['igoc']
 
-  #js_data = ";\n".join(
-  #  [u'{}={}'.format(k,json.dumps(lookups[k]))
-  #   for k in lookups]
-  #)+";\n"
+  js_data = ";\n".join(
+    [u'{}={}'.format(k,json.dumps(lookups[k]))
+     for k in lookups]
+  )+";\n"
 
-  #app_js_files = list(my_js_files)
-  #app_js_files += ["od/text.js",
-  #                 "od/tables.js",
-  #                 "od/od.js"]
-  #js_app = process_my_js(app_js_files, dev=dev)
+  app_js_files = list(my_js_files)
+  app_js_files += ["od/text.js",
+                   "od/tables.js",
+                   "od/od.js"]
+  js_app = process_my_js(app_js_files, dev=dev)
+  import IPython
+  IPython.embed()
 
   full_js = ''#full_js = "\n".join([js_data])
   full_css = ''#full_css = cssdata
