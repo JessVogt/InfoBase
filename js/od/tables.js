@@ -46,10 +46,6 @@
       ,cols : 2
       ,target: '.org_list_by_min'
     });
-    app.auto_complete = new APP.WETautocompleteView({
-      el : $('.home .dept_search')
-      ,app : app
-    });
   });
 
   APP.dispatcher.on("dept_ready",function(app){

@@ -20,7 +20,7 @@
     template: APP.t('#header_t'),
     tagName: "tr",
     initialize: function () {
-      _.bindAll(this);
+      _.bindAll(this,"render");
       this.types = this.options['types'];
       this.header = this.options['header']; //read argument [object w/ only one key,val pair] to get headers
       this.headers = _.clone(this.options['headers']);
@@ -70,7 +70,7 @@
   var rowView = Backbone.View.extend({
     tagName: "tr",
     initialize: function () {
-      _.bindAll(this);
+      _.bindAll(this,"render");
       this.app = this.options['app'];
       this.row = this.options['row']; //read argument [object w/ only one key,val pair] to get row data
       this.wcag = this.options['wcag'];
@@ -135,7 +135,11 @@
     }
     ,hide_col_ids: []
     ,initialize: function () {
-      _.bindAll(this);
+      _.bindAll(this,"setup_useful_this_links","setup_event_listeners",
+                "on_details_click","to_text","on_print_click",
+                "on_copy_click", "make_headers","make_body",
+                "make_footer","activate_dataTable","merge_group_results",
+                "not_key","render","on_td_click");
       // retrieve passed in data
       this.key = this.options["key"];
       this.rows = _.map(this.options["rows"],function(row){return row});
@@ -394,7 +398,7 @@
       this.def = this.table.attributes;
       this.app = this.options['app'];
       _.extend(this,this.def['mini_view']);
-      _.bindAll(this);
+      _.bindAll.apply(this,[this].concat(_.functions(this)));
       this.state = this.app.state;
       this.org = this.state.get("dept");
       this.lang = this.state.get('lang');

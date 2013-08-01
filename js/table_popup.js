@@ -8,7 +8,14 @@ $(function () {
     ,template2 : APP.t('#analytics_t')
     ,row_template :APP.t("#stat_tr")
     ,initialize: function () {
-      _.bindAll(this);
+      _.bindAll(this,
+                "create_th",
+                "create_row_from_array",
+                "render",
+                "on_copy_click",
+                "on_button_click",
+                "create_footer",
+                "render_table");
 
       this.m = TABLES.m;
 
