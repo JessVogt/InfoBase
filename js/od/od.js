@@ -30,7 +30,10 @@
     }
     ,initialize: function(){
       pe.wb_load({"poly" : ["datalist"]});
-      _.bindAll(this);
+      _.bindAll(this,"dept_change","nav","setup_useful_this_links",
+                "lang_change", "formater","get_text","toggle_lang",
+                "reset_dept","reset","highlighter", "render",
+                "horizontal_explore","remove" );
       this.state = new APP.stateModel({app:this})
       //initialize views
       this.setup_useful_this_links();

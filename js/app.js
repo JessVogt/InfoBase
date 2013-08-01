@@ -70,146 +70,6 @@
       });
     }
 
-    APP.modalView = Backbone.View.extend({
-      initialize: function(){
-        _.bindAll(this);
-        this.app = this.options["app"];
-        this.gt = this.app.get_text;
-        this.state = this.app.state;
-        this.modal = $("#modal_skeleton");
-        this.header = this.modal.find(".modal-header h3");
-        this.body = this.modal.find(".modal-body");
-        this.footer = this.modal.find(".modal-footer a");
-        this.modal.on("hidden",this.reset);
-      }
-      ,hide : function(){
-        this.modal.modal("hide");
-      }
-      ,reset : function(){
-        //clear out the body area
-        this.body.find("*").off();
-        this.body.children().remove(); 
-        this.body.html("");
-      }
-      ,render : function(ob){
-        this.reset();
-        this.body.append(ob.body);
-        this.header.html(ob.header);
-        this.footer.html(ob.footer);
-        this.modal.modal({
-          keyboard: false
-        });
-         return this
-      }
-    });
-
-    APP.WETautocompleteView = Backbone.View.extend({
-      initialize: function(){
-        this.template = APP.t('#wet_autocomplete_t');
-        _.bindAll(this);
-        this.app = this.options['app'];
-        this.state = this.app.state;
-        this.lookup = depts;
-        this.listenTo(APP.dispatcher,'lang_change',this.render);
-        this.listenTo(APP.dispatcher,'lang_change',this.clear);
-        this.listenTo(APP.dispatcher,"dept_ready",this.clear);
-      }
-      ,clear : function(app){
-        setTimeout(_.bind(function(){ this.$el.val('')},this));
-      }
-      ,render:function (lang) {
-        $('<datalist></datalist>').appendTo($('body')).remove();
-        this.$el = $('input.dept_search');
-        // remove any previously created datalist
-        $('#org_suggestions').remove();
-        this.$el.off('*');
-         var values = _.filter(_.values(this.lookup),
-           function(val){
-             return val.accronym != 'ZGOC';
-         });
-         // look departments up by name
-         var source = _.map(values, 
-           function(x) {
-             return  x['dept'][lang];
-         });
-         var datalist = $(this.template({orgs : source}));
-         datalist.attr("id","org_suggestions");
-         this.$el.after(datalist);
-         if (!pe.polyfills.polyfill.datalist.support_check){
-           $('input#org_search').datalist(); 
-           $('button.dept_search').on("keyup",this.keyup);      
-         }
-         this.$el.on("input",this.on_input);
-         $('button.dept_search').on("click",this.on_input);
-        }
-      ,keyup : function(event){
-        if (event.keyCode == 13){
-          this.on_input(event);
-        }
-      }
-      ,on_input : function(event){
-        var val = this.$el.val();
-        var state = this.state;
-        var lang = state.get('lang');
-        var lookup = this.lookup;
-        var dept = _.first(_.filter(_.values(lookup),
-              function(x){ return x['dept'][lang].toLowerCase() == val.toLowerCase()})); 
-        if (dept){
-          state.set('dept',dept);
-        }
-      }
-    });
-
-    APP.autocompleteView = Backbone.View.extend({
-      initialize: function(){
-        _.bindAll(this);
-        this.app = this.options['app'];
-        this.state = this.app.state;
-        this.lookup = depts;
-        this.$el.typeahead({updater: this.updater});
-        this.setup(this.state.get("lang"));
-        this.listenTo(APP.dispatcher,"dept_ready",this.clear);
-      }
-      ,clear : function(app){
-        setTimeout(_.bind(function(){ this.$el.val('')},this));
-      }
-      ,setup:function (lang) {
-         // filter the departments to remove the GoC
-         // data
-         var values = _.filter(_.values(this.lookup),
-           function(val){
-             return val.accronym != 'ZGOC';
-           });
-         // look departments up by name
-         var source = _.map(values, 
-           function(x) {
-             return  x['dept'][lang];
-           });
-         // look departments up by name
-         source = source.concat( _.pluck(_.values(this.lookup), 'accronym'));
-         // use this method to reset the source
-         this.$el.data('typeahead')['source'] = source;
-         return this;
-      }
-      ,updater:function(val){
-        this.stopListening();
-        var state = this.state;
-        var lang = state.get('lang');
-        var lookup = this.lookup;
-        setTimeout(function(){ 
-          var dept = _.first(_.filter(_.values(lookup),
-              function(x){ return x['dept'][lang] == val}));
-          // now search by accronym
-          if (_.isUndefined(dept)){
-              dept = _.first(_.filter(_.values(lookup),
-                function(x){ return x['accronym'] == val}));
-          }
-          state.set('dept',dept)},
-        100);
-        return val;
-      }
-    });
-
     APP.fullDeptList = Backbone.View.extend({
       el : 'body'
       ,template : APP.t('#org_list_t')
@@ -220,7 +80,7 @@
       ,"click .org_list .sort_buttons a" : "sort"
       }
       ,initialize: function(){
-        _.bindAll(this);
+        _.bindAll(this,"render","sort","cancel","onClick");
         this.app = this.options['app'];
         this.cols = this.options['cols'];
         this.target = this.options['target'];
@@ -358,7 +218,7 @@
       
         this.template = APP.t('#dept_info_t');
 
-        _.bindAll(this);
+        _.bindAll(this,"render","on_search");
         // retrieve passed in data
         this.app = this.options["app"];
 
@@ -390,7 +250,7 @@
     APP.otherDeptsDropDown = Backbone.View.extend({
       template : APP.t('#nav_li')
       ,initialize: function(){
-        _.bindAll(this);
+        _.bindAll(this,"render");
         this.app = this.options["app"];
       }
       ,render: function(other_depts){
@@ -431,7 +291,7 @@
     template : APP.t('#main_t')
     ,template2 : APP.t('#panels_t')
     ,initialize: function(){
-      _.bindAll(this);
+      _.bindAll(this,"render");
     }
     ,render : function(app){
       var org = app.state.get("dept");
@@ -448,7 +308,7 @@
   APP.footnoteView = Backbone.View.extend({
     template : APP.t('#footnotes_t')
     ,initialize: function(){
-      _.bindAll(this);
+      _.bindAll(this,"render");
       // retrieve passed in data
       this.app = this.options["app"];
       this.footnotes = this.options['footnotes'];
@@ -483,7 +343,8 @@
   APP.DetailsView = Backbone.View.extend({
     template : APP.t('#dataview_t')
     ,initialize: function(){
-      _.bindAll(this);
+      _.bindAll(this,"render","tear_down","setup_useful_this_links",
+                "on_about_click", "on_min_tot_click","on_goc_tot_click");
       // retrieve passed in data
       this.app = this.options["app"];
       this.def = this.options["def"];

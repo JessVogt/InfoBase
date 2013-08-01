@@ -21,7 +21,7 @@ $(function () {
     template : APP.t("#graph_grid_t")
     ,central_votes : true
     ,initialize: function () {
-      _.bindAll(this);
+      _.bindAll.apply(this,[this].concat(_.functions(this)));
       this.key = this.options["key"];
       this.app = this.options["app"];
       this.def = this.options["def"];
