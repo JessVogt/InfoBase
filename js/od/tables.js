@@ -19,19 +19,26 @@
 
   TABLES.template_args = {
     'common' : {
+      'in_year_short' : '2014',
+      'qfr_last_year_short' : '2013',
       'last_year_short' : '2012',
       'last_year_2_short' : '2011',
       'last_year_3_short' : '2010',
-      'month' : 9
+      'month' : 3,
+      'q' : 1
     },
     'en' : {
-      'year' : '2012-13',
+      'month_name' : 'June',
+      'in_year' : '2013-14',
+       'qfr_last_year' : '2012-13',
       'last_year' : '2011-12',
       'last_year_2' : '2010-11',
       'last_year_3' : '2009-10'
     },
     'fr' : {
-      'year' : '2012‒2013',
+      'month_name' : 'juin',
+      'in_year' : '2013‒2014',
+       'qfr_last_year' : '2012‒13',
       'last_year' : '2011‒2012',
       'last_year_2' : '2010‒2011',
       'last_year_3' : '2009‒2010'
@@ -103,277 +110,275 @@
   APP.dispatcher.on("load_tables",function(app){
     var m = TABLES.m;
     TABLES.tables.add([
-    //  {
-    //  id: 'table1',
-    //  col_defs : [ "int",
-    //                "str",
-    //                "big-int",
-    //                "big-int",
-    //                "big-int",
-    //                "big-int",
-    //                "big-int",
-    //                "big-int",
-    //                "big-int",
-    //                "big-int",
-    //                "big-int",
-    //                "big-int",
-    //                "big-int",
-    //                "big-int",
-    //                "big-int",
-    //                "big-int",
-    //                "big-int",
-    //                "big-int",
-    //                "big-int"
-    //                  ],
-    //  coverage : "in_year",
-    //  headers : {"en" :[
-    //  [
-    //    { "colspan" : 2,
-    //    "header" : ""
-    //    },
-    //    { "colspan" : 12,
-    //    "header" : "{{year}} Authorities"
-    //    },
-    //    { "colspan" : 2,
-    //    "header" : "{{year}} Expenditures"
-    //    },
-    //    { "colspan" : 3,
-    //    "header" : "{{last_year}}"
-    //    }
-    //  ],[
-    //    "Vote/Statutory",
-    //    "Description",
-    //    "Multi-year Authorities",
-    //    "Main Estimates",
-    //    "SE(A)",
-    //    "SE(B)",
-    //    "SE(C)",
-    //    "Transfers from TB Vote 5 Gov. Contengencies",
-    //    "Transfers from TB Vote 10 Gov. Wide Initiatives ",
-    //    "Transfers from TB Vote 15 Compens. Adjustments  ",
-    //    "Transfers from TB Vote 25 OBCF  ",
-    //    "Transfers from TB Vote 30 Paylist Requirements ",
-    //    "Transfers from TB Vote 33 CBCF ",
-    //    "Total available for use for the year ending March 31,{{year}}",
-    //    "Used during the quarter ended {{month}}-{{year}}",
-    //    "Year to date used at quarter-end",
-    //    "Total available for use for the year ending March 31,{{last_year}}",
-    //    "Used during the quarter ended {{month}}-{{last_year}} ",
-    //    "Year to date used at quarter-end"
-    //  ]],
-    //    "fr": [ [
-    //    { "colspan" : 2,
-    //    "header" : ""
-    //    },
-    //    { "colspan" : 12,
-    //    "header" : "{{year}} Autoritiés"
-    //    },
-    //    { "colspan" : 2,
-    //    "header" : "{{year}} Dépenses"
-    //    },
-    //    { "colspan" : 3,
-    //    "header" : "{{last_year}}"
-    //    }
-    //  ],[
-    //    "Crédit/Statutaire",
-    //    "Description", 
-    //    "Crédits pluri-annuels",
-    //    "Budget principal",
-    //    "Supp. A",
-    //    "Supp. B",
-    //    "Supp. C",
-    //    "Transferts du crédit 5 du CT (Éventualités du gouvernement)",
-    //    "Transferts du crédit 10 du CT (Initiatives pangouvernementales)",
-    //    "Transferts du crédit 15 du CT (Rajustements à la rémunération)",
-    //    "Transferts du crédit 25 du CT (Report du budget de fonctionnement)",
-    //    "Transferts du crédit 30 du CT (Besoins en matière de rémunération)",
-    //    "Transferts du crédit 30 du CT (Report du budget d'immobilisations)",
-    //    "Crédits totaux disponibles pour l'exercice se terminant le 31 mars {{year}}",
-    //    "Crédits utilisés pour le trimestre terminé le {{month}}-{{year}}",
-    //    "Cumul des crédits utilisés à la fin du trimestre",
-    //    "Crédits totaux disponibles pour l'exercice se terminant le 31 mars {{last_year}}",
-    //    "Crédits utilisés pour le trimestre terminé le {{month}}-{{last_year}}",
-    //    "Cumul des crédits utilisés à la fin du trimestre"
-    //    ]]},
-    //  link : {
-    //    "en" : "",
-    //    "fr" : ""
-    //  },
-    //  name : { "en" : "Statement of Authorites and Expenditures",
-    //            "fr" : "État des autorisations et Dépenses"
-    //          },
-    //  title : { "en" : "Statement of Authorites and Expenditures",
-    //            "fr" : "État des autorisations et Dépenses"
-    //            }
-    //  ,key : [0,1]
-    //  ,mapper : {
-    //    to : function(row){
-    //      if (row[1] && _.isNumber(row[1]) ){
-    //        row.splice(2,1,votes[this.def['coverage']][row[0]][row[1]][this.lang]);
-    //      }
-    //      else {
-    //        row.splice(2,1,'');
-    //      }
-    //      // remove acronym
-    //      return _.tail(row); 
-    //    }
-    //    ,make_filter : function(source_row){
-    //      return function(candidate_row){
-    //        return (source_row[2]  == candidate_row[2]);
-    //      };
-    //    }
-    //  }
-    //  ,table_view : { 
-    //    hide_col_ids : [2,3,4,5,6,7,8,9,10,11,12]
-    //    ,sum_cols : []
-    //    ,min_func : TABLES.add_ministry_sum
-    //    ,init_row_data : function(){
-    //    }
-    //  }
-    //  ,mini_view : {
-    //    prep_data : function(){
-    //      var ttf = this.app.formater
-    //      var auth = "Total available for use for the year ending March 31,{{year}}";
-    //      var exp = "{{year}} Expenditures-Year to date used at quarter-end";
-    //      var auth_total = _.reduce(
-    //          _.pluck(this.data,auth),
-    //          function(x,y){return x+y});
-    //      var exp_total = _.reduce(
-    //          _.pluck(this.data,exp),
-    //          function(x,y){return x+y});
-    //      this.rows = [
-    //        [m(this.to_lang(auth)), ttf("big-int",auth_total) ],
-    //        [this.to_lang(exp), ttf("big-int",exp_total) ]
-    //      ];
-    //    }
-    //    ,render_data : function(){
-    //      this.content = TABLES.build_table({
-    //        headers : [['',' ($000)']],
-    //        body : this.rows,
-    //        css : [{'font-weight' : 'bold'}, {'text-align' : 'right'}]
-    //      });
-    //    }
-    //  },
-    //  graph_view : {
-    //    prep_data : function(){
-    //    }
-    //    ,render : function(){
-    //     }
-    //  }
-    //},
-    //{
-    //  id: "table2",
-    //  col_defs : ["wide-str",
-    //    "big-int",
-    //    "big-int",
-    //    "big-int",
-    //    "big-int"],
-    //  coverage : "in_year",
-    //  headers : {"en" :[[
-    //    { "colspan" : 1,
-    //      "header" : ""
-    //    },
-    //    { "colspan" : 2,
-    //      "header" : "{{year}}"
-    //    },
-    //    { "colspan" : 2,
-    //      "header" : "{{last_year}}"
-    //    }],
-    //    [
-    //      "Standard Object",
-    //    "Expended during the quarter ended {{month}}-{{year}}",
-    //    "Year to date used at quarter-end",
-    //    "Expended during the quarter ended {{month}}-{{last_year}}",
-    //    "{{last_year}} Year to date used at quarter-end"
-    //    ]],
-    //    "fr": [[
-    //    { "colspan" : 1,
-    //      "header" : ""
-    //    },
-    //    { "colspan" : 2,
-    //      "header" : "{{year}}"
-    //    },
-    //    { "colspan" : 2,
-    //      "header" : "{{last_year}}"
-    //    }],
-    //    [
-    //      "Article Courant",
-    //    "Dépensées durant le trimestre terminé le {{month}}-{{year}}",
-    //    "Cumul des crédits utilisés à la fin du trimestre",
-    //    "Dépensées durant le trimestre terminé le {{month}}-{{last_year}}",
-    //    "Cumul des crédits utilisés à la fin du trimestre"
-    //    ]]},
-    //  link : {
-    //    "en" : "",
-    //    "fr" : ""
-    //  },
-    //  name : { "en" : "Budgetary expenditures by Standard Object",
-    //    "fr" : "Dépenses ministérielles budgétaires par article courant"
-    //  },
-    //  title : { "en" : "Budgetary expenditures by Standard Object ($000)",
-    //    "fr" : "Dépenses ministérielles budgétaires par article courant ($000)"
-    //  }
-    //  ,key : [0]
-    //  ,mapper : {
-    //    to : function(row){
-    //      row.splice(1,1,sos[row[1]][this.lang]);
-    //      return _.tail(row)
-    //    }
-    //    ,make_filter : function(source_row){
-    //      return _.bind(function(candidate_row){
-    //        return ( source_row[1] == candidate_row[1]);
-    //      },this);
-    //    }
-    //  }
-    //  ,table_view : { 
-    //    sum_cols : []
-    //    ,min_func : TABLES.add_ministry_sum
-    //    ,init_row_data : function(){
-    //    }
-    //  }
-    //  ,mini_view : {
-    //    prep_data : function(){
-    //      var ttf = this.app.formater
-    //      var col = "Expended during the quarter ended {{month}}-{{year}}";
-    //      var data = _.sortBy(this.data, function(d){
-    //        return -d[col]
-    //      });    
-    //      var first = data.shift();
-    //      var second = data.shift();
-    //      var third = data.shift();
-    //      var rest = _.reduce(data, function(x,y){
-    //         return x + y[col];
-    //      },0);
-    //      this.rows = [
-    //        ['Top Standard Objects','($000)'],
-    //        [first["Standard Object"],first[col]],
-    //        [second["Standard Object"],second[col]],
-    //        [third["Standard Object"],third[col]],
-    //        [this.gt("remainder"),rest]
-    //      ];
-    //      this.rows = _.map(this.rows, function(row){
-    //        if (_.isNumber(row[1])){
-    //          return [row[0], ttf("big-int",row[1])];
-    //        } else {
-    //          return [row[0], row[1]]
-    //        }
-    //      });
-    //    }
-    //    ,render_data : function(){
-    //      this.content = TABLES.build_table({
-    //        headers : [[this.gt("so"),' ($000)']],
-    //        body : this.rows,
-    //        css : [{'font-weight' : 'bold'}, {'text-align' : 'right'}]
-    //      });
-    //    }
-    //  },
-    //  graph_view : {
-    //    prep_data : function(){
-    //    }
-    //    ,render : function(){
-    //    }
-    //  }
-    //},
+      {
+      "id": 'table1',
+      "col_defs" : [ "int",
+                    "str",
+                    "big-int",
+                    "big-int",
+                    "big-int",
+                    "big-int",
+                    "big-int",
+                    "big-int",
+                      ],
+      "coverage" : "in_year",
+      "headers" : {"en" :[
+      [
+        { "colspan" : 2,
+        "header" : ""
+        },
+        { "colspan" : 3,
+        "header" : "{{in_year}}"
+        },
+        { "colspan" : 3,
+        "header" : "{{qfr_last_year}}"
+        }
+      ],[
+        "Vote/Statutory",
+        "Description",
+        "Total available for use for the year ending March 31,{{in_year_short}}",
+        "Used during the quarter ended {{month}}-{{in_year}}",
+        "Year to date used at quarter-end",
+        "Total available for use for the year ending March 31,{{qfr_last_year_short}}",
+        "Used during the quarter ended {{month}}-{{qfr-last_year}} ",
+        "Year to date used at quarter-end"
+      ]],
+        "fr": [ [
+        { "colspan" : 2,
+        "header" : ""
+        },
+        { "colspan" : 3,
+        "header" : "{{in_year}}"
+        },
+        { "colspan" : 3,
+        "header" : "{{qfr_last_year}}"
+        }
+      ],[
+        "Crédit/Statutaire",
+        "Description", 
+        "Crédits totaux disponibles pour l'exercice se terminant le 31 mars {{year}}",
+        "Crédits utilisés pour le trimestre terminé le {{month}}-{{in_year}}",
+        "Cumul des crédits utilisés à la fin du trimestre",
+        "Crédits totaux disponibles pour l'exercice se terminant le 31 mars {{qfr_last_year}}",
+        "Crédits utilisés pour le trimestre terminé le {{month}}-{{qfr_last_year}}",
+        "Cumul des crédits utilisés à la fin du trimestre"
+        ]]},
+      "link" : {
+        "en" : "",
+        "fr" : ""
+      },
+      "name" : { "en" : "Statement of Authorites and Expenditures",
+                "fr" : "État des autorisations et Dépenses"
+              },
+      "title" : { "en" : "Statement of Authorites and Expenditures",
+                "fr" : "État des autorisations et Dépenses"
+                }
+      ,"sort" : function(mapped_rows,lang){
+
+
+      }
+      ,"key" : [0,1]
+      ,"mapper" : {
+        "to" : function(row){
+          if (this.lang == 'en'){
+            row.splice(3,1);
+          } else {
+            row.splice(4,1);
+          }
+          // remove acronym and vote type
+          return _.tail(row,2);
+        }
+        ,"make_filter" : function(source_row){
+          return function(condidate_row){
+
+          };
+        }
+      }
+      ,"table_view" : { 
+        hide_col_ids : []
+        ,sum_cols : []
+        ,min_func : TABLES.add_ministry_sum
+        ,init_row_data : function(){
+
+        }
+      }
+      ,mini_view : {
+        description : {
+          "en" : "Change in authorities and expenditure between {{in_year}} and {{last_year}}",
+          "fr" : "Différence entre les autorisations et les dépenses entre {in_{year}} et {{last_year}}"
+        }
+        ,prep_data : function(){
+          var ttf = _.partial(this.app.formater,"percentage");
+          var mapper =  function(x){return [
+            x['Total available for use for the year ending March 31,{{in_year_short}}'],
+            x["{{qfr_last_year}}-Year to date used at quarter-end"],
+            x['Total available for use for the year ending March 31,{{qfr_last_year_short}}'],
+            x["{{in_year}}-Year to date used at quarter-end"]];
+          };
+          var v_s = _.groupBy(this.data,function(x){
+            return _.isNumber(x['Vote/Statutory']);
+          });
+          var voted = _.map(v_s[true],mapper), stat = _.map(v_s[false],mapper);
+          var v_total = _.reduce(voted, UTILS.add_ar, [0,0,0,0]);
+          var s_total = _.reduce(stat, UTILS.add_ar, [0,0,0,0]);
+          this.rows = [
+            [this.gt("vote"), 
+            ttf(v_total[2]/ (v_total[0] || 1)), 
+            ttf(v_total[3]/ (v_total[1] || 1)), 
+            ],
+            [this.gt("stat"), 
+            ttf(s_total[2]/ (s_total[0] || 1)), 
+            ttf(s_total[3]/ (s_total[1] || 1)), 
+            ]
+          ];
+        }
+        ,render_data : function(){
+          this.content = TABLES.build_table({
+            headers : [[this.gt('votestat'),
+                        this.gt('authorities'),
+                        this.gt('expenditures')]],
+            body : this.rows,
+            css : [{'font-weight' : 'bold'}, 
+                    {'text-align' : 'right'},
+                    {'text-align' : 'right'}
+          ]
+          });
+        }
+      },
+      graph_view : {
+        prep_data : function(){
+        }
+        ,render : function(){
+         }
+      }
+    },
+    {
+      id: "table2",
+      col_defs : ["wide-str",
+        "big-int",
+        "big-int",
+        "big-int",
+        "big-int",
+        "big-int",
+        "big-int"],
+      coverage : "in_year",
+      headers : {"en" :[[
+        { "colspan" : 1,
+          "header" : ""
+        },
+        { "colspan" : 3,
+          "header" : "{{in_year}}"
+        },
+        { "colspan" : 3,
+          "header" : "{{qfr_last_year}}"
+        }],
+        [
+        "Standard Object",
+        "Planned expenditures for the year ending March 31, {{in_year}}",
+        "Expended during the quarter ended {{month}}-{{in_year}}",
+        "Year to date used at quarter-end",
+        "Planned expenditures for the year ending March 31, {{qfr_last_year}}",
+        "Expended during the quarter ended {{month}}-{{qfr_last_year}}",
+        "{{last_year}} Year to date used at quarter-end"
+        ]],
+        "fr": [[
+        { "colspan" : 1,
+          "header" : ""
+        },
+        { "colspan" : 3,
+          "header" : "{{in_year}}"
+        },
+        { "colspan" : 3,
+          "header" : "{{qfr_last_year}}"
+        }],
+        [
+          "Article Courant",
+        "Dépenses prévues pour l'exercice se terminant le 31 mars, {{in_year}}",
+        "Dépensées durant le trimestre terminé le {{month}}-{{in_year}}",
+        "Cumul des crédits utilisés à la fin du trimestre",
+        "Dépenses prévues pour l'exercice se terminant le 31 mars, {{qfr_last_year}}",
+        "Dépensées durant le trimestre terminé le {{month}}-{{qfr_last_year}}",
+        "Cumul des crédits utilisés à la fin du trimestre"
+        ]]},
+      link : {
+        "en" : "",
+        "fr" : ""
+      },
+      name : { "en" : "Budgetary expenditures by Standard Object",
+        "fr" : "Dépenses ministérielles budgétaires par article courant"
+      },
+      title : { "en" : "Budgetary expenditures by Standard Object ($000)",
+        "fr" : "Dépenses ministérielles budgétaires par article courant ($000)"
+      }
+      ,key : [0]
+      ,mapper : {
+        to : function(row){
+          return _.tail(row)
+        }
+        ,make_filter : function(source_row){
+          return function(candidate_row){
+          };
+        }
+      }
+      ,table_view : { 
+        sum_cols : []
+        ,min_func : TABLES.add_ministry_sum
+        ,init_row_data : function(){
+        }
+      }
+      ,mini_view : {
+        description : {
+          "en" : "The top expenditure categories as of {{month_name}}, {{in_year}}",
+          "fr" : "Les dépenses les plus importantes du {{month_name}}, {{in_year}}"
+        }
+        ,prep_data : function(){
+          var ttf_f = _.partial(this.app.formater,'big-int');
+          var ttf_p = _.partial(this.app.formater,'percentage');
+
+          var col = "Expended during the quarter ended {{month}}-{{in_year}}";
+          var data = _.sortBy(this.data, function(d){
+            return -d[col]
+          });    
+
+          var sum = _.reduce(_.map(data,
+                                   function(x){return x[col]}),
+                            function(x,y){
+                              return Math.abs(x)+Math.abs(y)
+                            }
+          );
+          var first = data.shift();
+          var second = data.shift();
+          var third = data.shift();
+          this.rows = [
+            [first["Standard Object"],
+             ttf_f(first[col]),
+             ttf_p( first[col]/(sum || 1))],
+            [second["Standard Object"],
+             ttf_f(second[col]),
+             ttf_p( second[col]/(sum || 1))],
+            [third["Standard Object"],
+             ttf_f(third[col]),
+             ttf_p( third[col]/(sum || 1))]
+          ];
+        }
+        ,render_data : function(){
+          this.content = TABLES.build_table({
+            headers : [[this.gt("so"),' $000','%']],
+            body : this.rows,
+            css : [{'font-weight' : 'bold','text-align' : 'left'}, 
+                   {'text-align' : 'right'},
+                   {'text-align' : 'right'},
+          ]
+          });
+        }
+      },
+      graph_view : {
+        prep_data : function(){
+        }
+        ,render : function(){
+        }
+      }
+    },
     //{
     // id: "table3",
     //  "col_defs" : ["wide-str",

@@ -129,7 +129,7 @@
         "fr" : "Données financières pour"
       }           
       ,"current_year_fisc" : {
-         "en" : "Financial data for the current Fiscal Year (April 1st 2012, March 31st 2013)",
+         "en" : "Financial data for the current Fiscal Year (April 1st 2013, March 31st 2014)",
          "fr" : "Données financières pour l'exercices (1 avril à 31 mars, 2013)"
       }
       ,"previous_year_fisc" : {

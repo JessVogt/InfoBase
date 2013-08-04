@@ -50,7 +50,7 @@ parser.add_argument("-dev",
                     dest="dev" )
 parser.add_argument("-output",
                     action="store",
-                    choices=['les','od','ke','od_static'],
+                    choices=['les','od','ke'],
                     default='les')
 parser.add_argument("-w","--watch",
                  action="store_true", dest="watch", default=False,

@@ -17,10 +17,12 @@ wb4 = xlrd.open_workbook("open data.xls")
 wb5 = xlrd.open_workbook("open data lookups.XLS")
 wb6 = xlrd.open_workbook("Enhanced Inventory of Government data.xls")
 wb7 = xlrd.open_workbook("g_and_c.xlsx")
+wb8 =  xlrd.open_workbook("open data in-year.xls")
+
 def clean_data(d):
   if isinstance(d,basestring):
-    if u"  " in d:
-      print d
+    #if u"  " in d:
+    #  print d
     d = d.strip('*').strip().replace(u"\xad","-").replace("  "," ")
     # try and convert to an integer
     # if it fails, then return the string
@@ -133,13 +135,17 @@ def load_igoc():
                                   xrange(1, nrows)
               if row_values(i)[0] ])
 
+def  fix_table1_and_2(data_sheets):
+  data_sheets['table1'] = [x[2:] for x in data_sheets['table1']
+                           if x[0] == 2013 and x[1] == 1]
+  data_sheets['table2'] = [x[2:] for x in data_sheets['table2']
+                           if x[0] == 2013 and x[1] == 1]
+
 def load_od():
   data_sheets = dict(map(each_sheet,
                          filter(lambda x : 'table' in x.name,
-                                    wb4.sheets())))
-  data_sheets.update( dict(map(each_sheet,
-                         filter(lambda x : 'table' in x.name,
-                                    wb7.sheets()))))
+                                    wb7.sheets()+wb8.sheets()+ wb4.sheets())))
+  fix_table1_and_2(data_sheets)
   lookup_sheets = dict(map(each_sheet,
                            wb5.sheets()))
   lookup_sheets['footnotes'] = each_sheet(wb.sheet_by_name('Footnotes'))[1]

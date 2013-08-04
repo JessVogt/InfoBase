@@ -424,7 +424,9 @@
     }
     ,add_description: function(){
       if (this.description){
-        this.$el.find('.description').append(this.description[this.lang]);
+        this.$el.find('.description').append(
+            TABLES.m(this.description[this.lang])
+        );
       }
     }
     ,set_no_content : function(){

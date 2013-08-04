@@ -97,6 +97,12 @@ def make_open_data_after_check(lookups):
   reverse_so = {v['en'] : k for k,v in lookups['sos'].iteritems()}
   def _(row,table):
     root = lookups['depts'][row[0]].setdefault('tables',{}).setdefault(table,[])
+    if table.endswith('1'):
+      row = replace_nulls(row,5)
+      root.append(row)
+    if table.endswith('2'):
+      row = replace_nulls(row,1)
+      root.append(row)
     if table.endswith('4'):
       row = replace_nulls(row,3)
       root.append([row[0]]+row[3:])
@@ -299,7 +305,7 @@ def od(dev=True):
 
   del lookups['igoc']
 
-  check_g_and_c(lookups['depts'])
+  ##check_g_and_c(lookups['depts'])
 
   js_data = ";\n".join(
     [u'{}={}'.format(k,json.dumps(lookups[k]))
@@ -314,8 +320,6 @@ def od(dev=True):
 
   full_js = ''#full_js = "\n".join([js_data])
   full_css = ''#full_css = cssdata
-  import IPython
-  IPython.embed()
 
   t = lookup.get_template('od.html')
   with open("../open_data_wet/index-eng.html",'w') as leshtml:

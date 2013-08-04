@@ -57,6 +57,11 @@ else {
      }
      return new_obj;
    }
+   UTILS.add_ar = function(ar1,ar2){
+     return _.map(_.zip(ar1,ar2),function(x){
+       return x[0]+x[1];
+     })
+   }
    UTILS.sum_ar = function(ar,iterator){
      iterator = iterator || _.identity
      ar = _.filter(_.map(ar,iterator),
