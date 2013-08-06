@@ -70,6 +70,141 @@
       });
     }
 
+    var quantize_minstries = function(lang){
+      var no_gov = _.filter(depts,function(d){
+        return d.accronym != 'ZGOC';
+      });
+      var ministries = _.groupBy(no_gov,function(d){
+        return d.min[lang];
+      });
+      var min_size = _.chain(no_gov)
+        .groupBy(function(x){ return x.min.en})
+        .map(function(depts,key){ 
+                return [key,
+                        _.reduce(depts,function(x,y){ 
+                                          return x+Math.abs(y.fin_size); 
+                                        },0
+                                )
+                       ];
+         })
+         .object()
+         .value();
+      var scale = d3.scale.log()
+                     .domain([1,_.max(min_size)])
+                     .rangeRound([0,10]);
+      min_size =  _.chain(min_size)
+        .pairs()
+        .groupBy(function(min_size){
+          return scale(min_size[1]);
+         })
+        .map(function(val,key){
+          return [key, _.object(val)]
+         })
+        .object()
+        .map(function(vals,key) {
+          return _.map(vals,function(fin_size,min){ 
+            return [min,parseInt(key)]});
+         })
+        .flatten(true)
+        .object()
+        .value();
+      var min = _.min(min_size);
+      return _.object(_.map(min_size,function(val,key){
+        return [key,val-min]
+      }));
+    }
+
+    APP.construct_packing_heirarchy = function(lang){
+      var min_levels =  quantize_minstries(lang);
+      return min_levels;
+    }
+
+    APP.bubleDeptList = Backbone.View.extend({
+      el : 'body'
+      ,radius : 800
+      ,height : 800
+      ,x_scale : d3.scale.linear()
+      ,y_scale : d3.scale.linear()
+      ,events : {
+       "click a.gov_uni" : "render"
+      }
+      ,initialize: function(){
+        _.bindAll(this,"render");
+        this.x_scale.range([0,this.radius]);
+        this.y_scale.range([0,this.radius]);
+        this.pack=  d3.layout.pack()
+                      .size([this.radius,this.radius])
+        this.pack.margin = 10;
+        this.app = this.options['app'];
+
+      }
+      ,render :function() {
+        var r = this.radius;
+        var h = this.height;
+        var width = $('#app').width();
+
+        var lang = this.app.state.get("lang");
+        var grouped = APP.quantize_departments(lang);
+        //strip out unneeded data and correct negative numbers
+        grouped = _.object(_.map(grouped,function(group,key){
+          return [key,
+                  _.map(group,function(d){
+                    return {name: d.dept[lang],
+                            value : Math.abs(d.fin_size)};
+                  })];
+        }));
+        var root = {
+          name : "Government of Canada",
+          children : grouped[3]
+        }
+        root['children'].append({
+          name: "Smaller",
+          children : grouped[2]
+        });
+        _.last(root['children'])['children'].append({
+          name: "Smaller",
+          children : grouped[1]
+        });
+        var nodes = this.pack.nodes(root);
+        this.app.app.hide();
+
+        var vis = d3.select('#app')
+            .append('svg')
+            .attr({width : width,height:this.height})
+            .append('g');
+            //.attr("transform","translate("+ (width - this.radius) / 2 + "," + (this.height - this.radius) / 2 + ")");
+        var _top = $('svg').position().top;
+        var left = $('svg').position().left;
+
+        vis.selectAll("circle")
+            .data(nodes)
+          .enter().append("svg:circle")
+            .attr("class", function(d) { return d.children ? "parent" : "child"; })
+            .attr("cx", function(d) { return d.x; })
+            .attr("cy", function(d) { return d.y; })
+            .attr("r", function(d) { return d.r; })
+
+        d3.selectAll("div.cirle-labels")
+          .data(nodes)
+          .enter().append("div")
+          .attr("class", function(d) { return d.children ? "parent" : "child"; })
+          .style({
+            "top" : function(d){ return (d.y + _top + 200)+"px"},
+            "left" : function(d){ return (d.x + left+ 160)+"px"},
+            "width" : "60px",
+            "position" : "absolute",
+            "font-size" : "8px",
+            "z-index" : 100
+          })
+          .text(function(d) { 
+              if (d.depth == 1){ 
+              return d.name; 
+              }
+          });
+            
+      }
+    });
+
     APP.fullDeptList = Backbone.View.extend({
       el : 'body'
       ,template : APP.t('#org_list_t')
@@ -473,5 +608,6 @@
       p.toggleClass("active");
     }
   });
+
 
 })();

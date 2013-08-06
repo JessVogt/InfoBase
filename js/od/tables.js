@@ -53,6 +53,9 @@
       ,cols : 2
       ,target: '.org_list_by_min'
     });
+    app.universe_view = new APP.bubleDeptList({
+      app:app
+     });
   });
 
   APP.dispatcher.on("dept_ready",function(app){
