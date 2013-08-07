@@ -174,8 +174,18 @@
                 "fr" : "État des autorisations et Dépenses"
                 }
       ,"sort" : function(mapped_rows,lang){
-
-
+          var grps = _.groupBy(mapped_rows,function(row){ return _.isNumber(row[0])});
+          if (_.has(grps,true)) {
+            grps[true] = _.sortBy(grps[true],function(row){ return row[0]});
+          } else {
+            grps[true] = [];
+          }
+          if (_.has(grps,false)) {
+            grps[false] = _.sortBy(grps[false],function(row){ return row[1]; });
+          } else {
+            grps[false] = [];
+          }
+          return grps[true].concat(grps[false]);
       }
       ,"key" : [0,1]
       ,"mapper" : {
@@ -196,9 +206,26 @@
       }
       ,"table_view" : { 
         hide_col_ids : []
-        ,sum_cols : []
+        ,sum_cols : [2,3,4,5,6,7]
         ,min_func : TABLES.add_ministry_sum
         ,init_row_data : function(){
+          var total =   GROUP.fnc_on_group(
+              this.row_data,
+              {txt_cols : {0 : this.gt("total")},
+                func_cols : this.sum_cols,
+                func : GROUP.sum_rows});
+          var self = this;
+          this.merge_group_results(
+            GROUP.group_rows(
+              this.row_data,
+              function(row){ return _.isString(row[0])},
+              {txt_cols : {0 : this.gt("sub_total"),
+                            1 : function(g){
+                              var row = _.first(g);
+                              return _.isString(row[0]) ? self.gt("stat") : self.gt('vote') }},
+                func_cols : this.sum_cols,
+                func : GROUP.sum_rows}));
+            this.merge_group_results([[this.row_data,total]]);
 
         }
       }
@@ -247,9 +274,12 @@
       },
       graph_view : {
         prep_data : function(){
+
         }
         ,render : function(){
-         }
+
+          return this;
+        }
       }
     },
     {
@@ -674,7 +704,7 @@
       graph_view : {
         titles : {
           1 : {
-            "en" : "Total Organisation Voted and Statutory Net Expenditures($000)",
+            "en" : "Total Organization Voted and Statutory Net Expenditures($000)",
             "fr" : "Le total des dépenses votées et des dépenses législatives nettes (en milliers de dollars)"
           },
           2 : {
@@ -684,7 +714,7 @@
         }
         ,descriptions : {
           1 : {
-            "en" : "Graph 1 presents total organisation voted and statutory net expenditures in each fiscal year from 2009‒10 to 2011‒12. Voted expenditures reflect spending that received parliamentary approval through an appropriation bill, while statutory expenditures reflect spending whose authority was granted through other legislation. Select the fiscal year in the left side-bar to plot the expenditures on the graph.",
+            "en" : "Graph 1 presents total organization voted and statutory net expenditures in each fiscal year from 2009‒10 to 2011‒12. Voted expenditures reflect spending that received parliamentary approval through an appropriation bill, while statutory expenditures reflect spending whose authority was granted through other legislation. Select the fiscal year in the left side-bar to plot the expenditures on the graph.",
             "fr" : "Le graphique 1 montre le total des dépenses votées et des dépenses législatives nettes pour chaque exercice de 2009‒2010 à 2011‒2012. Les dépenses votées sont les dépenses qui ont été approuvées par le Parlement au moyen d’un projet de loi de crédits tandis que les dépenses législatives sont des dépenses qui ont été autorisées par une autre loi. Choisissez l’exercice dans le menu de gauche pour en représenter les dépenses."
           },
           2 : {
