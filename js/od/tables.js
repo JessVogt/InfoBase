@@ -1189,7 +1189,7 @@
         { "colspan" : 2, "header" :   "{{last_year}}"}
         ],
         [
-          "Type de paiment",
+          "Type de paiement",
           "Subvention / contribution",
           "Autorisations budgétaires disponibles pour l'emploi",
           "Dépenses",
@@ -1256,7 +1256,7 @@
       ,mini_view : {
         description : {
           "en" : "An organization’s transfer payment with the greatest expenditures for the specified year",
-          "fr" : "Le paiment de transfert de l’organisation le plus important sur le plan des dépenses pour l’exercice indiqué"
+          "fr" : "Le paiement de transfert de l’organisation le plus important sur le plan des dépenses pour l’exercice indiqué"
         }
         ,prep_data : function(){
           var ttf = _.partial(this.app.formater,"big-int");
