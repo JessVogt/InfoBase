@@ -121,6 +121,7 @@ border-bottom-width: 9px;
 border-left-width: 9px;
 border-right-width: 9px;
 }
+
 div.jqplot-table-legend-swatch-outline {
   border: 0;
 }
@@ -144,6 +145,12 @@ circle.parent {
   fill: #1f77b4;
   fill-opacity: .1;
   stroke: steelblue;
+  stroke-width: 2;
+}
+
+circle.grand-parent {
+  stroke : steelblue;
+  fill-opacity: 0;
 }
 
 circle.parent:hover {
@@ -153,4 +160,8 @@ circle.parent:hover {
 
 circle.child {
   pointer-events: none;
+}
+
+circle.hidden {
+  display : none;
 }

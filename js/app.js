@@ -70,53 +70,80 @@
       });
     }
 
-    var quantize_minstries = function(lang){
-      var no_gov = _.filter(depts,function(d){
-        return d.accronym != 'ZGOC';
-      });
-      var ministries = _.groupBy(no_gov,function(d){
-        return d.min[lang];
-      });
-      var min_size = _.chain(no_gov)
-        .groupBy(function(x){ return x.min.en})
+    var quantize_minstries = function(depts){
+      var min_size = _.chain(depts)
+        // group by the ministry value 
+        // {min_name: [depts] ....
+        .groupBy(function(x){ return x.min})
+        // transform the departments into a sum of their expenditures
+        // {min_name : ### ....
         .map(function(depts,key){ 
-                return [key,
-                        _.reduce(depts,function(x,y){ 
-                                          return x+Math.abs(y.fin_size); 
-                                        },0
-                                )
-                       ];
+           return [key,
+                   _.reduce(depts,function(x,y){ 
+                       return x+y.value; 
+                      },0)
+                  ];
          })
-         .object()
+         // result is now [[min_name],[min_size]]...
          .value();
+      // interrupt the chaining to extract the max min size to create 
+      // the log scale
+      var max_min_size =  _.max(min_size, function(x){ return x[1]})[1];
       var scale = d3.scale.log()
-                     .domain([1,_.max(min_size)])
-                     .rangeRound([0,10]);
-      min_size =  _.chain(min_size)
-        .pairs()
+                     .domain([1,max_min_size])
+                     .rangeRound([0,4]);
+      return  _.chain(min_size)
+        // tnrasform to {scaled_size : [[min_name,fin_size],...
         .groupBy(function(min_size){
           return scale(min_size[1]);
          })
+         // transform to [scaled_size ,[min_name1, min_name2]...
         .map(function(val,key){
-          return [key, _.object(val)]
+          return [key, _.map(val,function(x){ return x[0]})];
          })
-        .object()
-        .map(function(vals,key) {
-          return _.map(vals,function(fin_size,min){ 
-            return [min,parseInt(key)]});
-         })
-        .flatten(true)
+        // turn into object
+        // {scaled_size : [min_name1, min_name2]...
         .object()
         .value();
-      var min = _.min(min_size);
-      return _.object(_.map(min_size,function(val,key){
-        return [key,val-min]
-      }));
     }
 
-    APP.construct_packing_heirarchy = function(lang){
-      var min_levels =  quantize_minstries(lang);
-      return min_levels;
+    var construct_packing_hierarchy = function(lang){
+      var no_gov = _.chain(depts)
+        .map(function(d){
+           return {name: d.dept[lang],
+                   accronym : d.accronym,
+                   value : Math.abs(d.fin_size),
+                   min : d.min[lang]};
+        })
+        .filter(function(d){
+           return d.accronym != 'ZGOC';})
+        .value();
+      var ministries = _.groupBy(no_gov,"min");
+      var min_levels =  quantize_minstries(no_gov);
+      //
+      min_levels = _.object(_.map(min_levels, function(min_names,level){
+         return [level,_.map(min_names,function(x){ 
+           var departments =  ministries[x];
+           _.each(departments,function(x){ x.level = parseInt(level) - 1});
+           return {name : x, level: level, children : departments}
+         })];
+      }));
+      //
+      var levels = _.sortBy(_.map(_.keys(min_levels),function(x){return parseInt(x)}));
+      //
+      var struct = {
+        name : "smaller"
+        ,level : _.first(levels)
+        ,children :  min_levels[_.first(levels)]
+      }
+      //
+      _.each(_.tail(levels),function(level){
+        struct = {name : "smaller"
+                  ,level : level
+                  ,children : [struct].concat(min_levels[level]) };
+      });
+      struct.name = "";
+      return struct;
     }
 
     APP.bubleDeptList = Backbone.View.extend({
@@ -129,7 +156,7 @@
        "click a.gov_uni" : "render"
       }
       ,initialize: function(){
-        _.bindAll(this,"render");
+        _.bindAll(this,"render","re_draw","on_circle_click");
         this.x_scale.range([0,this.radius]);
         this.y_scale.range([0,this.radius]);
         this.pack=  d3.layout.pack()
@@ -144,64 +171,95 @@
         var width = $('#app').width();
 
         var lang = this.app.state.get("lang");
-        var grouped = APP.quantize_departments(lang);
         //strip out unneeded data and correct negative numbers
-        grouped = _.object(_.map(grouped,function(group,key){
-          return [key,
-                  _.map(group,function(d){
-                    return {name: d.dept[lang],
-                            value : Math.abs(d.fin_size)};
-                  })];
-        }));
-        var root = {
-          name : "Government of Canada",
-          children : grouped[3]
-        }
-        root['children'].append({
-          name: "Smaller",
-          children : grouped[2]
-        });
-        _.last(root['children'])['children'].append({
-          name: "Smaller",
-          children : grouped[1]
-        });
-        var nodes = this.pack.nodes(root);
+        var root =  construct_packing_hierarchy(lang);
+        // set the current level 
+        this.nodes = this.pack.nodes(root);
         this.app.app.hide();
-
-        var vis = d3.select('#app')
+        this.vis = d3.select('#app')
             .append('svg')
+            .attr("id","gov_bubble")
             .attr({width : width,height:this.height})
-            .append('g');
-            //.attr("transform","translate("+ (width - this.radius) / 2 + "," + (this.height - this.radius) / 2 + ")");
-        var _top = $('svg').position().top;
-        var left = $('svg').position().left;
+            .append('g')
+            .attr("transform","translate("+ (width - this.radius) / 2 + "," + (this.height - this.radius) / 2 + ")");
+        this.node = this.nodes[0];
+        this.re_draw();    
+      },
+      re_draw : function(){
+        var node = this.node;
+        var depth = node.depth;
+        var nodes = _.filter(this.nodes,function(d){
+          return (depth -1 <= d.depth && d.depth <= depth +1) ;
+        });
+        var nodes_with_text =  _.filter(this.nodes,function(d){
+          return _.indexOf(node.children,d) != -1;
+        });           
+        var offset =$('#gov_bubble').offset();
+        var k = this.radius / data.r / 2;
+        var x = this.x_scale.domain([data.x - data.r, data.x + data.r]);
+        var y = this.y_scale.domain([data.y - data.r, data.y + data.r]);
+        var circle = this.vis.selectAll("circle")
+            .data(nodes,function(d){ return d.name+d.depth});
+        var text = d3.selectAll("div.svg_label")
+              .data(nodes_with_text,function(d){ return d.name+d.depth})
 
-        vis.selectAll("circle")
-            .data(nodes)
+        circle
           .enter().append("svg:circle")
-            .attr("class", function(d) { return d.children ? "parent" : "child"; })
-            .attr("cx", function(d) { return d.x; })
-            .attr("cy", function(d) { return d.y; })
-            .attr("r", function(d) { return d.r; })
-
-        d3.selectAll("div.cirle-labels")
-          .data(nodes)
-          .enter().append("div")
-          .attr("class", function(d) { return d.children ? "parent" : "child"; })
-          .style({
-            "top" : function(d){ return (d.y + _top + 200)+"px"},
-            "left" : function(d){ return (d.x + left+ 160)+"px"},
-            "width" : "60px",
-            "position" : "absolute",
-            "font-size" : "8px",
-            "z-index" : 100
-          })
-          .text(function(d) { 
-              if (d.depth == 1){ 
-              return d.name; 
+            .attr("class", function(d) { 
+              if (d.depth ==  depth ) {
+                return "parent" ;
+              } else if (d.depth == depth -1){
+               return  "grand-parent"; 
+              } else if (d.depth == depth +1){
+               return  "child"; 
               }
-          });
-            
+            })
+            .attr("cx", function(d) { return x(d.x); })
+            .attr("cy", function(d) { return y(d.y); })
+            .attr("r", function(d) { return k*d.r; })
+            .on("click", this.on_circle_click)
+
+        circle
+            .attr("class", function(d) { 
+              if (d.depth ==  depth ) {
+                return "parent" ;
+              } else if (d.depth == depth -1){
+               return  "grand-parent"; 
+              } else if (d.depth == depth +1){
+               return  "child"; 
+              }
+            })
+            .attr("cx", function(d) { return x(d.x); })
+            .attr("cy", function(d) { return y(d.y); })
+            .attr("r", function(d) { return k*d.r; })
+
+        circle.exit().remove();
+
+        text
+          .enter()
+            .append("div")
+            .attr("class","svg_label");
+
+        text
+         .style({
+           top : function(d){ return offset.top + d.y- d.r + 20 +"px"}
+           ,left: function(d){ return 200 + offset.left + d.x - d.r/2+"px"}
+           ,position: "absolute"
+           ,"color" : "steelblue"
+           ,'font-size': "6px"
+           ,"text-align" : "centre"
+           ,width: function(d){return d.r/2 +'px'}
+         })
+         .text(function(d) { 
+           return d.name; 
+         })
+
+        text.exit().remove();
+
+      }
+      ,on_circle_click : function(data){
+         this.node = data;
+         this.re_draw();
       }
     });
 
