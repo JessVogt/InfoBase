@@ -126,6 +126,18 @@ div.jqplot-table-legend-swatch-outline {
   border: 0;
 }
 
+/* SVG Specific */
+
+svg {
+ overflow : hidden;
+}
+
+rect.gov_bubble {
+  stroke: #ff7f0e;
+  stroke-width: .5px;
+}
+
+
 text {
   font-size: 11px;
   pointer-events: none;
@@ -148,8 +160,14 @@ circle.parent {
   stroke-width: 2;
 }
 
+circle.widget {
+  fill-opacity: .2;
+  stroke: grey;
+  stroke-width: 2;
+}
+
 circle.grand-parent {
-  stroke : steelblue;
+  stroke : #00;
   fill-opacity: 0;
 }
 
@@ -164,4 +182,10 @@ circle.child {
 
 circle.hidden {
   display : none;
+}
+
+.link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 1.5px;
 }
