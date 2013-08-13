@@ -113,7 +113,7 @@
       {
       "id": 'table1',
       "col_defs" : [ "int",
-                    "str",
+                    "wide-str",
                     "big-int",
                     "big-int",
                     "big-int",
@@ -274,9 +274,36 @@
       },
       graph_view : {
         prep_data : function(){
-
+          var sorter =  function(row){ return row[1]; }
+          var mapped = _.map(this.mapped_objs, function(obj){
+            return [obj["Description"],
+                    obj['Vote/Statutory'],
+                    obj["{{in_year}}-Year to date used at quarter-end"]];
+          });
+          var vs = _.groupBy(mapped, function(row){
+            return _.isNumber(row[1]);
+          });
+          vs[true] = _.sortBy(vs[true], sorter);
+          vs[false] = _.sortBy(vs[false], sorter);
+          var top_2v = _.head(vs[true],2);
+          var top_2s = _.head(vs[false],2);
+          var rest = _.reduce(_.rest(vs[true],2).concat(_.rest(vs[false],2)),
+              function(x,y){ return x + y[2]},
+              0);
+          var exp_split = top_2v.concat(top_2s).concat([
+              [this.gt("other"), '',rest]]); 
+          this.exp_split = _.map(exp_split, function(x){
+            return [x[0],x[2]];
+          });
         }
         ,render : function(){
+          var exp_pie = $(
+          this.template({
+            id : this.make_id(1)
+            ,header : ''
+            ,description : '' //this.descriptions[1][this.lang]
+          }));
+          this.$el.append(exp_pie);
 
           return this;
         }
@@ -351,9 +378,17 @@
         }
       }
       ,table_view : { 
-        sum_cols : []
+        sum_cols : [1,2,3,4,5,6]
         ,min_func : TABLES.add_ministry_sum
         ,init_row_data : function(){
+          var txt = this.gt("total");
+          this.merge_group_results(
+            [[this.row_data,
+            GROUP.fnc_on_group(
+              this.row_data,
+              {txt_cols : {0 : txt},
+                func_cols : this.sum_cols,
+                func : GROUP.sum_rows})]]);
         }
       }
       ,mini_view : {
