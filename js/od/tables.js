@@ -275,26 +275,17 @@
       graph_view : {
         prep_data : function(){
           var sorter =  function(row){ return row[1]; }
-          var mapped = _.map(this.mapped_objs, function(obj){
-            return [obj["Description"],
-                    obj['Vote/Statutory'],
-                    obj["{{in_year}}-Year to date used at quarter-end"]];
-          });
-          var vs = _.groupBy(mapped, function(row){
-            return _.isNumber(row[1]);
-          });
-          vs[true] = _.sortBy(vs[true], sorter);
-          vs[false] = _.sortBy(vs[false], sorter);
-          var top_2v = _.head(vs[true],2);
-          var top_2s = _.head(vs[false],2);
-          var rest = _.reduce(_.rest(vs[true],2).concat(_.rest(vs[false],2)),
-              function(x,y){ return x + y[2]},
+          var mapped = _.sortBy(_.map(this.mapped_objs, function(obj){
+            return [obj["Description"].substring(0,120),
+                    Math.abs(obj["{{in_year}}-Year to date used at quarter-end"])];
+          }),sorter).reverse();
+          this.top = _.first(mapped,5)
+          var rest = _.reduce(_.rest(mapped,5),
+              function(x,y){ return x + y[1]},
               0);
-          var exp_split = top_2v.concat(top_2s).concat([
-              [this.gt("other"), '',rest]]); 
-          this.exp_split = _.map(exp_split, function(x){
-            return [x[0],x[2]];
-          });
+          if (rest != 0 ) {
+            this.top = this.top.concat([ [this.gt("other"), '',rest]]); 
+          }
         }
         ,render : function(){
           var exp_pie = $(
@@ -304,8 +295,14 @@
             ,description : '' //this.descriptions[1][this.lang]
           }));
           this.$el.append(exp_pie);
-
+          var self=this;
+          setTimeout(function(){
+            self.make_graph();
+          });
           return this;
+        }
+        ,make_graph : function(){
+          GRAPHS.pie(this.make_id(1),[this.top],{title : ""});
         }
       }
     },
