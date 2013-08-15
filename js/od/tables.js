@@ -333,7 +333,7 @@
         "Year to date used at quarter-end",
         "Planned expenditures for the year ending March 31, {{qfr_last_year}}",
         "Expended during the quarter ended {{month}}-{{qfr_last_year}}",
-        "{{last_year}} Year to date used at quarter-end"
+        "Year to date used at quarter-end"
         ]],
         "fr": [[
         { "colspan" : 1,
@@ -436,9 +436,37 @@
       },
       graph_view : {
         prep_data : function(){
+          var sorter =  function(row){ return row[1]; }
+          var mapped = _.sortBy(_.map(this.mapped_objs, function(obj){
+            return [obj["Standard Object"].substring(0,120),
+                    Math.abs(obj["{{in_year}}-Year to date used at quarter-end"])];
+          }),sorter).reverse();
+          this.top = _.first(mapped,5)
+          var rest = _.reduce(_.rest(mapped,5),
+              function(x,y){ return x + y[1]},
+              0);
+          if (rest != 0 ) {
+            this.top = this.top.concat([ [this.gt("other"), '',rest]]); 
+          }
         }
         ,render : function(){
+          var exp_pie = $(
+          this.template({
+            id : this.make_id(1)
+            ,header : ''
+            ,description : '' //this.descriptions[1][this.lang]
+          }));
+          this.$el.append(exp_pie);
+          var self=this;
+          setTimeout(function(){
+            self.make_graph();
+          });
+          return this;
         }
+        ,make_graph : function(){
+          GRAPHS.pie(this.make_id(1),[this.top],{title : ""});
+        }
+
       }
     },
     //{
