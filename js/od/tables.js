@@ -116,7 +116,7 @@
       {
       "id": 'table1',
       "col_defs" : [ "int",
-                    "str",
+                    "wide-str",
                     "big-int",
                     "big-int",
                     "big-int",
@@ -170,15 +170,25 @@
         "en" : "",
         "fr" : ""
       },
-      "name" : { "en" : "Statement of Authorites and Expenditures",
+      "name" : { "en" : "Statement of Authorities and Expenditures",
                 "fr" : "État des autorisations et Dépenses"
               },
-      "title" : { "en" : "Statement of Authorites and Expenditures",
+      "title" : { "en" : "Statement of Authorities and Expenditures",
                 "fr" : "État des autorisations et Dépenses"
                 }
       ,"sort" : function(mapped_rows,lang){
-
-
+          var grps = _.groupBy(mapped_rows,function(row){ return _.isNumber(row[0])});
+          if (_.has(grps,true)) {
+            grps[true] = _.sortBy(grps[true],function(row){ return row[0]});
+          } else {
+            grps[true] = [];
+          }
+          if (_.has(grps,false)) {
+            grps[false] = _.sortBy(grps[false],function(row){ return row[1]; });
+          } else {
+            grps[false] = [];
+          }
+          return grps[true].concat(grps[false]);
       }
       ,"key" : [0,1]
       ,"mapper" : {
@@ -199,16 +209,33 @@
       }
       ,"table_view" : { 
         hide_col_ids : []
-        ,sum_cols : []
+        ,sum_cols : [2,3,4,5,6,7]
         ,min_func : TABLES.add_ministry_sum
         ,init_row_data : function(){
+          var total =   GROUP.fnc_on_group(
+              this.row_data,
+              {txt_cols : {0 : this.gt("total")},
+                func_cols : this.sum_cols,
+                func : GROUP.sum_rows});
+          var self = this;
+          this.merge_group_results(
+            GROUP.group_rows(
+              this.row_data,
+              function(row){ return _.isString(row[0])},
+              {txt_cols : {0 : this.gt("sub_total"),
+                            1 : function(g){
+                              var row = _.first(g);
+                              return _.isString(row[0]) ? self.gt("stat") : self.gt('vote') }},
+                func_cols : this.sum_cols,
+                func : GROUP.sum_rows}));
+            this.merge_group_results([[this.row_data,total]]);
 
         }
       }
       ,mini_view : {
         description : {
-          "en" : "Change in authorities and expenditure between {{in_year}} and {{last_year}}",
-          "fr" : "Différence entre les autorisations et les dépenses entre {in_{year}} et {{last_year}}"
+          "en" : "Change in authorities and expenditures between {{in_year}} and {{qfr_last_year}}",
+          "fr" : "Différence entre les autorisations et les dépenses entre {in_{year}} et {{qfr_last_year}}"
         }
         ,prep_data : function(){
           var ttf = _.partial(this.app.formater,"percentage");
@@ -226,12 +253,12 @@
           var s_total = _.reduce(stat, UTILS.add_ar, [0,0,0,0]);
           this.rows = [
             [this.gt("vote"), 
-            ttf(v_total[2]/ (v_total[0] || 1)), 
-            ttf(v_total[3]/ (v_total[1] || 1)), 
+            ttf(v_total[2]/ (v_total[0] || 1) -1), 
+            ttf(v_total[3]/ (v_total[1] || 1)-1), 
             ],
             [this.gt("stat"), 
-            ttf(s_total[2]/ (s_total[0] || 1)), 
-            ttf(s_total[3]/ (s_total[1] || 1)), 
+            ttf(s_total[2]/ (s_total[0] || 1)-1), 
+            ttf(s_total[3]/ (s_total[1] || 1)-1), 
             ]
           ];
         }
@@ -250,9 +277,36 @@
       },
       graph_view : {
         prep_data : function(){
+          var sorter =  function(row){ return row[1]; }
+          var mapped = _.sortBy(_.map(this.mapped_objs, function(obj){
+            return [obj["Description"].substring(0,120),
+                    Math.abs(obj["{{in_year}}-Year to date used at quarter-end"])];
+          }),sorter).reverse();
+          this.top = _.first(mapped,5)
+          var rest = _.reduce(_.rest(mapped,5),
+              function(x,y){ return x + y[1]},
+              0);
+          if (rest != 0 ) {
+            this.top = this.top.concat([ [this.gt("other"), '',rest]]); 
+          }
         }
         ,render : function(){
-         }
+          var exp_pie = $(
+          this.template({
+            id : this.make_id(1)
+            ,header : ''
+            ,description : '' //this.descriptions[1][this.lang]
+          }));
+          this.$el.append(exp_pie);
+          var self=this;
+          setTimeout(function(){
+            self.make_graph();
+          });
+          return this;
+        }
+        ,make_graph : function(){
+          GRAPHS.pie(this.make_id(1),[this.top],{title : ""});
+        }
       }
     },
     {
@@ -282,7 +336,7 @@
         "Year to date used at quarter-end",
         "Planned expenditures for the year ending March 31, {{qfr_last_year}}",
         "Expended during the quarter ended {{month}}-{{qfr_last_year}}",
-        "{{last_year}} Year to date used at quarter-end"
+        "Year to date used at quarter-end"
         ]],
         "fr": [[
         { "colspan" : 1,
@@ -324,9 +378,17 @@
         }
       }
       ,table_view : { 
-        sum_cols : []
+        sum_cols : [1,2,3,4,5,6]
         ,min_func : TABLES.add_ministry_sum
         ,init_row_data : function(){
+          var txt = this.gt("total");
+          this.merge_group_results(
+            [[this.row_data,
+            GROUP.fnc_on_group(
+              this.row_data,
+              {txt_cols : {0 : txt},
+                func_cols : this.sum_cols,
+                func : GROUP.sum_rows})]]);
         }
       }
       ,mini_view : {
@@ -377,8 +439,35 @@
       },
       graph_view : {
         prep_data : function(){
+          var sorter =  function(row){ return row[1]; }
+          var mapped = _.sortBy(_.map(this.mapped_objs, function(obj){
+            return [obj["Standard Object"].substring(0,120),
+                    Math.abs(obj["{{in_year}}-Year to date used at quarter-end"])];
+          }),sorter).reverse();
+          this.top = _.first(mapped,5)
+          var rest = _.reduce(_.rest(mapped,5),
+              function(x,y){ return x + y[1]},
+              0);
+          if (rest != 0 ) {
+            this.top = this.top.concat([ [this.gt("other"), '',rest]]); 
+          }
         }
         ,render : function(){
+          var exp_pie = $(
+          this.template({
+            id : this.make_id(1)
+            ,header : ''
+            ,description : '' //this.descriptions[1][this.lang]
+          }));
+          this.$el.append(exp_pie);
+          var self=this;
+          setTimeout(function(){
+            self.make_graph();
+          });
+          return this;
+        }
+        ,make_graph : function(){
+          GRAPHS.pie(this.make_id(1),[this.top],{title : ""});
         }
       }
     },
@@ -677,7 +766,7 @@
       graph_view : {
         titles : {
           1 : {
-            "en" : "Total Organisation Voted and Statutory Net Expenditures($000)",
+            "en" : "Total Organization Voted and Statutory Net Expenditures($000)",
             "fr" : "Le total des dépenses votées et des dépenses législatives nettes (en milliers de dollars)"
           },
           2 : {
@@ -687,7 +776,7 @@
         }
         ,descriptions : {
           1 : {
-            "en" : "Graph 1 presents total organisation voted and statutory net expenditures in each fiscal year from 2009‒10 to 2011‒12. Voted expenditures reflect spending that received parliamentary approval through an appropriation bill, while statutory expenditures reflect spending whose authority was granted through other legislation. Select the fiscal year in the left side-bar to plot the expenditures on the graph.",
+            "en" : "Graph 1 presents total organization voted and statutory net expenditures in each fiscal year from 2009‒10 to 2011‒12. Voted expenditures reflect spending that received parliamentary approval through an appropriation bill, while statutory expenditures reflect spending whose authority was granted through other legislation. Select the fiscal year in the left side-bar to plot the expenditures on the graph.",
             "fr" : "Le graphique 1 montre le total des dépenses votées et des dépenses législatives nettes pour chaque exercice de 2009‒2010 à 2011‒2012. Les dépenses votées sont les dépenses qui ont été approuvées par le Parlement au moyen d’un projet de loi de crédits tandis que les dépenses législatives sont des dépenses qui ont été autorisées par une autre loi. Choisissez l’exercice dans le menu de gauche pour en représenter les dépenses."
           },
           2 : {
@@ -1162,7 +1251,7 @@
         { "colspan" : 2, "header" :   "{{last_year}}"}
         ],
         [
-          "Type de paiment",
+          "Type de paiement",
           "Subvention / contribution",
           "Autorisations budgétaires disponibles pour l'emploi",
           "Dépenses",
@@ -1229,7 +1318,7 @@
       ,mini_view : {
         description : {
           "en" : "An organization’s transfer payment with the greatest expenditures for the specified year",
-          "fr" : "Le paiment de transfert de l’organisation le plus important sur le plan des dépenses pour l’exercice indiqué"
+          "fr" : "Le paiement de transfert de l’organisation le plus important sur le plan des dépenses pour l’exercice indiqué"
         }
         ,prep_data : function(){
           var ttf = _.partial(this.app.formater,"big-int");

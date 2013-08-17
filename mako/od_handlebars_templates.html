@@ -309,6 +309,9 @@
 </script>
 <script type='text/plain' id='graph_grid_t'>
   <p class='margin-left-medium'>{{description}}</p>
+
+  {{#if items}}
+
   <div class='span-2 well sidebar border-all margin-right-none'  
     id='{{id}}_sidebar'
     style='height:450px;overflow-y:auto'>
@@ -323,6 +326,9 @@
       {{/items}}
     </ul>
   </div>
+
+  {{/if}}
+
   <div class='span-6 border-all margin-left-none'>
     <div class='well graph'
     style='padding-left : 20px'>

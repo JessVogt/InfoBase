@@ -14,7 +14,7 @@
       }
       ,"alphabetical" : {
          "en" : "Alphabetical",
-         "fr" : "Alphabetique" 
+         "fr" : "Alphabétique" 
       }
       ,"ministry" : {
          "en" : "Ministry",
@@ -25,8 +25,16 @@
         ,"fr" : "Pas de données disponibles pour cette table"
       }
       ,"financial_size" : {
-         "en" : "2012 Expenditures $(000)",
-         "fr" : "Dépenses de 2012 $(000)" 
+         "en" : "2012 Expenditures ($000)",
+         "fr" : "Dépenses en 2012 ($000)" 
+      }
+      ,"increased_by" : {
+         "en" : "increased by",
+         "fr" : "ont augmenté par" 
+      }
+      ,"decreased_by" : {
+         "en" : "decreaed by",
+         "fr" : "ont diminué par" 
       }
       ,"greater_than" : {
          "en" : "Greater than ",
@@ -134,7 +142,7 @@
       }
       ,"previous_year_fisc" : {
          "en" : "Financial data from previous fiscal years (2009-10 to 2011-12)",
-         "fr" : "Données financières pour les exercices antérieurs (2009-10 à 2011-12)"
+         "fr" : "Données financières pour les exercices antérieurs (2009-2010 à 2011-2012)"
       }
       ,"close" : {
         "en" : "close"
