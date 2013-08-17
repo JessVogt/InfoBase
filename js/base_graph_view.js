@@ -139,9 +139,11 @@ $(function () {
       var ticks = _.pluck(data[0],0);
       GRAPHS.bar(id,
           [bar_data],
-          _.extend(options,{ticks : ticks,
-           legend : {show:false},
-           footnotes : []})
+          _.extend(options,{
+            ticks : ticks,
+            legend : {show:false},
+            footnotes : [],
+            rotate: true})
       );
       return
     }
@@ -149,19 +151,22 @@ $(function () {
       seriesColors : seriesColors
       ,legend : {
         show:true 
-        ,fontSize : "10px"
+        ,fontSize : "8px"
         ,location:'s'
         ,rendererOptions: {numberColumns: 2}
+        ,marginTop : "0px"
+        ,marginBottom: "0px"
+        ,rowSpacing : "0em"
       }
       ,seriesDefaults : {
         renderer:$.jqplot.PieRenderer, 
         trendline:{ show:false }, 
         rendererOptions: { 
-          dataLabelThreshold:2,
-          diameter : 200,
-          padding: 40,
+          dataLabelThreshold:1.5,
+          diameter : 220,
+          padding: 20,
           sliceMargin: 0,
-          dataLabelPositionFactor: 1.1,
+          dataLabelPositionFactor: 1.2,
           showDataLabels : true,
           highlightMouseOver: options['highlight'] || false
           }
@@ -176,7 +181,6 @@ $(function () {
        }
    );
    var plot =  $.jqplot(id,data, o);
-   //$('#'+id+ ' table.jqplot-table-legend').width('50%');
    return plot;
   };
 
@@ -187,9 +191,10 @@ $(function () {
       ,negativeSeriesColors  :  negativeSeries
       ,legend : options['legend'] || {
         show:true 
+        ,renderer: $.jqplot.EnhancedLegendRenderer
         ,placement: "outsideGrid"
         ,fontSize : "10px"
-        ,rendererOptions: { numberColumns: 2 ,numberRows:1}
+        ,rendererOptions: {numberRows:1}
         ,location:'s'
       }
       ,stackSeries : false
@@ -210,7 +215,7 @@ $(function () {
     }
     if (_.has(options,'series')){
       o['series'] =  _.map( options['series'],function(obj){
-        return {label : TABLES.m(obj.label)}
+        return {label : TABLES.m(obj.label).substring(0,40)}
       });
     }
     if (_.has(options,'stackSeries')){

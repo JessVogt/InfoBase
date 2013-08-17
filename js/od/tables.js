@@ -167,10 +167,10 @@
         "en" : "",
         "fr" : ""
       },
-      "name" : { "en" : "Statement of Authorites and Expenditures",
+      "name" : { "en" : "Statement of Authorities and Expenditures",
                 "fr" : "État des autorisations et Dépenses"
               },
-      "title" : { "en" : "Statement of Authorites and Expenditures",
+      "title" : { "en" : "Statement of Authorities and Expenditures",
                 "fr" : "État des autorisations et Dépenses"
                 }
       ,"sort" : function(mapped_rows,lang){
@@ -231,8 +231,8 @@
       }
       ,mini_view : {
         description : {
-          "en" : "Change in authorities and expenditure between {{in_year}} and {{last_year}}",
-          "fr" : "Différence entre les autorisations et les dépenses entre {in_{year}} et {{last_year}}"
+          "en" : "Change in authorities and expenditures between {{in_year}} and {{qfr_last_year}}",
+          "fr" : "Différence entre les autorisations et les dépenses entre {in_{year}} et {{qfr_last_year}}"
         }
         ,prep_data : function(){
           var ttf = _.partial(this.app.formater,"percentage");
@@ -250,12 +250,12 @@
           var s_total = _.reduce(stat, UTILS.add_ar, [0,0,0,0]);
           this.rows = [
             [this.gt("vote"), 
-            ttf(v_total[2]/ (v_total[0] || 1)), 
-            ttf(v_total[3]/ (v_total[1] || 1)), 
+            ttf(v_total[2]/ (v_total[0] || 1) -1), 
+            ttf(v_total[3]/ (v_total[1] || 1)-1), 
             ],
             [this.gt("stat"), 
-            ttf(s_total[2]/ (s_total[0] || 1)), 
-            ttf(s_total[3]/ (s_total[1] || 1)), 
+            ttf(s_total[2]/ (s_total[0] || 1)-1), 
+            ttf(s_total[3]/ (s_total[1] || 1)-1), 
             ]
           ];
         }
@@ -466,7 +466,6 @@
         ,make_graph : function(){
           GRAPHS.pie(this.make_id(1),[this.top],{title : ""});
         }
-
       }
     },
     //{
