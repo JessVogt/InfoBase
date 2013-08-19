@@ -1381,7 +1381,8 @@
           this.year_to_top = function(year){
             var ordered_exps =  _.sortBy(_.map(this.mapped_objs,
                 function(d){ 
-                  return [d['Grant / Contribution'],d[year+exp]];
+                  return [d['Grant / Contribution'].substring(0,100),
+                          d[year+exp]];
                 })
                 ,function(x){ return x[1]}
             );
