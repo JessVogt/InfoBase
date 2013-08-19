@@ -2,6 +2,32 @@
     var D3 = ns('D3');
     var TABLES = ns('TABLES');
 
+    D3.BaseGraphView = Backbone.View.extend({
+      initialize: function () {
+        _.bindAll.apply(this,[this].concat(_.functions(this)));
+        this.key = this.options["key"];
+        this.app = this.options["app"];
+        this.def = this.options["def"];
+
+        this.state = this.app.state;
+        this.dept = this.state.get('dept');
+        this.lang = this.state.get("lang");
+        this.raw_data = this.dept.tables[this.key];
+        this.mapped_objs = this.dept.mapped_objs[this.key][this.lang];
+        this.data = this.options['data'];
+
+        this.gt = this.app.get_text;
+
+        this.lang = this.app.state.get('lang');
+        this.name = this.def['name'][this.lang];
+        this.prep_data();
+        //this.gc = function(indexes){return this.get_col(this.data,indexes)};
+      }
+      ,prep_data : function(){
+
+      }
+    })
+
     var quantize_minstries = function(depts){
       var min_size = _.chain(depts)
         // group by the ministry value 
@@ -376,4 +402,4 @@
         $('.svg_label').remove();
       }
     });
-});
+})();

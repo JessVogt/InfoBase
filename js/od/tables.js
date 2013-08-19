@@ -10,6 +10,7 @@
   }
 
   var GRAPHS = ns('GRAPHS');
+  var D3 = ns('D3');
   var GROUP = ns('GROUP');
   var APP = ns('APP');
   var LANG = ns('LANG');
@@ -53,7 +54,7 @@
       ,cols : 2
       ,target: '.org_list_by_min'
     });
-    app.universe_view = new APP.bubleDeptList({
+    app.universe_view = new D3.bubleDeptList({
       app:app
      });
   });
