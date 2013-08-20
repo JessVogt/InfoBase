@@ -208,6 +208,10 @@ $(function () {
       }
       ,axes : make_axes(options['ticks']) || {}
       ,title : options['title'] || ""
+      ,highlighter: {
+              show: true,
+              sizeAdjust: 7.5
+            }
     };
     if (_.has(options,'rotate')){
       o['axes']['xaxis']['tickRenderer'] = $.jqplot.CanvasAxisTickRenderer;
@@ -235,5 +239,17 @@ $(function () {
    });
    return plot
   };
+
+
+  GRAPHS.fix_bar_highlight  = function (plot, data,ticks,app, data_type){
+    data_type = data_type || "big-int";
+    _.each(plot.series,function(s,i){
+      s.data = _.map(ticks, function(tick,i){
+        return [tick,app.formater(data_type,s.data[i][1])];
+      });
+    });
+  };
+
 });
+
 

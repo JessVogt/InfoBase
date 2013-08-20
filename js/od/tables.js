@@ -137,10 +137,10 @@
         "Vote/Statutory",
         "Description",
         "Total available for use for the year ending March 31,{{in_year_short}}",
-        "Used during the quarter ended {{month}}-{{in_year}}",
+        "Used during the quarter ended {{month_name}}-{{in_year_short}}",
         "Year to date used at quarter-end",
         "Total available for use for the year ending March 31,{{qfr_last_year_short}}",
-        "Used during the quarter ended {{month}}-{{qfr-last_year}} ",
+        "Used during the quarter ended {{month_name}}-{{qfr_last_year_short}} ",
         "Year to date used at quarter-end"
       ]],
         "fr": [ [
@@ -284,7 +284,7 @@
               function(x,y){ return x + y[1]},
               0);
           if (rest != 0 ) {
-            this.top = this.top.concat([ [this.gt("other"), '',rest]]); 
+            this.top = this.top.concat([ [this.gt("other"), rest]]); 
           }
         }
         ,render : function(){
@@ -295,14 +295,21 @@
             ,description : '' //this.descriptions[1][this.lang]
           }));
           this.$el.append(exp_pie);
-          var self=this;
-          setTimeout(function(){
-            self.make_graph();
-          });
+          var make_graph=this.make_graph;
+          setTimeout(function(){ make_graph(); });
           return this;
         }
         ,make_graph : function(){
-          GRAPHS.pie(this.make_id(1),[this.top],{title : ""});
+          var ticks = _.pluck(this.top, 0);
+          var data = _.pluck(this.top, 1);
+          var plot = GRAPHS.bar(this.make_id(1),
+                    [data],
+                   {title : "",
+                    legend : {show:false},
+                    ticks : ticks,
+                    rotate : true
+                   });
+          GRAPHS.fix_bar_highlight(plot,[data],ticks,this.app);
         }
       }
     },
@@ -358,10 +365,10 @@
         "en" : "",
         "fr" : ""
       },
-      name : { "en" : "Budgetary expenditures by Standard Object",
+      name : { "en" : "Expenditures by Standard Object",
         "fr" : "Dépenses ministérielles budgétaires par article courant"
       },
-      title : { "en" : "Budgetary expenditures by Standard Object ($000)",
+      title : { "en" : "Expenditures by Standard Object ($000)",
         "fr" : "Dépenses ministérielles budgétaires par article courant ($000)"
       }
       ,key : [0]
@@ -446,7 +453,7 @@
               function(x,y){ return x + y[1]},
               0);
           if (rest != 0 ) {
-            this.top = this.top.concat([ [this.gt("other"), '',rest]]); 
+            this.top = this.top.concat([ [this.gt("other"), rest]]); 
           }
         }
         ,render : function(){
@@ -464,7 +471,17 @@
           return this;
         }
         ,make_graph : function(){
-          GRAPHS.pie(this.make_id(1),[this.top],{title : ""});
+          var ticks = _.pluck(this.top, 0);
+          var data = _.pluck(this.top, 1);
+          var plot = GRAPHS.bar(this.make_id(1),
+                    [data],
+                   {title : "",
+                    ticks : ticks,
+                    legend : {show:false},
+                    rotate : true
+                   });
+          debugger
+          GRAPHS.fix_bar_highlight(plot,[data],ticks,this.app);
         }
       }
     },
@@ -824,6 +841,7 @@
             ,description : this.descriptions[2][this.lang]
             ,header : this.gt("votestat")
             ,items : _.pluck(this.data,1)
+            ,filter : true
           }));                 
           this.$el.append(by_year_graph);
           this.$el.append(by_item_graph);
@@ -840,24 +858,30 @@
           return this;
         }
         ,year_click : function(event){
-          var v_s = this.map_reduce_v_s(this.to_years[$(event.target).html()]);
-          GRAPHS.bar(this.make_id(1), 
-              [v_s],
+          var ticks =  [this.gt("vote"),this.gt("stat")];
+          var data = this.map_reduce_v_s(this.to_years[$(event.target).html()]);
+          var plot = GRAPHS.bar(this.make_id(1), 
+              [data],
               {title: this.titles[1][this.lang]
               ,legend : {show: false} 
               ,barWidth : 100
-              ,ticks : [this.gt("vote"),this.gt("stat")]
+              ,ticks : ticks
               });
+          GRAPHS.fix_bar_highlight(plot,[data],ticks,this.app);
         }
         ,item_click : function(event){
           var years = this.get_year_vals($(event.target).html());
-          GRAPHS.bar(this.make_id(2), 
-              [_.map(years,function(x){return x})],
+          var data = _.map(years,function(x){return x});
+          var ticks =  _.map(this.years,m)
+          var plot = GRAPHS.bar(this.make_id(2), 
+              [data],
               {title: this.titles[2][this.lang]
               ,legend : {show: false} 
               ,barWidth : 100
-              ,ticks : _.map(this.years,m)
+              ,ticks : ticks
               });
+          GRAPHS.fix_bar_highlight(plot,[data],ticks,this.app);
+
         }
       }
     },
@@ -1031,26 +1055,31 @@
         }
         ,year_click : function(event){
           var sos = this.extract_for_year(this.to_years[$(event.target).html()]);
-          GRAPHS.bar(this.make_id(1), 
-              [_.map(_.pluck(sos,1),function(x){return x})],
+          var data =  _.map(_.pluck(sos,1),function(x){return x});
+          var ticks =  _.pluck(sos,0);
+          var plot = GRAPHS.bar(this.make_id(1), 
+              [data],
               {title: this.titles[1][this.lang]
               ,legend : {show: false} 
               ,rotate : true
               ,footnotes : this.footnotes
-              ,ticks : _.pluck(sos,0)
+              ,ticks : ticks
               });
+          GRAPHS.fix_bar_highlight(plot,[data],ticks,this.app);
         }
         ,item_click : function(event){
           var years = this.get_year_vals($(event.target).html());
-          GRAPHS.bar(this.make_id(2), 
-              [_.map(years,function(x){return x})],
+          var data = _.map(years,function(x){return x});
+          var ticks =  _.map(this.years,m);
+          var plot = GRAPHS.bar(this.make_id(2), 
+              [data],
               {title:  this.titles[2][this.lang]
               ,legend : {show: false} 
               ,barWidth : 100
               ,footnotes : this.footnotes
-              ,ticks : _.map(this.years,m)
+              ,ticks : ticks
               });
-
+          GRAPHS.fix_bar_highlight(plot,[data],ticks,this.app);
         }
       }
     },
@@ -1204,14 +1233,17 @@
         }
         ,item_click : function(event){
           var years = this.get_year_vals($(event.target).html());
-          GRAPHS.bar(this.make_id(2), 
-              [_.map(years,function(x){return x})],
+          var ticks =  _.map(this.years,m);
+          var data =  _.map(years,function(x){return x});
+          var plot = GRAPHS.bar(this.make_id(2), 
+              [data],
               {title: this.titles[1][this.lang]
               ,legend : {show: false} 
               ,footnotes : this.footnotes
               ,barWidth : 100
-              ,ticks : _.map(this.years,m)
+              ,ticks : ticks
               });
+          GRAPHS.fix_bar_highlight(plot,[data],ticks,this.app);
         }
       }
     },
@@ -1442,20 +1474,32 @@
         }
         ,year_click : function(event){
           var top = this.year_to_top(this.to_years[$(event.target).html()]);
-          GRAPHS.pie(this.make_id(1),[top],{title : ""});
+          var ticks = _.pluck(top, 0);
+          var data = _.pluck(top, 1);
+          var plot = GRAPHS.bar(this.make_id(1),
+                    [data],
+                   {title : "",
+                    ticks : ticks,
+                    legend : {show:false},
+                    rotate : true
+                   });
+          GRAPHS.fix_bar_highlight(plot,[data],ticks,this.app);
         }
         ,item_click : function(event){
-          var years = this.name_to_years($(event.target).text());
-          GRAPHS.bar(this.make_id(2), 
-              years,
-              {title: ''//this.titles[2][this.lang]
-              ,series : [
+          var data = this.name_to_years($(event.target).text());
+          var ticks = _.map(this.years,m);
+          var series =  [
                 {label: this.def.headers[this.lang][1][2]}, 
                 {label: this.def.headers[this.lang][1][3]}, 
-              ]
+          ];          
+          var plot = GRAPHS.bar(this.make_id(2), 
+              data,
+              {title: ''//this.titles[2][this.lang]
+              ,series : series
               ,barWidth : 100
-              ,ticks : _.map(this.years,m)
+              ,ticks :ticks
               });
+          GRAPHS.fix_bar_highlight(plot,data,ticks,this.app);
         }
       }
     }
