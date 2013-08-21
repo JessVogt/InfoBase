@@ -1,14 +1,5 @@
 (function(root){
 
-  if (typeof exports != 'undefined') {
-    var node = true;
-    var ns = global.ns;
-    var _ = global._;
-  } else {
-   var ns = window.ns;
-   var _ = window._;
-  }
-
   var GRAPHS = ns('GRAPHS');
   var GROUP = ns('GROUP');
   var APP = ns('APP');
@@ -44,6 +35,14 @@
       'last_year_3' : '2009‒2010'
     }
   };
+
+  var make_year_select = function(){
+    var m = TABLES.m ;
+    return $('<select>')
+      .append($("<option>").attr("value","{{last_year}}").html(m("{{last_year}}")))
+      .append($("<option>").attr("value","{{last_year_2}}").html(m("{{last_year_2}}")))
+      .append($("<option>").attr("value","{{last_year_3}}").html(m("{{last_year_3}}")));
+  }
 
   // customize the final app initialization by activating
   // selected gui elements
@@ -945,42 +944,43 @@
       }
       ,mini_view : {
         description : {
-          "en" : "An organization’s standard object with the greatest expenditures for the specified year",
+          "en" : "An organization’s standard object with the greatest expenditures for ",
           "fr" : "L'article courant de l’organisation le plus important sur le plan des dépenses pour l’exercice indiqué"
         }
+        ,year : "{{last_year}}"
         ,prep_data : function(){
-          var ttf = this.app.formater
-          var last_year = _.map(this.data, function(d){
-            return [d["Standard Object"],d['{{last_year}}']]
-          });
-          var last_year_2 = _.map(this.data, function(d){
-            return [d["Standard Object"],d['{{last_year_2}}']]
-          });
-          var last_year_3 = _.map(this.data, function(d){
-            return [d["Standard Object"],d['{{last_year_3}}']]
-          });
-          var top_last_year = _.sortBy(last_year, function(d){
-            return -d[1];
-          }).shift();
-          var top_last_year_2 = _.sortBy(last_year_2, function(d){
-            return -d[1];
-          }).shift();
-          var top_last_year_3 = _.sortBy(last_year_3, function(d){
-            return -d[1];
-          }).shift();
-          this.rows = [
-          [m('{{last_year_short}}'),top_last_year[0] ,  ttf("big-int",top_last_year[1])],
-          [m('{{last_year_2_short}}'),top_last_year_2[0], ttf("big-int",top_last_year_2[1])],
-          [m('{{last_year_3_short}}'),top_last_year_3[0],  ttf("big-int",top_last_year_3[1])]
-          ];
+          var ttf = this.app.formater;
+          var name = "Standard Object";
+          var total = UTILS.sum_ar(_.pluck(this.data,this.year)) + 1;
+          var sorted = _.sortBy(this.data, function(obj){
+            return obj[this.year];
+          },this).reverse();
+          this.rows = _.map(_.head(sorted,3),function(obj){
+             return [obj[name],
+                      ttf("big-int",obj[this.year]),
+                      ttf("percentage",obj[this.year]/total)];
+          },this);
         }
         ,render_data : function(){
           this.content = TABLES.build_table({
-            headers : [[this.gt("year"),this.gt("so"),'($000)']],
+            headers : [[this.gt("so"),'($000)',"(%)"]],
             body : this.rows,
             css : [{'font-weight' : 'bold'},{}, {'text-align' : 'left'},{'text-align' : 'right'}]
             ,classes : ['','','wrap-none']
           });
+        }
+        ,post_render : function(){
+          this.$el.find('.description').append(
+           make_year_select()
+           );
+          _.bindAll(this,"on_select");
+          this.$el.find(".description select")
+            .on("change",this.on_select)
+            .val(this.year);
+        }
+        ,on_select : function(e){
+          this.year = $(e.target).val();
+          this.render();
         }
       },
       graph_view : {
@@ -1148,42 +1148,43 @@
       }
       ,mini_view : {
         description : {
-          "en" : "An organization’s program with the greatest expenditures for the specified year",
-          "fr" : "Le programme de l’organisation le plus important sur le plan des dépenses pour l’exercice indiqué"
+          "en" : "An organization’s program with the greatest expenditures for ",
+          "fr" : "Le programme de l’organisation le plus important sur le plan des dépenses pour "
         }
+        ,year : "{{last_year}}"
         ,prep_data: function(){
-          var ttf = this.app.formater
-          var last_year = _.map(this.data, function(d){
-            return [d["Program"],d['{{last_year}}']]
-          });
-          var last_year_2 = _.map(this.data, function(d){
-            return [d["Program"],d['{{last_year_2}}']]
-          });
-          var last_year_3 = _.map(this.data, function(d){
-            return [d["Program"],d['{{last_year_3}}']]
-          });
-          var top_last_year = _.sortBy(last_year, function(d){
-            return -d[1];
-          }).shift();
-          var top_last_year_2 = _.sortBy(last_year_2, function(d){
-            return -d[1];
-          }).shift();
-          var top_last_year_3 = _.sortBy(last_year_3, function(d){
-            return -d[1];
-          }).shift();
-          this.rows = [
-          [m('{{last_year_short}}'),top_last_year[0] , ttf("big-int",top_last_year[1])],
-          [m('{{last_year_2_short}}'),top_last_year_2[0],ttf("big-int",top_last_year_2[1])],
-          [m('{{last_year_3_short}}'),top_last_year_3[0],ttf("big-int",top_last_year_3[1])]
-          ];
+          var ttf = this.app.formater;
+          var name = "Program";
+          var total = UTILS.sum_ar(_.pluck(this.data,this.year)) + 1;
+          var sorted = _.sortBy(this.data, function(obj){
+            return obj[this.year];
+          },this).reverse();
+          this.rows = _.map(_.head(sorted,3),function(obj){
+             return [obj[name],
+                      ttf("big-int",obj[this.year]),
+                      ttf("percentage",obj[this.year]/total)];
+          },this);
         }
         ,render_data : function(){
           this.content = TABLES.build_table({
-            headers : [[this.gt("year"),this.gt("program"),'($000)']],
+            headers : [[this.gt("program"),'($000)',"(%)"]],
             body : this.rows,
             css : [{'font-weight' : 'bold'}, {'text-align' : 'left'},{'text-align' : 'right'}]
             ,classes : ['','','wrap-none']
           });
+        }
+        ,post_render : function(){
+          this.$el.find('.description').append(
+           make_year_select()
+           );
+          _.bindAll(this,"on_select");
+          this.$el.find(".description select")
+            .on("change",this.on_select)
+            .val(this.year);
+        }
+        ,on_select : function(e){
+          this.year = $(e.target).val();
+          this.render();
         }
       },
       graph_view : {
@@ -1349,37 +1350,45 @@
           "en" : "An organization’s transfer payment with the greatest expenditures for the specified year",
           "fr" : "Le paiement de transfert de l’organisation le plus important sur le plan des dépenses pour l’exercice indiqué"
         }
+        ,year : "{{last_year}}"
         ,prep_data : function(){
-          var ttf = _.partial(this.app.formater,"big-int");
-          var years =  ['{{last_year}}','{{last_year_2}}','{{last_year_3}}'];
-          var year_expenditures = _.map(years,
-              function(year){
-                return _.map(this.data,function(row){
-                   return [row['Grant / Contribution'],row[year+'-Expenditures']];
-                },
-                this);
-              }
-              ,this);
-          var max_years = _.map(year_expenditures, function(year){
-             return _.max(year,function(x){ return x[1];});
+          var ttf =this.app.formater;
+          var name =  'Grant / Contribution'
+          var year = this.year+ '-Expenditures';
+          var total = UTILS.sum_ar(_.pluck(this.data,year)) + 1;
+          var sorted = _.sortBy(this.data, function(obj){
+            return obj[year];
+          }).reverse();
+          this.rows = _.map(_.head(sorted,3),function(obj){
+            return [obj[name],
+                     ttf("big-int",obj[year]),
+                     ttf("percentage",obj[year]/total)];
           });
-          this.rows = _.zip([ m('{{last_year_short}}'), 
-                              m('{{last_year_2_short}}'), 
-                              m('{{last_year_3_short}}') ],
-                              _.pluck(max_years,0),
-                              _.map(_.pluck(max_years,1),ttf));
         }
         ,render_data : function(){
           this.content = TABLES.build_table({
-            headers : [[this.gt("year"),
-                        this.def["headers"][this.lang][1][1],
-                        this.gt("expenditures")+' ($000)' ]],
-            body : this.rows,
-            css : [{'font-weight' : 'bold'}, 
+            headers : [[this.def["headers"][this.lang][1][1],
+                      this.gt("expenditures")+' ($000)',
+                      "(%)" ]]
+            ,body : this.rows
+            ,css : [{'font-weight' : 'bold'}, 
                    {'text-align' : 'left'},
                    {'text-align' : 'right'}]
             ,classes : ['','','wrap-none']
             });
+        }
+        ,post_render : function(){
+          this.$el.find('.description').append(
+           make_year_select()
+           );
+          _.bindAll(this,"on_select");
+          this.$el.find(".description select")
+            .on("change",this.on_select)
+            .val(this.year);
+        }
+        ,on_select : function(e){
+          this.year = $(e.target).val();
+          this.render();
         }
       }, 
       graph_view : {
