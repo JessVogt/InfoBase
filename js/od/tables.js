@@ -1317,8 +1317,11 @@
           return _.tail(row);
         },
         make_filter : function(source_row){
+          var is_stat = source_row[3].substring(0,3) == '(S)';
           return function(candidate_row){
-
+            var is_stat_2 =  candidate_row[3].substring(0,3) == '(S)';
+             return (candidate_row[1] == source_row[1] &&
+                     is_stat == is_stat_2);
           }
         }
       }
