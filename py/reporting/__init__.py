@@ -112,6 +112,9 @@ def make_open_data_after_check(lookups):
     if table.endswith('7'):
       row = replace_nulls(row,5)
       root.append(row)
+    if table.endswith('8'):
+      row = replace_nulls(row,5)
+      root.append(row)
     if table.endswith('5'):
       row = replace_nulls(row,5)
       if row[0] != 'ZGOC':
@@ -320,6 +323,8 @@ def od(dev=True):
 
   full_js = ''#full_js = "\n".join([js_data])
   full_css = ''#full_css = cssdata
+  import IPython
+  IPython.embed()
 
   t = lookup.get_template('od.html')
   with open("../open_data_wet/index-eng.html",'w') as leshtml:

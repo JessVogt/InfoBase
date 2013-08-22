@@ -1032,7 +1032,7 @@
                       m("{{last_year_2}}"),
                       m("{{last_year_3}}")]
           }));
-          by_item_graph = $(
+          var by_item_graph = $(
           this.template({
             id : this.make_id(2)
             ,description : this.descriptions[2][this.lang]
@@ -1512,6 +1512,223 @@
         }
       }
     }
+   ,{
+      id: "table8",
+      "col_defs" : ["int",
+                  "wide-str",
+                  "big-int", 
+                  "big-int", 
+                  "big-int", 
+                  "big-int", 
+                  "big-int", 
+                  "big-int", 
+                  "big-int", 
+                  "big-int", 
+                  "big-int", 
+                  "big-int", 
+                  "big-int", 
+                  "big-int" 
+      ],
+      "coverage" : "in_year",
+      "headers" : {"en" :[
+         [
+            { "colspan" : 2,
+            "header" : ""
+            },
+            { "colspan" : 4,
+            "header" : "Estimates"
+            },
+            { "colspan" : 1,
+            "header" : ""
+            },
+            { "colspan" : 6,
+            "header" : "TBS Central Votes"
+            },
+            { "colspan" : 1,
+            "header" : ""
+            } 
+         ],[
+          "Vote",
+          "Description",
+          "Main Estimates",
+          "Supps A",
+          "Supps B",
+          "Supps C",
+          "Adjustments",
+          "Vote 5",
+          "Vote 10",
+          "Vote 15",
+          "Vote 25",
+          "Vote 30",
+          "Vote 33",
+          "Total Net Authority"
+         ]],
+          "fr" : [[
+            { "colspan" : 2,
+            "header" : ""
+            },
+            { "colspan" : 4,
+            "header" : "Budgets"
+            },
+            { "colspan" : 1,
+            "header" : ""
+            },
+            { "colspan" : 6,
+            "header" : "Crédits Centraux de SCT"
+            },
+            { "colspan" : 1,
+            "header" : ""
+            } 
+            ],[
+            "Crédit",
+            "Description du crédit",
+            "Budget Principal",
+            "Supp. A",
+            "Supp. B",
+            "Supp. C",
+            "Ajustements*",
+            "Crédit 5",
+            "Crédit 10",
+            "Crédit 15",
+            "Crédit 25",
+            "Crédit 30",
+            "Crédit 33",
+            "Autorisations totales nettes"
+            ]
+      ]},
+      "link" : {
+        "en" : "",
+        "fr" : ""
+      },
+      "name" : { "en" : "Parliamentary Authorities",
+                "fr" : "Autorisations parliamentaires"
+              },
+      "title" : { "en" : "Parliamentary Authorities",
+                "fr" : "Autorisations parliamentaires"
+      }
+      ,"key" : [0,1]
+      ,"mapper" : {
+        "to" : function(row){
+          if (this.lang == 'en'){
+            row.splice(2,1);
+          } else {
+            row.splice(3,1);
+          }
+          // remove acronym and vote type
+          for (var i in row){
+            if (i>2){ row[i] = row[i]*1000}
+          }
+          return _.tail(row);
+        }
+        ,"make_filter" : function(source_row){
+          return function(condidate_row){
+
+          };
+        }
+      }
+      ,table_view:{
+        hide_col_ids : []
+        ,sum_cols : [2,3,4,5,6,7,8,9,10,11,12,13]
+        ,min_func : TABLES.add_ministry_sum
+        ,init_row_data : function(){
+          var total =   GROUP.fnc_on_group(
+              this.row_data,
+              {txt_cols : {0 : this.gt("total")},
+                func_cols : this.sum_cols,
+                func : GROUP.sum_rows});
+          var self = this;
+          this.merge_group_results(
+            GROUP.group_rows(
+              this.row_data,
+              function(row){ return _.isString(row[0])},
+              {txt_cols : {0 : this.gt("sub_total"),
+                            1 : function(g){
+                              var row = _.first(g);
+                              return _.isString(row[0]) ? self.gt("stat") : self.gt('vote') }},
+                func_cols : this.sum_cols,
+                func : GROUP.sum_rows}));
+            this.merge_group_results([[this.row_data,total]]);
+        }
+      }
+      ,mini_view : {
+        description : {
+          "en" : "Details of expenditure authorities granted by Parliament as of {{month_name}}, {{in_year_short}}",
+          "fr" : "Détails des autorités approuvé pas parliament dès {{month_name}}, {{in_year_short}}"
+        }
+        ,prep_data : function(){
+          var ttf = this.app.formater;
+          var total = UTILS.sum_ar(_.pluck(this.data,"Total Net Authority")) + 1;
+          var cols = ['Main Estimates',
+                      'Supps A',
+                      'Supps B',
+                      'Supps C' ] ;
+          this.rows = _.map(cols, function(col){
+            var col_total =  UTILS.sum_ar(_.pluck(this.data,col));
+            return [this.to_lang(col),
+                    ttf("big-int",col_total),
+                    ttf("percentage",col_total/total)];
+          },this);
+        }
+        ,render_data : function(){
+          this.content = TABLES.build_table({
+            headers : [['Estimates','Amount ($000)','(%)']] ,
+            body : this.rows,
+            css : [{'font-weight' : 'bold'}, 
+                    {'text-align' : 'right'},
+                    {'text-align' : 'right'}
+          ]
+          });
+
+        }
+      }
+      ,graph_view : {
+        prep_data : function(){
+          this.cols =  ['Main Estimates',
+                       'Supps A',
+                       'Supps B',
+                       'Supps C' ];
+          this.type_to_approp = function(type){
+            var line = _.find(this.mapped_objs, function(x){
+              return x['Description'] == type;
+            });
+            return _.map(this.cols, function(col){
+              return line[col];
+            });
+          } 
+        }
+        ,render : function(){
+          var by_vote_graph = $(
+          this.template({
+            id : this.make_id(1)
+            ,description : ''
+            ,header : this.gt("votestat")
+            ,filter : true
+            ,items :  _.pluck(this.mapped_objs,"Description")
+          }));
+          this.$el.append(by_vote_graph);
+          this.$el.on("click","#"+this.make_id(1)+"_sidebar a",this.vote_click);
+          this.$el.on("click", ".sidebar a", this.set_side_bar_highlight);
+          var self=this;
+          setTimeout(function(){
+            self.$el.find("#"+self.make_id(1)+"_sidebar a:first").trigger("click");
+          });
+
+          return this;
+        }
+        , vote_click : function(event){
+          var data = this.type_to_approp($(event.target).html());
+          var ticks = this.cols;
+          var plot = GRAPHS.bar(this.make_id(1), 
+              [data],
+              {title: ''
+              ,legend : {show: false} 
+              ,rotate : true
+              ,ticks : ticks
+              });
+          GRAPHS.fix_bar_highlight(plot,[data],ticks,this.app);
+        }
+      }
+   } 
    ]);
  });
 })(this);
