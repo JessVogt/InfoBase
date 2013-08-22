@@ -133,7 +133,7 @@
         "header" : "{{qfr_last_year}}"
         }
       ],[
-        "Vote/Statutory",
+        "Vote / Statutory",
         "Description",
         "Total available for use for the year ending March 31,{{in_year_short}}",
         "Used during the quarter ended {{month_name}}-{{in_year_short}}",
@@ -153,7 +153,7 @@
         "header" : "{{qfr_last_year}}"
         }
       ],[
-        "Crédit/Statutaire",
+        "Crédit / Statutaire",
         "Description", 
         "Crédits totaux disponibles pour l'exercice se terminant le 31 mars {{year}}",
         "Crédits utilisés pour le trimestre terminé le {{month}}-{{in_year}}",
@@ -242,7 +242,7 @@
             x["{{in_year}}-Year to date used at quarter-end"]];
           };
           var v_s = _.groupBy(this.data,function(x){
-            return _.isNumber(x['Vote/Statutory']);
+            return _.isNumber(x['Vote / Statutory']);
           });
           var voted = _.map(v_s[true],mapper), stat = _.map(v_s[false],mapper);
           var v_total = _.reduce(voted, UTILS.add_ar, [0,0,0,0]);
@@ -1266,7 +1266,7 @@
         { "colspan" : 2, "header" :   "{{last_year}}"}
         ],[
           "Payment Type",
-          "Grant / Contribution",
+          "Transfer Payment",
           "Total budgetary authority available for use",
           "Expenditures",
           "Total budgetary authority available for use",
@@ -1282,7 +1282,7 @@
         ],
         [
           "Type de paiement",
-          "Subvention / contribution",
+          "Paiement de Transfer",
           "Autorisations budgétaires disponibles pour l'emploi",
           "Dépenses",
           "Autorisations budgétaires disponibles pour l'emploi",
@@ -1353,7 +1353,7 @@
         ,year : "{{last_year}}"
         ,prep_data : function(){
           var ttf =this.app.formater;
-          var name =  'Grant / Contribution'
+          var name =  'Transfer Payment'
           var year = this.year+ '-Expenditures';
           var total = UTILS.sum_ar(_.pluck(this.data,year)) + 1;
           var sorted = _.sortBy(this.data, function(obj){
@@ -1422,7 +1422,7 @@
           this.year_to_top = function(year){
             var ordered_exps =  _.sortBy(_.map(this.mapped_objs,
                 function(d){ 
-                  return [d['Grant / Contribution'].substring(0,100),
+                  return [d['Transfer Payment'].substring(0,100),
                           d[year+exp]];
                 })
                 ,function(x){ return x[1]}
@@ -1440,7 +1440,7 @@
           this.name_to_years = function(name){
             var line = _.first(_.filter(this.mapped_objs,
                   function(obj){
-                    return obj['Grant / Contribution'] == name;
+                    return obj['Transfer Payment'] == name;
                   }));
             return _.map([auth,exp],function(x){
               return _.map(years,function(year){
