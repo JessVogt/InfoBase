@@ -449,6 +449,7 @@
       if (this.data){
         this.prep_data();
         this.render_data();
+        this.content.css({"width" : "100%"});
       } else {
         this.set_no_content();
       }

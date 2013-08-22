@@ -225,7 +225,6 @@
                 func_cols : this.sum_cols,
                 func : GROUP.sum_rows}));
             this.merge_group_results([[this.row_data,total]]);
-
         }
       }
       ,mini_view : {
@@ -264,7 +263,7 @@
                         this.gt('authorities'),
                         this.gt('expenditures')]],
             body : this.rows,
-            css : [{'font-weight' : 'bold'}, 
+            css : [{'font-weight' : 'bold','text-align' : 'left'}, 
                     {'text-align' : 'right'},
                     {'text-align' : 'right'}
           ]
@@ -431,7 +430,7 @@
         }
         ,render_data : function(){
           this.content = TABLES.build_table({
-            headers : [[this.gt("so"),' $000','%']],
+            headers : [[this.gt("so"),' ($000)','(%)']],
             body : this.rows,
             css : [{'font-weight' : 'bold','text-align' : 'left'}, 
                    {'text-align' : 'right'},
@@ -965,7 +964,9 @@
           this.content = TABLES.build_table({
             headers : [[this.gt("so"),'($000)',"(%)"]],
             body : this.rows,
-            css : [{'font-weight' : 'bold'},{}, {'text-align' : 'left'},{'text-align' : 'right'}]
+            css : [{'font-weight' : 'bold','text-align' : 'left'},
+                   {'text-align' : 'right'},
+                   {'text-align' : 'right'}]
             ,classes : ['','','wrap-none']
           });
         }
@@ -1676,12 +1677,11 @@
           this.content = TABLES.build_table({
             headers : [['Estimates','Amount ($000)','(%)']] ,
             body : this.rows,
-            css : [{'font-weight' : 'bold'}, 
+            css : [{'font-weight' : 'bold', 'text-align' : 'left'}, 
                     {'text-align' : 'right'},
                     {'text-align' : 'right'}
           ]
           });
-
         }
       }
       ,graph_view : {
@@ -1715,7 +1715,6 @@
           setTimeout(function(){
             self.$el.find("#"+self.make_id(1)+"_sidebar a:first").trigger("click");
           });
-
           return this;
         }
         , vote_click : function(event){
