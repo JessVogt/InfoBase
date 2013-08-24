@@ -411,20 +411,11 @@
                               return Math.abs(x)+Math.abs(y)
                             }
           );
-          var first = data.shift();
-          var second = data.shift();
-          var third = data.shift();
-          this.rows = [
-            [first["Standard Object"],
-             ttf_f(first[col]),
-             ttf_p( first[col]/(sum || 1))],
-            [second["Standard Object"],
-             ttf_f(second[col]),
-             ttf_p( second[col]/(sum || 1))],
-            [third["Standard Object"],
-             ttf_f(third[col]),
-             ttf_p( third[col]/(sum || 1))]
-          ];
+          this.rows  = _.map( _.head(data,3),function(row){
+            return  [row["Standard Object"],
+                    ttf_f(row[col]),
+                    ttf_p( row[col]/(sum || 1))]
+          });
         }
         ,render_data : function(){
           this.content = TABLES.build_table({
