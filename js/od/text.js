@@ -370,6 +370,14 @@
         "en" :  "The TB Central votes are not included"
         ,"fr" : "Les crédits centraux du CT ne sont pas inclus"  
       }
+      ,"down" : {
+        "en" :  "have decreased by "
+        ,"fr" : "ont diminué de "  
+      }
+      ,"up" : {
+        "en" :  "have increased by "
+        ,"fr" : "ont augmenté de "  
+      }
     }
     LANG.l = function(entry,lang){
       return lookups[entry][lang];

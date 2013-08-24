@@ -243,29 +243,27 @@
           var v_s = _.groupBy(this.data,function(x){
             return _.isNumber(x['Vote / Statutory']);
           });
-          var voted = _.map(v_s[true],mapper), stat = _.map(v_s[false],mapper);
-          var v_total = _.reduce(voted, UTILS.add_ar, [0,0,0,0]);
-          var s_total = _.reduce(stat, UTILS.add_ar, [0,0,0,0]);
+          var lines = _.map(this.data,mapper);
+          var total = _.reduce(lines,UTILS.add_ar, [0,0,0,0]);
+          var auth = total[0] / (total[2]+1) -1;
+          var exp = total[1] / (total[3]+1) -1;
+          var auth_text = auth >= 0 ? this.gt("up") : this.gt("down");
+          var exp_text = auth >= 0 ? this.gt("up") : this.gt("down");
           this.rows = [
-            [this.gt("vote"), 
-            ttf(v_total[2]/ (v_total[0] || 1) -1), 
-            ttf(v_total[3]/ (v_total[1] || 1)-1), 
+            [this.gt("authorities"), 
+             auth_text + " " + ttf(Math.abs(auth))
             ],
-            [this.gt("stat"), 
-            ttf(s_total[2]/ (s_total[0] || 1)-1), 
-            ttf(s_total[3]/ (s_total[1] || 1)-1), 
+            [this.gt("expenditures"), 
+             auth_text + " " + ttf(Math.abs(exp))
             ]
           ];
         }
         ,render_data : function(){
           this.content = TABLES.build_table({
-            headers : [[this.gt('votestat'),
-                        this.gt('authorities'),
-                        this.gt('expenditures')]],
+            headers : [],
             body : this.rows,
             css : [{'font-weight' : 'bold','text-align' : 'left'}, 
-                    {'text-align' : 'right'},
-                    {'text-align' : 'right'}
+                    {'text-align' : 'left'}
           ]
           });
         }
