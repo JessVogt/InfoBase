@@ -371,12 +371,12 @@
         ,"fr" : "Les crédits centraux du CT ne sont pas inclus"  
       }
       ,"down" : {
-        "en" :  "have decreased by "
-        ,"fr" : "ont diminué de "  
+        "en" :  "a decrease of "
+        ,"fr" : "une diminution de "  
       }
       ,"up" : {
-        "en" :  "have increased by "
-        ,"fr" : "ont augmenté de "  
+        "en" :  "an increased of "
+        ,"fr" : "une augmentation de "  
       }
     }
     LANG.l = function(entry,lang){

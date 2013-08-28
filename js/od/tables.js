@@ -233,7 +233,7 @@
           "fr" : "Différence entre les autorisations et les dépenses entre {in_{year}} et {{qfr_last_year}}"
         }
         ,prep_data : function(){
-          var ttf = _.partial(this.app.formater,"percentage");
+          var ttf = this.app.formater;
           var mapper =  function(x){return [
             x['Total available for use for the year ending March 31,{{in_year_short}}'],
             x["{{qfr_last_year}}-Year to date used at quarter-end"],
@@ -250,19 +250,18 @@
           var auth_text = auth >= 0 ? this.gt("up") : this.gt("down");
           var exp_text = auth >= 0 ? this.gt("up") : this.gt("down");
           this.rows = [
-            [this.gt("authorities"), 
-             auth_text + " " + ttf(Math.abs(auth))
-            ],
-            [this.gt("expenditures"), 
-             auth_text + " " + ttf(Math.abs(exp))
+            [ttf("big-int",total[0]), ttf("big-int",total[1])],
+            [ auth_text + " " + ttf("percentage",Math.abs(auth)),
+              exp_text + " " + ttf("percentage",Math.abs(exp))
             ]
           ];
         }
         ,render_data : function(){
           this.content = TABLES.build_table({
-            headers : [],
+            headers : [[this.gt("authorities")+ " ($000)",
+                      this.gt("expenditures")+ " ($000)"]],
             body : this.rows,
-            css : [{'font-weight' : 'bold','text-align' : 'left'}, 
+            css : [{'text-align' : 'left'}, 
                     {'text-align' : 'left'}
           ]
           });
