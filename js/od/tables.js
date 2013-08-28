@@ -621,7 +621,7 @@
         }                                  
         ],
         [
-          "Vote {{last_year}}/ Statutory",
+          "Vote {{last_year}} / Statutory",
           "Description",
           "Total budgetary authority available for use",
           "Expenditures",
@@ -1540,7 +1540,7 @@
             "header" : ""
             } 
          ],[
-          "Vote",
+          "Vote {{in_year}} / Statutory",
           "Description",
           "Main Estimates",
           "Supps A",
@@ -1572,7 +1572,7 @@
             "header" : ""
             } 
             ],[
-            "Crédit",
+            "Crédit {{in_year}} / Légis.",
             "Description du crédit",
             "Budget Principal",
             "Supp. A",
