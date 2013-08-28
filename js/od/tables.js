@@ -1,14 +1,5 @@
 (function(root){
 
-  if (typeof exports != 'undefined') {
-    var node = true;
-    var ns = global.ns;
-    var _ = global._;
-  } else {
-   var ns = window.ns;
-   var _ = window._;
-  }
-
   var GRAPHS = ns('GRAPHS');
   var D3 = ns('D3');
   var GROUP = ns('GROUP');
@@ -45,6 +36,14 @@
       'last_year_3' : '2009‒2010'
     }
   };
+
+  var make_year_select = function(){
+    var m = TABLES.m ;
+    return $('<select>')
+      .append($("<option>").attr("value","{{last_year}}").html(m("{{last_year}}")))
+      .append($("<option>").attr("value","{{last_year_2}}").html(m("{{last_year_2}}")))
+      .append($("<option>").attr("value","{{last_year_3}}").html(m("{{last_year_3}}")));
+  }
 
   // customize the final app initialization by activating
   // selected gui elements
@@ -138,13 +137,13 @@
         "header" : "{{qfr_last_year}}"
         }
       ],[
-        "Vote/Statutory",
+        "Vote / Statutory",
         "Description",
         "Total available for use for the year ending March 31,{{in_year_short}}",
-        "Used during the quarter ended {{month}}-{{in_year}}",
+        "Used during the quarter ended {{month_name}}-{{in_year_short}}",
         "Year to date used at quarter-end",
         "Total available for use for the year ending March 31,{{qfr_last_year_short}}",
-        "Used during the quarter ended {{month}}-{{qfr-last_year}} ",
+        "Used during the quarter ended {{month_name}}-{{qfr_last_year_short}} ",
         "Year to date used at quarter-end"
       ]],
         "fr": [ [
@@ -158,7 +157,7 @@
         "header" : "{{qfr_last_year}}"
         }
       ],[
-        "Crédit/Statutaire",
+        "Crédit / Statutaire",
         "Description", 
         "Crédits totaux disponibles pour l'exercice se terminant le 31 mars {{year}}",
         "Crédits utilisés pour le trimestre terminé le {{month}}-{{in_year}}",
@@ -230,7 +229,6 @@
                 func_cols : this.sum_cols,
                 func : GROUP.sum_rows}));
             this.merge_group_results([[this.row_data,total]]);
-
         }
       }
       ,mini_view : {
@@ -239,7 +237,7 @@
           "fr" : "Différence entre les autorisations et les dépenses entre {in_{year}} et {{qfr_last_year}}"
         }
         ,prep_data : function(){
-          var ttf = _.partial(this.app.formater,"percentage");
+          var ttf = this.app.formater;
           var mapper =  function(x){return [
             x['Total available for use for the year ending March 31,{{in_year_short}}'],
             x["{{qfr_last_year}}-Year to date used at quarter-end"],
@@ -247,31 +245,28 @@
             x["{{in_year}}-Year to date used at quarter-end"]];
           };
           var v_s = _.groupBy(this.data,function(x){
-            return _.isNumber(x['Vote/Statutory']);
+            return _.isNumber(x['Vote / Statutory']);
           });
-          var voted = _.map(v_s[true],mapper), stat = _.map(v_s[false],mapper);
-          var v_total = _.reduce(voted, UTILS.add_ar, [0,0,0,0]);
-          var s_total = _.reduce(stat, UTILS.add_ar, [0,0,0,0]);
+          var lines = _.map(this.data,mapper);
+          var total = _.reduce(lines,UTILS.add_ar, [0,0,0,0]);
+          var auth = total[0] / (total[2]+1) -1;
+          var exp = total[1] / (total[3]+1) -1;
+          var auth_text = auth >= 0 ? this.gt("up") : this.gt("down");
+          var exp_text = auth >= 0 ? this.gt("up") : this.gt("down");
           this.rows = [
-            [this.gt("vote"), 
-            ttf(v_total[2]/ (v_total[0] || 1) -1), 
-            ttf(v_total[3]/ (v_total[1] || 1)-1), 
-            ],
-            [this.gt("stat"), 
-            ttf(s_total[2]/ (s_total[0] || 1)-1), 
-            ttf(s_total[3]/ (s_total[1] || 1)-1), 
+            [ttf("big-int",total[0]), ttf("big-int",total[1])],
+            [ auth_text + " " + ttf("percentage",Math.abs(auth)),
+              exp_text + " " + ttf("percentage",Math.abs(exp))
             ]
           ];
         }
         ,render_data : function(){
           this.content = TABLES.build_table({
-            headers : [[this.gt('votestat'),
-                        this.gt('authorities'),
-                        this.gt('expenditures')]],
+            headers : [[this.gt("authorities")+ " ($000)",
+                      this.gt("expenditures")+ " ($000)"]],
             body : this.rows,
-            css : [{'font-weight' : 'bold'}, 
-                    {'text-align' : 'right'},
-                    {'text-align' : 'right'}
+            css : [{'text-align' : 'left'}, 
+                    {'text-align' : 'left'}
           ]
           });
         }
@@ -288,7 +283,7 @@
               function(x,y){ return x + y[1]},
               0);
           if (rest != 0 ) {
-            this.top = this.top.concat([ [this.gt("other"), '',rest]]); 
+            this.top = this.top.concat([ [this.gt("other"), rest]]); 
           }
         }
         ,render : function(){
@@ -299,14 +294,21 @@
             ,description : '' //this.descriptions[1][this.lang]
           }));
           this.$el.append(exp_pie);
-          var self=this;
-          setTimeout(function(){
-            self.make_graph();
-          });
+          var make_graph=this.make_graph;
+          setTimeout(function(){ make_graph(); });
           return this;
         }
         ,make_graph : function(){
-          GRAPHS.pie(this.make_id(1),[this.top],{title : ""});
+          var ticks = _.pluck(this.top, 0);
+          var data = _.pluck(this.top, 1);
+          var plot = GRAPHS.bar(this.make_id(1),
+                    [data],
+                   {title : "",
+                    legend : {show:false},
+                    ticks : ticks,
+                    rotate : true
+                   });
+          GRAPHS.fix_bar_highlight(plot,[data],ticks,this.app);
         }
       }
     },
@@ -362,10 +364,10 @@
         "en" : "",
         "fr" : ""
       },
-      name : { "en" : "Budgetary expenditures by Standard Object",
+      name : { "en" : "Expenditures by Standard Object",
         "fr" : "Dépenses ministérielles budgétaires par article courant"
       },
-      title : { "en" : "Budgetary expenditures by Standard Object ($000)",
+      title : { "en" : "Expenditures by Standard Object ($000)",
         "fr" : "Dépenses ministérielles budgétaires par article courant ($000)"
       }
       ,key : [0]
@@ -412,24 +414,15 @@
                               return Math.abs(x)+Math.abs(y)
                             }
           );
-          var first = data.shift();
-          var second = data.shift();
-          var third = data.shift();
-          this.rows = [
-            [first["Standard Object"],
-             ttf_f(first[col]),
-             ttf_p( first[col]/(sum || 1))],
-            [second["Standard Object"],
-             ttf_f(second[col]),
-             ttf_p( second[col]/(sum || 1))],
-            [third["Standard Object"],
-             ttf_f(third[col]),
-             ttf_p( third[col]/(sum || 1))]
-          ];
+          this.rows  = _.map( _.head(data,3),function(row){
+            return  [row["Standard Object"],
+                    ttf_f(row[col]),
+                    ttf_p( row[col]/(sum || 1))]
+          });
         }
         ,render_data : function(){
           this.content = TABLES.build_table({
-            headers : [[this.gt("so"),' $000','%']],
+            headers : [[this.gt("so"),' ($000)','(%)']],
             body : this.rows,
             css : [{'font-weight' : 'bold','text-align' : 'left'}, 
                    {'text-align' : 'right'},
@@ -450,7 +443,7 @@
               function(x,y){ return x + y[1]},
               0);
           if (rest != 0 ) {
-            this.top = this.top.concat([ [this.gt("other"), '',rest]]); 
+            this.top = this.top.concat([ [this.gt("other"), rest]]); 
           }
         }
         ,render : function(){
@@ -468,7 +461,17 @@
           return this;
         }
         ,make_graph : function(){
-          GRAPHS.pie(this.make_id(1),[this.top],{title : ""});
+          var ticks = _.pluck(this.top, 0);
+          var data = _.pluck(this.top, 1);
+          var plot = GRAPHS.bar(this.make_id(1),
+                    [data],
+                   {title : "",
+                    ticks : ticks,
+                    legend : {show:false},
+                    rotate : true
+                   });
+          debugger
+          GRAPHS.fix_bar_highlight(plot,[data],ticks,this.app);
         }
       }
     },
@@ -828,6 +831,7 @@
             ,description : this.descriptions[2][this.lang]
             ,header : this.gt("votestat")
             ,items : _.pluck(this.data,1)
+            ,filter : true
           }));                 
           this.$el.append(by_year_graph);
           this.$el.append(by_item_graph);
@@ -844,24 +848,30 @@
           return this;
         }
         ,year_click : function(event){
-          var v_s = this.map_reduce_v_s(this.to_years[$(event.target).html()]);
-          GRAPHS.bar(this.make_id(1), 
-              [v_s],
+          var ticks =  [this.gt("vote"),this.gt("stat")];
+          var data = this.map_reduce_v_s(this.to_years[$(event.target).html()]);
+          var plot = GRAPHS.bar(this.make_id(1), 
+              [data],
               {title: this.titles[1][this.lang]
               ,legend : {show: false} 
               ,barWidth : 100
-              ,ticks : [this.gt("vote"),this.gt("stat")]
+              ,ticks : ticks
               });
+          GRAPHS.fix_bar_highlight(plot,[data],ticks,this.app);
         }
         ,item_click : function(event){
           var years = this.get_year_vals($(event.target).html());
-          GRAPHS.bar(this.make_id(2), 
-              [_.map(years,function(x){return x})],
+          var data = _.map(years,function(x){return x});
+          var ticks =  _.map(this.years,m)
+          var plot = GRAPHS.bar(this.make_id(2), 
+              [data],
               {title: this.titles[2][this.lang]
               ,legend : {show: false} 
               ,barWidth : 100
-              ,ticks : _.map(this.years,m)
+              ,ticks : ticks
               });
+          GRAPHS.fix_bar_highlight(plot,[data],ticks,this.app);
+
         }
       }
     },
@@ -925,42 +935,45 @@
       }
       ,mini_view : {
         description : {
-          "en" : "An organization’s standard object with the greatest expenditures for the specified year",
+          "en" : "An organization’s standard object with the greatest expenditures for ",
           "fr" : "L'article courant de l’organisation le plus important sur le plan des dépenses pour l’exercice indiqué"
         }
+        ,year : "{{last_year}}"
         ,prep_data : function(){
-          var ttf = this.app.formater
-          var last_year = _.map(this.data, function(d){
-            return [d["Standard Object"],d['{{last_year}}']]
-          });
-          var last_year_2 = _.map(this.data, function(d){
-            return [d["Standard Object"],d['{{last_year_2}}']]
-          });
-          var last_year_3 = _.map(this.data, function(d){
-            return [d["Standard Object"],d['{{last_year_3}}']]
-          });
-          var top_last_year = _.sortBy(last_year, function(d){
-            return -d[1];
-          }).shift();
-          var top_last_year_2 = _.sortBy(last_year_2, function(d){
-            return -d[1];
-          }).shift();
-          var top_last_year_3 = _.sortBy(last_year_3, function(d){
-            return -d[1];
-          }).shift();
-          this.rows = [
-          [m('{{last_year_short}}'),top_last_year[0] ,  ttf("big-int",top_last_year[1])],
-          [m('{{last_year_2_short}}'),top_last_year_2[0], ttf("big-int",top_last_year_2[1])],
-          [m('{{last_year_3_short}}'),top_last_year_3[0],  ttf("big-int",top_last_year_3[1])]
-          ];
+          var ttf = this.app.formater;
+          var name = "Standard Object";
+          var total = UTILS.sum_ar(_.pluck(this.data,this.year)) + 1;
+          var sorted = _.sortBy(this.data, function(obj){
+            return obj[this.year];
+          },this).reverse();
+          this.rows = _.map(_.head(sorted,3),function(obj){
+             return [obj[name],
+                      ttf("big-int",obj[this.year]),
+                      ttf("percentage",obj[this.year]/total)];
+          },this);
         }
         ,render_data : function(){
           this.content = TABLES.build_table({
-            headers : [[this.gt("year"),this.gt("so"),'($000)']],
+            headers : [[this.gt("so"),'($000)',"(%)"]],
             body : this.rows,
-            css : [{'font-weight' : 'bold'},{}, {'text-align' : 'left'},{'text-align' : 'right'}]
+            css : [{'font-weight' : 'bold','text-align' : 'left'},
+                   {'text-align' : 'right'},
+                   {'text-align' : 'right'}]
             ,classes : ['','','wrap-none']
           });
+        }
+        ,post_render : function(){
+          this.$el.find('.description').append(
+           make_year_select()
+           );
+          _.bindAll(this,"on_select");
+          this.$el.find(".description select")
+            .on("change",this.on_select)
+            .val(this.year);
+        }
+        ,on_select : function(e){
+          this.year = $(e.target).val();
+          this.render();
         }
       },
       graph_view : {
@@ -1012,7 +1025,7 @@
                       m("{{last_year_2}}"),
                       m("{{last_year_3}}")]
           }));
-          by_item_graph = $(
+          var by_item_graph = $(
           this.template({
             id : this.make_id(2)
             ,description : this.descriptions[2][this.lang]
@@ -1035,26 +1048,31 @@
         }
         ,year_click : function(event){
           var sos = this.extract_for_year(this.to_years[$(event.target).html()]);
-          GRAPHS.bar(this.make_id(1), 
-              [_.map(_.pluck(sos,1),function(x){return x})],
+          var data =  _.map(_.pluck(sos,1),function(x){return x});
+          var ticks =  _.pluck(sos,0);
+          var plot = GRAPHS.bar(this.make_id(1), 
+              [data],
               {title: this.titles[1][this.lang]
               ,legend : {show: false} 
               ,rotate : true
               ,footnotes : this.footnotes
-              ,ticks : _.pluck(sos,0)
+              ,ticks : ticks
               });
+          GRAPHS.fix_bar_highlight(plot,[data],ticks,this.app);
         }
         ,item_click : function(event){
           var years = this.get_year_vals($(event.target).html());
-          GRAPHS.bar(this.make_id(2), 
-              [_.map(years,function(x){return x})],
+          var data = _.map(years,function(x){return x});
+          var ticks =  _.map(this.years,m);
+          var plot = GRAPHS.bar(this.make_id(2), 
+              [data],
               {title:  this.titles[2][this.lang]
               ,legend : {show: false} 
               ,barWidth : 100
               ,footnotes : this.footnotes
-              ,ticks : _.map(this.years,m)
+              ,ticks : ticks
               });
-
+          GRAPHS.fix_bar_highlight(plot,[data],ticks,this.app);
         }
       }
     },
@@ -1123,42 +1141,43 @@
       }
       ,mini_view : {
         description : {
-          "en" : "An organization’s program with the greatest expenditures for the specified year",
-          "fr" : "Le programme de l’organisation le plus important sur le plan des dépenses pour l’exercice indiqué"
+          "en" : "An organization’s program with the greatest expenditures for ",
+          "fr" : "Le programme de l’organisation le plus important sur le plan des dépenses pour "
         }
+        ,year : "{{last_year}}"
         ,prep_data: function(){
-          var ttf = this.app.formater
-          var last_year = _.map(this.data, function(d){
-            return [d["Program"],d['{{last_year}}']]
-          });
-          var last_year_2 = _.map(this.data, function(d){
-            return [d["Program"],d['{{last_year_2}}']]
-          });
-          var last_year_3 = _.map(this.data, function(d){
-            return [d["Program"],d['{{last_year_3}}']]
-          });
-          var top_last_year = _.sortBy(last_year, function(d){
-            return -d[1];
-          }).shift();
-          var top_last_year_2 = _.sortBy(last_year_2, function(d){
-            return -d[1];
-          }).shift();
-          var top_last_year_3 = _.sortBy(last_year_3, function(d){
-            return -d[1];
-          }).shift();
-          this.rows = [
-          [m('{{last_year_short}}'),top_last_year[0] , ttf("big-int",top_last_year[1])],
-          [m('{{last_year_2_short}}'),top_last_year_2[0],ttf("big-int",top_last_year_2[1])],
-          [m('{{last_year_3_short}}'),top_last_year_3[0],ttf("big-int",top_last_year_3[1])]
-          ];
+          var ttf = this.app.formater;
+          var name = "Program";
+          var total = UTILS.sum_ar(_.pluck(this.data,this.year)) + 1;
+          var sorted = _.sortBy(this.data, function(obj){
+            return obj[this.year];
+          },this).reverse();
+          this.rows = _.map(_.head(sorted,3),function(obj){
+             return [obj[name],
+                      ttf("big-int",obj[this.year]),
+                      ttf("percentage",obj[this.year]/total)];
+          },this);
         }
         ,render_data : function(){
           this.content = TABLES.build_table({
-            headers : [[this.gt("year"),this.gt("program"),'($000)']],
+            headers : [[this.gt("program"),'($000)',"(%)"]],
             body : this.rows,
             css : [{'font-weight' : 'bold'}, {'text-align' : 'left'},{'text-align' : 'right'}]
             ,classes : ['','','wrap-none']
           });
+        }
+        ,post_render : function(){
+          this.$el.find('.description').append(
+           make_year_select()
+           );
+          _.bindAll(this,"on_select");
+          this.$el.find(".description select")
+            .on("change",this.on_select)
+            .val(this.year);
+        }
+        ,on_select : function(e){
+          this.year = $(e.target).val();
+          this.render();
         }
       },
       graph_view : {
@@ -1208,14 +1227,17 @@
         }
         ,item_click : function(event){
           var years = this.get_year_vals($(event.target).html());
-          GRAPHS.bar(this.make_id(2), 
-              [_.map(years,function(x){return x})],
+          var ticks =  _.map(this.years,m);
+          var data =  _.map(years,function(x){return x});
+          var plot = GRAPHS.bar(this.make_id(2), 
+              [data],
               {title: this.titles[1][this.lang]
               ,legend : {show: false} 
               ,footnotes : this.footnotes
               ,barWidth : 100
-              ,ticks : _.map(this.years,m)
+              ,ticks : ticks
               });
+          GRAPHS.fix_bar_highlight(plot,[data],ticks,this.app);
         }
       }
     },
@@ -1237,7 +1259,7 @@
         { "colspan" : 2, "header" :   "{{last_year}}"}
         ],[
           "Payment Type",
-          "Grant / Contribution",
+          "Transfer Payment",
           "Total budgetary authority available for use",
           "Expenditures",
           "Total budgetary authority available for use",
@@ -1253,7 +1275,7 @@
         ],
         [
           "Type de paiement",
-          "Subvention / contribution",
+          "Paiement de Transfer",
           "Autorisations budgétaires disponibles pour l'emploi",
           "Dépenses",
           "Autorisations budgétaires disponibles pour l'emploi",
@@ -1288,8 +1310,11 @@
           return _.tail(row);
         },
         make_filter : function(source_row){
+          var is_stat = source_row[3].substring(0,3) == '(S)';
           return function(candidate_row){
-
+            var is_stat_2 =  candidate_row[3].substring(0,3) == '(S)';
+             return (candidate_row[1] == source_row[1] &&
+                     is_stat == is_stat_2);
           }
         }
       }
@@ -1321,37 +1346,45 @@
           "en" : "An organization’s transfer payment with the greatest expenditures for the specified year",
           "fr" : "Le paiement de transfert de l’organisation le plus important sur le plan des dépenses pour l’exercice indiqué"
         }
+        ,year : "{{last_year}}"
         ,prep_data : function(){
-          var ttf = _.partial(this.app.formater,"big-int");
-          var years =  ['{{last_year}}','{{last_year_2}}','{{last_year_3}}'];
-          var year_expenditures = _.map(years,
-              function(year){
-                return _.map(this.data,function(row){
-                   return [row['Grant / Contribution'],row[year+'-Expenditures']];
-                },
-                this);
-              }
-              ,this);
-          var max_years = _.map(year_expenditures, function(year){
-             return _.max(year,function(x){ return x[1];});
+          var ttf =this.app.formater;
+          var name =  'Transfer Payment'
+          var year = this.year+ '-Expenditures';
+          var total = UTILS.sum_ar(_.pluck(this.data,year)) + 1;
+          var sorted = _.sortBy(this.data, function(obj){
+            return obj[year];
+          }).reverse();
+          this.rows = _.map(_.head(sorted,3),function(obj){
+            return [obj[name],
+                     ttf("big-int",obj[year]),
+                     ttf("percentage",obj[year]/total)];
           });
-          this.rows = _.zip([ m('{{last_year_short}}'), 
-                              m('{{last_year_2_short}}'), 
-                              m('{{last_year_3_short}}') ],
-                              _.pluck(max_years,0),
-                              _.map(_.pluck(max_years,1),ttf));
         }
         ,render_data : function(){
           this.content = TABLES.build_table({
-            headers : [[this.gt("year"),
-                        this.def["headers"][this.lang][1][1],
-                        this.gt("expenditures")+' ($000)' ]],
-            body : this.rows,
-            css : [{'font-weight' : 'bold'}, 
+            headers : [[this.def["headers"][this.lang][1][1],
+                      this.gt("expenditures")+' ($000)',
+                      "(%)" ]]
+            ,body : this.rows
+            ,css : [{'font-weight' : 'bold'}, 
                    {'text-align' : 'left'},
                    {'text-align' : 'right'}]
             ,classes : ['','','wrap-none']
             });
+        }
+        ,post_render : function(){
+          this.$el.find('.description').append(
+           make_year_select()
+           );
+          _.bindAll(this,"on_select");
+          this.$el.find(".description select")
+            .on("change",this.on_select)
+            .val(this.year);
+        }
+        ,on_select : function(e){
+          this.year = $(e.target).val();
+          this.render();
         }
       }, 
       graph_view : {
@@ -1385,7 +1418,8 @@
           this.year_to_top = function(year){
             var ordered_exps =  _.sortBy(_.map(this.mapped_objs,
                 function(d){ 
-                  return [d['Grant / Contribution'],d[year+exp]];
+                  return [d['Transfer Payment'].substring(0,100),
+                          d[year+exp]];
                 })
                 ,function(x){ return x[1]}
             );
@@ -1402,7 +1436,7 @@
           this.name_to_years = function(name){
             var line = _.first(_.filter(this.mapped_objs,
                   function(obj){
-                    return obj['Grant / Contribution'] == name;
+                    return obj['Transfer Payment'] == name;
                   }));
             return _.map([auth,exp],function(x){
               return _.map(years,function(year){
@@ -1445,23 +1479,250 @@
         }
         ,year_click : function(event){
           var top = this.year_to_top(this.to_years[$(event.target).html()]);
-          GRAPHS.pie(this.make_id(1),[top],{title : ""});
+          var ticks = _.pluck(top, 0);
+          var data = _.pluck(top, 1);
+          var plot = GRAPHS.bar(this.make_id(1),
+                    [data],
+                   {title : "",
+                    ticks : ticks,
+                    legend : {show:false},
+                    rotate : true
+                   });
+          GRAPHS.fix_bar_highlight(plot,[data],ticks,this.app);
         }
         ,item_click : function(event){
-          var years = this.name_to_years($(event.target).text());
-          GRAPHS.bar(this.make_id(2), 
-              years,
-              {title: ''//this.titles[2][this.lang]
-              ,series : [
+          var data = this.name_to_years($(event.target).text());
+          var ticks = _.map(this.years,m);
+          var series =  [
                 {label: this.def.headers[this.lang][1][2]}, 
                 {label: this.def.headers[this.lang][1][3]}, 
-              ]
+          ];          
+          var plot = GRAPHS.bar(this.make_id(2), 
+              data,
+              {title: ''//this.titles[2][this.lang]
+              ,series : series
               ,barWidth : 100
-              ,ticks : _.map(this.years,m)
+              ,ticks :ticks
               });
+          GRAPHS.fix_bar_highlight(plot,data,ticks,this.app);
         }
       }
     }
+   ,{
+      id: "table8",
+      "col_defs" : ["int",
+                  "wide-str",
+                  "big-int", 
+                  "big-int", 
+                  "big-int", 
+                  "big-int", 
+                  "big-int", 
+                  "big-int", 
+                  "big-int", 
+                  "big-int", 
+                  "big-int", 
+                  "big-int", 
+                  "big-int", 
+                  "big-int" 
+      ],
+      "coverage" : "in_year",
+      "headers" : {"en" :[
+         [
+            { "colspan" : 2,
+            "header" : ""
+            },
+            { "colspan" : 4,
+            "header" : "Estimates"
+            },
+            { "colspan" : 1,
+            "header" : ""
+            },
+            { "colspan" : 6,
+            "header" : "TBS Central Votes"
+            },
+            { "colspan" : 1,
+            "header" : ""
+            } 
+         ],[
+          "Vote",
+          "Description",
+          "Main Estimates",
+          "Supps A",
+          "Supps B",
+          "Supps C",
+          "Adjustments",
+          "Vote 5",
+          "Vote 10",
+          "Vote 15",
+          "Vote 25",
+          "Vote 30",
+          "Vote 33",
+          "Total Net Authority"
+         ]],
+          "fr" : [[
+            { "colspan" : 2,
+            "header" : ""
+            },
+            { "colspan" : 4,
+            "header" : "Budgets"
+            },
+            { "colspan" : 1,
+            "header" : ""
+            },
+            { "colspan" : 6,
+            "header" : "Crédits Centraux de SCT"
+            },
+            { "colspan" : 1,
+            "header" : ""
+            } 
+            ],[
+            "Crédit",
+            "Description du crédit",
+            "Budget Principal",
+            "Supp. A",
+            "Supp. B",
+            "Supp. C",
+            "Ajustements*",
+            "Crédit 5",
+            "Crédit 10",
+            "Crédit 15",
+            "Crédit 25",
+            "Crédit 30",
+            "Crédit 33",
+            "Autorisations totales nettes"
+            ]
+      ]},
+      "link" : {
+        "en" : "",
+        "fr" : ""
+      },
+      "name" : { "en" : "Parliamentary Authorities",
+                "fr" : "Autorisations parliamentaires"
+              },
+      "title" : { "en" : "Parliamentary Authorities",
+                "fr" : "Autorisations parliamentaires"
+      }
+      ,"key" : [0,1]
+      ,"mapper" : {
+        "to" : function(row){
+          if (this.lang == 'en'){
+            row.splice(2,1);
+          } else {
+            row.splice(3,1);
+          }
+          // remove acronym and vote type
+          for (var i in row){
+            if (i>2){ row[i] = row[i]*1000}
+          }
+          return _.tail(row);
+        }
+        ,"make_filter" : function(source_row){
+          return function(condidate_row){
+
+          };
+        }
+      }
+      ,table_view:{
+        hide_col_ids : []
+        ,sum_cols : [2,3,4,5,6,7,8,9,10,11,12,13]
+        ,min_func : TABLES.add_ministry_sum
+        ,init_row_data : function(){
+          var total =   GROUP.fnc_on_group(
+              this.row_data,
+              {txt_cols : {0 : this.gt("total")},
+                func_cols : this.sum_cols,
+                func : GROUP.sum_rows});
+          var self = this;
+          this.merge_group_results(
+            GROUP.group_rows(
+              this.row_data,
+              function(row){ return _.isString(row[0])},
+              {txt_cols : {0 : this.gt("sub_total"),
+                            1 : function(g){
+                              var row = _.first(g);
+                              return _.isString(row[0]) ? self.gt("stat") : self.gt('vote') }},
+                func_cols : this.sum_cols,
+                func : GROUP.sum_rows}));
+            this.merge_group_results([[this.row_data,total]]);
+        }
+      }
+      ,mini_view : {
+        description : {
+          "en" : "Details of expenditure authorities granted by Parliament as of {{month_name}}, {{in_year_short}}",
+          "fr" : "Détails des autorités approuvé pas parliament dès {{month_name}}, {{in_year_short}}"
+        }
+        ,prep_data : function(){
+          var ttf = this.app.formater;
+          var total = UTILS.sum_ar(_.pluck(this.data,"Total Net Authority")) + 1;
+          var cols = ['Main Estimates',
+                      'Supps A',
+                      'Supps B',
+                      'Supps C' ] ;
+          this.rows = _.map(cols, function(col){
+            var col_total =  UTILS.sum_ar(_.pluck(this.data,col));
+            return [this.to_lang(col),
+                    ttf("big-int",col_total),
+                    ttf("percentage",col_total/total)];
+          },this);
+        }
+        ,render_data : function(){
+          this.content = TABLES.build_table({
+            headers : [['Estimates','Amount ($000)','(%)']] ,
+            body : this.rows,
+            css : [{'font-weight' : 'bold', 'text-align' : 'left'}, 
+                    {'text-align' : 'right'},
+                    {'text-align' : 'right'}
+          ]
+          });
+        }
+      }
+      ,graph_view : {
+        prep_data : function(){
+          this.cols =  ['Main Estimates',
+                       'Supps A',
+                       'Supps B',
+                       'Supps C' ];
+          this.type_to_approp = function(type){
+            var line = _.find(this.mapped_objs, function(x){
+              return x['Description'] == type;
+            });
+            return _.map(this.cols, function(col){
+              return line[col];
+            });
+          } 
+        }
+        ,render : function(){
+          var by_vote_graph = $(
+          this.template({
+            id : this.make_id(1)
+            ,description : ''
+            ,header : this.gt("votestat")
+            ,filter : true
+            ,items :  _.pluck(this.mapped_objs,"Description")
+          }));
+          this.$el.append(by_vote_graph);
+          this.$el.on("click","#"+this.make_id(1)+"_sidebar a",this.vote_click);
+          this.$el.on("click", ".sidebar a", this.set_side_bar_highlight);
+          var self=this;
+          setTimeout(function(){
+            self.$el.find("#"+self.make_id(1)+"_sidebar a:first").trigger("click");
+          });
+          return this;
+        }
+        , vote_click : function(event){
+          var data = this.type_to_approp($(event.target).html());
+          var ticks = this.cols;
+          var plot = GRAPHS.bar(this.make_id(1), 
+              [data],
+              {title: ''
+              ,legend : {show: false} 
+              ,rotate : true
+              ,ticks : ticks
+              });
+          GRAPHS.fix_bar_highlight(plot,[data],ticks,this.app);
+        }
+      }
+   } 
    ]);
  });
 })(this);

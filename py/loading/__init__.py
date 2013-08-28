@@ -18,6 +18,7 @@ wb5 = xlrd.open_workbook("open data lookups.XLS")
 wb6 = xlrd.open_workbook("Enhanced Inventory of Government data.xls")
 wb7 = xlrd.open_workbook("g_and_c.xlsx")
 wb8 =  xlrd.open_workbook("open data in-year.xls")
+wb9 =  xlrd.open_workbook("authorities.xls")
 
 def clean_data(d):
   if isinstance(d,basestring):
@@ -144,7 +145,7 @@ def  fix_table1_and_2(data_sheets):
 def load_od():
   data_sheets = dict(map(each_sheet,
                          filter(lambda x : 'table' in x.name,
-                                    wb7.sheets()+wb8.sheets()+ wb4.sheets())))
+                                    wb7.sheets()+wb8.sheets()+ wb4.sheets()+wb9.sheets())))
   fix_table1_and_2(data_sheets)
   lookup_sheets = dict(map(each_sheet,
                            wb5.sheets()))

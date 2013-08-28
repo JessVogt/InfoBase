@@ -112,6 +112,9 @@ def make_open_data_after_check(lookups):
     if table.endswith('7'):
       row = replace_nulls(row,5)
       root.append(row)
+    if table.endswith('8'):
+      row = replace_nulls(row,5)
+      root.append(row)
     if table.endswith('5'):
       row = replace_nulls(row,5)
       if row[0] != 'ZGOC':

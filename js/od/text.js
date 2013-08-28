@@ -137,12 +137,16 @@
         "fr" : "Données financières pour"
       }           
       ,"current_year_fisc" : {
-         "en" : "Financial data for the current Fiscal Year (April 1st 2013, March 31st 2014)",
+         "en" : "Financial data for the current fiscal year (April 1st 2013 to March 31st 2014)",
          "fr" : "Données financières pour l'exercices (1 avril à 31 mars, 2013)"
       }
       ,"previous_year_fisc" : {
          "en" : "Financial data from previous fiscal years (2009-10 to 2011-12)",
          "fr" : "Données financières pour les exercices antérieurs (2009-2010 à 2011-2012)"
+      }
+      ,"previous_year_fisc_targeted" : {
+         "en" : "Targeted Financial data from previous fiscal years (2009-10 to 2011-12)",
+         "fr" : "Données ciblées financières pour les exercices antérieurs (2009-2010 à 2011-2012)"
       }
       ,"close" : {
         "en" : "close"
@@ -365,6 +369,14 @@
       ,"tbs_hide_central" : {
         "en" :  "The TB Central votes are not included"
         ,"fr" : "Les crédits centraux du CT ne sont pas inclus"  
+      }
+      ,"down" : {
+        "en" :  "a decrease of "
+        ,"fr" : "une diminution de "  
+      }
+      ,"up" : {
+        "en" :  "an increased of "
+        ,"fr" : "une augmentation de "  
       }
     }
     LANG.l = function(entry,lang){

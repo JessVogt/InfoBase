@@ -420,11 +420,15 @@
       return this.headers[this.h_lookup[header]];
     }
     ,make_title : function(){
-      this.$el.find('.title').append(this.def['name'][this.lang]);
+      this.$el.find('.title')
+        .html("")
+        .append(this.def['name'][this.lang]);
     }
     ,add_description: function(){
       if (this.description){
-        this.$el.find('.description').append(
+        this.$el.find('.description')
+          .html("")
+          .append(
             TABLES.m(this.description[this.lang])
         );
       }
@@ -435,22 +439,32 @@
       this.$el.find('p.description').remove();
     }
     ,render : function(){
-      this.$el.append(this.template({
-        details_title : this.gt("more_details") + " " + this.def.name[this.lang]
-      }));
+      if (this.$el.children().length ===0 ){
+        this.$el.append(this.template({
+          details_title : this.gt("more_details") + " " + this.def.name[this.lang]
+        }));
+      }
       this.make_title();
       this.add_description();
       if (this.data){
         this.prep_data();
         this.render_data();
+        this.content.css({"width" : "100%"});
       } else {
         this.set_no_content();
       }
-      this.$el.find('.mini_payload').append(this.content);
+      this.$el.find('.mini_payload')
+        .html("")
+        .append(this.content);
+
+      if (this.data){
+        this.post_render();
+      }
 
       APP.dispatcher.trigger_a(this.make_signal(),this);
       return this;
     }
+    ,post_render : function(){}
     ,make_signal : function(){
      return 'table_' + this.def.id +"_rendered";
     }
