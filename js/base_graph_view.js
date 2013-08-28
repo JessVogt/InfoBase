@@ -245,7 +245,8 @@ $(function () {
     data_type = data_type || "big-int";
     _.each(plot.series,function(s,i){
       s.data = _.map(ticks, function(tick,i){
-        return [tick,app.formater(data_type,s.data[i][1])];
+        var val =  app.formater(data_type,s.data[i][1]);
+        return [tick,val];
       });
     });
   };
