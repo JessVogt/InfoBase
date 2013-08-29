@@ -792,7 +792,7 @@
           this.to_years = _.object(_.map(this.years,m),this.years);
           var v_s= _.groupBy(this.mapped_objs,
               function(x){
-                return _.isNumber(x['Vote {{last_year}}/ Statutory']);
+                return _.isNumber(x['Vote {{last_year}} / Statutory']);
           });
           this.map_reduce_v_s = function(col){
             return _.map(v_s, function(group){
