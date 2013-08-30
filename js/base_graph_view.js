@@ -240,7 +240,6 @@ $(function () {
    return plot
   };
 
-
   GRAPHS.fix_bar_highlight  = function (plot, data,ticks,app, data_type){
     data_type = data_type || "big-int";
     _.each(plot.series,function(s,i){
