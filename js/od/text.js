@@ -172,6 +172,10 @@
         "en" : "Vote"
         ,"fr": "Crédit"
       }
+      ,"voted" : {
+        "en" : "Voted"
+        ,"fr": "Crédits"
+      }
       ,"stat" : {
         "en" : "Statutory"
         ,"fr": "Législatif"
@@ -366,17 +370,13 @@
         "en" :  "Expenditures"
         ,"fr" : "Dépenses"  
       }
+      ,"change": {
+        "en" :  "Change"
+        ,"fr" : "Changement"  
+      }
       ,"tbs_hide_central" : {
         "en" :  "The TB Central votes are not included"
         ,"fr" : "Les crédits centraux du CT ne sont pas inclus"  
-      }
-      ,"down" : {
-        "en" :  "a decrease of "
-        ,"fr" : "une diminution de "  
-      }
-      ,"up" : {
-        "en" :  "an increased of "
-        ,"fr" : "une augmentation de "  
       }
     }
     LANG.l = function(entry,lang){

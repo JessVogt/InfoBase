@@ -240,12 +240,12 @@ $(function () {
    return plot
   };
 
-
   GRAPHS.fix_bar_highlight  = function (plot, data,ticks,app, data_type){
     data_type = data_type || "big-int";
     _.each(plot.series,function(s,i){
-      s.data = _.map(ticks, function(tick,i){
-        return [tick,app.formater(data_type,s.data[i][1])];
+      s.data = _.map(ticks, function(tick,j){
+        var val =  app.formater(data_type,s.data[j][1]);
+        return [tick,val];
       });
     });
   };

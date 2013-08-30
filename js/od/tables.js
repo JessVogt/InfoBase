@@ -139,10 +139,10 @@
       ],[
         "Vote / Statutory",
         "Description",
-        "Total available for use for the year ending March 31,{{in_year_short}}",
+        "Total available for use for the year ending March 31, {{in_year_short}}",
         "Used during the quarter ended {{month_name}}-{{in_year_short}}",
         "Year to date used at quarter-end",
-        "Total available for use for the year ending March 31,{{qfr_last_year_short}}",
+        "Total available for use for the year ending March 31, {{qfr_last_year_short}}",
         "Used during the quarter ended {{month_name}}-{{qfr_last_year_short}} ",
         "Year to date used at quarter-end"
       ]],
@@ -225,7 +225,7 @@
               {txt_cols : {0 : this.gt("sub_total"),
                             1 : function(g){
                               var row = _.first(g);
-                              return _.isString(row[0]) ? self.gt("stat") : self.gt('vote') }},
+                              return _.isString(row[0]) ? self.gt("stat") : self.gt('voted') }},
                 func_cols : this.sum_cols,
                 func : GROUP.sum_rows}));
             this.merge_group_results([[this.row_data,total]]);
@@ -239,9 +239,9 @@
         ,prep_data : function(){
           var ttf = this.app.formater;
           var mapper =  function(x){return [
-            x['Total available for use for the year ending March 31,{{in_year_short}}'],
+            x['Total available for use for the year ending March 31, {{in_year_short}}'],
             x["{{qfr_last_year}}-Year to date used at quarter-end"],
-            x['Total available for use for the year ending March 31,{{qfr_last_year_short}}'],
+            x['Total available for use for the year ending March 31, {{qfr_last_year_short}}'],
             x["{{in_year}}-Year to date used at quarter-end"]];
           };
           var v_s = _.groupBy(this.data,function(x){
@@ -251,22 +251,29 @@
           var total = _.reduce(lines,UTILS.add_ar, [0,0,0,0]);
           var auth = total[0] / (total[2]+1) -1;
           var exp = total[1] / (total[3]+1) -1;
-          var auth_text = auth >= 0 ? this.gt("up") : this.gt("down");
-          var exp_text = auth >= 0 ? this.gt("up") : this.gt("down");
           this.rows = [
-            [ttf("big-int",total[0]), ttf("big-int",total[1])],
-            [ auth_text + " " + ttf("percentage",Math.abs(auth)),
-              exp_text + " " + ttf("percentage",Math.abs(exp))
-            ]
+            [this.gt("authorities"),  
+              ttf("big-int",total[0]),
+              ttf("big-int",total[2]),
+              ttf("percentage",auth)   ] ,
+            [this.gt("expenditures"), 
+              ttf("big-int",total[1]),
+              ttf("big-int",total[3]),
+                ttf("percentage",exp)  ]
           ];
         }
         ,render_data : function(){
+          var headers =  _.map(["", 
+                                "{{in_year_short}} ($000)",
+                                "{{qfr_last_year_short}} ($000)",
+                                this.gt("change")+" (%)"],m);
           this.content = TABLES.build_table({
-            headers : [[this.gt("authorities")+ " ($000)",
-                      this.gt("expenditures")+ " ($000)"]],
+            headers : [headers],
             body : this.rows,
-            css : [{'text-align' : 'left'}, 
-                    {'text-align' : 'left'}
+            css : [  {'text-align' : 'left'}, 
+                    {'text-align' : 'right'}, 
+                    {'text-align' : 'right'}, 
+                    {'text-align' : 'right'}
           ]
           });
         }
@@ -334,10 +341,10 @@
         }],
         [
         "Standard Object",
-        "Planned expenditures for the year ending March 31, {{in_year}}",
+        "Planned expenditures for the year ending March 31, {{in_year_short}}",
         "Expended during the quarter ended {{month}}-{{in_year}}",
         "Year to date used at quarter-end",
-        "Planned expenditures for the year ending March 31, {{qfr_last_year}}",
+        "Planned expenditures for the year ending March 31, {{qfr_last_year_short}}",
         "Expended during the quarter ended {{month}}-{{qfr_last_year}}",
         "Year to date used at quarter-end"
         ]],
@@ -436,7 +443,7 @@
           var sorter =  function(row){ return row[1]; }
           var mapped = _.sortBy(_.map(this.mapped_objs, function(obj){
             return [obj["Standard Object"].substring(0,120),
-                    Math.abs(obj["{{in_year}}-Year to date used at quarter-end"])];
+                    obj["{{in_year}}-Year to date used at quarter-end"]];
           }),sorter).reverse();
           this.top = _.first(mapped,5)
           var rest = _.reduce(_.rest(mapped,5),
@@ -470,7 +477,6 @@
                     legend : {show:false},
                     rotate : true
                    });
-          debugger
           GRAPHS.fix_bar_highlight(plot,[data],ticks,this.app);
         }
       }
@@ -625,7 +631,7 @@
         }                                  
         ],
         [
-          "Vote {{last_year}}/ Statutory",
+          "Vote {{last_year}} / Statutory",
           "Description",
           "Total budgetary authority available for use",
           "Expenditures",
@@ -723,7 +729,7 @@
               {txt_cols : {0 : this.gt("sub_total"),
                             1 : function(g){
                               var row = _.first(g);
-                              return _.isString(row[0]) ? self.gt("stat") : self.gt('vote') }},
+                              return _.isString(row[0]) ? self.gt("stat") : self.gt('voted') }},
                 func_cols : this.sum_cols,
                 func : GROUP.sum_rows}));
             this.merge_group_results([[this.row_data,total]]);
@@ -796,7 +802,7 @@
           this.to_years = _.object(_.map(this.years,m),this.years);
           var v_s= _.groupBy(this.mapped_objs,
               function(x){
-                return _.isNumber(x['Vote {{last_year}}/ Statutory']);
+                return _.isNumber(x['Vote {{last_year}} / Statutory']);
           });
           this.map_reduce_v_s = function(col){
             return _.map(v_s, function(group){
@@ -848,7 +854,7 @@
           return this;
         }
         ,year_click : function(event){
-          var ticks =  [this.gt("vote"),this.gt("stat")];
+          var ticks =  [this.gt("voted"),this.gt("stat")];
           var data = this.map_reduce_v_s(this.to_years[$(event.target).html()]);
           var plot = GRAPHS.bar(this.make_id(1), 
               [data],
@@ -1162,7 +1168,8 @@
           this.content = TABLES.build_table({
             headers : [[this.gt("program"),'($000)',"(%)"]],
             body : this.rows,
-            css : [{'font-weight' : 'bold'}, {'text-align' : 'left'},{'text-align' : 'right'}]
+            css : [{'font-weight' : 'bold', 'text-align' : 'left'}, 
+                    {'text-align' : 'right'},{'text-align' : 'right'}]
             ,classes : ['','','wrap-none']
           });
         }
@@ -1367,8 +1374,8 @@
                       this.gt("expenditures")+' ($000)',
                       "(%)" ]]
             ,body : this.rows
-            ,css : [{'font-weight' : 'bold'}, 
-                   {'text-align' : 'left'},
+            ,css : [{'font-weight' : 'bold', 'text-align' : 'left'}, 
+                   {'text-align' : 'right'},
                    {'text-align' : 'right'}]
             ,classes : ['','','wrap-none']
             });
@@ -1544,7 +1551,7 @@
             "header" : ""
             } 
          ],[
-          "Vote",
+          "Vote {{in_year}} / Statutory",
           "Description",
           "Main Estimates",
           "Supps A",
@@ -1576,7 +1583,7 @@
             "header" : ""
             } 
             ],[
-            "Crédit",
+            "Crédit {{in_year}} / Légis.",
             "Description du crédit",
             "Budget Principal",
             "Supp. A",
@@ -1640,7 +1647,7 @@
               {txt_cols : {0 : this.gt("sub_total"),
                             1 : function(g){
                               var row = _.first(g);
-                              return _.isString(row[0]) ? self.gt("stat") : self.gt('vote') }},
+                              return _.isString(row[0]) ? self.gt("stat") : self.gt('voted') }},
                 func_cols : this.sum_cols,
                 func : GROUP.sum_rows}));
             this.merge_group_results([[this.row_data,total]]);
