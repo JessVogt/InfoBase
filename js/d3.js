@@ -2,6 +2,127 @@
     var D3 = ns('D3');
     var TABLES = ns('TABLES');
 
+
+    D3.extend_base = function(chart){
+      return function(options){
+          options.height = options.height || 400;
+          options.width = options.width || 800;
+          options.is_mini = options.height < 200;
+
+          function my(selection){
+            selection.each(function(i){
+               chart.call(options,d3.select(this),i);
+            });
+            return my;
+          }
+
+          my.options =  function(){
+            return options;
+          };
+
+          my.series = function(value) {
+            if (!arguments.length) return series;
+            options.series = value;
+            return my;
+          };
+
+          my.is_mini = function(value) {
+            if (!arguments.length) return is_mini;
+            options.is_mini = value;
+            return my;
+          };
+
+          my.width = function(value) {
+            if (!arguments.length) return width;
+            options.width = value;
+            return my;
+          };
+
+          my.height = function(value) {
+            if (!arguments.length) return height;
+            options.height = value;
+            return my;
+          };
+
+          return my;
+      }
+    };
+
+    D3.bar = D3.extend_base(function(selection,index){
+      /* data in the format of 
+       *  { "series 1" : [y1,y2,y3],
+       *     "series 2" : [y1,y2,y3]}
+       *
+       */
+      var data = this.series;
+      var y_label = this.series.y_label || '';
+      var series = d3.keys(data);
+      var margin = this.margin || {top: 20, 
+                                    right: 20, 
+                                    bottom: 30, 
+                                    left: 40};
+      var x0 = d3.scale.ordinal()
+              .rangeRoundBands([0, this.width], .1);
+      var xAxis = d3.svg.axis()
+          .scale(x0)
+          .orient("bottom");
+      // max->merge->values will merge all the arrays into a single
+      // and fine the max value 
+      var y = d3.scale.linear()
+              .range([this.height, 0])
+              .domain(d3.extent(d3.merge(d3.values(data))));
+      var yAxis = d3.svg.axis()
+          .scale(y)
+          .orient("left")
+          .tickFormat(d3.format(this.yAxisTickFormat || ".2s"));
+      var svg = selection.append("svg")
+                .attr({
+                  width : this.width + margin.left + margin.right,
+                  height : this.height + margin.top + margin.bottom})
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+      if (!this.is_mini){
+        svg.append("g")
+              .attr("class", "x axis")
+              .attr("transform", "translate(0," + y(0) + ")")
+              .call(xAxis);
+        svg.append("g")
+              .attr("class", "y axis")
+              .call(yAxis)
+            .append("text")
+              .attr("transform", "rotate(-90)")
+              .attr("y", 6)
+              .attr("dy", ".71em")
+              .style("text-anchor", "end")
+              .text(y_label);
+      }
+      var state = svg.selectAll(".state")
+            .data(data)
+          .enter().append("g")
+            .attr("class", "g")
+            .attr("transform", function(d) { return "translate(" + x0(d.State) + ",0)"; });
+
+        state.selectAll("rect")
+            .data(function(d) { return d.ages; })
+          .enter().append("rect")
+            .attr("width", x1.rangeBand())
+            .attr("x", function(d) { return x1(d.name); })
+            .attr("y", function(d) { return y(d.value); })
+            .attr("height", function(d) { return height - y(d.value); })
+            .style("fill", function(d) { return color(d.name); });
+    });
+
+    D3.pack = D3.extend_base(function(selection,index){
+
+
+    });
+
+    D3.pie =  D3.extend_base(function(selection,index){
+
+
+    });
+
+
     D3.BaseGraphView = Backbone.View.extend({
       initialize: function () {
         _.bindAll.apply(this,[this].concat(_.functions(this)));

@@ -3,15 +3,6 @@ table caption {
   font-weight: bold;
 }
 
-.jqplot-highlighter-tooltip, .jqplot-canvasOverlay-tooltip {
-  background: rgba(208,208,208,0.9);
-  font-size: 18px;
-  font-weight: bold;
-}
-.jqplot-xaxis-tick, .jqplot-yaxis-tick{
-  font-weight: bold;
-}
-
 
 div.dataTables_scroll { clear: both; }
 .sidescroll { overflow-x: auto;}
@@ -122,6 +113,18 @@ table.table-medium thead td {
 .graph table td {
   border: 0;
 }
+
+
+ /* jq plot */
+.jqplot-highlighter-tooltip, .jqplot-canvasOverlay-tooltip {
+  background: rgba(208,208,208,0.9);
+  font-size: 18px;
+  font-weight: bold;
+}
+.jqplot-xaxis-tick, .jqplot-yaxis-tick{
+  font-weight: bold;
+}
+
 table.jqplot-table-legend {
   border: 0;
 }
@@ -204,3 +207,15 @@ circle.hidden {
   stroke: #ccc;
   stroke-width: 1.5px;
 }
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.bar {
+  fill: steelblue;
+}
+
