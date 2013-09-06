@@ -145,39 +145,15 @@
                 .append("g")
                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-      var groups = svg.selectAll(".group")
-            .data(data)
-          .enter().append("g")
-            .attr("class", "g")
-            .attr("transform", function(d) { return "translate(" + x0(d.series_name) + ",0)"; });
-
-      groups.selectAll("rect")
-          .data(function(d) { return d.data; })
-        .enter().append("rect")
-          .attr( "width", x1.rangeBand())
-          .attr( "x", function(d) { return x1(d.name); })
-          .attr("y", function(d) {  
-            if (d.val > 0){
-              return y(d.val); 
-            } else {
-              return y(0);
-            }
-          })
-          .attr("height", function(d) { 
-             if (d.val >= 0){
-               return y(0) - y(d.val);
-             } else {
-               return y(d.val) - y(0);
-             }
-           })
-          .style("fill", function(d) { return color(d.name); });
 
       var xAxis = d3.svg.axis()
           .scale(x0)
           .orient("bottom");
       var yAxis = d3.svg.axis()
           .scale(y)
-          .orient("left")
+          .orient("right")
+          .ticks(6)
+          .tickSize(this.width)
           .tickFormat(d3.format(this.yAxisTickFormat || ".2s"));
 
       if (!this.is_mini){
@@ -210,15 +186,48 @@
             .attr("class", "x axis")
             .attr("transform", "translate(0," + y(0) + ")")
             .call(xAxis);
+
       svg.append("g")
             .attr("class", "y axis")
             .call(yAxis)
-          .append("text")
-            .attr("transform", "rotate(-90)")
-            .attr("y", 6)
-            .attr("dy", ".71em")
-            .style("text-anchor", "end")
-            .text(y_axis);
+            .call( function (g) {
+              g.selectAll("text")
+                  .attr("x", 4)
+                  .attr("dy", -4);
+            })
+            .append("text")
+              .attr("transform", "rotate(-90)")
+              .attr("y", 6)
+              .attr("dy", ".71em")
+              .style("text-anchor", "end")
+              .text(y_axis);
+
+      var groups = svg.selectAll(".group")
+            .data(data)
+          .enter().append("g")
+            .attr("class", "g")
+            .attr("transform", function(d) { return "translate(" + x0(d.series_name) + ",0)"; });
+
+      groups.selectAll("rect")
+          .data(function(d) { return d.data; })
+        .enter().append("rect")
+          .attr( "width", x1.rangeBand())
+          .attr( "x", function(d) { return x1(d.name); })
+          .attr("y", function(d) {  
+            if (d.val > 0){
+              return y(d.val); 
+            } else {
+              return y(0);
+            }
+          })
+          .attr("height", function(d) { 
+             if (d.val >= 0){
+               return y(0) - y(d.val);
+             } else {
+               return y(d.val) - y(0);
+             }
+           })
+          .style("fill", function(d) { return color(d.name); });
 
       function make_legend(sel,width){
 
