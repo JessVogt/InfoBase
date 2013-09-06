@@ -2,15 +2,15 @@
     var D3 = ns('D3');
     var TABLES = ns('TABLES');
 
-    var seriesColors = ["#98abc5", "#8a89a6", 
+    var D3.orange_purple_color = d3.scale.ordinal()
+      .range(["#98abc5", "#8a89a6", 
           "#7b6888", "#6b486b", "#a05d56", "#d0743c", 
-          "#ff8c00"];
-    var seriesColors = ['#4d4d4d',
-      '#2b6c7b', '#a3d6e3', '#3e97ab', '#cfc7a9',
-      '#919191', '#e0e0e0', '#c3e4ec', '#595959' ];
+          "#ff8c00"]);
 
-    var color = d3.scale.ordinal()
-      .range(seriesColors);
+    var D3.tbs_color = d3.scale.ordinal()
+      .range(['#4d4d4d',
+      '#2b6c7b', '#a3d6e3', '#3e97ab', '#cfc7a9',
+      '#919191', '#e0e0e0', '#c3e4ec', '#595959' ]);
 
     D3.tooltip = Backbone.View.extend({
       initialize: function(){
@@ -227,7 +227,7 @@
                return y(d.val) - y(0);
              }
            })
-          .style("fill", function(d) { return color(d.name); });
+          .style("fill", function(d) { return D3.tbs_color(d.name); });
 
       function make_legend(sel,width){
 
