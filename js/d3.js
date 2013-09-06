@@ -2,9 +2,13 @@
     var D3 = ns('D3');
     var TABLES = ns('TABLES');
 
+    var seriesColors = ["#98abc5", "#8a89a6", 
+          "#7b6888", "#6b486b", "#a05d56", "#d0743c", 
+          "#ff8c00"];
     var seriesColors = ['#4d4d4d',
       '#2b6c7b', '#a3d6e3', '#3e97ab', '#cfc7a9',
-      '#919191', '#e0e0e0', '#c3e4ec', '#595959' ]
+      '#919191', '#e0e0e0', '#c3e4ec', '#595959' ];
+
     var color = d3.scale.ordinal()
       .range(seriesColors);
 
@@ -46,47 +50,47 @@
 
     D3.extend_base = function(chart){
       return function(options){
-          options = options || {};
-          options.height = options.height || 400;
-          options.width = options.width || 800;
-          options.is_mini = options.height < 200;
+        options = options || {};
+        options.height = options.height || 400;
+        options.width = options.width || 800;
+        options.is_mini = options.height < 200;
 
-          function my(selection){
-            selection.each(function(i){
-               chart.call(options,d3.select(this),i);
-            });
-            return my;
-          }
-
-          my.options =  function(){
-            return options;
-          };
-
-          my.series = function(value) {
-            if (!arguments.length) return series;
-            options.series = value;
-            return my;
-          };
-
-          my.is_mini = function(value) {
-            if (!arguments.length) return is_mini;
-            options.is_mini = value;
-            return my;
-          };
-
-          my.width = function(value) {
-            if (!arguments.length) return width;
-            options.width = value;
-            return my;
-          };
-
-          my.height = function(value) {
-            if (!arguments.length) return height;
-            options.height = value;
-            return my;
-          };
-
+        function my(selection){
+          selection.each(function(i){
+             chart.call(options,d3.select(this),i);
+          });
           return my;
+        }
+
+        my.options =  function(){
+          return options;
+        };
+
+        my.series = function(value) {
+          if (!arguments.length) return series;
+          options.series = value;
+          return my;
+        };
+
+        my.is_mini = function(value) {
+          if (!arguments.length) return is_mini;
+          options.is_mini = value;
+          return my;
+        };
+
+        my.width = function(value) {
+          if (!arguments.length) return width;
+          options.width = value;
+          return my;
+        };
+
+        my.height = function(value) {
+          if (!arguments.length) return height;
+          options.height = value;
+          return my;
+        };
+
+        return my;
       }
     };
 
