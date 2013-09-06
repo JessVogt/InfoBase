@@ -58,7 +58,9 @@
 
         function my(selection){
           selection.each(function(i){
-             chart.call(options,d3.select(this),i);
+            var svg = d3.select(this)
+                .append("svg")
+             chart.call(options,svg,i);
           });
           return my;
         }

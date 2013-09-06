@@ -1,7 +1,8 @@
 (function() {
+
     var D3 = ns('D3');
 
-    D3.bar = D3.extend_base(function(selection,index){
+    D3.bar = D3.extend_base(function(svg,index){
           /* data in the format of 
           *  { "series 1" : [y1,y2,y3],
           *     "series 2" : [y1,y2,y3]}
@@ -42,15 +43,15 @@
                   .range([this.height, y_range_top])
                   .domain(d3.extent(d3.merge(values)));
           /*
-          * Create the main graph area and add the bars
+          * setup the main graph area and add the bars
           * set up the axes  
           */
-          var svg = selection.append("svg")
-                    .attr({
-                      width : this.width + margin.left + margin.right,
-                      height : this.height + margin.top + margin.bottom})
-                    .append("g")
-                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+           svg  = svg
+            .attr({
+              width : this.width + margin.left + margin.right,
+              height : this.height + margin.top + margin.bottom})
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 
           var xAxis = d3.svg.axis()
