@@ -13,6 +13,17 @@
       '#2b6c7b', '#a3d6e3', '#3e97ab', '#cfc7a9',
       '#919191', '#e0e0e0', '#c3e4ec', '#595959' ]);
 
+    D3.rotate_2d_point = function(x,y,theta){
+      return [
+         x*Math.cos(theta) - y*Math.sin(theta),
+         x*Math.sin(theta) + y*Math.cos(theta)
+        ];
+    }
+
+    D3.get_offset = function(elem){
+       return $(elem.node()).offset();
+    }
+
     D3.tooltip = Backbone.View.extend({
       initialize: function(){
         _.bindAll(this,"render","un_render");
@@ -49,12 +60,14 @@
       }
     });
 
+
     D3.extend_base = function(chart){
       return function(options){
         options = options || {};
         options.height = options.height || 400;
         options.width = options.width || 800;
-        options.is_mini = options.height < 200;
+        options.is_mini = options.width < 200;
+        options.hover_legend = options.hover_legend || true;
 
         function my(selection){
           selection.each(function(i){
@@ -64,6 +77,8 @@
           });
           return my;
         }
+
+        my.dispatch = options.dispatch = d3.dispatch('dataHover',"dataClick");
 
         my.options =  function(){
           return options;
@@ -105,32 +120,6 @@
 
     });
 
-
-    D3.BaseGraphView = Backbone.View.extend({
-      initialize: function () {
-        _.bindAll.apply(this,[this].concat(_.functions(this)));
-        this.key = this.options["key"];
-        this.app = this.options["app"];
-        this.def = this.options["def"];
-
-        this.state = this.app.state;
-        this.dept = this.state.get('dept');
-        this.lang = this.state.get("lang");
-        this.raw_data = this.dept.tables[this.key];
-        this.mapped_objs = this.dept.mapped_objs[this.key][this.lang];
-        this.data = this.options['data'];
-
-        this.gt = this.app.get_text;
-
-        this.lang = this.app.state.get('lang');
-        this.name = this.def['name'][this.lang];
-        this.prep_data();
-        //this.gc = function(indexes){return this.get_col(this.data,indexes)};
-      }
-      ,prep_data : function(){
-
-      }
-    })
 
     var quantize_minstries = function(depts){
       var min_size = _.chain(depts)
@@ -215,12 +204,6 @@
       return struct;
     }
 
-    var rotate_point = function(x,y,theta){
-      return [
-         x*Math.cos(theta) - y*Math.sin(theta),
-         x*Math.sin(theta) + y*Math.cos(theta)
-        ];
-    }
 
     D3.bubleDeptListTip = Backbone.View.extend({
       initialize: function(){
@@ -405,7 +388,7 @@
 
         var tables = TABLES.tables.map(function(m,i){
           return {model: m
-                  ,xy : rotate_point(300,0,scale(i))
+                  ,xy : D3.rotate_2d_point(300,0,scale(i))
                   ,name : m.get('name')['en']
                   ,coverage : m.get("coverage")
           }
