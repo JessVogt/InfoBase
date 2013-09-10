@@ -121,6 +121,45 @@
     });
 
 
+    D3.pack_data = function(data, level_name,accessor,levels){
+      accessor = accessor || function(d){return d.value;});
+      levels = levels || 2;
+      var extent = d3.extent(_.map(data,accessor));
+      var scale = d3.scale.log().domain(extent).rangeRound([0,levels]);
+      var groups = d3.nest()
+        .key(function(d){ return scale(accessor(d));})
+        .sortKeys(d3.descending)
+        .entries(data);
+      var rtn = {name: '',children:groups[0].values};
+      var pointer = rtn.children;
+      for (var _i=1;_i<groups.length; ++_i){
+        pointer.push({
+          name : level_name,
+          children : groups[_i].values
+        });
+        pointer = _.last(pointer).children;
+      }
+      return rtn;
+    }
+
+    D3.soften_lower_quantile(data,p,accessor,setter){
+      // not finished!!!!!!!!!!!!!!
+      p = p || 0.2;
+      var sum = d3.sum(data,accessor);
+      var max = d3.max(data,accessor);
+      var map = d3.scale.linear().domain([0,p*sum]).range([p*sum,max]);
+      var soften = _.map(data, function(d){
+        if (accessor(d)/sum > p){
+           setter
+        }
+      })
+      var max = _.last(soften);
+      var new_min = 0.7 * max;
+
+
+    
+    }
+
     var quantize_minstries = function(depts){
       var min_size = _.chain(depts)
         // group by the ministry value 
