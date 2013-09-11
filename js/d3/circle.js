@@ -1,8 +1,46 @@
 (function() {
-    var D3 = ns('D3');
+    var PACK = ns('D3.PACK');
 
+    PACK.create_data_nodes = function(data,labels){
+      return _.map(data, function(d,i){
+        return {value: d, name : labels[i]};
+      });
+    }
 
-    D3.pack = D3.extend_base(function(svg,index){
+    PACK.pack_data = function(data, level_name,accessor,levels){
+      accessor = accessor || function(d){return d.value;};
+      levels = levels || 2;
+      var extent = d3.extent(_.map(data,accessor));
+      var scale = d3.scale.log().domain(extent).rangeRound([0,levels]);
+      var groups = d3.nest()
+        .key(function(d){ return scale(accessor(d));})
+        .sortKeys(d3.descending)
+        .entries(data);
+      var rtn = {name: '',children:groups[0].values};
+      var pointer = rtn.children;
+      for (var _i=1;_i<groups.length; ++_i){
+        pointer.push({
+          name : level_name,
+          children : groups[_i].values
+        });
+        pointer = _.last(pointer).children;
+      }
+      return rtn;
+    };
+
+    PACK.soften_spread = function(data,p,attr){
+      p = p || 0.1;
+      attr = attr || 'value';
+      var accessor = function(d){return d[attr]};
+      var max = d3.max(data,accessor);
+      var map = d3.scale.linear().domain([0,max]).range([p*max,max]);
+      _.each(data, function(d){
+        d[attr] = map(d[attr]);
+      });
+      return data
+    }
+
+    PACK.pack = D3.extend_base(function(svg,index){
       /*
       {
         name: '' ,
@@ -140,7 +178,7 @@
       }
     });
 
-    D3.circle_test_data = {
+    PACK.circle_test_data = {
       0 : {vname : '',
           children : [
             {
@@ -175,7 +213,7 @@
       1 : [9,7,6,3,1,0.5]
     };
     
-    D3.pack_test = function(data){
+    PACK.pack_test = function(data){
       $('#app')
         .children()
         .remove() ; 
@@ -185,7 +223,7 @@
       });
       pack(d3.selectAll("#app"));
     };
-    setTimeout(function(){ D3.pack_test(0);}, 3000);
+    setTimeout(function(){ PACK.pack_test(0);}, 3000);
 
 })();
 

@@ -70,15 +70,14 @@
       });
     }
 
-
     APP.fullDeptList = Backbone.View.extend({
       el : 'body'
       ,template : APP.t('#org_list_t')
       ,events : {
-       "click a.dept_sel" : "render"
-       ,"click a.dept_sel_cancel" : "cancel"
-       ,"click a.org_select" : "onClick"
-      ,"click .org_list .sort_buttons a" : "sort"
+       "click a.dept_sel" : "render",
+       "click a.dept_sel_cancel" : "cancel",
+       "click a.org_select" : "onClick",
+      "click .org_list .sort_buttons a" : "sort"
       }
       ,initialize: function(){
         _.bindAll(this,"render","sort","cancel","onClick");
@@ -215,8 +214,7 @@
     // the popup window for the LED which displays the departmental 
     // information with search tools
     APP.deptInfoView = Backbone.View.extend({
-      initialize: function(){
-      
+      initialize: function(){ 
         this.template = APP.t('#dept_info_t');
 
         _.bindAll(this,"render","on_search");
@@ -474,6 +472,5 @@
       p.toggleClass("active");
     }
   });
-
 
 })();

@@ -112,17 +112,8 @@
       }
     };
 
-    
-
-
-    D3.pie =  D3.extend_base(function(selection,index){
-
-
-    });
-
-
     D3.pack_data = function(data, level_name,accessor,levels){
-      accessor = accessor || function(d){return d.value;});
+      accessor = accessor || function(d){return d.value;};
       levels = levels || 2;
       var extent = d3.extent(_.map(data,accessor));
       var scale = d3.scale.log().domain(extent).rangeRound([0,levels]);
@@ -140,24 +131,18 @@
         pointer = _.last(pointer).children;
       }
       return rtn;
-    }
+    };
 
-    D3.soften_lower_quantile(data,p,accessor,setter){
-      // not finished!!!!!!!!!!!!!!
-      p = p || 0.2;
-      var sum = d3.sum(data,accessor);
+    D3.soften_spread = function(data,p,attr){
+      p = p || 0.1;
+      attr = attr || 'value';
+      var accessor = function(d){return d[attr]};
       var max = d3.max(data,accessor);
-      var map = d3.scale.linear().domain([0,p*sum]).range([p*sum,max]);
-      var soften = _.map(data, function(d){
-        if (accessor(d)/sum > p){
-           setter
-        }
-      })
-      var max = _.last(soften);
-      var new_min = 0.7 * max;
-
-
-    
+      var map = d3.scale.linear().domain([0,max]).range([p*max,max]);
+      _.each(data, function(d){
+        d[attr] = map(d[attr]);
+      });
+      return data
     }
 
     var quantize_minstries = function(depts){
