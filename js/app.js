@@ -111,10 +111,10 @@
         this.drop_zone.append(el);
         //enable listview
         el.find('ul.orgs').listview({
-          autodividers:true
-          ,filter:true
-          ,autodividersSelector : this[this.sort_func]['dividers_func'](this)
-          ,filterPlaceholder : this.app.get_text("search")
+          autodividers:true,
+          filter:true,
+          autodividersSelector : this[this.sort_func]['dividers_func'](this),
+          filterPlaceholder : this.app.get_text("search")
         });
         // add WCAG required label
         el.find('div.ui-input-search input')

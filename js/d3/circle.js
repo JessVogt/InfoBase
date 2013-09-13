@@ -1,4 +1,5 @@
 (function() {
+    var D3 = ns('D3');
     var PACK = ns('D3.PACK');
 
     PACK.create_data_nodes = function(data,labels){
@@ -218,12 +219,12 @@
         .children()
         .remove() ; 
       var pack = D3.pack({
-        data : D3.circle_test_data[data],
+        data : PACK.circle_test_data[data],
         width  : 299
       });
       pack(d3.selectAll("#app"));
     };
-    setTimeout(function(){ PACK.pack_test(0);}, 3000);
+    //setTimeout(function(){ PACK.pack_test(0);}, 3000);
 
 })();
 
