@@ -72,7 +72,7 @@
 
     APP.fullDeptList = Backbone.View.extend({
       el : 'body'
-      ,template : APP.t('#org_list_t')
+      ,template : '#org_list_t'
       ,events : {
        "click a.dept_sel" : "render"
        ,"click a.dept_sel_cancel" : "cancel"
@@ -80,6 +80,7 @@
       ,"click .org_list .sort_buttons a" : "sort"
       }
       ,initialize: function(){
+        this.template = APP.t(this.template)
         _.bindAll(this,"render","sort","cancel","onClick");
         this.app = this.options['app'];
         this.cols = this.options['cols'];
@@ -216,7 +217,7 @@
     APP.deptInfoView = Backbone.View.extend({
       initialize: function(){
       
-        this.template = APP.t('#dept_info_t');
+        this.template = '#dept_info_t';
 
         _.bindAll(this,"render","on_search");
         // retrieve passed in data
@@ -226,6 +227,7 @@
         this.state = this.app.state;
       }
       ,render : function(){
+        this.template = APP.t(this.template)
         var body = $(this.template({ dept: this.state.get("dept") }));
 
         this.search_box = body.find('input.site-search');
@@ -248,12 +250,13 @@
     });
 
     APP.otherDeptsDropDown = Backbone.View.extend({
-      template : APP.t('#nav_li')
+      template : '#nav_li'
       ,initialize: function(){
         _.bindAll(this,"render");
         this.app = this.options["app"];
       }
       ,render: function(other_depts){
+        this.template = APP.t(this.template)
         var state = this.app.state;
         var dept = state.get('dept');
         var lang = state.get("lang");
@@ -288,12 +291,15 @@
 
   // 
   APP.OrgView = Backbone.View.extend({
-    template : APP.t('#main_t')
-    ,template2 : APP.t('#panels_t')
+    template : '#main_t'
+    ,template2 : '#panels_t'
     ,initialize: function(){
+      this.template = APP.t(this.template)
+      this.template2 = APP.t(this.template2)
       _.bindAll(this,"render");
     }
     ,render : function(app){
+
       var org = app.state.get("dept");
       // render the main template
       app.app.children().remove();
@@ -306,8 +312,9 @@
   });
 
   APP.footnoteView = Backbone.View.extend({
-    template : APP.t('#footnotes_t')
+    template : '#footnotes_t'
     ,initialize: function(){
+      this.template = APP.t(this.template)
       _.bindAll(this,"render");
       // retrieve passed in data
       this.app = this.options["app"];
@@ -341,8 +348,9 @@
   };
 
   APP.DetailsView = Backbone.View.extend({
-    template : APP.t('#dataview_t')
+    template : '#dataview_t'
     ,initialize: function(){
+      this.template = APP.t(this.template);
       _.bindAll(this,"render","tear_down","setup_useful_this_links",
                 "on_about_click", "on_min_tot_click","on_goc_tot_click");
       // retrieve passed in data

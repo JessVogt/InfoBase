@@ -18,7 +18,7 @@ $(function () {
   });
 
   GRAPHS.BaseGraphView = Backbone.View.extend({
-    template : APP.t("#graph_grid_t")
+    template : "#graph_grid_t"
     ,events : {
      'keyup input.filter' : "filter_search"
     }
@@ -38,6 +38,7 @@ $(function () {
     }
     ,central_votes : true
     ,initialize: function () {
+      this.template = APP.t(this.template);
       _.bindAll.apply(this,[this].concat(_.functions(this)));
       this.key = this.options["key"];
       this.app = this.options["app"];

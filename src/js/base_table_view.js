@@ -14,12 +14,13 @@
     TABLES.tables.on("add",add_table_view);
   });
 
-  var table_template = APP.t('#list_t');
+  var table_template = '#list_t';
 
   var headerView = Backbone.View.extend({
-    template: APP.t('#header_t'),
+    template: '#header_t',
     tagName: "tr",
     initialize: function () {
+      this.template = APP.t(this.template)
       _.bindAll(this,"render");
       this.types = this.options['types'];
       this.header = this.options['header']; //read argument [object w/ only one key,val pair] to get headers
@@ -338,7 +339,7 @@
       }
       this.$el.children().remove();
 
-      this.$el.append( $(table_template({
+      this.$el.append( $(APP.t(table_template)({
         title:this.title
         ,extra_table_classes : 'wet-boew-zebra table-medium'
       })));
@@ -392,8 +393,9 @@
 
   TABLES.miniTableVew = Backbone.View.extend({
 
-    template : APP.t('#mini_t')
+    template : '#mini_t'
     ,initialize : function(){
+      this.template = APP.t(this.template);
       this.table = this.options['table'];
       this.def = this.table.attributes;
       this.app = this.options['app'];
@@ -552,7 +554,7 @@
 
     TABLES.build_table = function(options){
       options.classes = options.classes || new Array(options.css.length);
-      var table = $(table_template({title:false}));
+      var table = $(APP.t(table_template)({title:false}));
       var id_base = "r"+_.random(0,1000000);
       table.find('table').removeClass('table-striped');
       if (options.headers){
