@@ -20,7 +20,7 @@
   /************APP VIEW***********/
   APP.appView = Backbone.View.extend({
     el : $('body')
-    ,template : APP.t('#home_t')
+    ,template : '#home_t'
     ,events : {
       "click #lang_change" : "toggle_lang"
       ,"click a.home" : "reset"
@@ -29,6 +29,7 @@
       ,"click a.page-nav" : "nav"
     }
     ,initialize: function(){
+      this.template = APP.t(this.template);
       pe.wb_load({"poly" : ["datalist"]});
       _.bindAll(this,"dept_change","nav","setup_useful_this_links",
                 "lang_change", "formater","get_text","toggle_lang",

@@ -4,10 +4,13 @@ $(function () {
   var TABLES = ns('TABLES');
 
   TABLES.AnalyticsView = Backbone.View.extend({
-    template : APP.t('#list_t')
-    ,template2 : APP.t('#analytics_t')
-    ,row_template :APP.t("#stat_tr")
+    template : '#list_t'
+    ,template2 : '#analytics_t'
+    ,row_template :"#stat_tr"
     ,initialize: function () {
+      this.template = APP.t( this.template);
+      this.template2 = APP.t(this.template2);
+      this.row_template = APP.t(this.row_template);
       _.bindAll(this,
                 "create_th",
                 "create_row_from_array",
