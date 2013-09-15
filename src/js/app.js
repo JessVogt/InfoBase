@@ -217,7 +217,7 @@
     APP.deptInfoView = Backbone.View.extend({
       initialize: function(){
       
-        this.template = '#dept_info_t';
+        this.template = APP.t('#dept_info_t');
 
         _.bindAll(this,"render","on_search");
         // retrieve passed in data
@@ -227,7 +227,6 @@
         this.state = this.app.state;
       }
       ,render : function(){
-        this.template = APP.t(this.template)
         var body = $(this.template({ dept: this.state.get("dept") }));
 
         this.search_box = body.find('input.site-search');
