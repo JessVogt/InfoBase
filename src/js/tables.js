@@ -9,7 +9,6 @@
 
   TABLES.tables = new col;
 
-
   APP.listen_for_tables = function(app){
     var signals = TABLES.tables.map(function(table){
       return 'table_' + table.get("id") +"_rendered";
@@ -125,7 +124,7 @@
 
   });
 
-  APP.dispatcher.on("dept_selected", function(app){
+  APP.map_depts_data =  function(app){
 
     var lang = app.state.get("lang");
     var org = app.state.get('dept');
@@ -151,7 +150,8 @@
     });
 
     APP.dispatcher.trigger("mapped");
-  });
+  }
+  APP.dispatcher.on("dept_selected", APP.map_depts_data);
 
 })(this);
 

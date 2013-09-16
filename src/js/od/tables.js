@@ -1540,9 +1540,9 @@
             { "colspan" : 1,
             "header" : ""
             },
-            { "colspan" : 6,
-            "header" : "TBS Central Votes"
-            },
+            //{ "colspan" : 6,
+            //"header" : "TBS Central Votes"
+            //},
             { "colspan" : 1,
             "header" : ""
             } 
@@ -1554,12 +1554,12 @@
           "Supps B",
           "Supps C",
           "Adjustments",
-          "Vote 5",
-          "Vote 10",
-          "Vote 15",
-          "Vote 25",
-          "Vote 30",
-          "Vote 33",
+          //"Vote 5",
+          //"Vote 10",
+          //"Vote 15",
+          //"Vote 25",
+          //"Vote 30",
+          //"Vote 33",
           "Total Net Authority"
          ]],
           "fr" : [[
@@ -1572,9 +1572,9 @@
             { "colspan" : 1,
             "header" : ""
             },
-            { "colspan" : 6,
-            "header" : "Crédits Centraux de SCT"
-            },
+            //{ "colspan" : 6,
+            //"header" : "Crédits Centraux de SCT"
+            //},
             { "colspan" : 1,
             "header" : ""
             } 
@@ -1586,12 +1586,12 @@
             "Supp. B",
             "Supp. C",
             "Ajustements*",
-            "Crédit 5",
-            "Crédit 10",
-            "Crédit 15",
-            "Crédit 25",
-            "Crédit 30",
-            "Crédit 33",
+            //"Crédit 5",
+            //"Crédit 10",
+            //"Crédit 15",
+            //"Crédit 25",
+            //"Crédit 30",
+            //"Crédit 33",
             "Autorisations totales nettes"
             ]
       ]},
