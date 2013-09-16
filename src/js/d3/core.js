@@ -21,7 +21,7 @@
     }
 
     D3.get_offset = function(elem){
-       return $(elem.node()).offset();
+       return $(elem.node()).parents("svg").parent().offset();
     }
 
     D3.tooltip = Backbone.View.extend({

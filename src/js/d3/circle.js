@@ -9,6 +9,9 @@
     }
 
     PACK.pack_data = function(data, level_name,accessor,levels){
+      //
+      // expects an array of objects
+      //
       accessor = accessor || function(d){return d.value;};
       levels = levels || 2;
       var extent = d3.extent(_.map(data,accessor));
@@ -30,6 +33,8 @@
     };
 
     PACK.soften_spread = function(data,p,attr){
+      // expected array of objects with one particular attribute
+      // whose value ranges from 0 upwards
       p = p || 0.1;
       attr = attr || 'value';
       var accessor = function(d){return d[attr]};
@@ -50,8 +55,9 @@
       ]
       }
       */
+      var rand = Math.round(Math.random()*1000000);
       var k;
-      var offset = D3.get_offset(svg);
+      var is_mini = this.is_mini;
       var dispatch = this.dispatch;
       var data = this.data;
       var radius = this.width;
@@ -63,7 +69,7 @@
                    .size([this.width,this.width]);
 
       nodes = pack.nodes(data);
-      if (this.is_mini){
+      if (is_mini){
         nodes = _.filter(nodes,function(d){ return d.depth <= 1;});
       }
 
@@ -92,8 +98,6 @@
         var circle = svg.selectAll(".node")
             .data(nodes_shown,function(d){ return d.name+d.depth;});
         // join the filtered data to any divs with labels
-        var text = d3.selectAll("div.svg_label")
-              .data(nodes_with_text,function(d){ return d.name+d.depth;});
 
         circle.exit().remove();
 
@@ -105,7 +109,7 @@
             .on("mouseover", dispatch.dataHover)
             .on("click", dispatch.dataClick);
 
-        if (!this.is_mini){
+        if (!is_mini){
           new_circles.on("click", on_circle_click)
         }
 
@@ -126,28 +130,31 @@
             "r" : function(d) { return  d.zoom_r; }
           });
 
+        var text = d3.select("body").selectAll("div.label_"+rand)
+              .data(nodes_with_text,function(d){ return d.name+d.depth;});
+
         text.exit().remove();
 
         text
           .enter()
             .append("div")
-            .attr("class","svg_label")
+            .attr("class","label_"+rand)
             .on("mouseover", dispatch.dataHover)
             .on("click", on_circle_click);
 
         text
          .style({
            top : function(d){ 
-             return d.absolute_zoom_pos.y - d.zoom_r + 20 + "px";
+             return d.absolute_zoom_pos.y -10 + "px";
            },
            left: function(d){ 
-             return d.absolute_zoom_pos.x - d.zoom_r/2 + "px";
+             return d.absolute_zoom_pos.x - d.zoom_r + 10 + "px";
            },
            position: "absolute",
            "color" : "steelblue",
            'font-size': "6px",
            "text-align" : "centre",
-           width: function(d){return d.zoom_r - 10 +'px';}
+           "width": function(d){return d.zoom_r +'px';}
          })
          .text(function(d) { 
            if (d.zoom_r > 30){
@@ -155,15 +162,13 @@
            }
          });
       }
-      function on_circle_click(data){
-         var node = data;
-         k = radius / node.r / 2;
-         x_scale.domain([node.x - node.r, node.x + node.r]);
-         y_scale.domain([node.y - node.r, node.y + node.r]);
-         // if the current node has any children
-         if (node.children){
-           draw(node);
-         }
+      function on_circle_click(node){
+        if (node.children && node.children.length > 0){
+          k = radius / node.r / 2;
+          x_scale.domain([node.x - node.r, node.x + node.r]);
+          y_scale.domain([node.y - node.r, node.y + node.r]);
+          draw(node);
+        }
       }
       function zoom_position(x,y){
         return {x: x_scale(x),y:y_scale(y)};
@@ -174,57 +179,12 @@
         node.zoom_r = k * node.r;
       }
       function absolute_zoom_position(x,y){
+        var offset = D3.get_offset(svg);
         var pos = zoom_position(x,y);
         return {x:pos.x+offset.left,y:pos.y+offset.top};
       }
     });
 
-    PACK.circle_test_data = {
-      0 : {vname : '',
-          children : [
-            {
-              name : 'A',
-              children : [
-                 {
-                    name : 'C',
-                    value : 4,
-                    children : [
-                    ]
-                  },{
-                    name : 'D',
-                    value : 7,
-                    children : [
-                    ] 
-                  }
-              ]
-            },
-            {
-              name : 'B',
-              value : 4 ,
-              children : [
-              ]
-            },{
-              name : 'E',
-              value : 7 ,
-              children : [
-              ]
-            }
-        ]
-      },
-      1 : [9,7,6,3,1,0.5]
-    };
-    
-    PACK.pack_test = function(data){
-      $('#app')
-        .children()
-        .remove() ; 
-      var pack = D3.pack({
-        data : PACK.circle_test_data[data],
-        width  : 299
-      });
-      pack(d3.selectAll("#app"));
-    };
-    //setTimeout(function(){ PACK.pack_test(0);}, 3000);
 
 })();
 
