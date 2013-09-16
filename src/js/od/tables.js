@@ -1621,9 +1621,6 @@
             row.splice(3,1);
           }
           // remove acronym and vote type
-          for (var i in row){
-            if (i>2){ row[i] = row[i]*1000}
-          }
           return _.tail(row);
         }
         ,"make_filter" : function(source_row){
