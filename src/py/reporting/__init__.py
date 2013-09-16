@@ -320,19 +320,21 @@ def od(dev=True):
                    "od/tables.js",
                    "od/od.js"]
   js_app = process_my_js(app_js_files, dev=dev)
+  import IPython
+  IPython.embed()
 
   full_js = ''#full_js = "\n".join([js_data])
   full_css = ''#full_css = cssdata
 
   t = lookup.get_template('od.html')
-  with open("../ExDB/index-eng.html",'w') as leshtml:
+  with open("../../ExDB/index-eng.html",'w') as leshtml:
     leshtml.write(t.render(full_js = full_js,
                            #js_root = './',
                            full_css = full_css,
                            no_auto_js = True,
                            no_auto_css = True))
   t = lookup.get_template('od_fr.html')
-  with open("../ExDB/index-fra.html",'w') as leshtml:
+  with open("../../ExDB/index-fra.html",'w') as leshtml:
     leshtml.write(t.render(full_js = full_js,
                            #js_root = './',
                            full_css = full_css,

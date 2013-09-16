@@ -6,19 +6,18 @@ import itertools
 import xlrd
 from ..reporting import table_defs
 tables = table_defs.tables
-f  = 'LESWEB.XLS'
-f2 = 'CODES WEB LES.XLS'
-f3 = 'ISLED.XLS'
+f  = '../data/LESWEB.XLS'
+f2 = '../data/CODES WEB LES.XLS'
+f3 = '../data/ISLED.XLS'
 
 wb = xlrd.open_workbook(f)
 wb2 = xlrd.open_workbook(f2)
 wb3 = xlrd.open_workbook(f3)
-wb4 = xlrd.open_workbook("open data.xls")
-wb5 = xlrd.open_workbook("open data lookups.XLS")
-wb6 = xlrd.open_workbook("Enhanced Inventory of Government data.xls")
-wb7 = xlrd.open_workbook("g_and_c.xlsx")
-wb8 =  xlrd.open_workbook("open data in-year.xls")
-wb9 =  xlrd.open_workbook("authorities.xls")
+wb4 = xlrd.open_workbook("../data/open data.xls")
+wb5 = xlrd.open_workbook("../data/open data lookups.XLS")
+wb6 = xlrd.open_workbook("../data/Enhanced Inventory of Government data.xls")
+wb7 = xlrd.open_workbook("../data/g_and_c.xlsx")
+wb8 =  xlrd.open_workbook("../data/inyear.xlsx")
 
 def clean_data(d):
   if isinstance(d,basestring):
@@ -145,7 +144,7 @@ def  fix_table1_and_2(data_sheets):
 def load_od():
   data_sheets = dict(map(each_sheet,
                          filter(lambda x : 'table' in x.name,
-                                    wb7.sheets()+wb8.sheets()+ wb4.sheets()+wb9.sheets())))
+                                    wb7.sheets()+wb8.sheets()+ wb4.sheets())))
   fix_table1_and_2(data_sheets)
   lookup_sheets = dict(map(each_sheet,
                            wb5.sheets()))
