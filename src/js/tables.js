@@ -131,7 +131,7 @@
 
     TABLES.tables.each(function(table){
       var id = table.get("id");
-      mapper = table.get('mapper')[lang];
+      var mapper = table.get('mapper')[lang];
       // map the data for the current lang unless it's already
       // been mapped
       if (_.isUndefined(org["mapped_data"][id][lang])) {

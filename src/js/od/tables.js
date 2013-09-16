@@ -376,11 +376,15 @@
       ,key : [0]
       ,mapper : {
         to : function(row){
+          if (row[0] != 'ZGOC'){
+            row.splice(1,1,sos[row[1]][this.lang]);
+          }
           return _.tail(row)
         }
         ,make_filter : function(source_row){
           return function(candidate_row){
-          };
+            return (candidate_row[1] == source_row[1]);
+          }
         }
       }
       ,table_view : { 
@@ -1521,11 +1525,12 @@
                   "big-int", 
                   "big-int", 
                   "big-int", 
-                  "big-int", 
-                  "big-int", 
-                  "big-int", 
-                  "big-int", 
-                  "big-int", 
+                  //"big-int", 
+                  //"big-int", 
+                  //"big-int", 
+                  //"big-int", 
+                  //"big-int", 
+                  //"big-int", 
                   "big-int" 
       ],
       "coverage" : "in_year",
@@ -1534,7 +1539,7 @@
             { "colspan" : 2,
             "header" : ""
             },
-            { "colspan" : 4,
+            { "colspan" : 5,
             "header" : "Estimates"
             },
             { "colspan" : 1,
@@ -1550,6 +1555,7 @@
           "Vote {{in_year}} / Statutory",
           "Description",
           "Main Estimates",
+          "Multi-Year",
           "Supps A",
           "Supps B",
           "Supps C",
@@ -1566,7 +1572,7 @@
             { "colspan" : 2,
             "header" : ""
             },
-            { "colspan" : 4,
+            { "colspan" : 5,
             "header" : "Budgets"
             },
             { "colspan" : 1,
@@ -1582,6 +1588,7 @@
             "Crédit {{in_year}} / Légis.",
             "Description du crédit",
             "Budget Principal",
+            "Pluri-Annuel",
             "Supp. A",
             "Supp. B",
             "Supp. C",
