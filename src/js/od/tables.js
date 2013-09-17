@@ -244,8 +244,8 @@
       }
       ,mini_view : {
         description : {
-          "en" : "Total budgetary authorities and expenditures for Q{{q}}, {{in_year}} and percent change from the same quarter of the previous fiscal year ({{qfr_last_year}})",
-          "fr" : "Total des autorisations et des dépenses budgétaires pour le premier trimestre et variation en pourcentage par rapport au même trimestre de l’exercice précédent (2012-2013). "
+          "en" : "Total budgetary authorities and expenditures for Q{{q}}, {{in_year}} and percent change from the same quarter of the previous fiscal year ({{qfr_last_year}}).",
+          "fr" : "Total des autorisations et des dépenses budgétaires pour le premier trimestre et variation en pourcentage par rapport au même trimestre de l’exercice précédent (2012-2013)."
         }
         ,prep_data : function(){
           var ttf = this.app.formater;
@@ -298,8 +298,8 @@
         }
         ,descriptions : {
           1 : {
-            "en" : "Graph 1 presents the organization’s five largest voted and statutory net expenditures used at quarter-end. Voted expenditures reflect spending that received parliamentary approval through an appropriation bill, while statutory expenditures reflect spending whose authority was granted through other legislation. When applicable, the “Other” category captures all other expenditures up to the end of the specified period. ",
-            "fr" : "Le graphique 1 présente les cinq plus importantes dépenses nettes votées et législatives utilisées à la fin du trimestre par le ministère ou l'organisme. Les dépenses votées représentent les dépenses approuvées par le Parlement par l'entremise d'un projet de loi de crédits tandis que les dépenses législatives correspondent aux dépenses autorisées par l'entremise d'autres lois. S’il y a lieu, l’autre catégorie intègre toutes les autres dépenses de l’organisation jusqu'à la fin de la période précisée. "
+            "en" : "Graph 1 presents the organization’s five largest voted and statutory net expenditures used at quarter-end. Voted expenditures reflect spending that received parliamentary approval through an appropriation bill, while statutory expenditures reflect spending whose authority was granted through other legislation. When applicable, the “Other” category captures all other expenditures up to the end of the specified period.",
+            "fr" : "Le graphique 1 présente les cinq plus importantes dépenses nettes votées et législatives utilisées à la fin du trimestre par le ministère ou l'organisme. Les dépenses votées représentent les dépenses approuvées par le Parlement par l'entremise d'un projet de loi de crédits tandis que les dépenses législatives correspondent aux dépenses autorisées par l'entremise d'autres lois. S’il y a lieu, l’autre catégorie intègre toutes les autres dépenses de l’organisation jusqu'à la fin de la période précisée."
           }
         },
         prep_data : function(){
@@ -430,7 +430,7 @@
       }
       ,mini_view : {
         description : {
-          "en" : "Top three net expenditure categories as of Q{{q}}, {{in_year}} by value ($000) and proportion of total expenditures (%)",
+          "en" : "Top three net expenditure categories as of Q{{q}}, {{in_year}} by value ($000) and proportion of total expenditures (%).",
           "fr" : "Les trois plus importantes catégories de dépenses nettes en trimestre {{q}}, {{in_year}} en fonction de leur valeur (en milliers de dollars) et en tant que pourcentage des dépenses totales (%)."
         }
         ,prep_data : function(){
@@ -474,7 +474,7 @@
         }
         ,descriptions : {
           1 : {
-            "en" : "The graph presents the 5 largest categories of expenditure by Standard Object up to the specified quarter in 2013-14. Standard Object categories reflect expenditures on major items such as transfer payments and personnel. ",
+            "en" : "The graph presents the 5 largest categories of expenditure by Standard Object up to the specified quarter in 2013-14. Standard Object categories reflect expenditures on major items such as transfer payments and personnel.",
             "fr" : "Le graphique présente les cinq plus importantes catégories de dépenses par article courant jusqu’au trimestre précisé en 2013-2014. Les catégories d’articles courants font état des dépenses liées aux principaux postes, comme les paiements de transfert et ceux ayant trait au personnel."
           }
         }
@@ -776,8 +776,8 @@
       }
       ,mini_view : {
         description : {
-          "en" : "Total budgetary voted and statutory authorities",
-          "fr" : "Montant total des autorisations budgétaires votées et législatives"
+          "en" : "Total budgetary voted and statutory authorities and expendiures.",
+          "fr" : "Montant total des autorisations et dépenses budgétaires votées et législatives."
         }
         ,prep_data : function(){
           var ttf = this.app.formater;
@@ -805,7 +805,7 @@
                         this.gt("authorities")+' ($000)',
                         this.gt("expenditures")+' ($000)' ]],
             body : this.rows,
-            css : [{'font-weight' : 'bold'}, 
+            css : [{'font-weight' : 'bold','text-align' : 'left'}, 
                    {'text-align' : 'right'},
                    {'text-align' : 'right'}]
             ,classes : ['','','wrap-none']
@@ -1698,8 +1698,8 @@
       }
       ,mini_view : {
         description : {
-          "en" : "Current-year authorities granted by Parliament by appropriation act as of {{month_name}}, 2013 by value ($000) and proportion of total authorities (%)",
-          "fr" : "Les autorisations délivrées par le Parlement pour l’exercice courant au moyen de la Loi de crédits à compter de {{month_name}}, 2013 selon la valeur (000 $) et la proportion des autorisations totales (%)"
+          "en" : "Current-year authorities granted by Parliament by appropriation act as of {{month_name}}, 2013 by value ($000) and proportion of total authorities (%).",
+          "fr" : "Les autorisations délivrées par le Parlement pour l’exercice courant au moyen de la Loi de crédits à compter de {{month_name}}, 2013 selon la valeur (000 $) et la proportion des autorisations totales (%)."
         }
         ,prep_data : function(){
           var ttf = this.app.formater;

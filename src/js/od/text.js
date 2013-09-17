@@ -146,7 +146,7 @@
       }
       ,"previous_year_fisc_targeted" : {
          "en" : "Financial information on selected topics for the 2009‒10 to 2011‒12",
-         "fr" : "Renseignements financiers sur certains sujets de 2009-2010 à 2011-2012"
+         "fr" : "Renseignements financiers sur certains sujets de 2009-2010 à 2011-2012 "
       }
       ,"close" : {
         "en" : "close"
@@ -289,9 +289,8 @@
         ,"fr": "Rest"
       }
       ,"so" : {
-        "en": "Standard Objects"
-        ,"fr": "Articles courants"
-
+        "en": "Standard Object"
+        ,"fr": "Articles courant"
       }
       ,"program" : {
        'en' : 'Program',
