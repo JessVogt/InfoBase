@@ -19,7 +19,8 @@
       'q' : 1
     },
     'en' : {
-      'month_name' : 'June',
+      'month_name' : 'August',
+      'qfr_month_name' : 'June',
       'in_year' : '2013-14',
        'qfr_last_year' : '2012-13',
       'last_year' : '2011-12',
@@ -27,7 +28,8 @@
       'last_year_3' : '2009-10'
     },
     'fr' : {
-      'month_name' : 'juin',
+      'month_name' : 'août',
+      'qfr_month_name' : 'juin',
       'in_year' : '2013‒2014',
        'qfr_last_year' : '2012‒13',
       'last_year' : '2011‒2012',
@@ -136,10 +138,10 @@
         "Vote / Statutory",
         "Description",
         "Total available for use for the year ending March 31, {{in_year_short}}",
-        "Used during the quarter ended {{month_name}}-{{in_year_short}}",
+        "Used during the quarter ended {{qfr_month_name}}-{{in_year_short}}",
         "Year to date used at quarter-end",
         "Total available for use for the year ending March 31, {{qfr_last_year_short}}",
-        "Used during the quarter ended {{month_name}}-{{qfr_last_year_short}} ",
+        "Used during the quarter ended {{qfr_month_name}}-{{qfr_last_year_short}} ",
         "Year to date used at quarter-end"
       ]],
         "fr": [ [
@@ -190,16 +192,20 @@
       ,"mapper" : {
         "to" : function(row){
           if (this.lang == 'en'){
-            row.splice(3,1);
-          } else {
             row.splice(4,1);
+          } else {
+            row.splice(3,1);
           }
           // remove acronym and vote type
-          return _.tail(row,2);
+          return [row[1]].concat(_.tail(row,3))
         }
         ,"make_filter" : function(source_row){
-          return function(condidate_row){
-
+          return function(candidate_row){
+            if (typeof source_row[1] === 'string'){
+              return  candidate_row[4] == source_row[4];
+            } else {
+              return candidate_row[2] === source_row[2];
+            }
           };
         }
       }
@@ -229,8 +235,8 @@
       }
       ,mini_view : {
         description : {
-          "en" : "Change in authorities and expenditures between {{in_year}} and {{qfr_last_year}}",
-          "fr" : "Différence entre les autorisations et les dépenses entre {in_{year}} et {{qfr_last_year}}"
+          "en" : "Total budgetary authorities and expenditures for Q{{q}}, {{in_year}} and percent change from the same quarter of the previous fiscal year ({{qfr_last_year}})",
+          "fr" : "Total des autorisations et des dépenses budgétaires pour le premier trimestre et variation en pourcentage par rapport au même trimestre de l’exercice précédent (2012-2013). "
         }
         ,prep_data : function(){
           var ttf = this.app.formater;
@@ -275,6 +281,18 @@
         }
       },
       graph_view : {
+        titles : {
+          1 : {
+            "en" : "Largest voted and statutory net expenditures used at quarter-end ($000)",
+            "fr" : "Plus importantes dépenses nettes votées et législatives utilisées à la fin du trimestre (en milliers de dollars)"
+          }
+        }
+        ,descriptions : {
+          1 : {
+            "en" : "Graph 1 presents the organization’s five largest voted and statutory net expenditures used at quarter-end. Voted expenditures reflect spending that received parliamentary approval through an appropriation bill, while statutory expenditures reflect spending whose authority was granted through other legislation. When applicable, the “Other” category captures all other expenditures up to the end of the specified period. ",
+            "fr" : "Le graphique 1 présente les cinq plus importantes dépenses nettes votées et législatives utilisées à la fin du trimestre par le ministère ou l'organisme. Les dépenses votées représentent les dépenses approuvées par le Parlement par l'entremise d'un projet de loi de crédits tandis que les dépenses législatives correspondent aux dépenses autorisées par l'entremise d'autres lois. S’il y a lieu, l’autre catégorie intègre toutes les autres dépenses de l’organisation jusqu'à la fin de la période précisée. "
+          }
+        },
         prep_data : function(){
           var sorter =  function(row){ return row[1]; }
           var mapped = _.sortBy(_.map(this.mapped_objs, function(obj){
@@ -294,7 +312,7 @@
           this.template({
             id : this.make_id(1)
             ,header : ''
-            ,description : '' //this.descriptions[1][this.lang]
+            ,description : m(this.descriptions[1][this.lang])
           }));
           this.$el.append(exp_pie);
           var make_graph=this.make_graph;
@@ -306,7 +324,7 @@
           var data = _.pluck(this.top, 1);
           var plot = GRAPHS.bar(this.make_id(1),
                     [data],
-                   {title : "",
+                   {title : m(this.titles[1][this.lang]),
                     legend : {show:false},
                     ticks : ticks,
                     rotate : true
@@ -403,8 +421,8 @@
       }
       ,mini_view : {
         description : {
-          "en" : "The top expenditure categories as of {{month_name}}, {{in_year}}",
-          "fr" : "Les dépenses les plus importantes du {{month_name}}, {{in_year}}"
+          "en" : "Top three net expenditure categories as of Q{{q}}, {{in_year}} by value ($000) and proportion of total expenditures (%)",
+          "fr" : "Les trois plus importantes catégories de dépenses nettes en trimestre {{q}}, {{in_year}} en fonction de leur valeur (en milliers de dollars) et en tant que pourcentage des dépenses totales (%)."
         }
         ,prep_data : function(){
           var ttf_f = _.partial(this.app.formater,'big-int');
@@ -439,7 +457,19 @@
         }
       },
       graph_view : {
-        prep_data : function(){
+        titles : {
+          1 : {
+            "en" : "Largest net expenditures by Standard Object ($000)",
+            "fr" : "Plus importantes dépenses nettes par article courant (en milliers de dollars)"
+          }
+        }
+        ,descriptions : {
+          1 : {
+            "en" : "The graph presents the 5 largest categories of expenditure by Standard Object up to the specified quarter in 2013-14. Standard Object categories reflect expenditures on major items such as transfer payments and personnel. ",
+            "fr" : "Le graphique présente les cinq plus importantes catégories de dépenses par article courant jusqu’au trimestre précisé en 2013-2014. Les catégories d’articles courants font état des dépenses liées aux principaux postes, comme les paiements de transfert et ceux ayant trait au personnel."
+          }
+        }
+        ,prep_data : function(){
           var sorter =  function(row){ return row[1]; }
           var mapped = _.sortBy(_.map(this.mapped_objs, function(obj){
             return [obj["Standard Object"].substring(0,120),
@@ -458,7 +488,7 @@
           this.template({
             id : this.make_id(1)
             ,header : ''
-            ,description : '' //this.descriptions[1][this.lang]
+            ,description : m(this.descriptions[1][this.lang])
           }));
           this.$el.append(exp_pie);
           var self=this;
@@ -472,7 +502,7 @@
           var data = _.pluck(this.top, 1);
           var plot = GRAPHS.bar(this.make_id(1),
                     [data],
-                   {title : "",
+                   {title : m(this.titles[1][this.lang]),
                     ticks : ticks,
                     legend : {show:false},
                     rotate : true
@@ -858,7 +888,7 @@
           var data = this.map_reduce_v_s(this.to_years[$(event.target).html()]);
           var plot = GRAPHS.bar(this.make_id(1), 
               [data],
-              {title: this.titles[1][this.lang]
+              {title: m(this.titles[1][this.lang])
               ,legend : {show: false} 
               ,barWidth : 100
               ,ticks : ticks
@@ -941,8 +971,8 @@
       }
       ,mini_view : {
         description : {
-          "en" : "An organization’s standard object with the greatest expenditures for ",
-          "fr" : "L'article courant de l’organisation le plus important sur le plan des dépenses pour l’exercice indiqué"
+          "en" : "Organization’s top three standard objects with the greatest expenditures by value ($000) and proportion of total expenditures (%).Select the fiscal year in the drop-down menu to display the expenditures.",
+          "fr" : "Les trois articles courants représentant les plus importantes dépenses en fonction de leur valeur (en milliers de dollars) et en tant que pourcentage des dépenses totales (%). Sélectionnez l'exercice financier figurant dans le menu déroulant pour afficher les dépenses."
         }
         ,year : "{{last_year}}"
         ,prep_data : function(){
@@ -1147,8 +1177,8 @@
       }
       ,mini_view : {
         description : {
-          "en" : "An organization’s program with the greatest expenditures for ",
-          "fr" : "Le programme de l’organisation le plus important sur le plan des dépenses pour "
+          "en" : "Organization’s programs with the greatest expenditures by value ($000) and proportion of total expenditures (%).Select the fiscal year in the drop-down menu to display the expenditures.",
+          "fr" : "Les programmes représentant les plus importantes dépenses en fonction de leur valeur (en milliers de dollars) et en tant que pourcentage des dépenses totales (%). Sélectionnez l'exercice financier figurant dans le menu déroulant pour afficher les dépenses."
         }
         ,year : "{{last_year}}"
         ,prep_data: function(){
@@ -1350,8 +1380,8 @@
       }
       ,mini_view : {
         description : {
-          "en" : "An organization’s transfer payment with the greatest expenditures for the specified year",
-          "fr" : "Le paiement de transfert de l’organisation le plus important sur le plan des dépenses pour l’exercice indiqué"
+          "en" : "Organization’s transfer payments with the greatest expenditures by value ($000) and proportion of total expenditures (%).Select the fiscal year in the drop-down menu to display the expenditures.",
+          "fr" : "Les paiements de transfert représentant les plus importantes dépenses en fonction de leur valeur (en milliers de dollars) et en tant que pourcentage des dépenses totales (%). Sélectionnez l'exercice financier figurant dans le menu déroulant pour afficher les dépenses."
         }
         ,year : "{{last_year}}"
         ,prep_data : function(){
@@ -1397,22 +1427,22 @@
       graph_view : {
         titles : {
           1 : {
-            "en" : "",
-            "fr" : ""
+            "en" : "Net Expenditures for the largest Transfer Payments ($000)",
+            "fr" : "Dépenses nettes pour les plus importants paiements de transfert (en milliers de dollars) "
           },
           2 : {
-            "en" : "",
-            "fr" : ""
+            "en" : "Detailed Net Budgetary authorities available for use and Expenditures by Grant, Contribution, or Other Transfer Payment Item ($000)",
+            "fr" : "Détail des autorisations budgétaires nettes disponibles pour emploi et dépenses budgétaires nettes par poste pour une subvention, une contribution ou un autre paiement de transfert (en milliers de dollars)"
           }
         }
         ,descriptions : {
           1 : {
-            "en" : "",
-            "fr" : ""
+            "en" : "Graph 1 presents the organization four largest transfer payments based on the proportion of the net expenditures for each fiscal year from 2009-10 to 2011-12. When applicable, the other category captures the expenditures for all the other transfer payments of the selected organization.  Select the fiscal year in the left side-bar to plot the expenditures on the graph.",
+            "fr" : "Le graphique 1 présente les quatre plus importants paiements de transfert du ministère ou de l'organisme selon leur pourcentage des dépenses nettes pour chaque exercice financier de 2009-2010 à 2011-2012. S’il y a lieu, l’autre catégorie intègre les dépenses de tous les autres paiements de transfert de l’organisation visée. Sélectionnez l’exercice figurant dans la colonne à gauche de l’écran pour faire le tracé des dépenses sur le graphique."
           },
           2 : {
-            "en" : "",
-            "fr" : ""
+            "en" : "Graph 2 presents the net expenditures for individual grant, contribution, and other transfer payment items from fiscal year 2009-10 to 2011-12. Select an individual item in the left side-bar to plot an expenditure on the graph or search by typing one or more key word(s) in the search field to identify specific transfer payment items. The graph allows users to interact with the graphs and focus on particular variables by selecting either budgetary Authorities available for use or Expenditures.",
+            "fr" : "Le graphique 2 présente les dépenses nettes pour chaque poste pour une subvention, une contribution ou un autre paiement de transfert des exercices 2009-2010 à 2011-2012. Sélectionnez un poste dans la colonne à gauche de l'écran pour faire le tracé d'une dépense sur le graphique ou effectuez une recherche en saisissant un ou plusieurs mots-clés dans le champ de recherche pour relever des postes particuliers liés aux paiements de transfert. Les utilisateurs peuvent modifier les graphiques afin qu'ils mettent l'accent sur des variables particulières en sélectionnant soit les autorisations budgétaires disponibles pour emploi ou soit les dépenses."
           }
         }
         ,prep_data : function(){
@@ -1457,7 +1487,7 @@
           this.template({
             id : this.make_id(1)
             ,header : this.gt("year")
-            ,description : '' //this.descriptions[1][this.lang]
+            ,description : m(this.descriptions[1][this.lang])
             ,items : [m("{{last_year}}"),
                       m("{{last_year_2}}"),
                       m("{{last_year_3}}")]
@@ -1466,7 +1496,7 @@
           this.template({
             id : this.make_id(2)
             ,filter : true
-            ,description : '' //this.descriptions[2][this.lang]
+            ,description : m(this.descriptions[2][this.lang])
             ,header : this.def.headers[this.lang][1][1]
             ,items : _.pluck(this.data,1)
           }));                 
@@ -1490,7 +1520,7 @@
           var data = _.pluck(top, 1);
           var plot = GRAPHS.bar(this.make_id(1),
                     [data],
-                   {title : "",
+                   {title : m(this.titles[1][this.lang]),
                     ticks : ticks,
                     legend : {show:false},
                     rotate : true
@@ -1506,7 +1536,7 @@
           ];          
           var plot = GRAPHS.bar(this.make_id(2), 
               data,
-              {title: ''//this.titles[2][this.lang]
+              {title: m(this.titles[2][this.lang])
               ,series : series
               ,barWidth : 100
               ,ticks :ticks
@@ -1616,16 +1646,20 @@
       ,"mapper" : {
         "to" : function(row){
           if (this.lang == 'en'){
-            row.splice(2,1);
+            row.splice(4,1);
           } else {
             row.splice(3,1);
           }
           // remove acronym and vote type
-          return _.tail(row);
+          return [row[1]].concat(_.tail(row, 3))
         }
         ,"make_filter" : function(source_row){
-          return function(condidate_row){
-
+          return function(candidate_row){
+            if (typeof source_row[1] === 'string'){
+              return  candidate_row[3] == source_row[3];
+            } else {
+              return candidate_row[2] === source_row[2];
+            }
           };
         }
       }
@@ -1655,8 +1689,8 @@
       }
       ,mini_view : {
         description : {
-          "en" : "Details of expenditure authorities granted by Parliament as of {{month_name}}, {{in_year_short}}",
-          "fr" : "Détails des autorités approuvé pas parliament dès {{month_name}}, {{in_year_short}}"
+          "en" : "Current-year authorities granted by Parliament by appropriation act as of {{month_name}}, 2013 by value ($000) and proportion of total authorities (%)",
+          "fr" : "Les autorisations délivrées par le Parlement pour l’exercice courant au moyen de la Loi de crédits à compter de {{month_name}}, 2013 selon la valeur (000 $) et la proportion des autorisations totales (%)"
         }
         ,prep_data : function(){
           var ttf = this.app.formater;
@@ -1684,6 +1718,18 @@
         }
       }
       ,graph_view : {
+        titles : {
+          1 : {
+            "en" : "Detailed Net Authorities by Voted/Statutory Item ($000) and by Estimates period as of {{month_name}}, 2013",
+            "fr" : "Détail des autorisations nettes par crédit voté/poste législatif (en milliers de dollars) et par période de budget de dépenses au {{month_name}}, 2013"
+          }
+        }
+        ,descriptions : {
+          1 : {
+            "en" : "This graph presents the net authority trend for individual voted and statutory items by sources of authority. Select an individual item in the left side-bar to plot an authority on the graph.",
+            "fr" : "Cette graphique présente la tendance relative aux autorisations nettes pour chaque crédit voté et poste législatif en fonction des sources d'autorisation. Sélectionnez un poste donné figurant dans la colonne à gauche de l’écran pour faire le tracé d'une autorisation sur le graphique."
+          }
+        },
         prep_data : function(){
           this.cols =  ['Main Estimates',
                        'Supps A',
@@ -1702,7 +1748,7 @@
           var by_vote_graph = $(
           this.template({
             id : this.make_id(1)
-            ,description : ''
+            ,description : m(this.descriptions[1][this.lang])
             ,header : this.gt("votestat")
             ,filter : true
             ,items :  _.pluck(this.mapped_objs,"Description")
@@ -1721,7 +1767,7 @@
           var ticks = this.cols;
           var plot = GRAPHS.bar(this.make_id(1), 
               [data],
-              {title: ''
+              {title: m(this.titles[1][this.lang])
               ,legend : {show: false} 
               ,rotate : true
               ,ticks : ticks

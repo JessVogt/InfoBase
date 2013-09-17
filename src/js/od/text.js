@@ -141,12 +141,12 @@
          "fr" : "Données financières pour l'exercices (1 avril à 31 mars, 2013)"
       }
       ,"previous_year_fisc" : {
-         "en" : "Financial data from previous fiscal years (2009-10 to 2011-12)",
-         "fr" : "Données financières pour les exercices antérieurs (2009-2010 à 2011-2012)"
+         "en" : "Historical financial information for the 2009‒10 to 2011‒12 fiscal years",
+         "fr" : "Renseignements financiers historiques des exercices financiers 2009-2010 à 2011-2012"
       }
       ,"previous_year_fisc_targeted" : {
-         "en" : "Targeted Financial data from previous fiscal years (2009-10 to 2011-12)",
-         "fr" : "Données ciblées financières pour les exercices antérieurs (2009-2010 à 2011-2012)"
+         "en" : "Financial information on selected topics for the 2009‒10 to 2011‒12",
+         "fr" : "Renseignements financiers sur certains sujets de 2009-2010 à 2011-2012"
       }
       ,"close" : {
         "en" : "close"
