@@ -38,14 +38,6 @@
     }
   };
 
-  var make_year_select = function(){
-    var m = TABLES.m ;
-    return $('<select>')
-      .append($("<option>").attr("value","{{last_year}}").html(m("{{last_year}}")))
-      .append($("<option>").attr("value","{{last_year_2}}").html(m("{{last_year_2}}")))
-      .append($("<option>").attr("value","{{last_year_3}}").html(m("{{last_year_3}}")));
-  }
-
   // customize the final app initialization by activating
   // selected gui elements
   APP.dispatcher.once("app_ready",function(app){
@@ -110,6 +102,23 @@
 
   APP.dispatcher.on("load_tables",function(app){
     var m = TABLES.m;
+
+    var make_year_select = function(){
+      var m = TABLES.m ;
+      var rand = Math.round(Math.random()*10000);
+      var sel =  $('<select>')
+        .attr("id",rand)
+        .append($("<option>").attr("value","{{last_year}}").html(m("{{last_year}}")))
+        .append($("<option>").attr("value","{{last_year_2}}").html(m("{{last_year_2}}")))
+        .append($("<option>").attr("value","{{last_year_3}}").html(m("{{last_year_3}}")));
+      return $('<span>')
+        .append($("<label>")
+                  .attr({"for" : rand, 'class':'wb-invisible'})
+                  .html(app.get_text("select"))
+        )
+        .append(sel)
+    }
+
     TABLES.tables.add([
       {
       "id": 'table1',
