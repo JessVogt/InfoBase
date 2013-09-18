@@ -49,8 +49,8 @@
          "fr" : "Recommencer" 
       }
       ,"data_table_instructions" :{
-         "en" : "Any number in the table below can be clicked to produce a horizontal comparison across all organizations.",
-         "fr" : "Vous pouvez cliquer sur n’importe quelle valeur figurant dans le tableau ci-dessous pour établir une comparaison horizontale entre toutes les organisations." 
+          "en": "Any number in the table below may be selected to produce a government-wide table of values for the financial element selected.",
+         "fr": "Dans le tableau ci-dessous, il suffit de sélectionner un nombre pour produire un tableau de valeurs à l'échelle du gouvernement pour l'élément financier choisi." 
       }
       ,'top' : {
          "en" : "To Top",
@@ -290,7 +290,7 @@
       }
       ,"so" : {
         "en": "Standard Object"
-        ,"fr": "Articles courant"
+        ,"fr": "Article courant"
       }
       ,"program" : {
        'en' : 'Program',
@@ -371,13 +371,24 @@
       }
       ,"change": {
         "en" :  "Change"
-        ,"fr" : "Changement"  
+        ,"fr" : "Variation"  
       }
       ,"tbs_hide_central" : {
         "en" :  "The TB Central votes are not included"
         ,"fr" : "Les crédits centraux du CT ne sont pas inclus"  
-      }
+     
+     }
+    ,"Estimates": {
+        "en": "Estimates"
+        , "fr": "Budget des dépenses"
+
     }
+    , "Amount": {
+        "en": "Amount"
+        , "fr": "Montant"
+
+    }  
+        }
     LANG.l = function(entry,lang){
       return lookups[entry][lang];
     }
