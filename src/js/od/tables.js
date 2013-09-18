@@ -1594,7 +1594,7 @@
           "Vote {{in_year}} / Statutory",
           "Description",
           "Main Estimates",
-          "Multi-Year",
+          "Available from Previous Years",
           "Supps A",
           "Supps B",
           "Supps C",
@@ -1627,7 +1627,7 @@
             "Crédit {{in_year}} / Légis.",
             "Description du crédit",
             "Budget Principal",
-            "Pluri-Annuel",
+            "Disponibles des exercices antérieurs",
             "Supp. A",
             "Supp. B",
             "Supp. C",
@@ -1646,10 +1646,10 @@
         "fr" : ""
       },
       "name" : { "en" : "Parliamentary Authorities",
-                "fr" : "Autorisations parliamentaires"
+                "fr" : "Autorisation parliamentaires"
               },
       "title" : { "en" : "Parliamentary Authorities",
-                "fr" : "Autorisations parliamentaires"
+                "fr" : "Autorisation parliamentaires"
       }
       ,"key" : [0,1]
       ,"mapper" : {
@@ -1735,8 +1735,8 @@
         }
         ,descriptions : {
           1 : {
-            "en" : "This graph presents the net authority trend for individual voted and statutory items by sources of authority. Select an individual item in the left side-bar to plot an authority on the graph.",
-            "fr" : "Cette graphique présente la tendance relative aux autorisations nettes pour chaque crédit voté et poste législatif en fonction des sources d'autorisation. Sélectionnez un poste donné figurant dans la colonne à gauche de l’écran pour faire le tracé d'une autorisation sur le graphique."
+            "en" : "This graph presents the net authority trend for individual voted and statutory items by sources of authority. Select an individual item in the left side-bar to plot an authority on the graph. The graph below will display the name and the dollar value when the mouse selection icon hovers over any bar element.",
+            "fr" : "Ce graphique présente la tendance relative aux autorisations nettes pour chaque crédit voté et poste législatif en fonction des sources d'autorisation. Sélectionnez un poste donné figurant dans la colonne à gauche de l’écran pour faire le tracé d'une autorisation sur le graphique. Pour connaître le nom et la valeur monétaire associés à l'une des barres figurant dans le graphique ci-dessous, il suffit de faire glisser le pointeur de la souris sur la barre voulue."
           }
         },
         prep_data : function(){
