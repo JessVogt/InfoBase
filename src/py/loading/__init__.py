@@ -17,7 +17,8 @@ wb4 = xlrd.open_workbook("../data/open data.xls")
 wb5 = xlrd.open_workbook("../data/open data lookups.XLS")
 wb6 = xlrd.open_workbook("../data/Enhanced Inventory of Government data.xls")
 wb7 = xlrd.open_workbook("../data/g_and_c.xlsx")
-wb8 =  xlrd.open_workbook("../data/inyear.xlsx")
+wb8 = xlrd.open_workbook("../data/inyear.xlsx")
+wb9 = xlrd.open_workbook("../data/QFR Links.xlsx")
 
 def clean_data(d):
   if isinstance(d,basestring):
@@ -80,6 +81,11 @@ def footnotes(lines):
                     for l in grp[1]]
           for grp in grps}
 
+def load_qfr_links():
+  line = wb9.sheet_by_index(0).row_values
+  nrows = wb9.sheet_by_index(0).nrows
+  return {line(i)[0]: {"en" : line(i)[2], "fr": line(i)[3]}
+         for i in xrange(1, nrows)}
 
 def load_igoc():
   def make_bilingual(line,en,fr,force_array=False,join=False):
@@ -152,6 +158,7 @@ def load_od():
   lookups = {
     'depts': depts(lookup_sheets['DEPTCODE_MINCODE']),
     #'votes': votes(lookup_sheets['VOTES']),
+    'qfr_links' : load_qfr_links(),
     'sos' : sos(lookup_sheets['SO']),
     'igoc' : load_igoc()
   }
