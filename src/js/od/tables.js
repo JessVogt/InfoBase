@@ -402,7 +402,7 @@
             "fr": ""
         },
         name: { "en": "Expenditures by Standard Object",
-            "fr": "Dépensespar article courant"
+            "fr": "Dépenses par article courant"
         },
         title: { "en": "Expenditures by Standard Object ($000)",
             "fr": "Dépenses par article courant ($000)"
@@ -1668,11 +1668,11 @@
            "en": "",
            "fr": ""
        },
-       "name": { "en": "Parliamentary Authorities",
-           "fr": "Autorisations parliamentaires"
+       "name": { "en": "Authorities",
+           "fr": "Autorisations"
        },
-       "title": { "en": "Parliamentary Authorities",
-           "fr": "Autorisations parliamentaires"
+       "title": { "en": "Current Year Authorities",
+           "fr": "Autorisations en cours d'exercises'"
        }
       , "key": [0, 1]
       , "mapper": {

@@ -220,7 +220,7 @@ $(function () {
     }
     if (_.has(options,'series')){
       o['series'] =  _.map( options['series'],function(obj){
-        return {label : TABLES.m(obj.label).substring(0,40)}
+        return {label : TABLES.m(obj.label)}
       });
     }
     if (_.has(options,'stackSeries')){
