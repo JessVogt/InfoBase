@@ -1745,7 +1745,7 @@
         , render_data: function () {
             this.content = TABLES.build_table({
                 headers: [[this.gt("Estimates"),
-                           this.gt("Amount ") + '($000)', 
+                           this.gt("Amount") + ' ($000)', 
                            '(%)']],
                 body: this.rows,
                 css: [{ 'font-weight': 'bold', 'text-align': 'left' },

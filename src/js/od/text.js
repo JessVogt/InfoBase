@@ -376,17 +376,14 @@
       ,"tbs_hide_central" : {
         "en" :  "The TB Central votes are not included"
         ,"fr" : "Les crédits centraux du CT ne sont pas inclus"  
-     
      }
     ,"Estimates": {
         "en": "Estimates"
         , "fr": "Budget des dépenses"
-
     }
     , "Amount": {
         "en": "Amount"
         , "fr": "Montant"
-
     }  
         }
     LANG.l = function(entry,lang){
