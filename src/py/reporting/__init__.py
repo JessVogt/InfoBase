@@ -206,7 +206,7 @@ def add_dept_data(depts):
                             about_now.minister2_en or ""]).strip(","),
           'fr' : ",".join([about_now.minister1_fr,
                             about_now.minister2_fr or ""]).strip(",") 
-        }
+      }
       dept['mandate'] ={
         'en' : about_now.mandate_en,
         'fr' : about_now.mandate_fr
@@ -305,8 +305,12 @@ def od(dev=True):
 
     if dept != 'ZGOC':
       lookups['depts'][dept].update(lookups['igoc'][dept])
+      if dept in lookups['qfr_links']:
+        lookups['depts'][dept]['qfr_link'] = lookups['qfr_links'][dept]
+
 
   del lookups['igoc']
+  del lookups['qfr_links']
 
   ##check_g_and_c(lookups['depts'])
 
@@ -323,16 +327,18 @@ def od(dev=True):
 
   full_js = ''#full_js = "\n".join([js_data])
   full_css = ''#full_css = cssdata
+  import IPython
+  IPython.embed()
 
   t = lookup.get_template('od.html')
-  with open("../ExDB/index-eng.html",'w') as leshtml:
+  with open("../../ExDB/index-eng.html",'w') as leshtml:
     leshtml.write(t.render(full_js = full_js,
                            #js_root = './',
                            full_css = full_css,
                            no_auto_js = True,
                            no_auto_css = True))
   t = lookup.get_template('od_fr.html')
-  with open("../ExDB/index-fra.html",'w') as leshtml:
+  with open("../../ExDB/index-fra.html",'w') as leshtml:
     leshtml.write(t.render(full_js = full_js,
                            #js_root = './',
                            full_css = full_css,

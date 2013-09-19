@@ -49,8 +49,8 @@
          "fr" : "Recommencer" 
       }
       ,"data_table_instructions" :{
-         "en" : "Any number in the table below can be clicked to produce a horizontal comparison across all organizations.",
-         "fr" : "Vous pouvez cliquer sur n’importe quelle valeur figurant dans le tableau ci-dessous pour établir une comparaison horizontale entre toutes les organisations." 
+          "en": "Any number in the table below may be selected to produce a government-wide table of values for the financial element selected.",
+         "fr": "Dans le tableau ci-dessous, il suffit de sélectionner un nombre pour produire un tableau de valeurs à l'échelle du gouvernement pour l'élément financier choisi." 
       }
       ,'top' : {
          "en" : "To Top",
@@ -141,12 +141,12 @@
          "fr" : "Données financières pour l'exercices (1 avril à 31 mars, 2013)"
       }
       ,"previous_year_fisc" : {
-         "en" : "Financial data from previous fiscal years (2009-10 to 2011-12)",
-         "fr" : "Données financières pour les exercices antérieurs (2009-2010 à 2011-2012)"
+         "en" : "Historical financial information for the 2009‒10 to 2011‒12 fiscal years",
+         "fr" : "Renseignements financiers historiques des exercices financiers 2009-2010 à 2011-2012"
       }
       ,"previous_year_fisc_targeted" : {
-         "en" : "Targeted Financial data from previous fiscal years (2009-10 to 2011-12)",
-         "fr" : "Données ciblées financières pour les exercices antérieurs (2009-2010 à 2011-2012)"
+         "en" : "Financial information on selected topics for the 2009‒10 to 2011‒12",
+         "fr" : "Renseignements financiers sur certains sujets de 2009-2010 à 2011-2012 "
       }
       ,"close" : {
         "en" : "close"
@@ -289,9 +289,8 @@
         ,"fr": "Rest"
       }
       ,"so" : {
-        "en": "Standard Objects"
-        ,"fr": "Articles courants"
-
+        "en": "Standard Object"
+        ,"fr": "Article courant"
       }
       ,"program" : {
        'en' : 'Program',
@@ -372,13 +371,24 @@
       }
       ,"change": {
         "en" :  "Change"
-        ,"fr" : "Changement"  
+        ,"fr" : "Variation"  
       }
       ,"tbs_hide_central" : {
         "en" :  "The TB Central votes are not included"
         ,"fr" : "Les crédits centraux du CT ne sont pas inclus"  
-      }
+     
+     }
+    ,"Estimates": {
+        "en": "Estimates"
+        , "fr": "Budget des dépenses"
+
     }
+    , "Amount": {
+        "en": "Amount"
+        , "fr": "Montant"
+
+    }  
+        }
     LANG.l = function(entry,lang){
       return lookups[entry][lang];
     }
