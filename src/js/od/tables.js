@@ -1338,7 +1338,7 @@
         ],
         [
           "Type de paiement",
-          "Paiement de Transfert",
+          "Paiement de transfert",
           "Autorisations budgétaires disponibles pour l'emploi",
           "Dépenses",
           "Autorisations budgétaires disponibles pour l'emploi",
@@ -1668,11 +1668,11 @@
            "en": "",
            "fr": ""
        },
-       "name": { "en": "Authorities",
-           "fr": "Autorisations"
+       "name": { "en": "Current-year Authorities",
+           "fr": "Autorisations pour l'exercice en cours"
        },
-       "title": { "en": "Current Year Authorities",
-           "fr": "Autorisations en cours d'exercises'"
+       "title": { "en": "Current-year Authorities",
+           "fr": "Autorisations pour l'exercice en cours"
        }
       , "key": [0, 1]
       , "mapper": {
@@ -1745,7 +1745,7 @@
         , render_data: function () {
             this.content = TABLES.build_table({
                 headers: [[this.gt("Estimates"),
-                           this.gt("Amount") + '($000)', 
+                           this.gt("Amount ") + '($000)', 
                            '(%)']],
                 body: this.rows,
                 css: [{ 'font-weight': 'bold', 'text-align': 'left' },
