@@ -169,7 +169,7 @@
         "Crédits totaux disponibles pour l'exercice se terminant le 31 mars {{in_year_short}}",
         "Crédits utilisés pour le trimestre terminé le {{qfr_month_name}} {{qfr_last_year_short}}",
         "Cumul des crédits utilisés à la fin du trimestre",
-        "Crédits totaux disponibles pour l'exercice se terminant le 31 mars {{last_year_short}}",
+        "Crédits totaux disponibles pour l'exercice se terminant le 31 mars {{qfr_last_year_short}}",
         "Crédits utilisés pour le trimestre terminé le {{qfr_month_name}} {{last_year_short}}",
         "Cumul des crédits utilisés à la fin du trimestre"
         ]]
