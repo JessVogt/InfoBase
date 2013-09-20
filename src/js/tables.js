@@ -85,8 +85,8 @@
     var id = table.get("id");
 
     _.each(depts,function(org){
-      org.mapped_data.id = {};
-      org.mapped_objs.id = {};
+      org.mapped_data[id] = {};
+      org.mapped_objs[id] = {};
     });
 
     // setup the mappers
