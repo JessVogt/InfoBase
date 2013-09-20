@@ -1,5 +1,6 @@
 (function (root) {
 
+    var D3 = ns('D3');
     var GRAPHS = ns('GRAPHS');
     var GROUP = ns('GROUP');
     var APP = ns('APP');
@@ -46,7 +47,6 @@
       , cols: 2
       , target: '.org_list_by_min'
         });
-    });
     app.universe_view = new D3.bubleDeptList({
       app:app
      });
