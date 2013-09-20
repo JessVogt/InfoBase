@@ -1034,6 +1034,7 @@
         , on_select: function (e) {
             this.year = $(e.target).val();
             this.render();
+            this.$el.find("select").focus();
         }
       },
         graph_view: {
@@ -1241,6 +1242,7 @@
         , on_select: function (e) {
             this.year = $(e.target).val();
             this.render();
+            this.$el.find("select").focus();
         }
       },
         graph_view: {
@@ -1453,6 +1455,7 @@
         , on_select: function (e) {
             this.year = $(e.target).val();
             this.render();
+            this.$el.find("select").focus();
         }
       },
         graph_view: {
