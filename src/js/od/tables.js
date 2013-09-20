@@ -20,7 +20,7 @@
         },
         'en': {
             'month_name': 'August',
-            'qfr_month_name': 'June',
+            'qfr_month_name': 'June 30th',
             'in_year': '2013-14',
             'qfr_last_year': '2012-13',
             'last_year': '2011-12',
@@ -29,7 +29,7 @@
         },
         'fr': {
             'month_name': 'août',
-            'qfr_month_name': 'juin',
+            'qfr_month_name': '30 juin',
             'in_year': '2013‒2014',
             'qfr_last_year': '2012‒2013',
             'last_year': '2011‒2012',
@@ -371,10 +371,10 @@
         [
         "Standard Object",
         "Planned expenditures for the year ending March 31, {{in_year_short}}",
-        "Expended during the quarter ended {{qfr_month_name}} {{in_year}}",
+        "Expended during the quarter ended {{qfr_month_name}}, {{qfr_last_year_short}}",
         "Year to date used at quarter-end",
         "Planned expenditures for the year ending March 31, {{qfr_last_year_short}}",
-        "Expended during the quarter ended {{month}}-{{qfr_last_year}}",
+        "Expended during the quarter ended {{qfr_month_name}}, {{last_year_short}}",
         "Year to date used at quarter-end"
         ]],
             "fr": [[
@@ -389,11 +389,11 @@
         }],
         [
           "Article Courant",
-        "Dépenses prévues pour l'exercice se terminant le 31 mars, {{in_year}}",
-        "Dépensées durant le trimestre terminé le {{month}}-{{in_year}}",
+        "Dépenses prévues pour l'exercice se terminant le 31 mars {{in_year_short}}",
+        "Dépensées durant le trimestre terminé le {{qfr_month_name}} {{qfr_last_year_short}}",
         "Cumul des crédits utilisés à la fin du trimestre",
-        "Dépenses prévues pour l'exercice se terminant le 31 mars, {{qfr_last_year}}",
-        "Dépensées durant le trimestre terminé le {{month}}-{{qfr_last_year}}",
+        "Dépenses prévues pour l'exercice se terminant le 31 mars {{qfr_last_year_short}}",
+        "Dépensées durant le trimestre terminé le {{qfr_month_name}} {{last_year_short}}",
         "Cumul des crédits utilisés à la fin du trimestre"
         ]]
         },
@@ -445,7 +445,7 @@
             var ttf_f = _.partial(this.app.formater, 'big-int');
             var ttf_p = _.partial(this.app.formater, 'percentage');
 
-            var col = "Expended during the quarter ended {{month}}-{{in_year}}";
+            var col = "{{in_year}}-Year to date used at quarter-end";
             var data = _.sortBy(this.data, function (d) {
                 return -d[col]
             });
