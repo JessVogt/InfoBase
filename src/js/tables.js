@@ -7,13 +7,13 @@
 
   var col = Backbone.Collection.extend({ });
 
-  TABLES.tables = new col;
+  TABLES.tables = new col();
 
   APP.listen_for_tables = function(app){
     var signals = TABLES.tables.map(function(table){
       return 'table_' + table.get("id") +"_rendered";
-    })
-    APP.size_panels(app,signals)
+    });
+    APP.size_panels(app,signals);
   };
 
   APP.dispatcher.on("dept_selected", APP.listen_for_tables);
@@ -22,12 +22,13 @@
     // once all the mini table signals have been sent
     // do some prettying up on the page
     APP.dispatcher.on_these(signals, function(){
+      var current_view;
       var dept = app.state.get("dept");
       var views = _.toArray(arguments);
       var current_table = app.state.get("table");
       // figure out the currently selected table, if any
       if (current_table){
-        var current_view = _.first(_.filter(views,function(v){
+        current_view = _.first(_.filter(views,function(v){
           // compare the views table deifnition with the current
           // table AND make sure the currently selected 
           // department has data for that kind of table
@@ -35,7 +36,7 @@
                   _.has(dept.tables,v.def.id));
         }));
       } else {
-        var current_view = undefined;
+        current_view = undefined;
       }
 
       $('.widget-row').each(function(i,row){
@@ -84,15 +85,15 @@
     var id = table.get("id");
 
     _.each(depts,function(org){
-      org['mapped_data'][id] = {};
-      org['mapped_objs'][id] = {};
+      org.mapped_data[id] = {};
+      org.mapped_objs[id] = {};
     });
 
     // setup the mappers
     MAPPERS.maps[table.get("id")] = table.get("mapper");
     table.set('mapper' , {
-     'en' : new MAPPERS.mapper('en',table.attributes,id)
-     ,'fr' : new MAPPERS.mapper('fr',table.attributes,id)
+     'en' : new MAPPERS.mapper('en',table.attributes,id),
+     'fr' : new MAPPERS.mapper('fr',table.attributes,id)
     }); 
 
     // setup lookups for the headers
@@ -134,14 +135,14 @@
       var mapper = table.get('mapper')[lang];
       // map the data for the current lang unless it's already
       // been mapped
-      if (_.isUndefined(org["mapped_data"][id][lang])) {
-        org["mapped_data"][id][lang] =  mapper.map(org['tables'][id]);
+      if (_.isUndefined(org.mapped_data[id][lang])) {
+        org.mapped_data[id][lang] =  mapper.map(org.tables[id]);
       }
 
-      var headers = table.get('unique_headers')['en'];
+      var headers = table.get('unique_headers').en;
 
-      if (_.isUndefined(org["mapped_objs"][id][lang])) {
-        org["mapped_objs"][id][lang] = _.map(org["mapped_data"][id][lang],
+      if (_.isUndefined(org.mapped_objs[id][lang])) {
+        org.mapped_objs[id][lang] = _.map(org.mapped_data[id][lang],
           function(row){
             return _.object(headers,row);
           }
@@ -150,7 +151,7 @@
     });
 
     APP.dispatcher.trigger("mapped");
-  }
+  };
   APP.dispatcher.on("dept_selected", APP.map_depts_data);
 
 })(this);

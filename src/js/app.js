@@ -3,9 +3,6 @@
     var LANG = ns('LANG');
 
     APP.t = function(id){
-      if (node){
-        return Handlebars.compile(" ");
-      }
       return Handlebars.compile($.trim($(id).html()));
     }
 

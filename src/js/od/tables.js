@@ -20,7 +20,7 @@
         },
         'en': {
             'month_name': 'August',
-            'qfr_month_name': 'June',
+            'qfr_month_name': 'June 30th',
             'in_year': '2013-14',
             'qfr_last_year': '2012-13',
             'last_year': '2011-12',
@@ -29,7 +29,7 @@
         },
         'fr': {
             'month_name': 'août',
-            'qfr_month_name': 'juin',
+            'qfr_month_name': '30 juin',
             'in_year': '2013‒2014',
             'qfr_last_year': '2012‒2013',
             'last_year': '2011‒2012',
@@ -173,7 +173,7 @@
         "Crédits totaux disponibles pour l'exercice se terminant le 31 mars {{in_year_short}}",
         "Crédits utilisés pour le trimestre terminé le {{qfr_month_name}} {{qfr_last_year_short}}",
         "Cumul des crédits utilisés à la fin du trimestre",
-        "Crédits totaux disponibles pour l'exercice se terminant le 31 mars {{last_year_short}}",
+        "Crédits totaux disponibles pour l'exercice se terminant le 31 mars {{qfr_last_year_short}}",
         "Crédits utilisés pour le trimestre terminé le {{qfr_month_name}} {{last_year_short}}",
         "Cumul des crédits utilisés à la fin du trimestre"
         ]]
@@ -375,10 +375,10 @@
         [
         "Standard Object",
         "Planned expenditures for the year ending March 31, {{in_year_short}}",
-        "Expended during the quarter ended {{qfr_month_name}} {{in_year}}",
+        "Expended during the quarter ended {{qfr_month_name}}, {{qfr_last_year_short}}",
         "Year to date used at quarter-end",
         "Planned expenditures for the year ending March 31, {{qfr_last_year_short}}",
-        "Expended during the quarter ended {{month}}-{{qfr_last_year}}",
+        "Expended during the quarter ended {{qfr_month_name}}, {{last_year_short}}",
         "Year to date used at quarter-end"
         ]],
             "fr": [[
@@ -393,11 +393,11 @@
         }],
         [
           "Article Courant",
-        "Dépenses prévues pour l'exercice se terminant le 31 mars, {{in_year}}",
-        "Dépensées durant le trimestre terminé le {{month}}-{{in_year}}",
+        "Dépenses prévues pour l'exercice se terminant le 31 mars {{in_year_short}}",
+        "Dépensées durant le trimestre terminé le {{qfr_month_name}} {{qfr_last_year_short}}",
         "Cumul des crédits utilisés à la fin du trimestre",
-        "Dépenses prévues pour l'exercice se terminant le 31 mars, {{qfr_last_year}}",
-        "Dépensées durant le trimestre terminé le {{month}}-{{qfr_last_year}}",
+        "Dépenses prévues pour l'exercice se terminant le 31 mars {{qfr_last_year_short}}",
+        "Dépensées durant le trimestre terminé le {{qfr_month_name}} {{last_year_short}}",
         "Cumul des crédits utilisés à la fin du trimestre"
         ]]
         },
@@ -406,7 +406,7 @@
             "fr": ""
         },
         name: { "en": "Expenditures by Standard Object",
-            "fr": "Dépensespar article courant"
+            "fr": "Dépenses par article courant"
         },
         title: { "en": "Expenditures by Standard Object ($000)",
             "fr": "Dépenses par article courant ($000)"
@@ -449,7 +449,7 @@
             var ttf_f = _.partial(this.app.formater, 'big-int');
             var ttf_p = _.partial(this.app.formater, 'percentage');
 
-            var col = "Expended during the quarter ended {{month}}-{{in_year}}";
+            var col = "{{in_year}}-Year to date used at quarter-end";
             var data = _.sortBy(this.data, function (d) {
                 return -d[col]
             });
@@ -1038,6 +1038,7 @@
         , on_select: function (e) {
             this.year = $(e.target).val();
             this.render();
+            this.$el.find("select").focus();
         }
       },
         graph_view: {
@@ -1245,6 +1246,7 @@
         , on_select: function (e) {
             this.year = $(e.target).val();
             this.render();
+            this.$el.find("select").focus();
         }
       },
         graph_view: {
@@ -1342,7 +1344,7 @@
         ],
         [
           "Type de paiement",
-          "Paiement de Transfert",
+          "Paiement de transfert",
           "Autorisations budgétaires disponibles pour l'emploi",
           "Dépenses",
           "Autorisations budgétaires disponibles pour l'emploi",
@@ -1457,6 +1459,7 @@
         , on_select: function (e) {
             this.year = $(e.target).val();
             this.render();
+            this.$el.find("select").focus();
         }
       },
         graph_view: {
@@ -1672,11 +1675,11 @@
            "en": "",
            "fr": ""
        },
-       "name": { "en": "Parliamentary Authorities",
-           "fr": "Autorisations parliamentaires"
+       "name": { "en": "Current-year Authorities",
+           "fr": "Autorisations pour l'exercice en cours"
        },
-       "title": { "en": "Parliamentary Authorities",
-           "fr": "Autorisations parliamentaires"
+       "title": { "en": "Current-year Authorities",
+           "fr": "Autorisations pour l'exercice en cours"
        }
       , "key": [0, 1]
       , "mapper": {
@@ -1749,7 +1752,7 @@
         , render_data: function () {
             this.content = TABLES.build_table({
                 headers: [[this.gt("Estimates"),
-                           this.gt("Amount") + '($000)', 
+                           this.gt("Amount") + ' ($000)', 
                            '(%)']],
                 body: this.rows,
                 css: [{ 'font-weight': 'bold', 'text-align': 'left' },

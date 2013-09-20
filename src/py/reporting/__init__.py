@@ -304,12 +304,12 @@ def od(dev=True):
     d['fin_size'] = sum(x[-1] for x in d['tables']['table4'])
 
     if dept != 'ZGOC':
-      lookups['depts'][dept].update(lookups['igoc'][dept])
+      #lookups['depts'][dept].update(lookups['igoc'][dept])
       if dept in lookups['qfr_links']:
         lookups['depts'][dept]['qfr_link'] = lookups['qfr_links'][dept]
 
 
-  del lookups['igoc']
+  #del lookups['igoc']
   del lookups['qfr_links']
 
   ##check_g_and_c(lookups['depts'])

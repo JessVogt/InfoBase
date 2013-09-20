@@ -14,11 +14,10 @@ wb = xlrd.open_workbook(f)
 wb2 = xlrd.open_workbook(f2)
 wb3 = xlrd.open_workbook(f3)
 wb4 = xlrd.open_workbook("../data/open data.xls")
-wb5 = xlrd.open_workbook("../data/open data lookups.XLS")
-wb6 = xlrd.open_workbook("../data/Enhanced Inventory of Government data.xls")
 wb7 = xlrd.open_workbook("../data/g_and_c.xlsx")
 wb8 = xlrd.open_workbook("../data/inyear.xlsx")
 wb9 = xlrd.open_workbook("../data/QFR Links.xlsx")
+wb10 = xlrd.open_workbook("../data/depts.xls")
 
 def clean_data(d):
   if isinstance(d,basestring):
@@ -96,13 +95,17 @@ def load_igoc():
       }
     else:
       if force_array:
-        if not isinstance(line[en],list):
-          line[en] = [line[en]]
-          line[fr] = [line[fr]]
-        return [ {
-                  "en" :line[en][i],
-                  "fr": line[fr][i]
-                } for i in xrange(len(line[en]))]
+        try:
+          if not isinstance(line[en],list):
+            line[en] = [line[en]]
+            line[fr] = [line[fr]]
+          return [ {
+                    "en" :line[en][i],
+                    "fr": line[fr][i]
+                  } for i in xrange(len(line[en]))]
+        except:
+          import IPython
+          IPython.embed()
       elif join:
         if not isinstance(line[en],list):
           line[en] = [line[en]]
@@ -128,15 +131,18 @@ def load_igoc():
     key = line[0]
     line = map(each_item,line)
     return key,{
-      "legal_name" : make_bilingual(line,3,4,join=True),
-      "type" : make_bilingual(line,23,24),
-      "website" : make_bilingual(line,27,28,True),
-      "minister" : make_bilingual(line,[8,10,12],[14,16,18]),
-      "mandate" : make_bilingual(line,21,22,True),
-      "legislation" : make_bilingual(line,25,26,True)
+      "accronym" : key,
+      "dept" : make_bilingual(line, 1,2),
+      "legal_name" : make_bilingual(line,5,6,join=True),
+      'min':  make_bilingual(line, 7,8),
+      "type" : make_bilingual(line,25,26),
+      "website" : make_bilingual(line,29,30,True),
+      "minister" : make_bilingual(line,[10,12,14],[16,18,20]),
+      "mandate" : make_bilingual(line,23,24,True),
+      "legislation" : make_bilingual(line,27,28,True)
     }
-  row_values = wb6.sheet_by_index(0).row_values
-  nrows = wb6.sheet_by_index(0).nrows
+  row_values = wb10.sheet_by_index(0).row_values
+  nrows = wb10.sheet_by_index(0).nrows
   return dict([each_line(row_values(i)) for i in
                                   xrange(1, nrows)
               if row_values(i)[0] ])
@@ -152,15 +158,31 @@ def load_od():
                          filter(lambda x : 'table' in x.name,
                                     wb7.sheets()+wb8.sheets()+ wb4.sheets())))
   fix_table1_and_2(data_sheets)
-  lookup_sheets = dict(map(each_sheet,
-                           wb5.sheets()))
-  lookup_sheets['footnotes'] = each_sheet(wb.sheet_by_name('Footnotes'))[1]
   lookups = {
-    'depts': depts(lookup_sheets['DEPTCODE_MINCODE']),
-    #'votes': votes(lookup_sheets['VOTES']),
     'qfr_links' : load_qfr_links(),
-    'sos' : sos(lookup_sheets['SO']),
-    'igoc' : load_igoc()
+    'sos' : {u'1': {u'en': u'Personnel', u'fr': u'Personnel'},
+            u'10': {u'en': u'Transfer Payments', u'fr': u'Paiements de transfert'},
+            u'11': {u'en': u'Public Debt Charges', u'fr': u'Frais de la dette'},
+            u'12': {u'en': u'Other Subsidies and Payments',
+                    u'fr': u'Autres subventions et paiements'},
+            u'2': {u'en': u'Transportation and Telecommunications',
+                    u'fr': u'Transports et communications'},
+            u'20': {u'en': u'Revenues', u'fr': u'Revenus'},
+            u'21': {u'en': u'External Revenues', u'fr': u'Revenus externes'},
+            u'22': {u'en': u'Internal Revenues', u'fr': u'Revenus internes'},
+            u'3': {u'en': u'Information', u'fr': u'Information'},
+            u'4': {u'en': u'Professional and Special Services',
+                    u'fr': u'Services professionnels et sp\xe9ciaux'},
+            u'5': {u'en': u'Rentals', u'fr': u'Location'},
+            u'6': {u'en': u'Purchased Repair and Maintenance',
+                    u'fr': u"Achat de services de r\xe9paration et d'entretien"},
+            u'7': {u'en': u'Utilities, Materials and Supplies',
+                    u'fr': u'Services publics, fournitures et approvisionnements'},
+            u'8': {u'en': u'Acquisition of Land, Buildings, and Works',
+                  u'fr': u"Acquisition de terrains, de b\xe2timents et d'ouvrages"},
+            u'9': {u'en': u'Acquisition of Machinery and Equipment',
+                  u'fr': u'Acquisition de machines et de mat\xe9riel'}},
+    'depts' : load_igoc()
   }
   return lookups,data_sheets
 

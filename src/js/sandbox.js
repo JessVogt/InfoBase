@@ -1,14 +1,6 @@
-if (typeof exports === 'undefined') {
-  window.node = false;
-}
-else {
-  global.node = true;
-}
-
 (function(root) {
-  root_namespace = function(root) {
-    var ns;
-    return ns = function(ns_string, context) {
+  var root_namespace = function(root) {
+    var ns = function(ns_string, context) {
       var parts;
       if (typeof ns_string === 'undefined') return root;
       if (typeof context === 'undefined') context = root;
@@ -20,60 +12,57 @@ else {
         return context[parts[0]];
       }
     };
+    return ns ;
   };
 
-  if (typeof exports === 'undefined') {
-    root.ns = root_namespace({});
-  }
-  else {
-    exports['ns'] = root_namespace({});
-  }
+  root.ns = root_namespace({});
 
 })(this);
 
 (function(root) {
+  var UTILS;
   if (typeof exports === 'undefined') {
-    var UTILS = ns('UTILS');
+    UTILS = ns('UTILS');
   } else {
-    var UTILS = exports['ns']('UTILS');
+    UTILS = exports.ns('UTILS');
   }
 
    UTILS.to_obj = function(ar1,ar2){
-     var new_obj = {}
+     var new_obj = {};
      var zipped = _.zip(ar1, ar2);
      for (var i in zipped){
        new_obj[zipped[i][0]] = zipped[i][1];
      }
      return new_obj;
-   }
+   };
    UTILS.filter_obj_by_vals = function(obj,vals){
-     var new_obj = {}
+     var new_obj = {};
      var filtered_keys = _.filter(_.keys(obj),
          function(key){
-           return _.indexOf(vals,obj[key]) != -1
+           return _.indexOf(vals,obj[key]) != -1;
          });
      for (var i in filtered_keys){
        new_obj[filtered_keys[i]] = obj[filtered_keys[i]];
      }
      return new_obj;
-   }
+   };
    UTILS.add_ar = function(ar1,ar2){
      return _.map(_.zip(ar1,ar2),function(x){
        return x[0]+x[1];
-     })
-   }
+     });
+   };
    UTILS.sum_ar = function(ar,iterator){
-     iterator = iterator || _.identity
+     iterator = iterator || _.identity;
      ar = _.filter(_.map(ar,iterator),
-         function(x){return _.isNumber(x)});
-     return _.reduce(ar,function(x,y){return x+y});
-   }
+         function(x){return _.isNumber(x);});
+     return _.reduce(ar,function(x,y){return x+y;});
+   };
    UTILS.zip_obj = function(obj){
     return _.map(_.keys(obj),
         function(key){
           return [key,obj[key]];
         });
-   }
+   };
 
 })(this);
 
