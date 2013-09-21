@@ -1623,7 +1623,7 @@
           "Vote {{in_year}} / Statutory",
           "Description",
           "Main Estimates",
-          "Multi-Year",
+          "Available from Previous Years (EN)",
           "Supps A",
           "Supps B",
           "Supps C",
@@ -1656,7 +1656,7 @@
             "Crédit {{in_year}} / Légis.",
             "Description du crédit",
             "Budget Principal",
-            "Pluri-Annuel",
+            "Disponibles des exercices antérieurs ",
             "Supp. A",
             "Supp. B",
             "Supp. C",
@@ -1667,7 +1667,7 @@
            //"Crédit 25",
            //"Crédit 30",
            //"Crédit 33",
-            "Autorisations totales nettes"
+            "Total des autorisations nettes"
             ]
       ]
        },
