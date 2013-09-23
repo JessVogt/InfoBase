@@ -57,6 +57,16 @@
          function(x){return _.isNumber(x);});
      return _.reduce(ar,function(x,y){return x+y;});
    };
+   UTILS.sum_these_cols = function(ar, cols){
+    var initial = _.map(cols,function({return 0;}));
+    initial = _.object(cols, intial);
+    function reducer(x,y{
+      return _.map(cols, function(col){
+        return x[col] + y[col];
+      })
+    })
+    return _.reduce(ar, reducer);
+   };
    UTILS.zip_obj = function(obj){
     return _.map(_.keys(obj),
         function(key){

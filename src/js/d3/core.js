@@ -28,8 +28,6 @@
       initialize: function(){
         _.bindAll(this,"render","un_render");
         this.body = $(this.options.body);
-        this.tipper = $(this.options.tipper);
-        this.tipper.on("mouseover",this.render)
       }
       ,render : function(event){
         var top = (event.pageY-10)+"px";
@@ -56,7 +54,6 @@
         this.$el = null;
       }
       ,remove : function(){
-        this.tipper.off("mouseover");
       }
     });
 

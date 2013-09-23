@@ -1,0 +1,17 @@
+transition to-do:
+	new tables definiitons
+		make mapped objs a memoized function
+		write function to convert old style to new style
+		auto calculate WCAG attributes
+		add unique id to each td element for horizontal comparison
+		investigate using d3 to create the tables declaratively
+	data
+		add universal data acess functions across the tables definitions
+	d3
+		create tooltip templates
+	create secondary landing page for choice between graphics heavy and text based
+	convert long text over to markdown
+	remove jqnumberformat in favour of smaller library
+	jshint all the files
+	concat all the files together
+	add more documentation for docco	

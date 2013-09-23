@@ -421,4 +421,28 @@
 <script type='text/plain' id='header_t'>
   <{{el}} colspan='{{colspan}}'><div class='{{class_}}'> {{header}} </div></{{el}}>
 </script>
+<script type='text/plain' id='tablegraph_tooltip'>
+  <div class='tooltip'>
+    <div class='span-2'>
+      <table class='well-table table-medium margin-top-none margin-bottom-none'>
+        <tbody>
+          {{#items}}
+            <tr class='well'>
+              <th id='legal_name__'>{{.th}} </th>
+              <td headers='legal_name__'>{{.td}}</td>
+            </tr>
+          {{/items}}
+        </tbody>
+      </table>
+    </div>
+    <div class='tooltipgraph span-2'>
+
+    </div>
+    <div class='clear'></div>
+    <div class='span-4 section-footer'>
+      <button>Cross Government Comparison</button>
+      <button>Details</button>
+    </div>
+  </div>
+</script>
 

@@ -936,68 +936,68 @@
 
         }
     }
-},
+    },
     {
-        id: "table5",
-        "col_defs": ["wide-str",
-        "big-int",
-        "big-int",
-        "big-int"],
-        "coverage": "historical",
-        "headers": { "en": [[
-        "Standard Object",
-        "{{last_year_3}}",
-        "{{last_year_2}}",
-        "{{last_year}}"
-        ]],
-            "fr": [[
-          "Article courtant",
-        "{{last_year_3}}",
-        "{{last_year_2}}",
-        "{{last_year}}"
-        ]]
-        },
-        "link": {
-            "en": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-eng.asp",
-            "fr": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-fra.asp"
-        },
-        "name": { "en": "Expenditures by Standard Object",
-            "fr": "Dépenses par article courant"
-        },
-        "title": { "en": "Expenditures by Standard Object from {{last_year_3}} to {{last_year}} ($000)",
-            "fr": "Dépenses par article courant de {{last_year_3}} à {{last_year}} ($000)"
-        }
-      , "key": [0]
-      , "sort": function (rows, lang) { return rows }
-      , mapper: {
-          to: function (row) {
-              if (row[0] != 'ZGOC') {
-                  row.splice(1, 1, sos[row[1]][this.lang]);
-              }
-              return _.tail(row)
-          }
-        , make_filter: function (source_row) {
-            return function (candidate_row) {
-                return (candidate_row[1] == source_row[1]);
-            }
-        }
+     id: "table5",
+     "col_defs": ["wide-str",
+     "big-int",
+     "big-int",
+     "big-int"],
+     "coverage": "historical",
+     "headers": { "en": [[
+     "Standard Object",
+     "{{last_year_3}}",
+     "{{last_year_2}}",
+     "{{last_year}}"
+     ]],
+         "fr": [[
+       "Article courtant",
+     "{{last_year_3}}",
+     "{{last_year_2}}",
+     "{{last_year}}"
+     ]]
+     },
+     "link": {
+         "en": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-eng.asp",
+         "fr": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-fra.asp"
+     },
+     "name": { "en": "Expenditures by Standard Object",
+         "fr": "Dépenses par article courant"
+     },
+     "title": { "en": "Expenditures by Standard Object from {{last_year_3}} to {{last_year}} ($000)",
+         "fr": "Dépenses par article courant de {{last_year_3}} à {{last_year}} ($000)"
+     },
+     "key": [0],
+     "sort": function (rows, lang) { return rows },
+     mapper: {
+       to: function (row) {
+           if (row[0] != 'ZGOC') {
+               row.splice(1, 1, sos[row[1]][this.lang]);
+           }
+           return _.tail(row)
+       },
+       make_filter: function (source_row) {
+         return function (candidate_row) {
+             return (candidate_row[1] == source_row[1]);
+         }
+       }
+     },
+     table_view: {
+      sum_cols: [1, 2, 3],
+      min_func: TABLES.add_ministry_sum,
+      init_row_data: function () {
+          var txt = this.gt("total");
+          this.merge_group_results(
+          [[this.row_data,
+          GROUP.fnc_on_group(
+            this.row_data,
+            { txt_cols: { 0: txt },
+                func_cols: this.sum_cols,
+                func: GROUP.sum_rows
+            })]]);
       }
-      , table_view: {
-          sum_cols: [1, 2, 3]
-        , min_func: TABLES.add_ministry_sum
-        , init_row_data: function () {
-            var txt = this.gt("total");
-            this.merge_group_results(
-            [[this.row_data,
-            GROUP.fnc_on_group(
-              this.row_data,
-              { txt_cols: { 0: txt },
-                  func_cols: this.sum_cols,
-                  func: GROUP.sum_rows
-              })]]);
-        }
-      }
-      , mini_view: {
+      },
+      mini_view: {
           description: {
               "en": "Organization’s top three standard objects with the greatest expenditures by value ($000) and proportion of total expenditures (%). Select the fiscal year in the drop-down menu to display the expenditures.",
               "fr": "Les trois articles courants représentant les plus importantes dépenses en fonction de leur valeur (en milliers de dollars) et en tant que pourcentage des dépenses totales (%). Sélectionnez l'exercice financier figurant dans le menu déroulant pour afficher les dépenses."
@@ -1041,6 +1041,52 @@
             this.$el.find("select").focus();
         }
       },
+      data_funcs : {
+        years : ['{{last_year_3}}',
+                  '{{last_year_2}}',
+                  "{{last_year}}"],
+        cols : ['Standard Object'],
+        init : function(){
+          this.to_years = _.object(_.map(years, m), this.years);
+
+
+        },
+
+        extract_for_year : function (year) {
+          // year can either be a fiscal year in which case its mapped
+          // or just the plain template string
+          year =  this.to_years[year]  || year;
+          // map the 
+              return _.filter(_.map(this.mapped_objs, function (obj) {
+                  return [obj['Standard Object'], obj[year]];
+              }), function (x) { return x[1] != 0 });
+          };
+          this.get_year_vals = function (so) {
+              var line = _.first(_.filter(this.mapped_objs,
+                function (obj) {
+                    return obj['Standard Object'] == so;
+                }));
+              return _.map(years, function (year) { return line[year] });
+          };
+          this.current_year = this.extract_for_year(m('{{last_year}}'));
+
+        , prep_data: function () {
+            var ttf = this.app.formater;
+            var name = "Standard Object";
+            var total = UTILS.sum_ar(_.pluck(this.data, this.year)) + 1;
+            var sorted = _.sortBy(this.data, function (obj) {
+                return obj[this.year];
+            }, this).reverse();
+            this.rows = _.map(_.head(sorted, 3), function (obj) {
+                return [obj[name],
+                      ttf("big-int", obj[this.year]),
+                      ttf("percentage", obj[this.year] / total)];
+            }, this);
+        }
+
+
+
+      }
         graph_view: {
             titles: {
                 1: {
@@ -1061,24 +1107,25 @@
                 "en": "Graph 2 presents the expenditure trend for individual Standard Object items from fiscal year 2009-10 to 2011-12. Select an individual Standard Object in the left side-bar to plot the expenditure on the graph. The graph below will display the name and the dollar value when the mouse selection icon hovers over any bar element.",
                 "fr": "Le graphique 2 présente le profil de chaque article courant pour les exercices 2009‑2010 à 2011‑2012. Choisissez un article courant dans le menu de gauche pour en représenter les dépenses. Pour connaître le nom et la valeur monétaire associés à l'une des barres figurant dans le graphique ci-dessous, il suffit de faire glisser le pointeur de la souris sur la barre voulue. "
             }
-        }
-        , prep_data: function () {
-            var years = this.years = ['{{last_year_3}}',
-                                    '{{last_year_2}}',
-                                    "{{last_year}}"];
-            this.to_years = _.object(_.map(years, m), this.years);
-            this.extract_for_year = function (year) {
-                return _.filter(_.map(this.mapped_objs, function (obj) {
-                    return [obj['Standard Object'], obj[year]];
-                }), function (x) { return x[1] != 0 });
-            };
-            this.get_year_vals = function (so) {
-                var line = _.first(_.filter(this.mapped_objs,
-                  function (obj) {
-                      return obj['Standard Object'] == so;
-                  }));
-                return _.map(years, function (year) { return line[year] });
-            };
+        },
+        prep_data: function () {
+          var years = this.years = ['{{last_year_3}}',
+                                  '{{last_year_2}}',
+                                  "{{last_year}}"];
+          this.to_years = _.object(_.map(years, m), this.years);
+          this.extract_for_year = function (year) {
+              return _.filter(_.map(this.mapped_objs, function (obj) {
+                  return [obj['Standard Object'], obj[year]];
+              }), function (x) { return x[1] != 0 });
+          };
+          this.get_year_vals = function (so) {
+              var line = _.first(_.filter(this.mapped_objs,
+                function (obj) {
+                    return obj['Standard Object'] == so;
+                }));
+              return _.map(years, function (year) { return line[year] });
+          };
+          this.current_year = this.extract_for_year(m('{{last_year}}'));
         }
         , render: function () {
             var by_year_graph = $(
