@@ -5,6 +5,7 @@ transition to-do:
 		auto calculate WCAG attributes
 		add unique id to each td element for horizontal comparison
 		investigate using d3 to create the tables declaratively
+    add invidivual dispatch call listeners (example, add qfr linksfor qfr tables)
 	data
 		add universal data acess functions across the tables definitions
 	d3
