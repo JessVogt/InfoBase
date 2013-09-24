@@ -254,7 +254,7 @@
     , mini_view: {
         description: {
             "en": "Total budgetary authorities and expenditures for Q{{q}} {{in_year}} and percent change from the same quarter of the previous fiscal year ({{qfr_last_year}}).",
-            "fr": "Total des autorisations et des dépenses budgétaires pour le premier trimestre et variation en pourcentage par rapport au même trimestre de l’exercice précédent ({{qfr_last_year}})."
+            "fr": "Total des autorisations et des dépenses budgétaires pour le premier trimestre de {{'in_year'}} et variation en pourcentage par rapport au même trimestre de l’exercice précédent ({{qfr_last_year}})."
         }
       , prep_data: function () {
           var ttf = this.app.formater;
@@ -309,7 +309,7 @@
       , descriptions: {
           1: {
               "en": "Graph 1 presents the organization’s five largest voted and statutory net expenditures used at quarter-end. Voted expenditures reflect spending that received parliamentary approval through an appropriation bill, while statutory expenditures reflect spending whose authority was granted through other legislation. When applicable, the “Other” category captures all other expenditures up to the end of the specified period.",
-              "fr": "Le graphique 1 présente les cinq plus importantes dépenses nettes votées et législatives utilisées à la fin du trimestre par le ministère ou l'organisme. Les dépenses votées représentent les dépenses approuvées par le Parlement par l'entremise d'un projet de loi de crédits tandis que les dépenses législatives correspondent aux dépenses autorisées par l'entremise d'autres lois. S’il y a lieu, l’autre catégorie intègre toutes les autres dépenses de l’organisation jusqu'à la fin de la période précisée. Pour connaître le nom et la valeur monétaire associés à l'une des barres figurant dans le graphique ci-dessous, il suffit de faire glisser le pointeur de la souris sur la barre voulue."
+              "fr": "Le graphique 1 présente les cinq plus importantes dépenses nettes votées et législatives utilisées à la fin du trimestre par le ministère ou l'organisme. Les dépenses votées représentent les dépenses approuvées par le Parlement par l'entremise d'un projet de loi de crédits tandis que les dépenses législatives correspondent aux dépenses autorisées par l'entremise d'autres lois. S’il y a lieu, l’autre catégorie intègre toutes les autres dépenses de l’organisation jusqu'à la fin de la période précisée."
           }
       },
             prep_data: function () {
@@ -443,7 +443,7 @@
     , mini_view: {
         description: {
             "en": "Top three net expenditure categories as of Q{{q}} {{in_year}} by value ($000) and proportion of total expenditures (%).",
-            "fr": "Les trois plus importantes catégories de dépenses nettes lors du premier trimestre de {{in_year}} en fonction de leur valeur (en milliers de dollars) et en tant que pourcentage des dépenses totales (%)."
+            "fr": "Les trois plus importantes catégories de dépenses nettes lors du premier trimestre de {{'in_year'}} en fonction de leur valeur (en milliers de dollars) et en tant que pourcentage des dépenses totales (%)."
         }
       , prep_data: function () {
           var ttf_f = _.partial(this.app.formater, 'big-int');
@@ -487,8 +487,8 @@
           }
       , descriptions: {
           1: {
-              "en": "The graph presents the 5 largest categories of expenditure by Standard Object up to the specified quarter in 2013-14. Standard Object categories reflect expenditures on major items such as transfer payments and personnel. The graph below will display the name and the dollar value when the mouse selection icon hovers over any bar element.",
-              "fr": "Le graphique présente les cinq plus importantes catégories de dépenses par article courant jusqu’au trimestre précisé en 2013-2014. Les catégories d’articles courants font état des dépenses liées aux principaux postes, comme les paiements de transfert et ceux ayant trait au personnel. Pour connaître le nom et la valeur monétaire associés à l'une des barres figurant dans le graphique ci-dessous, il suffit de faire glisser le pointeur de la souris sur la barre voulue."
+              "en": "The graph presents the 5 largest categories of expenditure by Standard Object up to the specified quarter in 2013-14. Standard Object categories reflect expenditures on major items such as transfer payments and personnel.",
+              "fr": "Le graphique présente les cinq plus importantes catégories de dépenses par article courant jusqu’au trimestre précisé en 2013-2014. Les catégories d’articles courants font état des dépenses liées aux principaux postes, comme les paiements de transfert et ceux ayant trait au personnel."
           }
       }
       , prep_data: function () {
@@ -843,12 +843,12 @@
       }
       , descriptions: {
           1: {
-              "en": "Graph 1 presents total organization voted and statutory net expenditures in each fiscal year from 2009‒10 to 2011‒12. Voted expenditures reflect spending that received parliamentary approval through an appropriation bill, while statutory expenditures reflect spending whose authority was granted through other legislation. Select the fiscal year in the left side-bar to plot the expenditures on the graph. The graph below will display the name and the dollar value when the mouse selection icon hovers over any bar element.",
-              "fr": "Le graphique 1 montre le total des dépenses votées et des dépenses législatives nettes pour chaque exercice de 2009‒2010 à 2011‒2012. Les dépenses votées sont les dépenses qui ont été approuvées par le Parlement au moyen d’un projet de loi de crédits tandis que les dépenses législatives sont des dépenses qui ont été autorisées par une autre loi. Choisissez l’exercice dans le menu de gauche pour en représenter les dépenses. Pour connaître le nom et la valeur monétaire associés à l'une des barres figurant dans le graphique ci-dessous, il suffit de faire glisser le pointeur de la souris sur la barre voulue."
+              "en": "Graph 1 presents total organization voted and statutory net expenditures in each fiscal year from 2009‒10 to 2011‒12. Voted expenditures reflect spending that received parliamentary approval through an appropriation bill, while statutory expenditures reflect spending whose authority was granted through other legislation. Select the fiscal year in the left side-bar to plot the expenditures on the graph.",
+              "fr": "Le graphique 1 montre le total des dépenses votées et des dépenses législatives nettes pour chaque exercice de 2009‒2010 à 2011‒2012. Les dépenses votées sont les dépenses qui ont été approuvées par le Parlement au moyen d’un projet de loi de crédits tandis que les dépenses législatives sont des dépenses qui ont été autorisées par une autre loi. Choisissez l’exercice dans le menu de gauche pour en représenter les dépenses."
           },
           2: {
-              "en": "Graph 2 presents the net expenditure trend for individual voted and statutory items from fiscal year 2009‒10 to 2011‒12. Select an individual item in the left side-bar to plot an expenditure on the graph. The graph below will display the name and the dollar value when the mouse selection icon hovers over any bar element.",
-              "fr": "Le graphique 2 présente le profil des dépenses nettes de chaque poste voté et législatif des exercices 2009‒2010 à 2011‒2012. Choisissez un poste dans le menu de gauche pour en représenter les dépenses. Pour connaître le nom et la valeur monétaire associés à l'une des barres figurant dans le graphique ci-dessous, il suffit de faire glisser le pointeur de la souris sur la barre voulue. "
+              "en": "Graph 2 presents the net expenditure trend for individual voted and statutory items from fiscal year 2009‒10 to 2011‒12. Select an individual item in the left side-bar to plot an expenditure on the graph.",
+              "fr": "Le graphique 2 présente le profil des dépenses nettes de chaque poste voté et législatif des exercices 2009‒2010 à 2011‒2012. Choisissez un poste dans le menu de gauche pour en représenter les dépenses."
           }
       }
       , prep_data: function () {
@@ -1058,12 +1058,12 @@
           }
       , descriptions: {
           1: {
-              "en": "Graph 1 compares total organizational expenditures by Standard Object category for each fiscal year from 2009-10 to 2011-12. Standard Object categories reflect expenditures on major items such as transfer payments and personnel. Select a fiscal year in the left side-bar to plot the expenditure on the graph. The graph below will display the name and the dollar value when the mouse selection icon hovers over any bar element.",
-              "fr": "Le graphique 1 montre une comparaison du total des dépenses par article courant des exercices de 2009-2010 à 2011-2012. Les articles courants sont les grandes catégories de dépenses telles que les paiements de transfert et le personnel. Choisissez un exercice dans le menu de gauche pour en représenter les dépenses sur le graphique. Pour connaître le nom et la valeur monétaire associés à l'une des barres figurant dans le graphique ci-dessous, il suffit de faire glisser le pointeur de la souris sur la barre voulue. "
+              "en": "Graph 1 compares total organizational expenditures by Standard Object category for each fiscal year from 2009-10 to 2011-12. Standard Object categories reflect expenditures on major items such as transfer payments and personnel. Select a fiscal year in the left side-bar to plot the expenditure on the graph. ",
+              "fr": "Le graphique 1 montre une comparaison du total des dépenses par article courant des exercices de 2009-2010 à 2011-2012. Les articles courants sont les grandes catégories de dépenses telles que les paiements de transfert et le personnel. Choisissez un exercice dans le menu de gauche pour en représenter les dépenses sur le graphique. "
           },
           2: {
-              "en": "Graph 2 presents the expenditure trend for individual Standard Object items from fiscal year 2009-10 to 2011-12. Select an individual Standard Object in the left side-bar to plot the expenditure on the graph. The graph below will display the name and the dollar value when the mouse selection icon hovers over any bar element.",
-              "fr": "Le graphique 2 présente le profil de chaque article courant pour les exercices 2009‑2010 à 2011‑2012. Choisissez un article courant dans le menu de gauche pour en représenter les dépenses. Pour connaître le nom et la valeur monétaire associés à l'une des barres figurant dans le graphique ci-dessous, il suffit de faire glisser le pointeur de la souris sur la barre voulue. "
+              "en": "Graph 2 presents the expenditure trend for individual Standard Object items from fiscal year 2009-10 to 2011-12. Select an individual Standard Object in the left side-bar to plot the expenditure on the graph. ",
+              "fr": "Le graphique 2 présente le profil de chaque article courant pour les exercices 2009‑2010 à 2011‑2012. Choisissez un article courant dans le menu de gauche pour en représenter les dépenses. "
           }
       }
       , prep_data: function () {
@@ -1212,8 +1212,8 @@
     }
     , mini_view: {
         description: {
-            "en": "Organization’s programs with the greatest expenditures by value ($000) and proportion of total expenditures (%).Select the fiscal year in the drop-down menu to display the expenditures. The graph below will display the name and the dollar value when the mouse selection icon hovers over any bar element.",
-            "fr": "Les programmes représentant les plus importantes dépenses en fonction de leur valeur (en milliers de dollars) et en tant que pourcentage des dépenses totales (%). Sélectionnez l'exercice financier figurant dans le menu déroulant pour afficher les dépenses. Pour connaître le nom et la valeur monétaire associés à l'une des barres figurant dans le graphique ci-dessous, il suffit de faire glisser le pointeur de la souris sur la barre voulue."
+            "en": "Organization’s programs with the greatest expenditures by value ($000) and proportion of total expenditures (%).Select the fiscal year in the drop-down menu to display the expenditures. ",
+            "fr": "Les programmes représentant les plus importantes dépenses en fonction de leur valeur (en milliers de dollars) et en tant que pourcentage des dépenses totales (%). Sélectionnez l'exercice financier figurant dans le menu déroulant pour afficher les dépenses. "
         }
       , year: "{{last_year}}"
       , prep_data: function () {
@@ -1262,8 +1262,8 @@
           }
       , descriptions: {
           1: {
-              "en": "Graph 1 presents the net expenditure trend for individual programs from fiscal year 2009‒10 to 2011‒12. Select an individual program in the left side-bar to plot the expenditure on the graph. The graph below will display the name and the dollar value when the mouse selection icon hovers over any bar element.",
-              "fr": "Le graphique 1 montre le profil des dépenses nettes par programme pour les exercices de 2009‒2010 à 2011‒2012. Choisissez un programme dans le menu de gauche pour en représenter les dépenses. Pour connaître le nom et la valeur monétaire associés à l'une des barres figurant dans le graphique ci-dessous, il suffit de faire glisser le pointeur de la souris sur la barre voulue. "
+              "en": "Graph 1 presents the net expenditure trend for individual programs from fiscal year 2009‒10 to 2011‒12. Select an individual program in the left side-bar to plot the expenditure on the graph.",
+              "fr": "Le graphique 1 montre le profil des dépenses nettes par programme pour les exercices de 2009‒2010 à 2011‒2012. Choisissez un programme dans le menu de gauche pour en représenter les dépenses."
           }
       }
       , prep_data: function () {
@@ -1480,11 +1480,11 @@
       , descriptions: {
           1: {
               "en": "Graph 1 presents the organization four largest transfer payments based on the proportion of the net expenditures for each fiscal year from 2009-10 to 2011-12. When applicable, the other category captures the expenditures for all the other transfer payments of the selected organization.  Select the fiscal year in the left side-bar to plot the expenditures on the graph.",
-              "fr": "Le graphique 1 présente les quatre plus importants paiements de transfert du ministère ou de l'organisme selon leur pourcentage des dépenses nettes pour chaque exercice financier de 2009-2010 à 2011-2012. S’il y a lieu, l’autre catégorie intègre les dépenses de tous les autres paiements de transfert de l’organisation visée. Sélectionnez l’exercice figurant dans la colonne à gauche de l’écran pour faire le tracé des dépenses sur le graphique. Pour connaître le nom et la valeur monétaire associés à l'une des barres figurant dans le graphique ci-dessous, il suffit de faire glisser le pointeur de la souris sur la barre voulue. The graph below will display the name and the dollar value when the mouse selection icon hovers over any bar element. "
+              "fr": "Le graphique 1 présente les quatre plus importants paiements de transfert du ministère ou de l'organisme selon leur pourcentage des dépenses nettes pour chaque exercice financier de 2009-2010 à 2011-2012. S’il y a lieu, l’autre catégorie intègre les dépenses de tous les autres paiements de transfert de l’organisation visée. Sélectionnez l’exercice figurant dans la colonne à gauche de l’écran pour faire le tracé des dépenses sur le graphique. "
           },
           2: {
-              "en": "Graph 2 presents the net expenditures for individual grant, contribution, and other transfer payment items from fiscal year 2009-10 to 2011-12. Select an individual item in the left side-bar to plot an expenditure on the graph or search by typing one or more key word(s) in the search field to identify specific transfer payment items. The graph allows users to interact with the graphs and focus on particular variables by selecting either budgetary Authorities available for use or Expenditures. The graph below will display the name and the dollar value when the mouse selection icon hovers over any bar element.",
-              "fr": "Le graphique 2 présente les dépenses nettes pour chaque poste pour une subvention, une contribution ou un autre paiement de transfert des exercices 2009-2010 à 2011-2012. Sélectionnez un poste dans la colonne à gauche de l'écran pour faire le tracé d'une dépense sur le graphique ou effectuez une recherche en saisissant un ou plusieurs mots-clés dans le champ de recherche pour relever des postes particuliers liés aux paiements de transfert. Les utilisateurs peuvent modifier les graphiques afin qu'ils mettent l'accent sur des variables particulières en sélectionnant soit les autorisations budgétaires disponibles pour emploi ou soit les dépenses. Pour connaître le nom et la valeur monétaire associés à l'une des barres figurant dans le graphique ci-dessous, il suffit de faire glisser le pointeur de la souris sur la barre voulue. "
+              "en": "Graph 2 presents the net expenditures for individual grant, contribution, and other transfer payment items from fiscal year 2009-10 to 2011-12. Select an individual item in the left side-bar to plot an expenditure on the graph or search by typing one or more key word(s) in the search field to identify specific transfer payment items. The graph allows users to interact with the graphs and focus on particular variables by selecting either budgetary Authorities available for use or Expenditures. ",
+              "fr": "Le graphique 2 présente les dépenses nettes pour chaque poste pour une subvention, une contribution ou un autre paiement de transfert des exercices 2009-2010 à 2011-2012. Sélectionnez un poste dans la colonne à gauche de l'écran pour faire le tracé d'une dépense sur le graphique ou effectuez une recherche en saisissant un ou plusieurs mots-clés dans le champ de recherche pour relever des postes particuliers liés aux paiements de transfert. Les utilisateurs peuvent modifier les graphiques afin qu'ils mettent l'accent sur des variables particulières en sélectionnant soit les autorisations budgétaires disponibles pour emploi ou soit les dépenses."
           }
       }
       , prep_data: function () {
@@ -1618,7 +1618,7 @@
               "header": ""
           },
          //{ "colspan" : 6,
-         //"header" : "TBS Central Votes"
+         //"header" : "TB Central Votes"
          //},
           {"colspan": 1,
           "header": ""
@@ -1645,13 +1645,13 @@
               "header": ""
           },
           { "colspan": 5,
-              "header": "Budgets"
+              "header": "Budgets des dépenses"
           },
           { "colspan": 1,
               "header": ""
           },
          //{ "colspan" : 6,
-         //"header" : "Crédits Centraux de SCT"
+         //"header" : "Crédits Centraux de CT"
          //},
           {"colspan": 1,
           "header": ""
@@ -1736,8 +1736,8 @@
     }
     , mini_view: {
         description: {
-            "en": "Current-year authorities granted by Parliament by appropriation act as of {{month_name}}, 2013, by value ($000) and proportion of total authorities (%).",
-            "fr": "Les autorisations délivrées par le Parlement pour l’exercice courant au moyen de la Loi de crédits à compter de {{month_name}} 2013 selon la valeur ($000) et la proportion des autorisations totales (%)."
+            "en": "Current-year budgetary authorities granted by Parliament by appropriation act as of {{month_name}}, 2013, by value ($000) and proportion of total authorities (%).",
+            "fr": "Les autorisations budgétaires délivrées par le Parlement pour l’exercice courant au moyen de la Loi de crédits à compter de {{month_name}} 2013 selon la valeur ($000) et la proportion des autorisations totales (%)."
         }
       , prep_data: function () {
           var ttf = this.app.formater;
@@ -1776,7 +1776,7 @@
       , descriptions: {
           1: {
               "en": "This graph presents the net authority trend for individual voted and statutory items by sources of authority. Select an individual item in the left side-bar to plot an authority on the graph.",
-              "fr": "Cette graphique présente la tendance relative aux autorisations nettes pour chaque crédit voté et poste législatif en fonction des sources d'autorisation. Sélectionnez un poste donné figurant dans la colonne à gauche de l’écran pour faire le tracé d'une autorisation sur le graphique. "
+              "fr": "Ce graphique présente la tendance relative aux autorisations nettes pour chaque crédit voté et poste législatif en fonction des sources d'autorisation. Sélectionnez un poste donné figurant dans la colonne à gauche de l’écran pour faire le tracé d'une autorisation sur le graphique. "
           }
       },
         prep_data: function () {
