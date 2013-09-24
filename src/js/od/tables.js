@@ -1775,7 +1775,7 @@
         }
       , descriptions: {
           1: {
-              "en": "This graph presents the net authority trend for individual voted and statutory items by sources of authority. Select an individual item in the left side-bar to plot an authority on the graph.",
+              "en": "This graph presents the net budgetary authority trend for individual voted and statutory items by sources of authority. Select an individual item in the left side-bar to plot an authority on the graph.",
               "fr": "Ce graphique présente la tendance relative aux autorisations nettes pour chaque crédit voté et poste législatif en fonction des sources d'autorisation. Sélectionnez un poste donné figurant dans la colonne à gauche de l’écran pour faire le tracé d'une autorisation sur le graphique. "
           }
       },
