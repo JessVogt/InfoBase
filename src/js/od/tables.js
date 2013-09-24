@@ -1671,7 +1671,7 @@
          //"Crédit 25",
          //"Crédit 30",
          //"Crédit 33",
-          "Total des autorisations nettes"
+          "Autorisations totales nettes"
           ]
     ]
      },
