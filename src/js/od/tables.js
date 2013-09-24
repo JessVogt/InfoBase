@@ -105,129 +105,144 @@
     });
 
     APP.dispatcher.on("load_tables", function (app) {
-        var m = TABLES.m;
+     var m = TABLES.m;
 
-        var make_year_select = function () {
-            var m = TABLES.m;
-            var rand = Math.round(Math.random() * 10000);
-            var sel = $('<select>')
-        .attr("id", rand)
-        .append($("<option>").attr("value", "{{last_year}}").html(m("{{last_year}}")))
-        .append($("<option>").attr("value", "{{last_year_2}}").html(m("{{last_year_2}}")))
-        .append($("<option>").attr("value", "{{last_year_3}}").html(m("{{last_year_3}}")));
-            return $('<span>')
-        .append($("<label>")
-                  .attr({ "for": rand, 'class': 'wb-invisible' })
-                  .html(app.get_text("select"))
-        )
-        .append(sel)
-        }
+     var make_year_select = function () {
+         var m = TABLES.m;
+         var rand = Math.round(Math.random() * 10000);
+         var sel = $('<select>')
+     .attr("id", rand)
+     .append($("<option>").attr("value", "{{last_year}}").html(m("{{last_year}}")))
+     .append($("<option>").attr("value", "{{last_year_2}}").html(m("{{last_year_2}}")))
+     .append($("<option>").attr("value", "{{last_year_3}}").html(m("{{last_year_3}}")));
+         return $('<span>')
+     .append($("<label>")
+               .attr({ "for": rand, 'class': 'wb-invisible' })
+               .html(app.get_text("select"))
+     )
+     .append(sel)
+     }
 
-        TABLES.tables.add([
-      {
-          "id": 'table1',
-          "col_defs": ["int",
-                    "wide-str",
-                    "big-int",
-                    "big-int",
-                    "big-int",
-                    "big-int",
-                    "big-int",
-                    "big-int",
-                      ],
-          "coverage": "in_year",
-          "headers": { "en": [
-      [
-        { "colspan": 2,
-            "header": ""
-        },
-        { "colspan": 3,
-            "header": "{{in_year}}"
-        },
-        { "colspan": 3,
-            "header": "{{qfr_last_year}}"
+     TABLES.tables.add([
+      {add_cols : function(col){
+         col("")
+         .addChild([
+         { 
+           "type":"int",
+           "key" : true,
+           "header":{
+             "en":"Vote / Statutory",
+             "fr":"Crédit / Statutaire"
+           }
+         },{
+           "type":"int",
+           "key" : true,
+           "header":{
+             "en":"Description",
+             "fr":"Description"
+           }
+         }
+         ]);
+         col("{{in_year}}")
+         .addChild([
+           {
+             "type":"big-int",
+             "header":{
+               "en":"Total available for use for the year ending March 31, {{in_year_short}}",
+               "fr":"Crédits totaux disponibles pour l'exercice se terminant le 31 mars {{in_year_short}}"
+             }
+           },
+           {
+             "type":"big-int",
+             "header":{
+               "en":"Used during the quarter ended {{qfr_month_name}},{{qfr_last_year_short}}",
+               "fr":"Crédits utilisés pour le trimestre terminé le {{qfr_month_name}} {{qfr_last_year_short}}"
+             }
+           },
+           {
+             "type":"big-int",
+             "header":{
+               "en":"Year to date used at quarter-end",
+               "fr":"Cumul des crédits utilisés à la fin du trimestre"
+             }
+           }
+         ]);
+         col("{{qfr_last_year}}")
+           .addChild([
+             {
+               "type":"big-int",
+               "header":{
+                 "en":"Total available for use for the year ending March 31, {{qfr_last_year_short}}",
+                 "fr":"Crédits totaux disponibles pour l'exercice se terminant le 31 mars {{qfr_last_year_short}}"
+               }
+             },
+             {
+               "type":"big-int",
+               "header":{
+                 "en":"Used during the quarter ended {{qfr_month_name}},{{last_year_short}} ",
+                 "fr":"Crédits utilisés pour le trimestre terminé le {{qfr_month_name}} {{last_year_short}}"
+               }
+             },
+             {
+               "type":"big-int",
+               "header":{
+                 "en":"Year to date used at quarter-end",
+                 "fr":"Cumul des crédits utilisés à la fin du trimestre"
+               }
+             }
+         ]);
         }
-      ], [
-        "Vote / Statutory",
-        "Description",
-        "Total available for use for the year ending March 31, {{in_year_short}}",
-        "Used during the quarter ended {{qfr_month_name}},{{qfr_last_year_short}}",
-        "Year to date used at quarter-end",
-        "Total available for use for the year ending March 31, {{qfr_last_year_short}}",
-        "Used during the quarter ended {{qfr_month_name}},{{last_year_short}} ",
-        "Year to date used at quarter-end"
-      ]],
-              "fr": [[
-        { "colspan": 2,
-            "header": ""
+        "id": 'table1',
+        "coverage": "in_year",
+        "link": {
+            "en": "",
+            "fr": ""
         },
-        { "colspan": 3,
-            "header": "{{in_year}}"
+        "name": { "en": "Statement of Authorities and Expenditures",
+                    "fr": "État des autorisations et des dépenses"
         },
-        { "colspan": 3,
-            "header": "{{qfr_last_year}}"
-        }
-      ], [
-        "Crédit / Statutaire",
-        "Description",
-        "Crédits totaux disponibles pour l'exercice se terminant le 31 mars {{in_year_short}}",
-        "Crédits utilisés pour le trimestre terminé le {{qfr_month_name}} {{qfr_last_year_short}}",
-        "Cumul des crédits utilisés à la fin du trimestre",
-        "Crédits totaux disponibles pour l'exercice se terminant le 31 mars {{qfr_last_year_short}}",
-        "Crédits utilisés pour le trimestre terminé le {{qfr_month_name}} {{last_year_short}}",
-        "Cumul des crédits utilisés à la fin du trimestre"
-        ]]
-          },
-          "link": {
-              "en": "",
-              "fr": ""
-          },
-          "name": { "en": "Statement of Authorities and Expenditures",
-              "fr": "État des autorisations et des dépenses"
-          },
-          "title": { "en": "Statement of Authorities and Expenditures",
-              "fr": "État des autorisations et des dépenses"
-          }
-      , "sort": function (mapped_rows, lang) {
-          var grps = _.groupBy(mapped_rows, function (row) { return _.isNumber(row[0]) });
-          if (_.has(grps, true)) {
-              grps[true] = _.sortBy(grps[true], function (row) { return row[0] });
-          } else {
-              grps[true] = [];
-          }
-          if (_.has(grps, false)) {
-              grps[false] = _.sortBy(grps[false], function (row) { return row[1]; });
-          } else {
-              grps[false] = [];
-          }
-          return grps[true].concat(grps[false]);
-      }
-      , "key": [0, 1]
-      , "mapper": {
-          "to": function (row) {
-              if (this.lang == 'en') {
-                  row.splice(4, 1);
-              } else {
-                  row.splice(3, 1);
-              }
-              // remove acronym and vote type
-              return [row[1]].concat(_.tail(row, 3))
-          }
-        , "make_filter": function (source_row) {
-            return function (candidate_row) {
-                if (typeof source_row[1] === 'string') {
-                    return candidate_row[4] == source_row[4];
+        "title": { "en": "Statement of Authorities and Expenditures",
+                    "fr": "État des autorisations et des dépenses"
+        },
+        "sort": function (mapped_rows, lang) {
+            var grps = _.groupBy(mapped_rows, function (row) { return _.isNumber(row[0]) });
+            if (_.has(grps, true)) {
+                grps[true] = _.sortBy(grps[true], function (row) { return row[0] });
+            } else {
+                grps[true] = [];
+            }
+            if (_.has(grps, false)) {
+                grps[false] = _.sortBy(grps[false], function (row) { return row[1]; });
+            } else {
+                grps[false] = [];
+            }
+            return grps[true].concat(grps[false]);
+        },
+        "mapper": {
+            "to": function (row) {
+                if (this.lang == 'en') {
+                    row.splice(4, 1);
                 } else {
-                    return candidate_row[2] === source_row[2];
+                    row.splice(3, 1);
                 }
-            };
-        }
-      }
-      , "table_view": {
-          hide_col_ids: []
-        , sum_cols: [2, 3, 4, 5, 6, 7]
-        , min_func: TABLES.add_ministry_sum
-        , init_row_data: function () {
+                // remove acronym and vote type
+                return [row[1]].concat(_.tail(row, 3))
+            }
+          , "make_filter": function (source_row) {
+              return function (candidate_row) {
+                  if (typeof source_row[1] === 'string') {
+                      return candidate_row[4] == source_row[4];
+                  } else {
+                      return candidate_row[2] === source_row[2];
+                  }
+              };
+          }
+        },
+        "table_view": {
+          hide_col_ids: [],
+          sum_cols: [2, 3, 4, 5, 6, 7],
+          min_func: TABLES.add_ministry_sum,
+          init_row_data: function () {
             var total = GROUP.fnc_on_group(
               this.row_data,
               { txt_cols: { 0: this.gt("total") },
@@ -250,8 +265,8 @@
               }));
             this.merge_group_results([[this.row_data, total]]);
         }
-      }
-      , mini_view: {
+      },
+      mini_view: {
           description: {
               "en": "Total budgetary authorities and expenditures for Q{{q}} {{in_year}} and percent change from the same quarter of the previous fiscal year ({{qfr_last_year}}).",
               "fr": "Total des autorisations et des dépenses budgétaires pour le premier trimestre et variation en pourcentage par rapport au même trimestre de l’exercice précédent ({{qfr_last_year}})."
@@ -299,20 +314,20 @@
             });
         }
       },
-          graph_view: {
-              titles: {
+      graph_view: {
+        titles: {
                   1: {
                       "en": "Largest voted and statutory net expenditures used at quarter-end ($000)",
                       "fr": "Plus importantes dépenses nettes votées et législatives utilisées à la fin du trimestre (en milliers de dollars)"
                   }
-              }
-        , descriptions: {
+              },
+        descriptions: {
             1: {
                 "en": "Graph 1 presents the organization’s five largest voted and statutory net expenditures used at quarter-end. Voted expenditures reflect spending that received parliamentary approval through an appropriation bill, while statutory expenditures reflect spending whose authority was granted through other legislation. When applicable, the “Other” category captures all other expenditures up to the end of the specified period.",
                 "fr": "Le graphique 1 présente les cinq plus importantes dépenses nettes votées et législatives utilisées à la fin du trimestre par le ministère ou l'organisme. Les dépenses votées représentent les dépenses approuvées par le Parlement par l'entremise d'un projet de loi de crédits tandis que les dépenses législatives correspondent aux dépenses autorisées par l'entremise d'autres lois. S’il y a lieu, l’autre catégorie intègre toutes les autres dépenses de l’organisation jusqu'à la fin de la période précisée. Pour connaître le nom et la valeur monétaire associés à l'une des barres figurant dans le graphique ci-dessous, il suffit de faire glisser le pointeur de la souris sur la barre voulue."
             }
         },
-              prep_data: function () {
+        prep_data: function () {
                   var sorter = function (row) { return row[1]; }
                   var mapped = _.sortBy(_.map(this.mapped_objs, function (obj) {
                       return [obj["Description"].substring(0, 120),
@@ -325,8 +340,8 @@
                   if (rest != 0) {
                       this.top = this.top.concat([[this.gt("other"), rest]]);
                   }
-              }
-        , render: function () {
+        },
+        render: function () {
             var exp_pie = $(
           this.template({
               id: this.make_id(1)
@@ -337,8 +352,8 @@
             var make_graph = this.make_graph;
             setTimeout(function () { make_graph(); });
             return this;
-        }
-        , make_graph: function () {
+        },
+        make_graph: function () {
             var ticks = _.pluck(this.top, 0);
             var data = _.pluck(this.top, 1);
             var plot = GRAPHS.bar(this.make_id(1),
@@ -350,8 +365,8 @@
                    });
             GRAPHS.fix_bar_highlight(plot, [data], ticks, this.app);
         }
-          }
-      },
+       }
+    },
     {
         id: "table2",
         col_defs: ["wide-str",
@@ -1041,52 +1056,6 @@
             this.$el.find("select").focus();
         }
       },
-      data_funcs : {
-        years : ['{{last_year_3}}',
-                  '{{last_year_2}}',
-                  "{{last_year}}"],
-        cols : ['Standard Object'],
-        init : function(){
-          this.to_years = _.object(_.map(years, m), this.years);
-
-
-        },
-
-        extract_for_year : function (year) {
-          // year can either be a fiscal year in which case its mapped
-          // or just the plain template string
-          year =  this.to_years[year]  || year;
-          // map the 
-              return _.filter(_.map(this.mapped_objs, function (obj) {
-                  return [obj['Standard Object'], obj[year]];
-              }), function (x) { return x[1] != 0 });
-          };
-          this.get_year_vals = function (so) {
-              var line = _.first(_.filter(this.mapped_objs,
-                function (obj) {
-                    return obj['Standard Object'] == so;
-                }));
-              return _.map(years, function (year) { return line[year] });
-          };
-          this.current_year = this.extract_for_year(m('{{last_year}}'));
-
-        , prep_data: function () {
-            var ttf = this.app.formater;
-            var name = "Standard Object";
-            var total = UTILS.sum_ar(_.pluck(this.data, this.year)) + 1;
-            var sorted = _.sortBy(this.data, function (obj) {
-                return obj[this.year];
-            }, this).reverse();
-            this.rows = _.map(_.head(sorted, 3), function (obj) {
-                return [obj[name],
-                      ttf("big-int", obj[this.year]),
-                      ttf("percentage", obj[this.year] / total)];
-            }, this);
-        }
-
-
-
-      }
         graph_view: {
             titles: {
                 1: {

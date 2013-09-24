@@ -81,60 +81,60 @@
   });
 
 
-  TABLES.data_funcs = {
-     sort : function(func,reverse){
-       reverse = reverse || false;
-       var sorted =  _.sortBy(this.mapped_objs,func);
-       if (reverse){
-         sorted.reverse();)
-       }
-       return sorted;
-     }
-     get_total : function (cols, options){
-       // being in the col add data
-       var include_defaults = options.include_defaults || true;
-       //var sorted = options.sorted || false;
-       if (cols && include_defaults){
-         cols = this.default_cols.concat(cols);
-       }
-       if (_.isUndefined(cols)){
-         cols = this.default_cols;
-       }
-       return UTILS.sum_these_cols(this.mapped_data,cols);
-     },
-     get_subtotal : function(cols, options){
+  //TABLES.data_funcs = {
+  //   sort : function(func,reverse){
+  //     reverse = reverse || false;
+  //     var sorted =  _.sortBy(this.mapped_objs,func);
+  //     if (reverse){
+  //       sorted.reverse();)
+  //     }
+  //     return sorted;
+  //   }
+  //   get_total : function (cols, options){
+  //     // being in the col add data
+  //     var include_defaults = options.include_defaults || true;
+  //     //var sorted = options.sorted || false;
+  //     if (cols && include_defaults){
+  //       cols = this.default_cols.concat(cols);
+  //     }
+  //     if (_.isUndefined(cols)){
+  //       cols = this.default_cols;
+  //     }
+  //     return UTILS.sum_these_cols(this.mapped_data,cols);
+  //   },
+  //   get_subtotal : function(cols, options){
 
-     },
-     get_cols : function (cols, options){
-       var sorted = options.sorted || false;
-       var data = sorted ? this.sort(function(x){return x[cols[0]]},sorted) : this.mapped_objs;
-       var filter_zeros = options.filter_zeroes || false;
-       function each_mapped_obj(obj){
-         return _.pick(obj,cols);
-       };
-       var rows_with_cols= _.map(data, each_mapped_obj);
-       if (filter_zeroes){
-         rows_with_cols = _.filter(rows_with_cols,function(row){
-           return row[cols[0]] != 0;
-         });
-       }
-       return rows_with_cols;
-     },
-     get_top_x : function(col,x){
-       return _.head(this.get_cols([col],{sorted:true}),x);
-     }
-     get_row : function (col, val, options) {
-       var only_one = options.only_one || true;
-       var each_mapped_obj = function(obj){
-         return obj[col] == bal;
-       };
-       var found =  _.find(this.mapped_objs, each_mapped_obj);
-       if (only_one){
-         return _.head(found);
-       }
-       return found;
-     }
-  }
+  //   },
+  //   get_cols : function (cols, options){
+  //     var sorted = options.sorted || false;
+  //     var data = sorted ? this.sort(function(x){return x[cols[0]]},sorted) : this.mapped_objs;
+  //     var filter_zeros = options.filter_zeroes || false;
+  //     function each_mapped_obj(obj){
+  //       return _.pick(obj,cols);
+  //     };
+  //     var rows_with_cols= _.map(data, each_mapped_obj);
+  //     if (filter_zeroes){
+  //       rows_with_cols = _.filter(rows_with_cols,function(row){
+  //         return row[cols[0]] != 0;
+  //       });
+  //     }
+  //     return rows_with_cols;
+  //   },
+  //   get_top_x : function(col,x){
+  //     return _.head(this.get_cols([col],{sorted:true}),x);
+  //   }
+  //   get_row : function (col, val, options) {
+  //     var only_one = options.only_one || true;
+  //     var each_mapped_obj = function(obj){
+  //       return obj[col] == bal;
+  //     };
+  //     var found =  _.find(this.mapped_objs, each_mapped_obj);
+  //     if (only_one){
+  //       return _.head(found);
+  //     }
+  //     return found;
+  //   }
+  //}
 
   TABLES.tables.on("add", function(table){
 

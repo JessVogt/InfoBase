@@ -58,14 +58,14 @@
      return _.reduce(ar,function(x,y){return x+y;});
    };
    UTILS.sum_these_cols = function(ar, cols){
-    var initial = _.map(cols,function({return 0;}));
+    var initial = _.map(cols,function(){return 0;});
     initial = _.object(cols, intial);
-    function reducer(x,y{
+    function reducer(x,y){
       return _.map(cols, function(col){
         return x[col] + y[col];
-      })
-    })
-    return _.reduce(ar, reducer);
+      });
+    };
+    return _.reduce(ar, reducer,initial);
    };
    UTILS.zip_obj = function(obj){
     return _.map(_.keys(obj),
@@ -73,6 +73,63 @@
           return [key,obj[key]];
         });
    };
+   UTILS.to_new_table_format = function(table){
+     var TABLES = ns().TABLES;
+     return _.chain(table.col_defs) 
+       .zip(_.map(_.range(table.col_defs.length), function(i){
+                      return  TABLES.extract_headers(table.headers.en,i);
+            }),
+            _.map(_.range(table.col_defs.length), function(i){
+              return  TABLES.extract_headers(table.headers.fr,i);
+            })
+       )
+       .map(function(grp){
+         return {
+           header : {en: grp[1][0],fr:grp[2][0]},
+           child : {
+             type : grp[0],
+             header : {en: grp[1][1], fr: grp[2][1]}
+           }
+         };
+       })
+       .groupBy(function(x){
+          return x.header.en;
+       })
+       .map(function(grp){
+         return {header : grp[0].header,
+                children : _.pluck(grp, "child")
+         };
+       })
+       .value();
+   }
+
+   UTILS.make_col_adder(table){
+    function add_child(x){
+      this.children = this.children || [];
+      if (!_.isArray(x)){
+        x = [x];
+      }
+      _.each(x, function(col){
+         col.parent = this;
+         adder(col);
+      });
+      this.children.push(child);
+      return this;
+    }
+    function adder(x){
+        if (_.isString(x)){
+          x =  {header : {en: x, fr: x}};
+        }
+        if (!_.has(x,"key")){
+           x.key = false;
+        }
+        if (!_.has(x,"parent")){
+           table.cols.append(x);
+        }   
+        x.add_child = add_child;
+     }
+    return adder
+   }
 
 })(this);
 
