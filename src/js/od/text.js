@@ -21,8 +21,8 @@
          "fr" : "Ministère" 
       }
       ,"no_data" : {
-        "en" : "No data avilable for this table"
-        ,"fr" : "Pas de données disponibles pour cette table"
+        "en" : "No data available for this table"
+        ,"fr" : "Aucune donnée disponible pour cette table"
       }
       ,"financial_size" : {
          "en" : "2012 Expenditures ($000)",
@@ -62,7 +62,7 @@
       }
       ,"description" :{
          "en" : "Description",
-         "fr" : "Déscription" 
+         "fr" : "Description" 
       }
       ,"supplementary_data" :{
          "en" : "Supplementary information about",
@@ -138,7 +138,7 @@
       }           
       ,"current_year_fisc" : {
          "en" : "Financial data for the current fiscal year (April 1st 2013 to March 31st 2014)",
-         "fr" : "Données financières pour l'exercices (1 avril à 31 mars, 2013)"
+         "fr" : "Renseignements financiers concernant l’exercice en cours (1er avril 2013 au 31 mars 2014)"
       }
       ,"previous_year_fisc" : {
          "en" : "Historical financial information for the 2009‒10 to 2011‒12 fiscal years",
@@ -286,7 +286,7 @@
       }
       ,"remainder" : {
         "en": "Remainder"
-        ,"fr": "Rest"
+        ,"fr": "Reste"
       }
       ,"so" : {
         "en": "Standard Object"
@@ -302,7 +302,7 @@
       }
       ,"vote_stat" : {
         "en": "Breakout of Voted and Statutory Expenditures"
-        ,"fr": "Répartition des dépenses crédits et législatives"
+        ,"fr": "Répartition des dépenses votées et des dépenses législatives"
       }
       ,"voted_exp_breakout" : {
         "en": "Voted Expenditure Breakout For"

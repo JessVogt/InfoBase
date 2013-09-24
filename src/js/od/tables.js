@@ -79,7 +79,9 @@
       dv.description = dv.$el.find('.table_description');
       dv.description.html($('#' + dv.def.id + "_" + dv.lang).html());
       // add the QFR link
-      dv.description.find(".qfr_link").attr("href",dv.dept.qfr_link[dv.lang]);
+      if (dv.dept.qfr_link){
+        dv.description.find(".qfr_link").attr("href",dv.dept.qfr_link[dv.lang]);
+      }
 
       // setup the open datalinks ** must be after the description setup
       $('a.od_link').attr("href", dv.def.link[dv.lang]);
@@ -211,9 +213,10 @@
             return [row[1]].concat(_.tail(row, 3))
         }
       , "make_filter": function (source_row) {
+         var trimed = $.trim(source_row[4])
           return function (candidate_row) {
               if (typeof source_row[1] === 'string') {
-                  return candidate_row[4] == source_row[4];
+                  return $.trim(candidate_row[4]) === trimed;
               } else {
                   return candidate_row[2] === source_row[2];
               }
@@ -454,8 +457,9 @@
           var sum = _.reduce(_.map(data,
                                  function (x) { return x[col] }),
                           function (x, y) {
-                              return Math.abs(x) + Math.abs(y)
-                          }
+                            if (y <= 0){ y = 0}
+                              return x + y
+                          },0
         );
           this.rows = _.map(_.head(data, 3), function (row) {
               return [row["Standard Object"],
@@ -1003,7 +1007,10 @@
       , prep_data: function () {
           var ttf = this.app.formater;
           var name = "Standard Object";
-          var total = UTILS.sum_ar(_.pluck(this.data, this.year)) + 1;
+          var data = _.filter(_.pluck(this.data, this.year),function(x){
+             return x >= 0;
+          });
+          var total = UTILS.sum_ar(data) + 1;
           var sorted = _.sortBy(this.data, function (obj) {
               return obj[this.year];
           }, this).reverse();
@@ -1620,10 +1627,10 @@
         "Vote {{in_year}} / Statutory",
         "Description",
         "Main Estimates",
-        "Available from Previous Years (EN)",
-        "Supps A",
-        "Supps B",
-        "Supps C",
+        "Available from Previous Years",
+        "Supplementary Estimates A",
+        "Supplementary Estimates B",
+        "Supplementary Estimates C",
         "Adjustments",
          //"Vote 5",
          //"Vote 10",
@@ -1653,10 +1660,10 @@
           "Crédit {{in_year}} / Légis.",
           "Description du crédit",
           "Budget Principal",
-          "Disponibles des exercices antérieurs ",
-          "Supp. A",
-          "Supp. B",
-          "Supp. C",
+          "Disponibles des exercices antérieurs",
+          "Budget supplémentaire A",
+          "Budget supplémentaire B",
+          "Budget supplémentaire C",
           "Ajustements",
          //"Crédit 5",
          //"Crédit 10",
@@ -1736,9 +1743,9 @@
           var ttf = this.app.formater;
           var total = UTILS.sum_ar(_.pluck(this.data, "Total Net Authority")) + 1;
           var cols = ['Main Estimates',
-                    'Supps A',
-                    'Supps B',
-                    'Supps C'];
+                    'Supplementary Estimates A',
+                    'Supplementary Estimates B',
+                    'Supplementary Estimates C'];
           this.rows = _.map(cols, function (col) {
               var col_total = UTILS.sum_ar(_.pluck(this.data, col));
               return [this.to_lang(col),
@@ -1774,9 +1781,9 @@
       },
         prep_data: function () {
             this.cols = ['Main Estimates',
-                     'Supps A',
-                     'Supps B',
-                     'Supps C'];
+                     'Supplementary Estimates A',
+                     'Supplementary Estimates B',
+                     'Supplementary Estimates C'];
             this.type_to_approp = function (type) {
                 var line = _.find(this.mapped_objs, function (x) {
                     return x['Description'] == type;
