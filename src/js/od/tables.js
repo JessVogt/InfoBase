@@ -254,7 +254,7 @@
     , mini_view: {
         description: {
             "en": "Total budgetary authorities and expenditures for Q{{q}} {{in_year}} and percent change from the same quarter of the previous fiscal year ({{qfr_last_year}}).",
-            "fr": "Total des autorisations et des dépenses budgétaires pour le premier trimestre de {{'in_year'}} et variation en pourcentage par rapport au même trimestre de l’exercice précédent ({{qfr_last_year}})."
+            "fr": "Total des autorisations et des dépenses budgétaires pour le premier trimestre de {{in_year}} et variation en pourcentage par rapport au même trimestre de l’exercice précédent ({{qfr_last_year}})."
         }
       , prep_data: function () {
           var ttf = this.app.formater;
@@ -440,7 +440,7 @@
     , mini_view: {
         description: {
             "en": "Top three net expenditure categories as of Q{{q}} {{in_year}} by value ($000) and proportion of total expenditures (%).",
-            "fr": "Les trois plus importantes catégories de dépenses nettes lors du premier trimestre de {{'in_year'}} en fonction de leur valeur (en milliers de dollars) et en tant que pourcentage des dépenses totales (%)."
+            "fr": "Les trois plus importantes catégories de dépenses nettes lors du premier trimestre de {{in_year}} en fonction de leur valeur (en milliers de dollars) et en tant que pourcentage des dépenses totales (%)."
         }
       , prep_data: function () {
           var ttf_f = _.partial(this.app.formater, 'big-int');
