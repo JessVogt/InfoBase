@@ -261,13 +261,10 @@
           var mapper = function (x) {
               return [
           x['Total available for use for the year ending March 31, {{in_year_short}}'],
-          x["{{qfr_last_year}}-Year to date used at quarter-end"],
+          x["{{in_year}}-Year to date used at quarter-end"],
           x['Total available for use for the year ending March 31, {{qfr_last_year_short}}'],
-          x["{{in_year}}-Year to date used at quarter-end"]];
+          x["{{qfr_last_year}}-Year to date used at quarter-end"]];
           };
-          var v_s = _.groupBy(this.data, function (x) {
-              return _.isNumber(x['Vote / Statutory']);
-          });
           var lines = _.map(this.data, mapper);
           var total = _.reduce(lines, UTILS.add_ar, [0, 0, 0, 0]);
           var auth = total[0] / (total[2] + 1) - 1;
@@ -1043,6 +1040,7 @@
           this.year = $(e.target).val();
           this.render();
           this.$el.find("select").focus();
+          this.resize_my_row();
       }
     },
       graph_view: {
@@ -1251,6 +1249,7 @@
           this.year = $(e.target).val();
           this.render();
           this.$el.find("select").focus();
+          this.resize_my_row();
       }
     },
       graph_view: {
