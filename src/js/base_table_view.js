@@ -93,6 +93,8 @@
           var wcag = data_type.shift();
           var data = data_type.shift();
           var type = data_type.shift();
+          // IE7 workaround
+          if (_.isUndefined(data)){return};
           var el = $('<td><div>');
           el.attr("headers",wcag);
 

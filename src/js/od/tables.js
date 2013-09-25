@@ -178,8 +178,8 @@
       ]]
         },
         "link": {
-            "en": "",
-            "fr": ""
+            "en": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-eng.asp",
+            "fr": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-fra.asp"
         },
         "name": { "en": "Statement of Authorities and Expenditures",
             "fr": "État des autorisations et des dépenses"
@@ -399,8 +399,8 @@
       ]]
       },
       link: {
-          "en": "",
-          "fr": ""
+         "en": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-eng.asp",
+         "fr": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-fra.asp"
       },
       name: { "en": "Expenditures by Standard Object",
           "fr": "Dépenses par article courant"
@@ -1675,8 +1675,8 @@
     ]
      },
      "link": {
-         "en": "",
-         "fr": ""
+      "en": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-eng.asp",
+      "fr": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-fra.asp"
      },
      "name": { "en": "Current-year Authorities",
          "fr": "Autorisations pour l'exercice en cours"
