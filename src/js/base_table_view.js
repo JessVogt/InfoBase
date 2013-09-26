@@ -378,6 +378,7 @@
       // return an array, where the last index is what
       // we need
       var av = new TABLES.AnalyticsView({
+        original_el : td.find('a'),
         dept : self.dept,
         key : self.key,
         row : row,

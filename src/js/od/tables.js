@@ -118,7 +118,7 @@
         return $('<span>')
           .append($("<label>")
           .attr({ "for": rand, 'class': 'wb-invisible' })
-          .html(app.get_text("select"))
+          .html(app.get_text("select_fy"))
           ).append(sel);
       }
 
@@ -291,8 +291,8 @@
               css: [{ 'font-weight': 'bold','text-align': 'left' },
                   { 'text-align': 'right' },
                   { 'text-align': 'right' },
-                  { 'text-align': 'right' }
-        ]
+                  { 'text-align': 'right' }],
+              classes :  ['','wrap-none','wrap-none','wrap-none']
           });
       }
     },
@@ -470,8 +470,9 @@
               body: this.rows,
               css: [{ 'font-weight': 'bold', 'text-align': 'left' },
                  { 'text-align': 'right' },
-                 { 'text-align': 'right' },
-        ]
+                 { 'text-align': 'right' }],
+              classes :  ['','wrap-none','wrap-none']
+
           });
       }
     },
@@ -823,7 +824,7 @@
               css: [{ 'font-weight': 'bold', 'text-align': 'left' },
                  { 'text-align': 'right' },
                  { 'text-align': 'right'}]
-          , classes: ['', '', 'wrap-none']
+          , classes: ['', 'wrap-none', 'wrap-none']
           });
       }
     },
@@ -1024,7 +1025,7 @@
               css: [{ 'font-weight': 'bold', 'text-align': 'left' },
                  { 'text-align': 'right' },
                  { 'text-align': 'right'}]
-          , classes: ['', '', 'wrap-none']
+          , classes: ['', 'wrap-none', 'wrap-none']
           });
       }
       , post_render: function () {
@@ -1233,7 +1234,7 @@
               body: this.rows,
               css: [{ 'font-weight': 'bold', 'text-align': 'left' },
                   { 'text-align': 'right' }, { 'text-align': 'right'}]
-          , classes: ['', '', 'wrap-none']
+          , classes: ['', 'wrap-none', 'wrap-none']
           });
       }
       , post_render: function () {
@@ -1447,7 +1448,7 @@
           , css: [{ 'font-weight': 'bold', 'text-align': 'left' },
                  { 'text-align': 'right' },
                  { 'text-align': 'right'}]
-          , classes: ['', '', 'wrap-none']
+          , classes: ['', 'wrap-none', 'wrap-none']
           });
       }
       , post_render: function () {
@@ -1760,8 +1761,8 @@
               body: this.rows,
               css: [{ 'font-weight': 'bold', 'text-align': 'left' },
                   { 'text-align': 'right' },
-                  { 'text-align': 'right' }
-        ]
+                  { 'text-align': 'right' }] ,
+              classes :  ['','wrap-none','wrap-none']
           });
       }
     }

@@ -26,12 +26,12 @@
       ,"click a.home" : "reset"
       ,"hover .horizontal" : "highlighter"
       ,"click .horizontal" : "horizontal_explore"
-      ,"click a.page-nav" : "nav"
+      //,"click a.page-nav" : "nav"
     }
     ,initialize: function(){
       this.template = APP.t(this.template);
       pe.wb_load({"poly" : ["datalist"]});
-      _.bindAll(this,"dept_change","nav","setup_useful_this_links",
+      _.bindAll(this,"dept_change","setup_useful_this_links",
                 "lang_change", "formater","get_text","toggle_lang",
                 "reset_dept","reset","highlighter", "render",
                 "horizontal_explore","remove" );
@@ -51,17 +51,20 @@
       APP.dispatcher.trigger("dept_selected",this);
       APP.dispatcher.trigger("dept_ready",this);
     }
-    ,nav : function(event){
-      var id = $(event.target).attr("href");
-      if (id[0] != '#'){
-        id = '#' + id.split("#")[1];
-      }
-      var el = $(id);
-      if (!el){
-        return;
-      }
-      window.scrollTo(0,el.position().top);
-    }
+    //,nav : function(event){
+    //  var id = $(event.target).attr("href");
+    //  if (id[0] != '#'){
+    //    id = '#' + id.split("#")[1];
+    //  }
+    //  var el = $(id);
+    //  if (!el){
+    //    return;
+    //  }
+    //  window.scrollTo(0,el.position().top);
+    //  setTimeout(function() {
+    //    el.focus();
+    //  }, 0);
+    //}
     ,setup_useful_this_links : function(){
       this.nav_bar_ul = $('#navbar_ul');
       this.title = $('#title');

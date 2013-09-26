@@ -24,7 +24,9 @@ $(function () {
 
       this.r = "r"+_.random(10000);
 
-      this.dept = this.options['dept'];
+      this.original_el = this.options.original_el;
+
+      this.dept = this.options.dept;
       this.key = this.options['key'];
       this.row = this.options['row'];
 
@@ -242,6 +244,7 @@ $(function () {
           ,transition: "none"
           ,speed : 0
           ,fixed : true
+          ,onClosed : function(){self.original_el.focus()}
         });
 
         //self.$el.find('button').on("click",

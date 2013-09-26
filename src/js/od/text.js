@@ -120,6 +120,10 @@
         "en" : "Select"
         ,"fr" : "Sélectionner"
       }
+      ,"select_fy" : {
+        "en" : "Select fiscal year"
+        ,"fr" : "Sélectionner l'exercise"
+      }
       ,'IGOC_site' : {
         "en" : "http://www.tbs-sct.gc.ca/reports-rapports/cc-se/index-eng.asp"
         ,"fr" : "http://www.tbs-sct.gc.ca/reports-rapports/cc-se/index-fra.asp"
