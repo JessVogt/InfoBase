@@ -149,8 +149,8 @@
          "fr" : "Renseignements financiers historiques des exercices financiers 2009-2010 à 2011-2012"
       }
       ,"previous_year_fisc_targeted" : {
-         "en" : "Financial information on selected topics for the 2009‒10 to 2011‒12",
-         "fr" : "Renseignements financiers sur certains sujets de 2009-2010 à 2011-2012 "
+          "en": "Financial information on selected topics for the 2009‒10 to 2011‒12 fiscal years ",
+          "fr": "Renseignements financiers sur certains sujets des exercices financiers 2009-2010 à 2011-2012  "
       }
       ,"close" : {
         "en" : "close"
@@ -218,7 +218,7 @@
       }
       ,"other_in_min" : {
        "en" :  "Other Organizations in same Ministry"
-      ,"fr" : "Autres organisations dans le portefeuille ministériel"
+      ,"fr" : "Autre(s) organisations dans le portefeuille ministériel"
       }
       ,"print_help" : {
         "en" : "For long tables, use landscape/legal"
@@ -367,7 +367,7 @@
       }
       ,"authorities" : {
         "en" :  "Authorities"
-        ,"fr" : "Crédits"  
+        ,"fr" : "Autorisations"  
       }
       ,"expenditures" : {
         "en" :  "Expenditures"

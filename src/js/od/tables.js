@@ -184,8 +184,8 @@
         "name": { "en": "Statement of Authorities and Expenditures",
             "fr": "État des autorisations et des dépenses"
         },
-        "title": { "en": "Statement of Authorities and Expenditures",
-            "fr": "État des autorisations et des dépenses"
+        "title": { "en": "Statement of Authorities and Expenditures ($000)",
+            "fr": "État des autorisations et des dépenses (en milliers de dollars)"
         }
     , "sort": function (mapped_rows, lang) {
         var grps = _.groupBy(mapped_rows, function (row) { return _.isNumber(row[0]) });
@@ -305,7 +305,7 @@
             }
       , descriptions: {
           1: {
-              "en": "Graph 1 presents the organization’s five largest voted and statutory net expenditures used at quarter-end. Voted expenditures reflect spending that received parliamentary approval through an appropriation bill, while statutory expenditures reflect spending whose authority was granted through other legislation. When applicable, the “Other” category captures all other expenditures up to the end of the specified period.",
+              "en": "Graph 1 presents the organization’s five largest voted and statutory net expenditures used at quarter-end. Voted expenditures reflect spending that received parliamentary approval through an appropriation bill, while statutory expenditures reflect spending whose authority was granted through other legislation. Where applicable, the “Other” category captures all other expenditures up to the end of the specified period.",
               "fr": "Le graphique 1 présente les cinq plus importantes dépenses nettes votées et législatives utilisées à la fin du trimestre par le ministère ou l'organisme. Les dépenses votées représentent les dépenses approuvées par le Parlement par l'entremise d'un projet de loi de crédits tandis que les dépenses législatives correspondent aux dépenses autorisées par l'entremise d'autres lois. S’il y a lieu, l’autre catégorie intègre toutes les autres dépenses de l’organisation jusqu'à la fin de la période précisée."
           }
       },
@@ -406,7 +406,7 @@
           "fr": "Dépenses par article courant"
       },
       title: { "en": "Expenditures by Standard Object ($000)",
-          "fr": "Dépenses par article courant ($000)"
+          "fr": "Dépenses par article courant (en milliers de dollars)"
       }
     , key: [0]
     , mapper: {
@@ -724,7 +724,7 @@
       "fr": "Autorisations et dépenses"
   },
   "title": { "en": "Authorities and Actual Expenditures ($000)",
-      "fr": "Autorisations et dépenses réelles ($000)"
+      "fr": "Autorisations et dépenses réelles (en milliers de dollars)"
   }
     , "sort": function (mapped_rows, lang) {
         var grps = _.groupBy(mapped_rows, function (row) { return _.isNumber(row[0]) });
@@ -964,7 +964,7 @@
           "fr": "Dépenses par article courant"
       },
       "title": { "en": "Expenditures by Standard Object from {{last_year_3}} to {{last_year}} ($000)",
-          "fr": "Dépenses par article courant de {{last_year_3}} à {{last_year}} ($000)"
+          "fr": "Dépenses par article courant de {{last_year_3}} à {{last_year}} (en milliers de dollars)"
       }
     , "key": [0]
     , "sort": function (rows, lang) { return rows }
@@ -1172,7 +1172,7 @@
           "fr": "Dépenses par programme"
       },
       "title": { "en": "Expenditures by Program from {{last_year_3}} to {{last_year}} ($000)",
-          "fr": "Dépenses par programme de {{last_year_3}} à {{last_year}} ($000)"
+          "fr": "Dépenses par programme de {{last_year_3}} à {{last_year}} (en milliers de dollars)"
       }
     , "key": [0]
     , "sort": function (mapped_rows, lang) {
@@ -1365,7 +1365,7 @@
           "fr": "Paiements de transfert"
       },
       "title": { "en": "Transfer Payments from {{last_year_3}} to {{last_year}} ($000)",
-          "fr": "Paiements de transfert de {{last_year_3}} à {{last_year}} ($000)"
+          "fr": "Paiements de transfert de {{last_year_3}} à {{last_year}} (en milliers de dollars)"
       }
     , "key": [0, 1]
     , "sort": function (mapped_rows, lang) {
@@ -1479,7 +1479,7 @@
           }
       , descriptions: {
           1: {
-              "en": "Graph 1 presents the organization four largest transfer payments based on the proportion of the net expenditures for each fiscal year from 2009-10 to 2011-12. When applicable, the other category captures the expenditures for all the other transfer payments of the selected organization.  Select the fiscal year in the left side-bar to plot the expenditures on the graph.",
+              "en": "Graph 1 presents the organization four largest transfer payments based on the proportion of the net expenditures for each fiscal year from 2009-10 to 2011-12. Where applicable, the other category captures the expenditures for all the other transfer payments of the selected organization.  Select the fiscal year in the left side-bar to plot the expenditures on the graph.",
               "fr": "Le graphique 1 présente les quatre plus importants paiements de transfert du ministère ou de l'organisme selon leur pourcentage des dépenses nettes pour chaque exercice financier de 2009-2010 à 2011-2012. S’il y a lieu, l’autre catégorie intègre les dépenses de tous les autres paiements de transfert de l’organisation visée. Sélectionnez l’exercice figurant dans la colonne à gauche de l’écran pour faire le tracé des dépenses sur le graphique. "
           },
           2: {
@@ -1682,8 +1682,8 @@
      "name": { "en": "Current-year Authorities",
          "fr": "Autorisations pour l'exercice en cours"
      },
-     "title": { "en": "Current-year Authorities",
-         "fr": "Autorisations pour l'exercice en cours"
+     "title": { "en": "Current-year Authorities ($000)",
+         "fr": "Autorisations pour l'exercice en cours (en milliers de dollars)"
      }
     , "key": [0, 1]
     , "mapper": {
@@ -1769,8 +1769,8 @@
     , graph_view: {
         titles: {
             1: {
-                "en": "Detailed Net Authorities by Voted/Statutory Item ($000) and by Estimates period as of {{month_name}}, 2013",
-                "fr": "Détail des autorisations nettes par crédit voté/poste législatif (en milliers de dollars) et par période de budget de dépenses au {{month_name}}, 2013"
+                "en": "Detailed Net Authorities by Voted/Statutory Item ($000) and by Estimates period as of {{month_name}} 31st, 2013",
+                "fr": "Détail des autorisations nettes par crédit voté/poste législatif (en milliers de dollars) et par période de budget de dépenses en date du 31 août 2013"
             }
         }
       , descriptions: {
