@@ -1574,7 +1574,7 @@
           var ticks = _.map(this.years, m);
           var series = [
               { label: this.def.headers[this.lang][1][2] },
-              { label: this.def.headers[this.lang][1][3] },
+              { label: this.def.headers[this.lang][1][3] }
         ];
           var plot = GRAPHS.bar(this.make_id(2),
             data,
