@@ -109,10 +109,8 @@
       //  .append($('#'+ dv.def.id+'_horizontal_instructions_' + dv.lang).html());
   });
 
-  APP.dispatcher.on("load_tables", function (app) {
-      var m = TABLES.m;
 
-    APP.dispatcher.on("load_tables", function (app) {
+  APP.dispatcher.on("load_tables", function (app) {
      var m = TABLES.m;
 
       var make_year_select = function () {
@@ -131,9 +129,9 @@
       }
 
      TABLES.tables.add([
-      {add_cols : function(col){
-         col("")
-         .addChild([
+      {add_cols : function(){
+         this.add_col("")
+         .add_child([
          { 
            "type":"int",
            "key" : true,
@@ -150,10 +148,11 @@
            }
          }
          ]);
-         col("{{in_year}}")
-         .addChild([
+         this.add_col("{{in_year}}")
+         .add_child([
            {
              "type":"big-int",
+             "nick" : 'thisyearauth',
              "header":{
                "en":"Total available for use for the year ending March 31, {{in_year_short}}",
                "fr":"Crédits totaux disponibles pour l'exercice se terminant le 31 mars {{in_year_short}}"
@@ -168,16 +167,18 @@
            },
            {
              "type":"big-int",
+             "nick" : 'thisyearspending',
              "header":{
                "en":"Year to date used at quarter-end",
                "fr":"Cumul des crédits utilisés à la fin du trimestre"
              }
            }
          ]);
-         col("{{qfr_last_year}}")
-           .addChild([
+         this.add_col("{{qfr_last_year}}")
+           .add_child([
              {
                "type":"big-int",
+               "nick" : 'lastyearauth',
                "header":{
                  "en":"Total available for use for the year ending March 31, {{qfr_last_year_short}}",
                  "fr":"Crédits totaux disponibles pour l'exercice se terminant le 31 mars {{qfr_last_year_short}}"
@@ -192,13 +193,14 @@
              },
              {
                "type":"big-int",
+               "nick" : 'lastyearspending',
                "header":{
                  "en":"Year to date used at quarter-end",
                  "fr":"Cumul des crédits utilisés à la fin du trimestre"
                }
              }
          ]);
-        }
+        },
         "id": 'table1',
         "coverage": "in_year",
         "link": {
@@ -273,13 +275,12 @@
             this.merge_group_results([[this.row_data, total]]);
         }
       },
-    , mini_view: {
+      mini_view: {
         description: {
             "en": "Total budgetary authorities and expenditures for Q{{q}} {{in_year}} and percent change from the same quarter of the previous fiscal year ({{qfr_last_year}}).",
             "fr": "Total des autorisations et des dépenses budgétaires pour le premier trimestre de {{in_year}} et variation en pourcentage par rapport au même trimestre de l’exercice précédent ({{qfr_last_year}})."
-        }
-
-      , prep_data: function () {
+        },
+        prep_data: function () {
           var ttf = this.app.formater;
           var mapper = function (x) {
               return [

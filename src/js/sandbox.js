@@ -103,7 +103,8 @@
        .value();
    }
 
-   UTILS.make_col_adder(table){
+   UTILS.make_col_adder = function(){
+     // this == a table obj
     function add_child(x){
       this.children = this.children || [];
       if (!_.isArray(x)){
@@ -124,7 +125,7 @@
            x.key = false;
         }
         if (!_.has(x,"parent")){
-           table.cols.append(x);
+           this.cols.append(x);
         }   
         x.add_child = add_child;
      }
