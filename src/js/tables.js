@@ -16,6 +16,20 @@
     APP.size_panels(app,signals);
   };
 
+  APP.size_row = function(i,row)   {
+     var panels =  $('.mini_t',row);
+     var p = $(this).parents('.dept_zone');
+     panels.width( (p.width() - 60)/3  - 1);
+     _.each(['.section-header', 'p.description','th','.mini_payload'],
+         function(selector){
+            $(selector,row)
+            .css("height","")
+            .height(_.max($(selector,row).map(function(x,y){
+              return $(y).height();
+            })));
+     })
+  };
+
   APP.dispatcher.on("dept_selected", APP.listen_for_tables);
 
   APP.size_panels = function(app,signals){
@@ -39,35 +53,7 @@
         current_view = undefined;
       }
 
-      $('.widget-row').each(function(i,row){
-        var panels =  $('.mini_t',row);
-        var p = $(this).parents('.dept_zone');
-        panels.width( (p.width() - 60)/3  - 1);
-        $('.section-header',row)
-        .height(_.max($('.section-header',row).map(function(x,y){
-          return $(y).height();
-        })));
-        $('p.description',row)
-        .height(_.max($('p.description',row).map(function(x,y){
-          return $(y).height();
-        })));
-        $('th',row)
-        .height(_.max($('th',row).map(function(x,y){
-          return $(y).height();
-        })));
-        $('.mini_t',row)
-        .height(_.max($('.mini_t',row).map(function(x,y){
-          return $(y).height() + 10;
-        })));
-      });
-      $('.mini_t').css({
-        position : 'relative'
-      });
-      $('.mini_t div.details_button').css({
-        'bottom' : 0, 
-        'position' : 'absolute', 
-        'right' : 0
-      });
+      $('.widget-row').each(APP.size_row);
       APP.dispatcher.trigger("mini_tables_rendered",
           {current_view : current_view,
             views : views} 

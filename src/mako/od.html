@@ -15,6 +15,7 @@
 
 <%block name='extrajs'>
 $(function(){
+    $('h1').remove();
     var APP = ns('APP');
 
     <%include file='handlebars_helpers.js'/>
@@ -31,7 +32,6 @@ $(function(){
     });
 
     APP.app = new APP.appView();
-    $('h1').remove();
 });
 </%block>
 

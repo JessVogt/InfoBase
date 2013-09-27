@@ -21,8 +21,8 @@
          "fr" : "Ministère" 
       }
       ,"no_data" : {
-        "en" : "No data avilable for this table"
-        ,"fr" : "Pas de données disponibles pour cette table"
+        "en" : "No data available for this table"
+        ,"fr" : "Aucune donnée disponible pour cette table"
       }
       ,"financial_size" : {
          "en" : "2012 Expenditures ($000)",
@@ -62,7 +62,7 @@
       }
       ,"description" :{
          "en" : "Description",
-         "fr" : "Déscription" 
+         "fr" : "Description" 
       }
       ,"supplementary_data" :{
          "en" : "Supplementary information about",
@@ -120,6 +120,10 @@
         "en" : "Select"
         ,"fr" : "Sélectionner"
       }
+      ,"select_fy" : {
+        "en" : "Select fiscal year"
+        ,"fr" : "Sélectionner l'exercise"
+      }
       ,'IGOC_site' : {
         "en" : "http://www.tbs-sct.gc.ca/reports-rapports/cc-se/index-eng.asp"
         ,"fr" : "http://www.tbs-sct.gc.ca/reports-rapports/cc-se/index-fra.asp"
@@ -138,15 +142,15 @@
       }           
       ,"current_year_fisc" : {
          "en" : "Financial data for the current fiscal year (April 1st 2013 to March 31st 2014)",
-         "fr" : "Données financières pour l'exercices (1 avril à 31 mars, 2013)"
+         "fr" : "Renseignements financiers concernant l’exercice en cours (1er avril 2013 au 31 mars 2014)"
       }
       ,"previous_year_fisc" : {
          "en" : "Historical financial information for the 2009‒10 to 2011‒12 fiscal years",
          "fr" : "Renseignements financiers historiques des exercices financiers 2009-2010 à 2011-2012"
       }
       ,"previous_year_fisc_targeted" : {
-         "en" : "Financial information on selected topics for the 2009‒10 to 2011‒12",
-         "fr" : "Renseignements financiers sur certains sujets de 2009-2010 à 2011-2012 "
+          "en": "Financial information on selected topics for the 2009‒10 to 2011‒12 fiscal years ",
+          "fr": "Renseignements financiers sur certains sujets des exercices financiers 2009-2010 à 2011-2012  "
       }
       ,"close" : {
         "en" : "close"
@@ -214,7 +218,7 @@
       }
       ,"other_in_min" : {
        "en" :  "Other Organizations in same Ministry"
-      ,"fr" : "Autres organisations dans le portefeuille ministériel"
+      ,"fr" : "Autre(s) organisations dans le portefeuille ministériel"
       }
       ,"print_help" : {
         "en" : "For long tables, use landscape/legal"
@@ -286,7 +290,7 @@
       }
       ,"remainder" : {
         "en": "Remainder"
-        ,"fr": "Rest"
+        ,"fr": "Reste"
       }
       ,"so" : {
         "en": "Standard Object"
@@ -302,7 +306,7 @@
       }
       ,"vote_stat" : {
         "en": "Breakout of Voted and Statutory Expenditures"
-        ,"fr": "Répartition des dépenses crédits et législatives"
+        ,"fr": "Répartition des dépenses votées et des dépenses législatives"
       }
       ,"voted_exp_breakout" : {
         "en": "Voted Expenditure Breakout For"
@@ -363,7 +367,7 @@
       }
       ,"authorities" : {
         "en" :  "Authorities"
-        ,"fr" : "Crédits"  
+        ,"fr" : "Autorisations"  
       }
       ,"expenditures" : {
         "en" :  "Expenditures"

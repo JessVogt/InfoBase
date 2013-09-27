@@ -93,6 +93,8 @@
           var wcag = data_type.shift();
           var data = data_type.shift();
           var type = data_type.shift();
+          // IE7 workaround
+          if (_.isUndefined(data)){return};
           var el = $('<td><div>');
           el.attr("headers",wcag);
 
@@ -376,6 +378,7 @@
       // return an array, where the last index is what
       // we need
       var av = new TABLES.AnalyticsView({
+        original_el : td.find('a'),
         dept : self.dept,
         key : self.key,
         row : row,
@@ -467,20 +470,15 @@
       return this;
     }
     ,post_render : function(){}
+    ,resize_my_row : function(){
+       this.$el.parents('.widget-row').each(APP.size_row);
+    }
     ,make_signal : function(){
      return 'table_' + this.def.id +"_rendered";
     }
     ,trigger_click : function(){
       this.$el.find('a.details').trigger("click");
     }
-  });
-
-  APP.dispatcher.on("table_rendered",function(table_view){
-    //var real_width = $('.dataTables_scrollBody table').width();
-    //$('.dataTables_scrollHead').css("width","");
-    //$('.dataTables_scrollHeadInner').css("width","");
-    //$('.dataTables_scrollHead table').css("width","");
-    //$('.dataTables_scrollBody caption').appendTo($('.dataTables_scrollHead table'));
   });
 
   TABLES.extract_headers = function(headers,index){
@@ -503,6 +501,7 @@
       }
     );
   }
+
   TABLES.add_ministry_sum = function(){
     return  [GROUP.fnc_on_group(this.min_data,
         {txt_cols: {0:this.gt('min_total')},
@@ -519,6 +518,7 @@
            func : GROUP.sum_rows}); 
       return _.pluck(min_totals,1);
     }
+
     TABLES.excel_format = function(table,strip_footer){
       strip_footer = strip_footer | false;
       var clone = $(table).clone();
@@ -539,17 +539,6 @@
         window.clipboardData.setData("Text",table_text );
       }
       catch(err){}
-    }
-    TABLES.array_to_grid = function(spans, data){
-      return _.map(data, function(row){
-        var row_div = $('<div>').addClass('row');
-        _.each(_.zip(spans,row), function(span_data){
-          var span = span_data[0];
-          var data = span_data[1];
-          row_div.append($('<div>').addClass('span'+span).html(data));
-        });
-        return row_div;
-      });
     }
 
     TABLES.build_table = function(options){

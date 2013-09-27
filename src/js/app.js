@@ -133,7 +133,7 @@
           return _.sortBy(_.filter(_.values(depts),function(dept){
             return dept.accronym != 'ZGOC';
           }),function(dept){
-            return   dept.min[lang];
+            return   [dept.min[lang],dept.dept[lang]];
           }); 
         }
        , dividers_func : function(app){
