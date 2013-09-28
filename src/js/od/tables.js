@@ -281,7 +281,7 @@
         ];
       }
       , render_data: function () {
-          var headers = _.map(["",
+          var headers = _.map(["Type",
                               "{{in_year_short}} ($000)",
                               "{{qfr_last_year_short}} ($000)",
                               this.gt("change") + " (%)"], m);

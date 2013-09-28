@@ -209,10 +209,10 @@ $(function () {
       }
       ,axes : make_axes(options['ticks']) || {}
       ,title : options['title'] || ""
-      ,highlighter: {
-              show: true,
-              sizeAdjust: 7.5
-            }
+      //,highlighter: {
+      //        show: true,
+      //        sizeAdjust: 7.5
+      //      }
     };
     if (_.has(options,'rotate')){
       o['axes']['xaxis']['tickRenderer'] = $.jqplot.CanvasAxisTickRenderer;

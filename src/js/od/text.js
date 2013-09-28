@@ -18,7 +18,7 @@
       }
       ,"ministry" : {
          "en" : "Ministry",
-         "fr" : "Ministère" 
+         "fr" : "Portefeuille ministériel" 
       }
       ,"no_data" : {
         "en" : "No data available for this table"
