@@ -305,7 +305,7 @@
         ];
       }
       , render_data: function () {
-          var headers = _.map(["",
+          var headers = _.map(["Type",
                               "{{in_year_short}} ($000)",
                               "{{qfr_last_year_short}} ($000)",
                               this.gt("change") + " (%)"], m);
@@ -1598,7 +1598,7 @@
           var ticks = _.map(this.years, m);
           var series = [
               { label: this.def.headers[this.lang][1][2] },
-              { label: this.def.headers[this.lang][1][3] },
+              { label: this.def.headers[this.lang][1][3] }
         ];
           var plot = GRAPHS.bar(this.make_id(2),
             data,
