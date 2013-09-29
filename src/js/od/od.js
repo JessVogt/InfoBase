@@ -17,6 +17,34 @@
       }
   }
 
+  var AppRouter = Backbone.Router.extend({
+
+    initialize : function(options){
+      this.app = options.app;
+      _.bindAll(this,"dept","table")
+    },
+
+    routes: {
+      ":dept":              "dept",  // #AGR
+      ":dept/:table":        "table",  // #AGR/table8
+    },
+
+    dept: function(dept) {
+      var dept = depts[dept];
+      if (dept){
+        this.app.state.set("dept",dept);
+      }
+    },
+
+    table: function(dept, table) {
+      var table = TABLES.tables.find(function(t){ return t.get("id") === table;});
+      this.dept(dept);
+      if (table){
+        APP.dispatcher.trigger("table_selected",table);
+      }
+    }
+  });
+
   /************APP VIEW***********/
   APP.appView = Backbone.View.extend({
     el : $('body')
@@ -45,9 +73,12 @@
         .on("change:lang", this.lang_change)
         .on("change:dept",this.dept_change);
       create_template_func(this);
+      this.router = new AppRouter({app:this});
+      Backbone.history.start();
       APP.dispatcher.trigger_a("app_ready",this);
     }
     ,dept_change : function(model, attr){
+      this.router.navigate(attr.accronym);
       APP.dispatcher.trigger("dept_selected",this);
       APP.dispatcher.trigger("dept_ready",this);
     }
@@ -161,6 +192,8 @@
     // when a table is selected, hide the panels and show the 
     // requested table
     APP.dispatcher.on("table_selected", function(table){
+      var dept = app.state.get("dept").accronym;
+      app.router.navigate(dept+"/"+table.get("id"))
       setTimeout(function(){scrollTo(0,0)});
       app.state.set({'table':table});
 
