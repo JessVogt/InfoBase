@@ -6,15 +6,15 @@ $(function () {
   // attach all the graphs to their respective views
   APP.dispatcher.once("load_tables",function(app){
     var add_graph_view = function(table){
-      if (_.has(GRAPHS.views, table.get("id"))){
+      if (_.has(GRAPHS.views, table.id)){
         table.set("graph_view", GRAPHS.views[table.get("id")]);
       }
-      else if (table.get("graph_view")){
-        table.set("graph_view", GRAPHS.BaseGraphView.extend(table.get("graph_view")));
+      else if (_.has(table,"graph_view")){
+        table.graph_view=GRAPHS.BaseGraphView.extend(table.graph_view);
       }
     }
-    TABLES.tables.each(add_graph_view);
-    TABLES.tables.on("add",add_graph_view);
+    _.each(TABLES.tables,add_graph_view);
+    APP.dispatcher.on("new_table",add_graph_view);
   });
 
   GRAPHS.BaseGraphView = Backbone.View.extend({

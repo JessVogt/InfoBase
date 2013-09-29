@@ -1,11 +1,12 @@
 transition to-do:
 	new tables definiitons
-		write function to convert old style to new style
-		make mapped objs a memoized function		
-		auto calculate WCAG attributes
-		add unique id to each td element for horizontal comparison
+		//write function to convert old style to new style
+		//make mapped objs a memoized function		
+		//auto calculate WCAG attributes
+		//add unique id to each td element for horizontal comparison
+    add backbone routes
 		investigate using d3 to create the tables declaratively
-    add invidivual dispatch call listeners (example, add qfr linksfor qfr tables)
+    add invidivual dispatch call listeners (example, add qfr links for qfr tables)
 	data
 		add universal data acess functions across the tables definitions
 	d3

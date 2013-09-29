@@ -111,9 +111,9 @@
 
 
   APP.dispatcher.on("load_tables", function (app) {
-     var m = TABLES.m;
+    var m = TABLES.m;
 
-      var make_year_select = function () {
+    var make_year_select = function () {
         var m = TABLES.m;
         var rand = Math.round(Math.random() * 10000);
         var sel = $('<select>')
@@ -128,154 +128,162 @@
           ).append(sel);
       }
 
-     TABLES.tables.add([
-      {add_cols : function(){
-         this.add_col("")
-         .add_child([
-         { 
-           "type":"int",
-           "key" : true,
-           "header":{
-             "en":"Vote / Statutory",
-             "fr":"Crédit / Statutaire"
-           }
-         },{
-           "type":"int",
-           "key" : true,
-           "header":{
-             "en":"Description",
-             "fr":"Description"
-           }
-         }
-         ]);
-         this.add_col("{{in_year}}")
-         .add_child([
-           {
-             "type":"big-int",
-             "nick" : 'thisyearauth',
-             "header":{
-               "en":"Total available for use for the year ending March 31, {{in_year_short}}",
-               "fr":"Crédits totaux disponibles pour l'exercice se terminant le 31 mars {{in_year_short}}"
-             }
-           },
-           {
-             "type":"big-int",
-             "header":{
-               "en":"Used during the quarter ended {{qfr_month_name}},{{qfr_last_year_short}}",
-               "fr":"Crédits utilisés pour le trimestre terminé le {{qfr_month_name}} {{qfr_last_year_short}}"
-             }
-           },
-           {
-             "type":"big-int",
-             "nick" : 'thisyearspending',
-             "header":{
-               "en":"Year to date used at quarter-end",
-               "fr":"Cumul des crédits utilisés à la fin du trimestre"
-             }
-           }
-         ]);
-         this.add_col("{{qfr_last_year}}")
-           .add_child([
-             {
-               "type":"big-int",
-               "nick" : 'lastyearauth',
-               "header":{
-                 "en":"Total available for use for the year ending March 31, {{qfr_last_year_short}}",
-                 "fr":"Crédits totaux disponibles pour l'exercice se terminant le 31 mars {{qfr_last_year_short}}"
-               }
-             },
-             {
-               "type":"big-int",
-               "header":{
-                 "en":"Used during the quarter ended {{qfr_month_name}},{{last_year_short}} ",
-                 "fr":"Crédits utilisés pour le trimestre terminé le {{qfr_month_name}} {{last_year_short}}"
-               }
-             },
-             {
-               "type":"big-int",
-               "nick" : 'lastyearspending',
-               "header":{
-                 "en":"Year to date used at quarter-end",
-                 "fr":"Cumul des crédits utilisés à la fin du trimestre"
-               }
-             }
-         ]);
-        },
-        "id": 'table1',
-        "coverage": "in_year",
-        "link": {
-            "en": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-eng.asp",
-            "fr": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-fra.asp"
-        },
-        "name": { "en": "Statement of Authorities and Expenditures",
-            "fr": "État des autorisations et des dépenses"
-        },
-        "title": { "en": "Statement of Authorities and Expenditures ($000)",
-            "fr": "État des autorisations et des dépenses (en milliers de dollars)"
-        },
-        "sort": function (mapped_rows, lang) {
-            var grps = _.groupBy(mapped_rows, function (row) { return _.isNumber(row[0]) });
-            if (_.has(grps, true)) {
-                grps[true] = _.sortBy(grps[true], function (row) { return row[0] });
-            } else {
-                grps[true] = [];
-            }
-            if (_.has(grps, false)) {
-                grps[false] = _.sortBy(grps[false], function (row) { return row[1]; });
-            } else {
-                grps[false] = [];
-            }
-            return grps[true].concat(grps[false]);
-        },
-        "mapper": {
-            "to": function (row) {
-                if (this.lang == 'en') {
-                    row.splice(4, 1);
-                } else {
-                    row.splice(3, 1);
-                }
-                // remove acronym and vote type
-                return [row[1]].concat(_.tail(row, 3))
-            }
-          , "make_filter": function (source_row) {
-              return function (candidate_row) {
-                  if (typeof source_row[1] === 'string') {
-                      return candidate_row[4] == source_row[4];
-                  } else {
-                      return candidate_row[2] === source_row[2];
-                  }
-              };
+    APP.dispatcher.trigger("new_table",
+    {"id": 'table1',
+     "coverage": "in_year",
+     "add_cols": function(){
+      this.add_col("")
+      .add_child([
+      { 
+        "type":"int",
+        "key" : true,
+        "header":{
+          "en":"Vote / Statutory",
+          "fr":"Crédit / Statutaire"
+        }
+      },{
+        "type":"wide-str",
+        "key" : true,
+        "header":{
+          "en":"Description",
+          "fr":"Description"
+        }
+      }
+      ]);
+      this.add_col("{{in_year}}")
+      .add_child([
+        {
+          "type":"big-int",
+          "nick" : 'thisyearauth',
+          "header":{
+            "en":"Total available for use for the year ending March 31, {{in_year_short}}",
+            "fr":"Crédits totaux disponibles pour l'exercice se terminant le 31 mars {{in_year_short}}"
           }
         },
-        "table_view": {
-          hide_col_ids: [],
-          sum_cols: [2, 3, 4, 5, 6, 7],
-          min_func: TABLES.add_ministry_sum,
-          init_row_data: function () {
-            var total = GROUP.fnc_on_group(
-              this.row_data,
-              { txt_cols: { 0: this.gt("total") },
-                  func_cols: this.sum_cols,
-                  func: GROUP.sum_rows
-              });
-            var self = this;
-            this.merge_group_results(
-            GROUP.group_rows(
-              this.row_data,
-              function (row) { return _.isString(row[0]) },
-              { txt_cols: { 0: this.gt("sub_total"),
-                  1: function (g) {
-                      var row = _.first(g);
-                      return _.isString(row[0]) ? self.gt("stat") : self.gt('voted')
-                  }
-              },
-                  func_cols: this.sum_cols,
-                  func: GROUP.sum_rows
-              }));
-            this.merge_group_results([[this.row_data, total]]);
+        {
+          "type":"big-int",
+          "header":{
+            "en":"Used during the quarter ended {{qfr_month_name}},{{qfr_last_year_short}}",
+            "fr":"Crédits utilisés pour le trimestre terminé le {{qfr_month_name}} {{qfr_last_year_short}}"
+          }
+        },
+        {
+          "type":"big-int",
+          "nick" : 'thisyearspending',
+          "header":{
+            "en":"Year to date used at quarter-end",
+            "fr":"Cumul des crédits utilisés à la fin du trimestre"
+          }
         }
-      },
-      mini_view: {
+      ]);
+      this.add_col("{{qfr_last_year}}")
+        .add_child([
+          {
+            "type":"big-int",
+            "nick" : 'lastyearauth',
+            "header":{
+              "en":"Total available for use for the year ending March 31, {{qfr_last_year_short}}",
+              "fr":"Crédits totaux disponibles pour l'exercice se terminant le 31 mars {{qfr_last_year_short}}"
+            }
+          },
+          {
+            "type":"big-int",
+            "header":{
+              "en":"Used during the quarter ended {{qfr_month_name}},{{last_year_short}} ",
+              "fr":"Crédits utilisés pour le trimestre terminé le {{qfr_month_name}} {{last_year_short}}"
+            }
+          },
+          {
+            "type":"big-int",
+            "nick" : 'lastyearspending',
+            "header":{
+              "en":"Year to date used at quarter-end",
+              "fr":"Cumul des crédits utilisés à la fin du trimestre"
+            }
+          }
+      ]);
+     },
+     "data_access" : {
+        "default_cols" : [
+          'thisyearauth',
+          'thisyearspending',
+          'lastyearauth',
+          'lastyearspending'
+        ]
+     },
+     "link": {
+         "en": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-eng.asp",
+         "fr": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-fra.asp"
+     },
+     "name": { "en": "Statement of Authorities and Expenditures",
+         "fr": "État des autorisations et des dépenses"
+     },
+     "title": { "en": "Statement of Authorities and Expenditures ($000)",
+         "fr": "État des autorisations et des dépenses (en milliers de dollars)"
+     },
+     "sort": function (mapped_rows, lang) {
+         var grps = _.groupBy(mapped_rows, function (row) { return _.isNumber(row[0]) });
+         if (_.has(grps, true)) {
+             grps[true] = _.sortBy(grps[true], function (row) { return row[0] });
+         } else {
+             grps[true] = [];
+         }
+         if (_.has(grps, false)) {
+             grps[false] = _.sortBy(grps[false], function (row) { return row[1]; });
+         } else {
+             grps[false] = [];
+         }
+         return grps[true].concat(grps[false]);
+     },
+     "mapper": {
+         "to": function (row) {
+            if (this.lang == 'en') {
+              row.splice(4, 1);
+            } else {
+              row.splice(3, 1);
+            }
+            // remove acronym and vote type
+            return [row[1]].concat(_.tail(row, 3))
+         }
+       , "make_filter": function (source_row) {
+           return function (candidate_row) {
+               if (typeof source_row[1] === 'string') {
+                   return candidate_row[4] == source_row[4];
+               } else {
+                   return candidate_row[2] === source_row[2];
+               }
+           };
+       }
+     },
+     "table_view": {
+       hide_col_ids: [],
+       sum_cols: [2, 3, 4, 5, 6, 7],
+       min_func: TABLES.add_ministry_sum,
+       init_row_data: function () {
+         var total = GROUP.fnc_on_group(
+           this.row_data,
+           { txt_cols: { 0: this.gt("total") },
+               func_cols: this.sum_cols,
+               func: GROUP.sum_rows
+           });
+         var self = this;
+         this.merge_group_results(
+         GROUP.group_rows(
+           this.row_data,
+           function (row) { return _.isString(row[0]) },
+           { txt_cols: { 0: this.gt("sub_total"),
+               1: function (g) {
+                   var row = _.first(g);
+                   return _.isString(row[0]) ? self.gt("stat") : self.gt('voted')
+               }
+           },
+               func_cols: this.sum_cols,
+               func: GROUP.sum_rows
+           }));
+         this.merge_group_results([[this.row_data, total]]);
+       }
+     },
+     mini_view: {
         description: {
             "en": "Total budgetary authorities and expenditures for Q{{q}} {{in_year}} and percent change from the same quarter of the previous fiscal year ({{qfr_last_year}}).",
             "fr": "Total des autorisations et des dépenses budgétaires pour le premier trimestre de {{in_year}} et variation en pourcentage par rapport au même trimestre de l’exercice précédent ({{qfr_last_year}})."
@@ -372,55 +380,72 @@
           GRAPHS.fix_bar_highlight(plot, [data], ticks, this.app);
       }
       }
-    },
+  });
+
+  APP.dispatcher.trigger("new_table",
   {
       id: "table2",
-      col_defs: ["wide-str",
-      "big-int",
-      "big-int",
-      "big-int",
-      "big-int",
-      "big-int",
-      "big-int"],
       coverage: "in_year",
-      headers: { "en": [[
-      { "colspan": 1,
-          "header": ""
-      },
-      { "colspan": 3,
-          "header": "{{in_year}}"
-      },
-      { "colspan": 3,
-          "header": "{{qfr_last_year}}"
-      }],
-      [
-      "Standard Object",
-      "Planned expenditures for the year ending March 31, {{in_year_short}}",
-      "Expended during the quarter ended {{qfr_month_name}}, {{qfr_last_year_short}}",
-      "Year to date used at quarter-end",
-      "Planned expenditures for the year ending March 31, {{qfr_last_year_short}}",
-      "Expended during the quarter ended {{qfr_month_name}}, {{last_year_short}}",
-      "Year to date used at quarter-end"
-      ]],
-          "fr": [[
-      { "colspan": 1,
-          "header": ""
-      },
-      { "colspan": 3,
-          "header": "{{in_year}}"
-      },
-      { "colspan": 3,
-          "header": "{{qfr_last_year}}"
-      }],
-      [
-        "Article Courant",
-      "Dépenses prévues pour l'exercice se terminant le 31 mars {{in_year_short}}",
-      "Dépensées durant le trimestre terminé le {{qfr_month_name}} {{qfr_last_year_short}}",
-      "Cumul des crédits utilisés à la fin du trimestre",
-      "Dépenses prévues pour l'exercice se terminant le 31 mars {{qfr_last_year_short}}",
-      "Dépensées durant le trimestre terminé le {{qfr_month_name}} {{last_year_short}}",
-      "Cumul des crédits utilisés à la fin du trimestre"
-      ]]
+      add_cols : function(){
+        this.add_col("")
+          .add_child([
+            {
+              "key" : true,
+              "type":"wide-str",
+              "header":{
+                "en":"Standard Object",
+              "fr":"Article Courant"
+              }
+            } 
+        ]);
+        this.add_col("{{in_year}}")
+          .add_child([
+             {
+                "type":"big-int",
+                "header":{
+                  "en":"Planned expenditures for the year ending March 31, {{in_year_short}}",
+                  "fr":"Dépenses prévues pour l'exercice se terminant le 31 mars {{in_year_short}}"
+                }
+              },
+              {
+                "type":"big-int",
+                "header":{
+                  "en":"Expended during the quarter ended {{qfr_month_name}}, {{qfr_last_year_short}}",
+                  "fr":"Dépensées durant le trimestre terminé le {{qfr_month_name}} {{qfr_last_year_short}}"
+                }
+              },
+              {
+                "type":"big-int",
+                "header":{
+                  "en":"Year to date used at quarter-end",
+                  "fr":"Cumul des crédits utilisés à la fin du trimestre"
+                }
+              }
+        ]);
+        this.add_col("{{qfr_last_year}}")
+          .add_child([
+            {
+              "type":"big-int",
+              "header":{
+                "en":"Planned expenditures for the year ending March 31, {{qfr_last_year_short}}",
+                "fr":"Dépenses prévues pour l'exercice se terminant le 31 mars {{qfr_last_year_short}}"
+              }
+            },
+            {
+              "type":"big-int",
+              "header":{
+                "en":"Expended during the quarter ended {{qfr_month_name}}, {{last_year_short}}",
+                "fr":"Dépensées durant le trimestre terminé le {{qfr_month_name}} {{last_year_short}}"
+              }
+            },
+            {
+              "type":"big-int",
+              "header":{
+                "en":"Year to date used at quarter-end",
+                "fr":"Cumul des crédits utilisés à la fin du trimestre"
+              }
+            }
+        ]);
       },
       link: {
          "en": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-eng.asp",
@@ -432,7 +457,6 @@
       title: { "en": "Expenditures by Standard Object ($000)",
           "fr": "Dépenses par article courant (en milliers de dollars)"
       }
-    , key: [0]
     , mapper: {
         to: function (row) {
             if (row[0] != 'ZGOC') {
@@ -553,8 +577,8 @@
                  });
           GRAPHS.fix_bar_highlight(plot, [data], ticks, this.app);
       }
-      }
-  },
+    }
+  });
       //{
       // id: "table3",
       //  "col_defs" : ["wide-str",
@@ -678,67 +702,50 @@
       //    }
       //  }
       //},
+  APP.dispatcher.trigger("new_table",
   {
   id: "table4",
-  col_defs: ['int',
-      "wide-str",
-      "big-int",
-      "big-int",
-      "big-int",
-      "big-int",
-      "big-int",
-      "big-int"
-    ],
   "coverage": "historical",
-  "headers": { "en": [[
-      { "colspan": 2,
-          "header": ""
-      },
-      { "colspan": 2,
-          "header": "{{last_year_3}}"
-      },
-      { "colspan": 2,
-          "header": "{{last_year_2}}"
-      },
-      { "colspan": 2,
-          "header": "{{last_year}}"
-      }
-      ],
-      [
-        "Vote {{last_year}} / Statutory",
-        "Description",
-        "Total budgetary authority available for use",
-        "Expenditures",
-        "Total budgetary authority available for use",
-        "Expenditures",
-        "Total budgetary authority available for use",
-        "Expenditures"
-      ]],
-      "fr": [
-            [
-              { "colspan": 2,
-                  "header": ""
-              },
-              { "colspan": 2,
-                  "header": "{{last_year_3}}"
-              },
-              { "colspan": 2,
-                  "header": "{{last_year_2}}"
-              },
-              { "colspan": 2,
-                  "header": "{{last_year}}"
-              }
-          ],
-        [
-        "Crédit {{last_year}} / Légis.",
-        "Description",
-        "Autorisations budgétaires disponibles pour l'emploi",
-        "Dépenses",
-        "Autorisations budgétaires disponibles pour l'emploi",
-        "Dépenses",
-        "Autorisations budgétaires disponibles pour l'emploi",
-        "Dépenses"
-      ]]
+  "add_cols": function(){
+     this.add_col("")
+     .add_child([
+       {
+         "type":"int",
+         "key" : true,
+         "header":{
+           "en":"Vote {{last_year}} / Statutory",
+           "fr":"Crédit {{last_year}} / Légis."
+         }
+        },
+        {
+         "type":"wide-str",
+         "key" : true,
+          "header":{
+            "en":"Description",
+            "fr":"Description"
+          }
+        }
+     ]);
+     _.each(['{{last_year_3}}','{{last_year_3}}','{{last_year_3}}'],
+         function(header){
+           this.add_col(header)
+             .add_child([
+                 {
+                   "type":"big-int",
+                   "header":{
+                     "en":"Total budgetary authority available for use",
+                     "fr":"Autorisations budgétaires disponibles pour l'emploi"
+                   }
+                 },
+                 {
+                   "type":"big-int",
+                   "header":{
+                     "en":"Expenditures",
+                     "fr":"Dépenses"
+                   }
+                 }
+             ]);
+     },this);
   },
   "link": {
       "en": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-eng.asp",
@@ -750,22 +757,21 @@
   "title": { "en": "Authorities and Actual Expenditures ($000)",
       "fr": "Autorisations et dépenses réelles (en milliers de dollars)"
   }
-    , "sort": function (mapped_rows, lang) {
-        var grps = _.groupBy(mapped_rows, function (row) { return _.isNumber(row[0]) });
-        if (_.has(grps, true)) {
-            grps[true] = _.sortBy(grps[true], function (row) { return row[0] });
-        } else {
-            grps[true] = [];
-        }
-        if (_.has(grps, false)) {
-            grps[false] = _.sortBy(grps[false], function (row) { return row[1]; });
-        } else {
-            grps[false] = [];
-        }
-        return grps[true].concat(grps[false]);
-    }
-    , "key": [0, 1]
-    , mapper: {
+  ,"sort": function (mapped_rows, lang) {
+      var grps = _.groupBy(mapped_rows, function (row) { return _.isNumber(row[0]) });
+      if (_.has(grps, true)) {
+          grps[true] = _.sortBy(grps[true], function (row) { return row[0] });
+      } else {
+          grps[true] = [];
+      }
+      if (_.has(grps, false)) {
+          grps[false] = _.sortBy(grps[false], function (row) { return row[1]; });
+      } else {
+          grps[false] = [];
+      }
+      return grps[true].concat(grps[false]);
+  },
+  mapper: {
         to: function (row) {
             if (this.lang == 'en') {
                 row.splice(3, 1);
@@ -959,27 +965,37 @@
             });
           GRAPHS.fix_bar_highlight(plot, [data], ticks, this.app);
       }
-    }},
+    }
+  });
+
+  APP.dispatcher.trigger("new_table",
     {
-      "id": "table5",
-      "col_defs": ["wide-str",
-                  "big-int",
-                  "big-int",
-                  "big-int"],
-      "coverage": "historical",
-      "headers": { "en": [[
-      "Standard Object",
-      "{{last_year_3}}",
-      "{{last_year_2}}",
-      "{{last_year}}"
-      ]],
-          "fr": [[
-        "Article courtant",
-      "{{last_year_3}}",
-      "{{last_year_2}}",
-      "{{last_year}}"
-      ]]
-      },
+     "id": "table5",
+     "coverage": "historical",
+     add_cols : function(){
+       this.add_col(
+           {
+             "key" : true,
+             "type":"wide-str",
+             "header":{
+               "en":"Standard Object",
+               "fr":"Article courtant"
+             }
+           }
+       );
+       _.each(['{{last_year_3}}','{{last_year_3}}','{{last_year_3}}'],
+           function(header){
+               this.add_col(
+                   {
+                     "type":"big-int",
+                     "header":{
+                       "en":header,
+                       "fr":header
+                     }
+                   }
+               );
+       },this);
+     },
       "link": {
           "en": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-eng.asp",
           "fr": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-fra.asp"
@@ -989,10 +1005,9 @@
       },
       "title": { "en": "Expenditures by Standard Object from {{last_year_3}} to {{last_year}} ($000)",
           "fr": "Dépenses par article courant de {{last_year_3}} à {{last_year}} (en milliers de dollars)"
-      }
-    , "key": [0]
-    , "sort": function (rows, lang) { return rows }
-    , mapper: {
+      },
+     "sort": function (rows, lang) { return rows },
+     mapper: {
         to: function (row) {
             if (row[0] != 'ZGOC') {
                 row.splice(1, 1, sos[row[1]][this.lang]);
@@ -1167,42 +1182,49 @@
           GRAPHS.fix_bar_highlight(plot, [data], ticks, this.app);
       }
       }
-  },
+  });
+  APP.dispatcher.trigger("new_table",
   {
-      id: "table6",
-      "col_defs": ["wide-str",
-    "big-int",
-    "big-int",
-    "big-int"],
-      "coverage": "historical",
-      "headers": { "en": [[
-        "Program",
-        "{{last_year_3}}",
-        "{{last_year_2}}",
-        "{{last_year}}"
-      ]],
-          "fr": [[
-        "Program",
-        "{{last_year_3}}",
-        "{{last_year_2}}",
-        "{{last_year}}"
-      ]]
-      },
-      "link": {
-          "en": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-eng.asp",
-          "fr": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-fra.asp"
-      },
-      "name": { "en": "Expenditures by Program",
-          "fr": "Dépenses par programme"
-      },
-      "title": { "en": "Expenditures by Program from {{last_year_3}} to {{last_year}} ($000)",
-          "fr": "Dépenses par programme de {{last_year_3}} à {{last_year}} (en milliers de dollars)"
-      }
-    , "key": [0]
-    , "sort": function (mapped_rows, lang) {
-        return _.sortBy(mapped_rows, function (row) { return row[0] });
-    }
-    , mapper: {
+   id: "table6",
+   "coverage": "historical",
+   add_cols : function(){
+       this.add_col(
+           {
+             "key" : true,
+             "type":"wide-str",
+             "header":{
+               "en":"Program",
+               "fr":"Programme"
+             }
+           }
+       );
+       _.each(['{{last_year_3}}','{{last_year_3}}','{{last_year_3}}'],
+           function(header){
+               this.add_col(
+                   {
+                     "type":"big-int",
+                     "header":{
+                       "en":header,
+                       "fr":header
+                     }
+                   }
+               );
+       },this);
+   },
+   "link": {
+       "en": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-eng.asp",
+       "fr": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-fra.asp"
+   },
+   "name": { "en": "Expenditures by Program",
+       "fr": "Dépenses par programme"
+   },
+   "title": { "en": "Expenditures by Program from {{last_year_3}} to {{last_year}} ($000)",
+       "fr": "Dépenses par programme de {{last_year_3}} à {{last_year}} (en milliers de dollars)"
+   },
+    "sort": function (mapped_rows, lang) {
+       return _.sortBy(mapped_rows, function (row) { return row[0] });
+   },
+   mapper: {
         to: function (row) {
             if (this.lang == 'en') {
                 row.splice(2, 1);
@@ -1337,62 +1359,63 @@
           GRAPHS.fix_bar_highlight(plot, [data], ticks, this.app);
       }
       }
-  },
+  });
+  APP.dispatcher.trigger("new_table",
   {
-      id: "table7",
-      "col_defs": ["int",
-    "wide-str",
-    "big-int",
-    "big-int",
-    "big-int",
-    "big-int",
-    "big-int",
-    "big-int"],
-      "coverage": "historical",
-      "headers": { "en": [[
-      { "colspan": 2, "header": "" },
-      { "colspan": 2, "header": "{{last_year_3}}" },
-      { "colspan": 2, "header": "{{last_year_2}}" },
-      { "colspan": 2, "header": "{{last_year}}" }
-      ], [
-        "Payment Type",
-        "Transfer Payment",
-        "Total budgetary authority available for use",
-        "Expenditures",
-        "Total budgetary authority available for use",
-        "Expenditures",
-        "Total budgetary authority available for use",
-        "Expenditures"
-        ]],
-          "fr": [[
-      { "colspan": 2, "header": "" },
-      { "colspan": 2, "header": "{{last_year_3}}" },
-      { "colspan": 2, "header": "{{last_year_2}}" },
-      { "colspan": 2, "header": "{{last_year}}" }
-      ],
-      [
-        "Type de paiement",
-        "Paiement de transfert",
-        "Autorisations budgétaires disponibles pour l'emploi",
-        "Dépenses",
-        "Autorisations budgétaires disponibles pour l'emploi",
-        "Dépenses",
-        "Autorisations budgétaires disponibles pour l'emploi",
-        "Dépenses"
-      ]]
-      },
-      "link": {
-          "en": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-eng.asp",
-          "fr": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-fra.asp"
-      },
-      "name": { "en": "Transfer Payments",
-          "fr": "Paiements de transfert"
-      },
-      "title": { "en": "Transfer Payments from {{last_year_3}} to {{last_year}} ($000)",
-          "fr": "Paiements de transfert de {{last_year_3}} à {{last_year}} (en milliers de dollars)"
-      }
-    , "key": [0, 1]
-    , "sort": function (mapped_rows, lang) {
+   id: "table7",
+   "coverage": "historical",
+   add_cols : function(){
+     this.add_col("")
+         .add_child([
+         { 
+           "type":"int",
+           "key" : true,
+           "header":{
+             "en":"Payment Type",
+             "fr":"Type de paiement"
+           }
+         },{
+           "type":"wide-str",
+           "key" : true,
+           "header":{
+             "en":"Transfer Payment",
+             "fr":"Paiement de transfert"
+           }
+         }
+     ]);
+     _.each(['{{last_year_3}}','{{last_year_3}}','{{last_year_3}}'],
+         function(header){
+           this.add_col(header)
+            .add_child([
+            { 
+              "type":"big-int",
+              "header":{
+                "en":"Total budgetary authority available for use",
+                "fr":"Autorisations budgétaires disponibles pour l'emploi"
+              }
+            },{
+              "type":"big-int",
+              "header":{
+                "en":"Expenditures",
+                "fr":"Dépenses"
+              }
+            }
+     ]);
+     },this);
+   },
+   "link": {
+      "en": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-eng.asp",
+      "fr": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-fra.asp"
+   },
+   "name": { 
+     "en": "Transfer Payments",
+     "fr": "Paiements de transfert"
+   },
+   "title": { 
+     "en": "Transfer Payments from {{last_year_3}} to {{last_year}} ($000)",
+     "fr": "Paiements de transfert de {{last_year_3}} à {{last_year}} (en milliers de dollars)"
+   },
+   "sort": function (mapped_rows, lang) {
         return _.sortBy(mapped_rows, function (row) { return row[0] });
     }
     , mapper: {
@@ -1609,96 +1632,96 @@
             });
           GRAPHS.fix_bar_highlight(plot, data, ticks, this.app);
       }
-      }
-  }
- , {
-     id: "table8",
-     "col_defs": ["int",
-                "wide-str",
-                "big-int",
-                "big-int",
-                "big-int",
-                "big-int",
-                "big-int",
-                "big-int",
-     //"big-int", 
-     //"big-int", 
-     //"big-int", 
-     //"big-int", 
-     //"big-int", 
-     //"big-int", 
-                "big-int"
-    ],
-     "coverage": "in_year",
-     "headers": { "en": [
-       [
-          { "colspan": 2,
-              "header": ""
+    }
+  });
+  APP.dispatcher.trigger("new_table",
+  {
+   id: "table8",
+   "coverage": "in_year",
+   add_cols : function(){
+      this.add_col("")
+        .add_child([
+          {
+            "type":"int",
+            "key":true,
+            "header":{
+              "en":"Vote {{in_year}} / Statutory",
+              "fr":"Crédit {{in_year}} / Légis."
+            }
           },
-          { "colspan": 5,
-              "header": "Estimates"
+          {
+            "type":"wide-str",
+            "key":true,
+            "header":{
+              "en":"Description",
+              "fr":"Description du crédit"
+            }
+          }
+      ]);
+      this.add_col({
+        "header":{
+          "en":"Estimates",
+          "fr":"Budgets des dépenses"
+        }    
+      }).add_child([
+          {
+            "type":"big-int",
+            "nick": "mains",
+            "header":{
+              "en":"Main Estimates",
+              "fr":"Budget Principal"
+            }
           },
-          { "colspan": 1,
-              "header": ""
+          {
+            "type":"big-int",
+            "header":{
+              "en":"Available from Previous Years",
+              "fr":"Disponibles des exercices antérieurs"
+            }
           },
-         //{ "colspan" : 6,
-         //"header" : "TB Central Votes"
-         //},
-          {"colspan": 1,
-          "header": ""
-      }
-       ], [
-        "Vote {{in_year}} / Statutory",
-        "Description",
-        "Main Estimates",
-        "Available from Previous Years",
-        "Supplementary Estimates A",
-        "Supplementary Estimates B",
-        "Supplementary Estimates C",
-        "Adjustments",
-         //"Vote 5",
-         //"Vote 10",
-         //"Vote 15",
-         //"Vote 25",
-         //"Vote 30",
-         //"Vote 33",
-        "Total Net Authority"
-       ]],
-         "fr": [[
-          { "colspan": 2,
-              "header": ""
+          {
+            "type":"big-int",
+            "nick": "suppsa",
+            "header":{
+              "en":"Supplementary Estimates A",
+              "fr":"Budget supplémentaire A"
+            }
           },
-          { "colspan": 5,
-              "header": "Budgets des dépenses"
+          {
+            "type":"big-int",
+            "nick": "suppsb",
+            "header":{
+              "en":"Supplementary Estimates B",
+              "fr":"Budget supplémentaire B"
+            }
           },
-          { "colspan": 1,
-              "header": ""
+          {
+            "type":"big-int",
+            "nick": "suppsc",
+            "header":{
+              "en":"Supplementary Estimates C",
+              "fr":"Budget supplémentaire C"
+            }
+          }
+      ]);
+      this.add_col("")
+        .add_child([
+          {
+            "type":"big-int",
+            "header":{
+              "en":"Adjustments",
+              "fr":"Ajustements"
+            }
           },
-         //{ "colspan" : 6,
-         //"header" : "Crédits Centraux de CT"
-         //},
-          {"colspan": 1,
-          "header": ""
-      }
-          ], [
-          "Crédit {{in_year}} / Légis.",
-          "Description du crédit",
-          "Budget Principal",
-          "Disponibles des exercices antérieurs",
-          "Budget supplémentaire A",
-          "Budget supplémentaire B",
-          "Budget supplémentaire C",
-          "Ajustements",
-         //"Crédit 5",
-         //"Crédit 10",
-         //"Crédit 15",
-         //"Crédit 25",
-         //"Crédit 30",
-         //"Crédit 33",
-          "Autorisations totales nettes"
-          ]
-    ]
-     },
+          {
+            "type":"big-int",
+            "header":{
+              "en":"Total Net Authority",
+              "fr":"Autorisations totales nettes"
+            }
+          }
+      ]);
+   },
      "link": {
       "en": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-eng.asp",
       "fr": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-fra.asp"
@@ -1709,7 +1732,6 @@
      "title": { "en": "Current-year Authorities ($000)",
          "fr": "Autorisations pour l'exercice en cours (en milliers de dollars)"
      }
-    , "key": [0, 1]
     , "mapper": {
         "to": function (row) {
             if (this.lang == 'en') {
@@ -1848,7 +1870,6 @@
           GRAPHS.fix_bar_highlight(plot, [data], ticks, this.app);
       }
     }
- }
- ]);
     });
+ });
 })(this);

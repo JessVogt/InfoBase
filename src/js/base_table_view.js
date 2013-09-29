@@ -8,10 +8,10 @@
   APP.dispatcher.once("load_tables",function(app){
     var add_table_view = function(table){
       // setup the table views
-      table.set('table_view', TABLES.BaseTableView.extend(table.get('table_view')));
-    }
-    TABLES.tables.each(add_table_view);
-    TABLES.tables.on("add",add_table_view);
+      table.table_view= TABLES.BaseTableView.extend(table.table_view);
+    };
+    _.each(TABLES.tables,add_table_view);
+    APP.dispatcher.on("new_table",add_table_view);
   });
 
   var table_template = '#list_t';
@@ -399,15 +399,15 @@
     template : '#mini_t'
     ,initialize : function(){
       this.template = APP.t(this.template);
-      this.table = this.options['table'];
-      this.def = this.table.attributes;
-      this.app = this.options['app'];
-      _.extend(this,this.def['mini_view']);
+      this.table = this.options.table;
+      this.def = this.table;
+      this.app = this.options.app;
+      _.extend(this,this.def.mini_view);
       _.bindAll.apply(this,[this].concat(_.functions(this)));
       this.state = this.app.state;
       this.org = this.state.get("dept");
       this.lang = this.state.get('lang');
-      this.id = this.def['id'];
+      this.id = this.def.id;
 
       if (this.org['mapped_objs'][this.id][this.lang].length > 0){
         this.data = this.org['mapped_objs'][this.id][this.lang];
@@ -480,27 +480,6 @@
       this.$el.find('a.details').trigger("click");
     }
   });
-
-  TABLES.extract_headers = function(headers,index){
-    // headers is an array of arrays
-    return _.map(headers,
-        function(header_group){
-          // headers come in two formats
-          // an array of strings or an array of objects
-         if (_.isString(header_group[0])){
-          return header_group[index];
-        } else {
-          var counter = -1;
-          for (var i=0;i< header_group.length;i++){
-            counter += header_group[i].colspan
-            if (counter >= index){
-              return header_group[i].header
-            }
-          }
-        }
-      }
-    );
-  }
 
   TABLES.add_ministry_sum = function(){
     return  [GROUP.fnc_on_group(this.min_data,

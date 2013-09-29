@@ -4,14 +4,15 @@
   dup_row = function(row){
     return _.map(row,function(x){return x});};
   
-  var mapper = function (lang,def,key){
+  var mapper = function(lang,def){
     this.lang = lang;
     this.def = def;
-    this.key = key;
-    _.extend(this,_.pick(MAPPERS.maps[this.key],
+    this.key = def.id;
+    _.extend(this,_.pick(def.mapper,
                         ['to',
                         'make_filter',
                         'line_key']));
+    return this;
   }
 
 

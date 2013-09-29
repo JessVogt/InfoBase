@@ -111,8 +111,10 @@
         x = [x];
       }
       _.each(x, function(col){
-         col.parent = this;
          adder(col);
+         col.parent = this;
+         col.fully_defined = this.fully_defined+"-"+this.header.en;
+         col.wcag =  col.full_defined.replace(/\W|_| /g,"");
       });
       this.children.push(child);
       return this;
@@ -121,6 +123,8 @@
         if (_.isString(x)){
           x =  {header : {en: x, fr: x}};
         }
+        x.fully_defined  = this.id+x.header.en;
+        x.wcag =  x.full_defined.replace(/\W|_| /g,"")
         if (!_.has(x,"key")){
            x.key = false;
         }

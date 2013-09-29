@@ -2,8 +2,14 @@
     var APP = ns('APP');
     var LANG = ns('LANG');
 
+
     APP.t = function(id){
-      return Handlebars.compile($.trim($(id).html()));
+      var el =  $(id);
+      if (el.length === 0 && !_.isUndefined(console)){
+        console.warn(id+" not found");
+        return Handlebars.compile(" ");
+      }
+      return Handlebars.compile($.trim(el.html()));
     }
 
     APP.dispatcher = _.extend({
@@ -476,5 +482,57 @@
       p.toggleClass("active");
     }
   });
+
+  APP.listen_for_tables = function(app){
+    var signals = _.map(TABLES.tables,function(table){
+      return 'table_' + table.id +"_rendered";
+    });
+    APP.size_panels(app,signals);
+  };
+
+  APP.size_row = function(i,row)   {
+     var panels =  $('.mini_t',row);
+     var p = $(this).parents('.dept_zone');
+     panels.width( (p.width() - 60)/3  - 1);
+     _.each(['.section-header', 'p.description','th','.mini_payload'],
+         function(selector){
+            $(selector,row)
+            .css("height","")
+            .height(_.max($(selector,row).map(function(x,y){
+              return $(y).height();
+            })));
+     })
+  };
+
+  APP.dispatcher.on("dept_selected", APP.listen_for_tables);
+
+  APP.size_panels = function(app,signals){
+    // once all the mini table signals have been sent
+    // do some prettying up on the page
+    APP.dispatcher.on_these(signals, function(){
+      var current_view;
+      var dept = app.state.get("dept");
+      var views = _.toArray(arguments);
+      var current_table = app.state.get("table");
+      // figure out the currently selected table, if any
+      if (current_table){
+        current_view = _.first(_.filter(views,function(v){
+          // compare the views table deifnition with the current
+          // table AND make sure the currently selected 
+          // department has data for that kind of table
+          return (v.def.id === current_table.get('id') && 
+                  _.has(dept.tables,v.def.id));
+        }));
+      } else {
+        current_view = undefined;
+      }
+
+      $('.widget-row').each(APP.size_row);
+      APP.dispatcher.trigger("mini_tables_rendered",
+          {current_view : current_view,
+            views : views} 
+      ); 
+    });
+  };
 
 })();
