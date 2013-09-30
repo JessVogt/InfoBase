@@ -399,30 +399,21 @@
     template : '#mini_t'
     ,initialize : function(){
       this.template = APP.t(this.template);
-      this.table = this.options.table;
       this.def = this.table;
       this.app = this.options.app;
+      this.org = this.app.state.get("dept");
+      this.lang = this.app.state.get('lang');
+      this.gt = this.app.get_text;
+      this.da = TABLES.queries(this.app,this.def);
+      debugger
       _.extend(this,this.def.mini_view);
       _.bindAll.apply(this,[this].concat(_.functions(this)));
-      this.state = this.app.state;
-      this.org = this.state.get("dept");
-      this.lang = this.state.get('lang');
-      this.id = this.def.id;
 
-      if (this.org['mapped_objs'][this.id][this.lang].length > 0){
-        this.data = this.org['mapped_objs'][this.id][this.lang];
-      } else {
-        this.data = null;
-      }
-      this.headers = _.last(this.def['headers'][this.lang])
-      this.h_lookup = this.def['header_lookup']['en'];
-      this.gt = this.app.get_text;
+      this.data = this.org.mapped_objs(this.lang,this.def);
+      if (this.data.length === 0){ this.data = null;}
       // find the target div for this minigraph
       // based on the def which was provided
-      this.$el = $('#'+this.id);
-    }
-    ,to_lang : function(header){
-      return this.headers[this.h_lookup[header]];
+      this.$el = $('#'+this.table.id);
     }
     ,make_title : function(){
       this.$el.find('.title')
@@ -474,7 +465,7 @@
        this.$el.parents('.widget-row').each(APP.size_row);
     }
     ,make_signal : function(){
-     return 'table_' + this.def.id +"_rendered";
+      return 'table_' + this.def.id +"_rendered";
     }
     ,trigger_click : function(){
       this.$el.find('a.details').trigger("click");

@@ -12,6 +12,9 @@
     var mapper = new MAPPERS.mapper(lang,table)
     return  mapper.map(this.tables[table.id]);
   }
+  map_data.hasher = function(lang,table){
+    return lang+table.id;
+  }
 
   function map_objs(lang,table){
     // this === a department
@@ -20,19 +23,36 @@
       return _.object(table.unique_headers,mapped_row);
     });
   }
+  map_objs.hasher = function(lang,table){
+    return lang+table.id;
+  }                  
 
   function setup_tables(app){
     //setup each department with data mapper functions
     _.each(depts, function (org){
-      org.mapped_data = _.memoize(map_data);
-      org.mapped_objs = _.memoize(map_objs)
+      org.mapped_data = _.memoize(map_data,map_data.hasher);
+      org.mapped_objs = _.memoize(map_objs,map_objs.hasher);
     });
     APP.dispatcher.trigger("load_tables",app);
     APP.dispatcher.trigger("tables_loaded",app);
   }
   APP.dispatcher.once("app_ready", setup_tables);
 
-  TABLES.data_funcs = function(app,table){
+
+  _queries  = function(app,table){
+    return new queries(app,table);
+
+  }
+  _queries.hasher = function(app,table){
+    var lang = app.state.get("lang");
+    var dept = app.state.get("dept").accronym;
+    var table = table.id;
+    return lang+dept+table;
+  }
+
+  TABLES.queries = _.memoize(_.queries,_queries.hasher);
+
+  var queries = function(app,table){
     var dept = app.state.get("dept");
     var lang = app.state.get("lang");
     var mapped_data = dept.mapped_data(lang,table);
@@ -41,7 +61,9 @@
     return this;
   };
 
-  data_funcs.prototype.sort = function(func,reverse){
+  var p = TABLES.queries.prototype;
+
+  p.sort = function(func,reverse){
     reverse = reverse || false;
     var sorted =  _.sortBy(mapped_objs,func);
     if (reverse){
@@ -50,7 +72,7 @@
     return sorted;
   };
 
-  data_funcs.prototype.get_total = function(cols, options){
+  p.get_total = function(cols, options){
     // being in the col add data
     var include_defaults = options.include_defaults || true;
     //var sorted = options.sorted || false;
@@ -63,11 +85,11 @@
     return UTILS.sum_these_cols(this.mapped_data,cols);
   };
 
-  data_funcs.prototype.get_subtotal = function(cols, options){
+  p.get_subtotal = function(cols, options){
 
   };
 
-  data_funcs.prototype.get_cols = function (cols, options){
+  p.get_cols = function (cols, options){
     var sorted = options.sorted || false;
     var data = sorted ? this.sort(function(x){return x[cols[0]]},sorted) : this.mapped_objs;
     var filter_zeros = options.filter_zeroes || false;
@@ -83,11 +105,11 @@
     return rows_with_cols;
   };
 
-  data_funcs.prototype.  get_top_x = function(col,x){
+  p.  get_top_x = function(col,x){
     return _.head(this.get_cols([col],{sorted:true}),x);
   };
 
-  data_funcs.prototype.get_row = function (col, val, options) {
+  p.get_row = function (col, val, options) {
     var only_one = options.only_one || true;
     var each_mapped_obj = function(obj){
       return obj[col] == bal;
@@ -154,7 +176,6 @@
       .filter(function(h){ return !h.children;})
       .map(function(h){ return h.nick || h.wcag;})
       .value();
-
   });
 
 })(this);

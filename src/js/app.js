@@ -1,7 +1,7 @@
 (function() {
     var APP = ns('APP');
     var LANG = ns('LANG');
-
+    var TABLES = ns('TABLES');
 
     APP.t = function(id){
       var el =  $(id);

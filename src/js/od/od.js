@@ -36,7 +36,7 @@
       var dept,table,args = splat.split("_");
       dept = args[0];
       table = "table" + args[1];
-      var table = TABLES.tables.find(function(t){ return t.get("id") === table;});
+      var table = _.find(TABLES.tables,function(t){ return t.id === table;});
       if (table){
         this.app.state.set({table:table},{silent:true});
       }
