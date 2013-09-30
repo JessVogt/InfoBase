@@ -40,7 +40,6 @@
       }
   };
 
-<<<<<<< HEAD
     // customize the final app initialization by activating
     // selected gui elements
     APP.dispatcher.once("app_ready", function (app) {
@@ -52,16 +51,6 @@
     app.universe_view = new D3.bubleDeptList({
       app:app
      });
-=======
-  // customize the final app initialization by activating
-  // selected gui elements
-  APP.dispatcher.once("app_ready", function (app) {
-      app.full_dept_list = new APP.fullDeptList({
-          app: app
-          ,cols: 2
-          ,target: '.org_list_by_min'
-      });
->>>>>>> 36726d8... bug fixes
   });
 
   APP.dispatcher.on("dept_ready", function (app) {
