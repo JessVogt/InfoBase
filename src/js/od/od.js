@@ -24,27 +24,25 @@
 
     initialize : function(options){
       this.app = options.app;
-      _.bindAll(this,"dept","table");
+      _.bindAll(this,"nav");
     },
 
     routes: {
-      ":dept":              "dept",  // #AGR
-      ":dept/:table":        "table",  // #AGR/table8
+      ":splat":              "nav"  // #AGR
     },
 
-    dept: function(dept) {
+
+    nav: function(splat) {
+      var dept,table,args = splat.split("_");
+      dept = args[0];
+      table = "table" + args[1];
+      var table = TABLES.tables.find(function(t){ return t.get("id") === table;});
+      if (table){
+        this.app.state.set({table:table},{silent:true});
+      }
       var dept = depts[dept];
       if (dept){
         this.app.state.set("dept",dept);
-      }
-    },
-
-    table: function(dept, table) {
-      table = "table" + table;
-      var table = TABLES.tables.find(function(t){ return t.get("id") === table;});
-      this.dept(dept);
-      if (table){
-        APP.dispatcher.trigger("table_selected",table);
       }
     }
   });
@@ -76,7 +74,7 @@
         .on("change:lang", this.lang_change)
         .on("change:dept",this.dept_change);
       create_template_func(this);
-      APP.dispatcher.trigger_a("app_ready",this);
+      APP.dispatcher.trigger("app_ready",this);
       this.router = new APP.AppRouter({app:this});
       Backbone.history.start();
     }
@@ -182,7 +180,7 @@
     // requested table
     APP.dispatcher.on("table_selected", function(table){
       var dept = app.state.get("dept").accronym;
-      app.router.navigate(dept+"/"+table.get("id").replace("table",""))
+      app.router.navigate(dept+"_"+table.get("id").replace("table",""))
       setTimeout(function(){scrollTo(0,0)});
       app.state.set({'table':table});
 
