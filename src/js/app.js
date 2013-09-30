@@ -89,6 +89,7 @@
       ,render : function(event){
         this.app.app.hide();
         this.controller_button = $('a.dept_sel');
+
         // in case the target was a selector string
         if (_.isString(this.target)){
           this.drop_zone = $(this.target);
@@ -99,6 +100,7 @@
 
         this.controller_button
           .html(this.app.get_text("cancel"))
+          //.removeClass("dept_sel")
           .addClass("dept_sel_cancel")
 
         var lang = this.state.get('lang');
@@ -192,8 +194,9 @@
         this.render();
       }
       ,cancel : function(){
-       this.controller_button
+        this.controller_button
          .html(this.app.get_text("to_select"))
+         //.addClass("dept_sel")
          .removeClass("dept_sel_cancel")
         this.drop_zone.find(".org_list").remove();
         this.app.app.show();
@@ -203,6 +206,7 @@
         var dept = $.trim($(event.target).text());
         dept = _.first(_.filter(_.values(this.lookup),
               function(x){ return x['dept'][lang] == dept}));
+        // why ?
         this.state.unset("dept",{silent: true});
         this.cancel();
         this.state.set('dept',dept);

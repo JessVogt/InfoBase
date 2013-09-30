@@ -17,11 +17,11 @@
       }
   }
 
-  var AppRouter = Backbone.Router.extend({
+  APP.AppRouter = Backbone.Router.extend({
 
     initialize : function(options){
       this.app = options.app;
-      _.bindAll(this,"dept","table")
+      _.bindAll(this,"dept","table");
     },
 
     routes: {
@@ -37,6 +37,7 @@
     },
 
     table: function(dept, table) {
+      table = "table" + table;
       var table = TABLES.tables.find(function(t){ return t.get("id") === table;});
       this.dept(dept);
       if (table){
@@ -58,7 +59,6 @@
     }
     ,initialize: function(){
       this.template = APP.t(this.template);
-      pe.wb_load({"poly" : ["datalist"]});
       _.bindAll(this,"dept_change","setup_useful_this_links",
                 "lang_change", "formater","get_text","toggle_lang",
                 "reset_dept","reset","highlighter", "render",
@@ -73,9 +73,9 @@
         .on("change:lang", this.lang_change)
         .on("change:dept",this.dept_change);
       create_template_func(this);
-      this.router = new AppRouter({app:this});
-      Backbone.history.start();
       APP.dispatcher.trigger_a("app_ready",this);
+      this.router = new APP.AppRouter({app:this});
+      Backbone.history.start();
     }
     ,dept_change : function(model, attr){
       this.router.navigate(attr.accronym);
@@ -122,6 +122,7 @@
       this.state.set('dept',dept)
     }
     ,reset : function() {
+      this.router.navigate("");
       var min_tot = this.state.get("min_tot");
       var goc_tot = this.state.get("goc_tot");
       this.state.clear({silent:true});
@@ -193,7 +194,7 @@
     // requested table
     APP.dispatcher.on("table_selected", function(table){
       var dept = app.state.get("dept").accronym;
-      app.router.navigate(dept+"/"+table.get("id"))
+      app.router.navigate(dept+"/"+table.get("id").replace("table",""))
       setTimeout(function(){scrollTo(0,0)});
       app.state.set({'table':table});
 
