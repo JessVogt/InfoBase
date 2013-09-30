@@ -100,7 +100,7 @@
 
         this.controller_button
           .html(this.app.get_text("cancel"))
-          //.removeClass("dept_sel")
+          .removeClass("dept_sel")
           .addClass("dept_sel_cancel")
 
         var lang = this.state.get('lang');
@@ -128,7 +128,7 @@
         el.find('a[sort-func-name="'+this.sort_func+'"]')
           .addClass('button-accent');
         // focus the cursor on the cancel button
-        $('.dept_sel_cancel:first').focus();
+        this.controller_button.focus();
       }
       ,min_sort : {
         group_by : function(lang,view){
@@ -196,7 +196,7 @@
       ,cancel : function(){
         this.controller_button
          .html(this.app.get_text("to_select"))
-         //.addClass("dept_sel")
+         .addClass("dept_sel")
          .removeClass("dept_sel_cancel")
         this.drop_zone.find(".org_list").remove();
         this.app.app.show();
