@@ -20,6 +20,34 @@
       }
   }
 
+  APP.AppRouter = Backbone.Router.extend({
+
+    initialize : function(options){
+      this.app = options.app;
+      _.bindAll(this,"dept","table");
+    },
+
+    routes: {
+      ":dept":              "dept",  // #AGR
+      ":dept/:table":        "table",  // #AGR/table8
+    },
+
+    dept: function(dept) {
+      var dept = depts[dept];
+      if (dept){
+        this.app.state.set("dept",dept);
+      }
+    },
+
+    table: function(dept, table) {
+      table = "table" + table;
+      var table = TABLES.tables.find(function(t){ return t.get("id") === table;});
+      this.dept(dept);
+      if (table){
+        APP.dispatcher.trigger("table_selected",table);
+      }
+    }
+  });
 
   /************APP VIEW***********/
   APP.appView = Backbone.View.extend({
@@ -34,7 +62,6 @@
     }
     ,initialize: function(){
       this.template = APP.t(this.template);
-      pe.wb_load({"poly" : ["datalist"]});
       _.bindAll(this,"dept_change","setup_useful_this_links",
                 "lang_change", "formater","get_text","toggle_lang",
                 "reset_dept","reset","highlighter", "render",
@@ -50,6 +77,8 @@
         .on("change:dept",this.dept_change);
       create_template_func(this);
       APP.dispatcher.trigger_a("app_ready",this);
+      this.router = new APP.AppRouter({app:this});
+      Backbone.history.start();
     }
     ,dept_change : function(model, attr){
       APP.dispatcher.trigger("dept_selected",this);
@@ -81,6 +110,7 @@
       this.state.set('dept',dept)
     }
     ,reset : function() {
+      this.router.navigate("");
       var min_tot = this.state.get("min_tot");
       var goc_tot = this.state.get("goc_tot");
       this.state.clear({silent:true});
@@ -151,6 +181,8 @@
     // when a table is selected, hide the panels and show the 
     // requested table
     APP.dispatcher.on("table_selected", function(table){
+      var dept = app.state.get("dept").accronym;
+      app.router.navigate(dept+"/"+table.get("id").replace("table",""))
       setTimeout(function(){scrollTo(0,0)});
       app.state.set({'table':table});
 
