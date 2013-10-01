@@ -859,8 +859,8 @@
             function (x) {
                 return _.isNumber(x['Vote {{last_year}} / Statutory']);
             });
-          v_s.true = v_s.true || [_.object(_.zip(this.years),_.map(this.years,function(){return 0;}))];
-          v_s.false = v_s.false || [_.object(_.zip(this.years),_.map(this.years,function(){return 0;}))];
+          v_s[true] = v_s[true] || [_.object(_.zip(this.years),_.map(this.years,function(){return 0;}))];
+          v_s[false]= v_s[false] || [_.object(_.zip(this.years),_.map(this.years,function(){return 0;}))];
           this.map_reduce_v_s = function (col) {
               return _.map([true,false], function (v) {
                   return _.reduce(v_s[v], function (x, y) {
@@ -1764,7 +1764,7 @@
               css: [{ 'font-weight': 'bold', 'text-align': 'left' },
                   { 'text-align': 'right' },
                   { 'text-align': 'right' }] ,
-              classes :  ['wrap-none','wrap-none','wrap-none']
+              classes :  ['','wrap-none','wrap-none']
           });
       }
     }
