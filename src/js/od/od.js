@@ -17,6 +17,33 @@
       }
   }
 
+  APP.AppRouter = Backbone.Router.extend({
+
+    initialize : function(options){
+      this.app = options.app;
+      _.bindAll(this,"nav");
+    },
+
+    routes: {
+      ":splat":              "nav"  // #AGR
+    },
+
+
+    nav: function(splat) {
+      var dept,table,args = splat.split("_");
+      dept = args[0];
+      table = "table" + args[1];
+      var table = TABLES.tables.find(function(t){ return t.get("id") === table;});
+      if (table){
+        this.app.state.set({table:table},{silent:true});
+      }
+      var dept = depts[dept];
+      if (dept){
+        this.app.state.set("dept",dept);
+      }
+    }
+  });
+
   /************APP VIEW***********/
   APP.appView = Backbone.View.extend({
     el : $('body')
@@ -30,7 +57,6 @@
     }
     ,initialize: function(){
       this.template = APP.t(this.template);
-      pe.wb_load({"poly" : ["datalist"]});
       _.bindAll(this,"dept_change","setup_useful_this_links",
                 "lang_change", "formater","get_text","toggle_lang",
                 "reset_dept","reset","highlighter", "render",
@@ -45,9 +71,12 @@
         .on("change:lang", this.lang_change)
         .on("change:dept",this.dept_change);
       create_template_func(this);
-      APP.dispatcher.trigger_a("app_ready",this);
+      APP.dispatcher.trigger("app_ready",this);
+      this.router = new APP.AppRouter({app:this});
+      Backbone.history.start();
     }
     ,dept_change : function(model, attr){
+      this.router.navigate(attr.accronym);
       APP.dispatcher.trigger("dept_selected",this);
       APP.dispatcher.trigger("dept_ready",this);
     }
@@ -91,6 +120,7 @@
       this.state.set('dept',dept)
     }
     ,reset : function() {
+      this.router.navigate("");
       var min_tot = this.state.get("min_tot");
       var goc_tot = this.state.get("goc_tot");
       this.state.clear({silent:true});
@@ -161,6 +191,8 @@
     // when a table is selected, hide the panels and show the 
     // requested table
     APP.dispatcher.on("table_selected", function(table){
+      var dept = app.state.get("dept").accronym;
+      app.router.navigate(dept+"_"+table.get("id").replace("table",""))
       setTimeout(function(){scrollTo(0,0)});
       app.state.set({'table':table});
 
