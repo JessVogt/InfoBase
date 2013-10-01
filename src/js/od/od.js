@@ -31,7 +31,6 @@
       ":splat":              "nav"  // #AGR
     },
 
-
     nav: function(splat) {
       var dept,table,args = splat.split("_");
       dept = args[0];
@@ -79,6 +78,7 @@
       Backbone.history.start();
     }
     ,dept_change : function(model, attr){
+      this.router.navigate(attr.accronym);
       APP.dispatcher.trigger("dept_selected",this);
       APP.dispatcher.trigger("dept_ready",this);
     }

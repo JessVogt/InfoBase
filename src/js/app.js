@@ -444,6 +444,7 @@
       return this;
     }
     ,tear_down : function(e){
+       this.app.router.navigate(this.dept.accronym);
        this.table_view.remove();
        this.remove();
        this.app.state.unset("table");
