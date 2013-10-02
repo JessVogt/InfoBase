@@ -26,14 +26,17 @@ $(function () {
       var input = $(event.target);
       var val = input.val();
       var lis = input.parents(".sidebar").find("li");
-      if ( val.length < 3){
+      if ( val.length < 1){
         lis.removeClass("ui-screen-hidden");
         return;
       }
       lis.each(function(){
-        if ($(this).text().toLowerCase().search(val) == -1){
+        if ($(this).text().toLowerCase().search(new RegExp(val)) == -1){
           $(this).addClass("ui-screen-hidden");
+        } else {
+          $(this).removeClass("ui-screen-hidden");
         }
+
       });
     }
     ,central_votes : true
