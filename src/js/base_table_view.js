@@ -399,13 +399,13 @@
     template : '#mini_t'
     ,initialize : function(){
       this.template = APP.t(this.template);
-      this.def = this.table;
+      this.def = this.options.table;
       this.app = this.options.app;
       this.org = this.app.state.get("dept");
       this.lang = this.app.state.get('lang');
       this.gt = this.app.get_text;
       this.da = TABLES.queries(this.app,this.def);
-      debugger
+      this.da.get_total("thisyearspending");
       _.extend(this,this.def.mini_view);
       _.bindAll.apply(this,[this].concat(_.functions(this)));
 

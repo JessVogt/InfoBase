@@ -15,8 +15,6 @@ import mako.lookup
 from ..loading import load_les, load_od
 from helpers.from_here import here
 #from .table_defs import tables
-from .od_table_defs import make_od_tables
-from .. import models
 
 opn = functools.partial(codecs.open,encoding='utf-8')
 mako_dirs = (here(__file__)("../../mako"),)

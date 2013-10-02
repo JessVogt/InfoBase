@@ -1,7 +1,7 @@
 (function (root) {
 
 
-    var D3 = ns('D3');
+  var D3 = ns('D3');
   var GRAPHS = ns('GRAPHS');
   var GROUP = ns('GROUP');
   var APP = ns('APP');
@@ -51,6 +51,7 @@
     app.universe_view = new D3.bubleDeptList({
       app:app
      });
+    });
 
   APP.dispatcher.on("dept_ready", function (app) {
       // add the reset button
@@ -725,7 +726,7 @@
           }
         }
      ]);
-     _.each(['{{last_year_3}}','{{last_year_3}}','{{last_year_3}}'],
+     _.each(['{{last_year_3}}','{{last_year_2}}','{{last_year_1}}'],
          function(header){
            this.add_col(header)
              .add_child([
@@ -984,7 +985,7 @@
              }
            }
        );
-       _.each(['{{last_year_3}}','{{last_year_3}}','{{last_year_3}}'],
+       _.each(['{{last_year_3}}','{{last_year_2}}','{{last_year_1}}'],
            function(header){
                this.add_col(
                    {
@@ -1199,7 +1200,7 @@
              }
            }
        );
-       _.each(['{{last_year_3}}','{{last_year_3}}','{{last_year_3}}'],
+       _.each(['{{last_year_3}}','{{last_year_2}}','{{last_year_1}}'],
            function(header){
                this.add_col(
                    {
@@ -1384,7 +1385,7 @@
            }
          }
      ]);
-     _.each(['{{last_year_3}}','{{last_year_3}}','{{last_year_3}}'],
+     _.each(['{{last_year_3}}','{{last_year_2}}','{{last_year_1}}'],
          function(header){
            this.add_col(header)
             .add_child([

@@ -50,18 +50,18 @@
     return lang+dept+table;
   }
 
-  TABLES.queries = _.memoize(_.queries,_queries.hasher);
+  TABLES.queries = _.memoize(_queries,_queries.hasher);
 
   var queries = function(app,table){
-    var dept = app.state.get("dept");
-    var lang = app.state.get("lang");
-    var mapped_data = dept.mapped_data(lang,table);
-    var mapped_objs = dept.mapped_objs(lang,table);
+    this.dept = app.state.get("dept");
+    this.lang = app.state.get("lang");
+    this.mapped_data = this.dept.mapped_data(this.lang,table);
+    this.mapped_objs = this.dept.mapped_objs(this.lang,table);
     _.extend(this,table.data_access);
     return this;
   };
 
-  var p = TABLES.queries.prototype;
+  var p = queries.prototype;
 
   p.sort = function(func,reverse){
     reverse = reverse || false;
@@ -72,17 +72,32 @@
     return sorted;
   };
 
+  p.sum_cols = function(rows,cols){
+    // ar will be an array of 
+    var initial = _.map(cols,function(){return 0;});
+    function reducer(x,y){
+      return _.map(x, function(__,i){
+        return x[i] + y[i];
+      });
+    };
+    var total = _(rows)
+      .map(function(row){ return _.map(cols,function(col){ return row[col];})})
+      .reduce(reducer, initial)
+    return _.object(cols, total);
+   };
+
   p.get_total = function(cols, options){
-    // being in the col add data
+    options = options || {include_defaults : false};
     var include_defaults = options.include_defaults || true;
-    //var sorted = options.sorted || false;
-    if (cols && include_defaults){
-      cols = this.default_cols.concat(cols);
-    }
     if (_.isUndefined(cols)){
       cols = this.default_cols;
+    } else if (!_.isArray(cols)){
+      cols = [cols];
     }
-    return UTILS.sum_these_cols(this.mapped_data,cols);
+    if (options.include_defaults){
+      cols = _.uniq(cols.concat(this.default_cols));
+    }
+    return this.sum_cols(this.mapped_objs,cols);
   };
 
   p.get_subtotal = function(cols, options){

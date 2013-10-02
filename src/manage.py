@@ -15,7 +15,7 @@ def shell():
 
 def report(dev=True, output=None):
   from py.reporting import html_les,od
-  from py import ke_extract
+  #from py import ke_extract
   if output == 'les':
     html_les(dev)
   elif output == 'od':
