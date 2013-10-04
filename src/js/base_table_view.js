@@ -405,7 +405,7 @@
       this.lang = this.app.state.get('lang');
       this.gt = this.app.get_text;
       this.da = TABLES.queries(this.app,this.def);
-      this.da.get_total("thisyearspending");
+
       _.extend(this,this.def.mini_view);
       _.bindAll.apply(this,[this].concat(_.functions(this)));
 

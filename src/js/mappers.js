@@ -11,18 +11,19 @@
     _.extend(this,_.pick(def.mapper,
                         ['to',
                         'make_filter',
+                        "sort",
                         'line_key']));
+    this.sort = this.sort || _.identity;
     return this;
   }
 
-
   mapper.prototype.map = function(rows){
-  return _.map(rows,
+  return this.sort(_.map(rows,
     function(row){
       var mapped_row = this['to'](dup_row(row));
       mapped_row.original = row;
       return mapped_row;
-    },this);
+    },this));
   }
   mapper.prototype.find_similar = function(row,depts){
     // map the departments to filter down to just the relevant

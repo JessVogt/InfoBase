@@ -137,6 +137,7 @@
       { 
         "type":"int",
         "key" : true,
+        "nick" : "votenum",
         "header":{
           "en":"Vote / Statutory",
           "fr":"Crédit / Statutaire"
@@ -144,6 +145,7 @@
       },{
         "type":"wide-str",
         "key" : true,
+        "nick" : "desc",
         "header":{
           "en":"Description",
           "fr":"Description"
@@ -221,20 +223,6 @@
      "title": { "en": "Statement of Authorities and Expenditures ($000)",
          "fr": "État des autorisations et des dépenses (en milliers de dollars)"
      },
-     "sort": function (mapped_rows, lang) {
-         var grps = _.groupBy(mapped_rows, function (row) { return _.isNumber(row[0]) });
-         if (_.has(grps, true)) {
-             grps[true] = _.sortBy(grps[true], function (row) { return row[0] });
-         } else {
-             grps[true] = [];
-         }
-         if (_.has(grps, false)) {
-             grps[false] = _.sortBy(grps[false], function (row) { return row[1]; });
-         } else {
-             grps[false] = [];
-         }
-         return grps[true].concat(grps[false]);
-     },
      "mapper": {
          "to": function (row) {
             if (this.lang == 'en') {
@@ -244,7 +232,27 @@
             }
             // remove acronym and vote type
             return [row[1]].concat(_.tail(row, 3))
-         }
+         },
+        "sort": function (mapped_rows) {
+            var grps = _.groupBy(mapped_rows, function (row) { 
+              return _.isNumber(row[0]);
+            });
+            if (_.has(grps, true)) {
+                grps[true] = _.sortBy(grps[true], function (row) { 
+                  return row[0];
+                });
+            } else {
+                grps[true] = [];
+            }
+            if (_.has(grps, false)) {
+                grps[false] = _.sortBy(grps[false], function (row) { 
+                  return row[1]; 
+                });
+            } else {
+                grps[false] = [];
+            }
+            return grps[true].concat(grps[false]);
+        } 
        , "make_filter": function (source_row) {
            return function (candidate_row) {
                if (typeof source_row[1] === 'string') {
@@ -712,6 +720,7 @@
        {
          "type":"int",
          "key" : true,
+         "nick" : "votenum",
          "header":{
            "en":"Vote {{last_year}} / Statutory",
            "fr":"Crédit {{last_year}} / Légis."
@@ -1646,6 +1655,7 @@
           {
             "type":"int",
             "key":true,
+            'nick' : "votenum",
             "header":{
               "en":"Vote {{in_year}} / Statutory",
               "fr":"Crédit {{in_year}} / Légis."

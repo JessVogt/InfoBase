@@ -8,7 +8,7 @@
   }
 
   var app = {
-    state : new Backbone.Model({lang: "en"})
+    state : new Backbone.Model({lang: "en",dept:depts.AGR}),
   }
 
   var APP = ns('APP');
@@ -18,60 +18,107 @@
   APP.app = new APP.appView();
   APP.app.state.set("lang","en")
 
-  module("test data");
+  _.each(TABLES.tables, function(table){
+      module("test "+ table.id);
 
-  test("assert all have data type",function(){
-    _.each(TABLES.tables, function(table){
-      _.each(table._flat_cols, function(col){
-         if (!col.children){
-           ok(_.contains(types,col.type));
-         }
+      test("assert all cols have data type",function(){
+          _.each(table.flat_headers, function(col){
+            if (!col.children){
+              ok(_.contains(types,col.type));
+            }
+          });
       });
-    });
-  });
 
-  test("test col_from_nick", function(){
-    _.each(TABLES.tables, function(table){
-      _.each(table.unique_headers, function(header){
-          if (header.substring(0,table.id.length) === table.id){
-            ok(!table.col_from_nick(header));
-          } else {
-            ok(table.col_from_nick(header));
+      test("assert all cols have ids",function(){
+        ok(table.keys.length >= 1);
+      });
+
+      test("test col_from_nick", function(){
+          _.each(table.unique_headers, function(header){
+              if (header.substring(0,table.id.length) === table.id){
+                ok(!table.col_from_nick(header));
+              } else {
+                ok(table.col_from_nick(header));
+              }
+          });
+      });
+
+
+      test("test mapped_data", function(){
+        var en_result = depts.AGR.mapped_data("en",table);
+        var en_result2 = depts.AGR.mapped_data("en",table);
+        var fr_result = depts.AGR.mapped_data("fr",table);
+        equal(en_result.length, fr_result.length);
+        _.each(en_result, function(row,i){
+          _.each(row,function(data,j){
+            strictEqual(data, en_result2[i][j]);
+          })
+        });
+      });
+
+      test("test mapped_objs", function(){
+        var en_result = depts.AGR.mapped_objs("en",table);
+        var en_result2 = depts.AGR.mapped_objs("en",table);
+        var fr_result = depts.AGR.mapped_objs("fr",table);
+        equal(en_result.length, fr_result.length);
+        _.each(en_result, function(row,i){
+          _.each(row,function(data,key){
+            strictEqual(data, en_result2[i][key]);
+          })
+        });
+      });
+
+      test("test data queries", function(){
+         var keys = table.keys;
+         var da = TABLES.queries(app,table);
+
+          var bigints = _.chain(table.flat_headers)
+            .filter(function(h){
+              return h.type === 'big-int' || h.type === 'percentage';
+            })
+            .map(function(h){
+              return h.nick || h.wcag;
+            })
+            .value();
+
+          var col_vals = da.get_cols(bigints,
+            {sorted : true, reverse : true}
+          );
+          equal(bigints.length, _.keys(col_vals).length);
+          _.each(col_vals, function(nums){
+            _.each(nums, function(num){
+              ok(_.isNumber(num));
+            });
+          });
+          var first = col_vals[_.first(bigints)];
+          equal(_.head(first),_.max(first));
+          equal(_.last(first),_.min(first));
+
+          var summed_cols = da.get_total(bigints);
+          _.each(summed_cols, function(total,key){
+            equal(Math.round(total), Math.round(_.reduce(col_vals[key], function(x,y){return x+y})));
+          });
+
+          var top3 = da.get_top_x(bigints[0],3);
+          deepEqual(top3, _.head(col_vals[bigints[0]],3));
+
+          _.each(da.key_rows(), function(key_row){
+             ok(da.get_row_by_key(key_row),key_row);
+          },this)
+
+          if (_.contains(['table8','table1','table4'],table.id )) {
+            var sub_total_f = function(row){
+              return _.isNumber(row['votenum']);
+            }
+            var sub_total = da.get_subtotals(bigints,sub_total_f);
+            _.each(bigints, function(col_name){
+              equal(Math.round(sub_total[true][col_name]+sub_total[false][col_name]), Math.round(summed_cols[col_name]))
+            })
           }
-      });
-    });
-  });
 
-  test("test mapped_data", function(){
-    var table = ns().TABLES.tables[0];
-    var en_result = depts.AGR.mapped_data("en",table);
-    var en_result2 = depts.AGR.mapped_data("en",table);
-    var fr_result = depts.AGR.mapped_data("fr",table);
-    equal(en_result.length, fr_result.length);
-    _.each(en_result, function(row,i){
-      _.each(row,function(data,j){
-        strictEqual(data, en_result2[i][j]);
-      })
-    });
-    strictEqual(en_result[0][1], depts.AGR.tables.table1[0][3]);
-    strictEqual(fr_result[0][1],  depts.AGR.tables.table1[0][4]);
-  });
+       });
 
-  test("test mapped_objs", function(){
-    var table = ns().TABLES.tables[0];
-    var en_result = depts.AGR.mapped_objs("en",table);
-    var en_result2 = depts.AGR.mapped_objs("en",table);
-    var fr_result = depts.AGR.mapped_objs("fr",table);
-    equal(en_result.length, fr_result.length);
-    _.each(en_result, function(row,i){
-      _.each(row,function(data,key){
-        strictEqual(data, en_result2[i][key]);
-      })
-    });
-    strictEqual(en_result[0]["table1Description"], depts.AGR.tables.table1[0][3]);
-    strictEqual(fr_result[0]["table1Description"], depts.AGR.tables.table1[0][4]);
   });
-
 
 
 
