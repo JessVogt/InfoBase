@@ -1388,6 +1388,7 @@
          },{
            "type":"wide-str",
            "key" : true,
+           "nick" : 'tp',
            "header":{
              "en":"Transfer Payment",
              "fr":"Paiement de transfert"
@@ -1406,6 +1407,7 @@
               }
             },{
               "type":"big-int",
+               "nick" : header+'exp',
               "header":{
                 "en":"Expenditures",
                 "fr":"Dépenses"
@@ -1482,31 +1484,30 @@
             "en": "Organization’s transfer payments with the greatest expenditures by value ($000) and proportion of total expenditures (%). Select the fiscal year in the drop-down menu to display the expenditures.",
             "fr": "Les paiements de transfert représentant les plus importantes dépenses en fonction de leur valeur (en milliers de dollars) et en tant que pourcentage des dépenses totales (%). Sélectionnez l'exercice financier figurant dans le menu déroulant pour afficher les dépenses."
         }
-      , year: "{{last_year}}"
+      , year: "{{last_year_1}}"
       , prep_data: function () {
-          var ttf = this.app.formater;
-          var name = 'Transfer Payment'
-          var year = this.year + '-Expenditures';
-          var total = UTILS.sum_ar(_.pluck(this.data, year)) + 1;
-          var sorted = _.sortBy(this.data, function (obj) {
-              return obj[year];
-          }).reverse();
-          this.rows = _.map(_.head(sorted, 3), function (obj) {
-              return [obj[name],
-                   ttf("big-int", obj[year]),
-                   ttf("percentage", obj[year] / total)];
-          });
+          var year = this.year + 'exp';
+          var total = this.da.get_total(year,{gross:true});
+          var top3 = this.da.get_top_x([year,'tp'],3,
+              {gross_percentage: true, format: true});
+          this.rows = _.zip(
+               top3['tp'],
+               top3[year],
+               top3[year+"gross_percentage"]);
       }
       , render_data: function () {
           this.content = TABLES.build_table({
-              headers: [[this.def["headers"][this.lang][1][1],
-                    this.gt("expenditures") + ' ($000)',
-                    "(%)"]]
-          , body: this.rows
-          , css: [{ 'font-weight': 'bold', 'text-align': 'left' },
-                 { 'text-align': 'right' },
-                 { 'text-align': 'right'}]
-          , classes: ['', 'wrap-none', 'wrap-none']
+              headers: [
+                [
+                  this.header_lookup('tp'),
+                  this.gt("expenditures") + ' ($000)',
+                  "(%)"
+                ]],
+              body: this.rows,
+              classes: [
+                'left_text', 
+                'right_number', 
+                'right_number']
           });
       }
       , post_render: function () {

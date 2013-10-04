@@ -403,6 +403,7 @@
       this.app = this.options.app;
       this.org = this.app.state.get("dept");
       this.lang = this.app.state.get('lang');
+      this.ttf = this.app.formater;
       this.gt = this.app.get_text;
       this.da = TABLES.queries(this.app,this.def);
 
@@ -413,7 +414,10 @@
       if (this.data.length === 0){ this.data = null;}
       // find the target div for this minigraph
       // based on the def which was provided
-      this.$el = $('#'+this.table.id);
+      this.$el = $('#'+this.def.id);
+    },
+    header_lookup : function(nick){
+       return this.def.col_from_nick(nick).header[this.lang];
     }
     ,make_title : function(){
       this.$el.find('.title')
@@ -512,7 +516,8 @@
     }
 
     TABLES.build_table = function(options){
-      options.classes = options.classes || new Array(options.css.length);
+      options.classes = options.classes || new Array(options.body.length);
+      options.css = options.css ||  new Array(options.body.length);
       var table = $(APP.t(table_template)({title:false}));
       var id_base = "r"+_.random(0,1000000);
       table.find('table').removeClass('table-striped');
