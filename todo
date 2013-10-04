@@ -7,7 +7,7 @@ transition to-do:
     	//add backbone routes
 		//data
 		//	add universal data acess functions across the tables definitions
-		remove jqnumberformat in favour of smaller library
+		//remove jqnumberformat in favour of smaller library
 		investigate using d3 to create the tables declaratively
     add invidivual dispatch call listeners (example, add qfr links for qfr tables)
 	d3

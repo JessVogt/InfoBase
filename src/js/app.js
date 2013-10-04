@@ -54,10 +54,35 @@
     APP.stateModel = Backbone.Model.extend({ });
 
     APP.types_to_format = {
-      "percentage" :  function(val,lang){return $.formatNumber(val,
-                                                  {format : "0%" ,locale : lang})},
-      "big-int" :  function(val,lang){return $.formatNumber(Math.round(val/1000),
-                                                   {format:"#,##0" , locale: lang})},
+      "percentage" :  function(val,lang){
+        var options = {
+          symbol : "%",
+          format : "%v%s",
+          precision : 0
+        }
+        if (val <= 0.01){ options.precision = 1}
+        val = val * 100;
+        if (lang === 'en'){
+          return accounting.formatMoney(val,options);
+        } else if (lang === 'fr'){
+          return accounting.formatMoney(val,_.extend(options,{
+            decimal : ',',
+            thousand:' ',
+            precision: 1
+          }));
+        }
+      },
+      "big-int" :  function(val,lang){
+        if (lang === 'en'){
+          return accounting.formatNumber(val,{precision: 0});
+        } else if (lang === 'fr'){
+          return accounting.formatNumber(val,{
+            decimal : ',',
+            thousand:' ',
+            precision: 0
+          });
+        }
+      },
       "int" :  function(val,lang){return val},
       "str" : function(val,lang){return val},
       "wide-str" : function(val,lang){return val},
