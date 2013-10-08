@@ -45,8 +45,7 @@
     _.each(x, function(col){
        col.parent = this;
        col_adder.call(col.parent.table,col);
-       var fully_defined = col.parent.wcag+"-"+col.header.en;
-       col.wcag =  fully_defined.replace(/\W|_| /g,"");
+       col.wcag =  APP.make_unique();
        col.level = col.parent.level +1;
        col.table = col.parent.table;
     },this);
@@ -64,7 +63,7 @@
        x.key = false;
     }
     if (!_.has(x,"parent")){
-      x.wcag =  this.id+x.header.en.replace(/\W|_| /g,"")
+      x.wcag =  APP.make_unique()
       this._cols.push(x);
       x.level = 0;
     }   
@@ -103,11 +102,11 @@
       .value();
     table.keys = to_chain
       .filter(function(h){ return h.key})
-      .map(function(h){return h.nick || h.wcag})
+      .map(function(h){return h.nick || h.header.en})
       .value();
     table.unique_headers = to_chain
       .filter(function(h){ return !h.children;})
-      .map(function(h){ return h.nick || h.wcag;})
+      .map(function(h){ return h.nick || h.header.en;})
       .value();
   });
 

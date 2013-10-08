@@ -53,6 +53,17 @@
     /************STATE MODEL********/
     APP.stateModel = Backbone.Model.extend({ });
 
+    var _given = {};
+    APP.make_unique = function(){
+      var val, given=true;
+      while (given ) {
+        var val = _.random(0,10000000)+"";
+        given = !_.isUndefined(_given[val]);
+      }
+      _given[val] = true;
+      return val;
+    }
+
     APP.types_to_format = {
       "percentage" :  function(val,lang){
         var options = {

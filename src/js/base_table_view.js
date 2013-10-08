@@ -515,43 +515,82 @@
       catch(err){}
     }
 
-    TABLES.build_table = function(options){
-      options.classes = options.classes || new Array(options.body.length);
-      options.css = options.css ||  new Array(options.body.length);
-      var table = $(APP.t(table_template)({title:false}));
-      var id_base = "r"+_.random(0,1000000);
-      table.find('table').removeClass('table-striped');
-      if (options.headers){
-        _.each(options.headers, function(header_row){
-           var row = $('<tr>');
-           row.append( _.map(header_row,function(x,index){
-             if (!x){
-               el = $('<td>')
-             } else {
-               el = $('<th>')
-             }
-             return el
-              .html(x)
-              .css(options.css[index])
-              .attr("id",(id_base+x).replace(/\W|_| /g,"")) ;
-           }));
-           table.find('thead').append( row);
+    TABLES.prepare_data = function(options){
+      var x = dup_header_options = options.dup_header_options;
+      var rows = options.rows;
+      var headers = options.headers;
+      var headers_css = options.headers_css || new Array(headers[0].length);
+      var row_css = x ? headers_css : options.row_css || new Array(headers[0].length);
+      var headers_class = options.headers_class || new Array(headers[0].length);
+      var row_class = x ? headers_class : options.row_class || new Array(headers[0].length);
+      var header_links = _.map(rows[0],function(){return '';});
+
+      _.each(headers, function(header_row,i){
+        _.each(header_row, function(header,j){
+          var id =  APP.make_unique();
+          header_links[j] += ' ' + id;
+           if (i > 0){
+             var wcag_headers = _.chain(headers)
+               .first(i).pluck(j)
+               .map(function(d){ return d.id})
+               .value().join(" ");
+           } else {
+             wcag_headers = '';
+           }
+           header_row[j] = {
+             val : header,
+             id : id,
+             headers : wcag_headers,
+             css : headers_css[j],
+             class : headers_class[j]
+           };
         });
+      });
+
+      _.each(rows, function(row,i){
+        _.each(row, function(val,j){
+           row[j] = {
+             val : val,
+             headers : $.trim(header_links[j]),
+             css : headers_css[j],
+             class : headers_class[j]
+           };
+        });
+      });
+    };
+
+    TABLES.d3_build_table = function(options){
+      var table = d3.select(options.node).append("table");
+      var headers = table.append("thead")
+          .data(options.headers)
+          .enter()
+          .append("tr")
+          .selectAll("td")
+            .data(Object)
+            .append("td")
+            .html(function(d){return d.val;})
+            .style(function(){ return d.css})
+            .attr("id",function(d){return d.id;})
+            .attr("headers",function(d){return d.headers;})
+            .attr("class",function(d){return d.class;});
+      if (options.headerseach){
+         headers.each(options.headerseach);
       }
-     _.each(options.body, function(data_row){
-        var row = $('<tr>');
-        row.append( _.map(data_row,function(x,index){
-          return $('<td>')
-          .html(x)
-          .css(options.css[index])
-          .addClass(options.classes[index])
-          .attr("headers", _.map(options.headers, function(h){
-            return id_base+h[index].replace(/\W|_| /g,"")
-          }).join(" "));
-        }));
-        table.find('tbody').append(row);
-     });
-     return table;
+      var rows = table.append("tbody")
+          .data(options.rows)
+          .enter()
+          .append("tr")
+          .selectAll("td")
+            .data(Object)
+            .append("td")
+            .html(function(d){return d.val;})
+            .attr("headers",function(d){return d.headers;})
+            .attr("class",function(d){return d.class;})
+            .style(function(){ return d.css});
+      if (options.dataeach){
+         rows.each(options.dataeach);
+      }
+      return table.node();
     }
 
 })(this); // end of scope

@@ -1483,9 +1483,13 @@
         description: {
             "en": "Organization’s transfer payments with the greatest expenditures by value ($000) and proportion of total expenditures (%). Select the fiscal year in the drop-down menu to display the expenditures.",
             "fr": "Les paiements de transfert représentant les plus importantes dépenses en fonction de leur valeur (en milliers de dollars) et en tant que pourcentage des dépenses totales (%). Sélectionnez l'exercice financier figurant dans le menu déroulant pour afficher les dépenses."
-        }
-      , year: "{{last_year_1}}"
-      , prep_data: function () {
+        },
+        year: "{{last_year_1}}",
+        classes : [
+            'left_text', 
+            'right_number', 
+            'right_number'],
+        prep_data: function () {
           var year = this.year + 'exp';
           var total = this.da.get_total(year,{gross:true});
           var top3 = this.da.get_top_x([year,'tp'],3,
@@ -1494,23 +1498,12 @@
                top3['tp'],
                top3[year],
                top3[year+"gross_percentage"]);
-      }
-      , render_data: function () {
-          this.content = TABLES.build_table({
-              headers: [
-                [
-                  this.header_lookup('tp'),
-                  this.gt("expenditures") + ' ($000)',
-                  "(%)"
-                ]],
-              body: this.rows,
-              classes: [
-                'left_text', 
-                'right_number', 
-                'right_number']
-          });
-      }
-      , post_render: function () {
+          var headers = [[
+             this.header_lookup('tp'),
+             this.gt("expenditures") + ' ($000)',
+             "(%)" ]];
+      },
+      post_render: function () {
           this.$el.find('.description').append(
          make_year_select()
          );
@@ -1518,8 +1511,8 @@
           this.$el.find(".description select")
           .on("change", this.on_select)
           .val(this.year);
-      }
-      , on_select: function (e) {
+      },
+      on_select: function (e) {
           this.year = $(e.target).val();
           this.render();
           this.$el.find("select").focus();
