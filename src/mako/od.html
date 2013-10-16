@@ -3,32 +3,7 @@
   <%include file='extracss.html'/>
 </%block>
 <div id='app'>
-
 </div>
-<%block name='templates'>
-  <%include file='od_table_text.html'/>
-  <%include file='od_handlebars_templates.html'/>
-</%block>
 <%block name='scripts'>
   <%include file='od_script_includes.html'/>
 </%block>
-
-<%block name='extrajs'>
-$.mobile.hashListeningEnabled = false;
-$(function(){
-    $('h1').remove();
-    var APP = ns('APP');
-
-    <%include file='handlebars_helpers.js'/>
-    APP.dispatcher.on("app_ready", function(app){
-      app.state.set("lang","en");
-      app.state.set("use_footer",false);
-      app.state.set("min_tot",true);
-      app.state.set("goc_tot",true);
-    });
-
-    APP.app = new APP.appView();
-});
-</%block>
-
-

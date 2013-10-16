@@ -5,7 +5,7 @@ module.exports = function(grunt) {
     pkg: grunt.file.readJSON('package.json'),
     watch: {
       files : ['./src/**/*.js'],
-      tasks: ['jshint:full']
+      tasks: ['concat']
     },
     rsync : {
         options : {
@@ -46,7 +46,36 @@ module.exports = function(grunt) {
       full : {
             src: ['Gruntfile.js', 'src/**/*.js'] 
       }
-    }
+    },
+    concat: {
+        options: {
+          separator: ';',
+        },
+        dist: {
+          src: [
+          "src/js/sandbox.js",
+          "src/js/datatables.js",
+          "src/js/group_funcs.js" ,
+          "src/js/table_popup.js" ,
+          "src/js/mappers.js" ,
+          "src/js/app.js",
+          "src/js/loader.js",
+          "src/js/handlebars_helpers.js",
+          "src/js/base_graph_view.js",
+          "src/js/base_table_view.js",
+          "src/js/queries.js",
+          "src/js/d3/core.js",
+          "src/js/d3/bar.js",
+          "src/js/d3/circle.js",
+          "src/js/tables.js",
+          "src/js/od/text.js",
+          "src/js/od/tables.js",
+          "src/js/od/od.js",
+          "src/js/ExDB-start.js"
+          ],
+          dest: '../ExDB/ExDB.js',
+        },
+      }
   });
 
   grunt.loadNpmTasks('grunt-contrib-uglify');

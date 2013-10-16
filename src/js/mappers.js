@@ -1,9 +1,6 @@
 (function(root) {
   var MAPPERS = ns('MAPPERS');
 
-  dup_row = function(row){
-    return _.map(row,function(x){return x});};
-  
   var mapper = function(lang,def){
     this.lang = lang;
     this.def = def;
@@ -17,14 +14,10 @@
     return this;
   }
 
-  mapper.prototype.map = function(rows){
-  return this.sort(_.map(rows,
-    function(row){
-      var mapped_row = this['to'](dup_row(row));
-      mapped_row.original = row;
-      return mapped_row;
-    },this));
-  }
+  mapper.prototype.map = function(row){
+    return this.to(row.slice());
+  };
+
   mapper.prototype.find_similar = function(row,depts){
     // map the departments to filter down to just the relevant
     // lines for each dept

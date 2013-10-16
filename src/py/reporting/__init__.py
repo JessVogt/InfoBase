@@ -293,40 +293,40 @@ def check_g_and_c(depts):
           print("{}: G and C Total: {}, SP TP: {}".format(key,gc_total,so_tp_total))
 
 def od(dev=True):
-  lookups,data = load_od()
-  check(data,lookups, make_open_data_after_check(lookups))
-  lookups['depts'] = {k:v for k,v in lookups['depts'].iteritems()
-                      if 'tables' in v}
-  for dept in lookups['depts']:
-    d = lookups['depts'][dept]
-    d['fin_size'] = sum(x[-1] for x in d['tables']['table4'])
+  #lookups,data = load_od()
+  #check(data,lookups, make_open_data_after_check(lookups))
+  #lookups['depts'] = {k:v for k,v in lookups['depts'].iteritems()
+  #                    if 'tables' in v}
+  #for dept in lookups['depts']:
+  #  d = lookups['depts'][dept]
+  #  d['fin_size'] = sum(x[-1] for x in d['tables']['table4'])
 
-    if dept != 'ZGOC':
-      #lookups['depts'][dept].update(lookups['igoc'][dept])
-      if dept in lookups['qfr_links']:
-        lookups['depts'][dept]['qfr_link'] = lookups['qfr_links'][dept]
+  #  if dept != 'ZGOC':
+  #    #lookups['depts'][dept].update(lookups['igoc'][dept])
+  #    if dept in lookups['qfr_links']:
+  #      lookups['depts'][dept]['qfr_link'] = lookups['qfr_links'][dept]
 
 
-  #del lookups['igoc']
-  del lookups['qfr_links']
+  ##del lookups['igoc']
+  #del lookups['qfr_links']
 
   ##check_g_and_c(lookups['depts'])
 
-  js_data = ";\n".join(
-    [u'{}={}'.format(k,json.dumps(lookups[k]))
-     for k in lookups]
-  )+";\n"
+  #js_data = ";\n".join(
+  #  [u'{}={}'.format(k,json.dumps(lookups[k]))
+  #   for k in lookups]
+  #)+";\n"
 
-  app_js_files = list(my_js_files)
-  app_js_files += ["od/text.js",
-                   "od/tables.js",
-                   "od/od.js"]
-  js_app = process_my_js(app_js_files, dev=dev)
+  #app_js_files = list(my_js_files)
+  #app_js_files += ["od/text.js",
+  #                 "od/tables.js",
+  #                 "od/od.js"]
+  #js_app = process_my_js(app_js_files, dev=dev)
 
   full_js = ''#full_js = "\n".join([js_data])
   full_css = ''#full_css = cssdata
-  import IPython
-  IPython.embed()
+  #import IPython
+  #IPython.embed()
 
   t = lookup.get_template('od.html')
   with open("../../ExDB/index-eng.html",'w') as leshtml:

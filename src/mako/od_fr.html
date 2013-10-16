@@ -5,35 +5,9 @@
 <div id='app'>
 
 </div>
-<%block name='templates'>
-  <%include file='od_table_text.html'/>
-  <%include file='od_handlebars_templates.html'/>
-</%block>
 <%block name='scripts'>
   <%include file='od_script_includes.html'/>
 </%block>
 
-<%block name='extrajs'>
-$(function(){
-    $.mobile.hashListeningEnabled = false;
-    $('h1').remove();
-    var APP = ns('APP');
-
-    <%include file='handlebars_helpers.js'/>
-    APP.dispatcher.on("app_ready", function(app){
-      app.state.set("lang","fr");
-      app.state.set("use_footer",false);
-      app.state.set("min_tot",true);
-      app.state.set("goc_tot",true);
-    });
-
-    _.each(depts,function(org){
-      org['mapped_data'] = {};
-      org['mapped_objs'] = {};
-    });
-
-    APP.app = new APP.appView();
-});
-</%block>
 
 

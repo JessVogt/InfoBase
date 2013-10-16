@@ -4,21 +4,53 @@
   var GRAPHS = ns('GRAPHS');
   var MAPPERS = ns('MAPPERS');
   var LANG = ns('LANG');
+  var PARSER = ns('PARSER');
 
-  //mock the stupid WET pe object for testing
-  var pe = pe || {wb_load: function(){}};
-
-  var create_template_func = function(app) {
-      TABLES.m = function(s){
-        var lang = app.state.get('lang');
-        var args = TABLES.template_args['common'];
-        _.extend(args,TABLES.template_args[lang]);
-        if (s){
-          return Handlebars.compile(s)(args);
-        }
-        return '';
-      }
+  APP.start = function(){
+    var lang = _.last(location.pathname.replace(".html",""),3).join("")=='eng' ? 'en' : 'fr';
+    $.when(
+      $.ajax("data/lang.csv"),
+      $.ajax("templates/od_table_text.html"),
+      $.ajax("templates/od_handlebars_templates.html"),
+      $.ajax("data/orgs.csv"),
+      $.ajax("data/sos.csv"),
+      $.ajax("data/QFRLinks.csv")
+    ).done(function(text,table_text,handlebars,orgs,sos,qfrlinks){
+      LANG.lookups = PARSER.parse_lang(d3.csv.parseRows(text[0]));
+      $('html').append(table_text[0]);
+      $('html').append(handlebars[0]);
+      window.depts = PARSER.parse_orgs(d3.csv.parseRows(orgs[0]));
+      window.sos = PARSER.parse_sos(d3.csv.parseRows(sos[0]));
+      PARSER.parse_qfrlinks(window.depts, d3.csv.parseRows(qfrlinks[0]));
+      APP.app = new APP.appView({
+        state : {
+          "lang":lang,
+          "use_footer":false,
+          "min_tot":true,
+          "goc_tot":true
+        }});
+    });
   }
+
+  APP.dispatcher.on("data_loaded",function(app){
+    window.depts_cf = crossfilter(_.values(window.depts));
+    window.depts_cf.min = window.depts_cf.dimension(function(row){
+      return row.min[app.state.get("lang")];
+    });
+    APP.dispatcher.trigger("app_ready",app);
+  });
+
+  APP.dispatcher.once("init", function(app){
+    TABLES.m = function(s){
+      var lang = app.state.get('lang');
+      var args = TABLES.template_args['common'];
+      _.extend(args,TABLES.template_args[lang]);
+      if (s){
+        return Handlebars.compile(s)(args);
+      }
+      return '';
+    };
+  });
 
   APP.AppRouter = Backbone.Router.extend({
 
@@ -46,6 +78,7 @@
     }
   });
 
+
   /************APP VIEW***********/
   APP.appView = Backbone.View.extend({
     el : $('body')
@@ -58,36 +91,35 @@
       //,"click a.page-nav" : "nav"
     }
     ,initialize: function(){
+      _.bindAll.apply(this,[this].concat(_.functions(this)));
+
+      this.state = new APP.stateModel(_.extend({app:this},this.options.state));
+      APP.dispatcher.trigger("init",this);
+
+      //initialize values
+      this.lang = this.state.get("lang");
       this.template = APP.t(this.template);
-      _.bindAll(this,"dept_change","setup_useful_this_links",
-                "lang_change", "formater","get_text","toggle_lang",
-                "reset_dept","reset","highlighter", "render",
-                "horizontal_explore","remove" );
-      this.state = new APP.stateModel({app:this})
-      //initialize views
-      this.setup_useful_this_links();
+      this.nav_bar_ul = $('#navbar_ul');
+      this.title = $('#title');
+      this.app_area = $('#app');
       // check for a language or set the default of english
       this.state
         .on("change:lang", this.render)
         .on("change:lang", this.reset_dept)
         .on("change:lang", this.lang_change)
         .on("change:dept",this.dept_change);
-      create_template_func(this);
-      APP.dispatcher.trigger("app_ready",this);
+
+      this.render();
+
       this.router = new APP.AppRouter({app:this});
       Backbone.history.start();
-    }
-    ,dept_change : function(model, attr){
+    },
+    dept_change : function(model, attr){
       this.router.navigate(attr.accronym);
       APP.dispatcher.trigger("dept_selected",this);
       APP.dispatcher.trigger("dept_ready",this);
-    }
-    ,setup_useful_this_links : function(){
-      this.nav_bar_ul = $('#navbar_ul');
-      this.title = $('#title');
-      this.app_area = $('#app');
-    }
-    ,formater : function(format,val){
+    },
+    formater : function(format,val){
       return APP.types_to_format[format](val,this.lang);
     }
     ,lang_change : function(state,lang){
@@ -121,13 +153,12 @@
     ,highlighter : function(e){
        $(e.currentTarget).toggleClass('alert-info');
     }
-    ,render: function(model,attr){
+    ,render: function(){
       this.change_lang = $('#lang_change');
-      // get faster reference 
-      this.lang = attr;
-      var gt = this.get_text;
-      this.title.html(gt("title"));
+
+      this.title.html(this.get_text("title"));
       this.remove();
+
 
       this.app_area.html(this.template({
         greeting : APP.t('#greeting_'+this.lang)()
@@ -191,27 +222,26 @@
       dv.render();
       $('.panels').hide();
     });
+
+    // set state for all other depts in the current
+    // ministry
+    APP.dispatcher.on("dept_selected", function(app){
+      var org = app.state.get("dept");
+      var lang = app.state.get("lang");
+      var ministry_depts = APP.find_all_in_ministry(org,lang);
+      var other_depts = _.filter(ministry_depts,
+      function(dept) {
+        return dept['accronym'] != org['accronym'];
+      }); 
+      app.state.set("other_depts",other_depts); 
+    });  
+
+    // go directly to a table if there one is already active
+    APP.dispatcher.on("mini_tables_rendered", function(ctx){
+      if (ctx.current_view){
+        APP.dispatcher.trigger_a("table_selected",ctx.current_view.table);
+      }
+    });
   });                                   
-
-  // set state for all other depts in the current
-  // ministry
-  APP.dispatcher.on("dept_selected", function(app){
-    var org = app.state.get("dept");
-    var lang = app.state.get("lang");
-    var ministry_depts = APP.find_all_in_ministry(org,lang);
-    var other_depts = _.filter(ministry_depts,
-     function(dept) {
-       return dept['accronym'] != org['accronym'];
-    }); 
-    app.state.set("other_depts",other_depts); 
-  });  
-
-  // go directly to a table if there one is already active
-  APP.dispatcher.on("mini_tables_rendered", function(ctx){
-    if (ctx.current_view){
-      APP.dispatcher.trigger_a("table_selected",ctx.current_view.table);
-    }
-  });
-
 
 })();

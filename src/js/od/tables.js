@@ -44,9 +44,9 @@
     // selected gui elements
     APP.dispatcher.once("app_ready", function (app) {
         app.full_dept_list = new APP.fullDeptList({
-            app: app
-      , cols: 2
-      , target: '.org_list_by_min'
+        app: app,
+        cols: 2,
+        target: '.org_list_by_min'
         });
     app.universe_view = new D3.bubleDeptList({
       app:app
@@ -61,7 +61,7 @@
     .attr("href", "#")
     .on("vclick", app.reset)
     .appendTo($('#back_button'))
-    .focus()
+    .focus();
   });
 
   APP.dispatcher.on("home", function (app) {
@@ -113,20 +113,6 @@
   APP.dispatcher.on("load_tables", function (app) {
     var m = TABLES.m;
 
-    var make_year_select = function () {
-        var m = TABLES.m;
-        var rand = Math.round(Math.random() * 10000);
-        var sel = $('<select>')
-          .attr("id", rand)
-          .append($("<option>").attr("value", "{{last_year}}").html(m("{{last_year}}")))
-          .append($("<option>").attr("value", "{{last_year_2}}").html(m("{{last_year_2}}")))
-          .append($("<option>").attr("value", "{{last_year_3}}").html(m("{{last_year_3}}")));
-        return $('<span>')
-          .append($("<label>")
-          .attr({ "for": rand, 'class': 'wb-invisible' })
-          .html(app.get_text("select_fy"))
-          ).append(sel);
-      }
 
     APP.dispatcher.trigger("new_table",
     {"id": 'table1',
@@ -134,6 +120,13 @@
      "add_cols": function(){
       this.add_col("")
       .add_child([
+      {
+        "type":"int",
+        "key" : true,
+        "hidden" : true,
+        "nick" : "dept",
+        "header":'',
+      },
       { 
         "type":"int",
         "key" : true,
@@ -142,9 +135,16 @@
           "en":"Vote / Statutory",
           "fr":"Crédit / Statutaire"
         }
-      },{
-        "type":"wide-str",
+      },
+      {
+        "type":"int",
         "key" : true,
+        "hidden" : true,
+        "nick" : "votestattype",
+        "header":'',
+      },
+      {
+        "type":"wide-str",
         "nick" : "desc",
         "header":{
           "en":"Description",
@@ -163,7 +163,7 @@
           }
         },
         {
-          "type":"big-int",
+          "type": "big-int",
           "header":{
             "en":"Used during the quarter ended {{qfr_month_name}},{{qfr_last_year_short}}",
             "fr":"Crédits utilisés pour le trimestre terminé le {{qfr_month_name}} {{qfr_last_year_short}}"
@@ -230,8 +230,7 @@
             } else {
               row.splice(3, 1);
             }
-            // remove acronym and vote type
-            return [row[1]].concat(_.tail(row, 3))
+            return _.tail(row,2);
          },
         "sort": function (mapped_rows) {
             var grps = _.groupBy(mapped_rows, function (row) { 
@@ -252,8 +251,8 @@
                 grps[false] = [];
             }
             return grps[true].concat(grps[false]);
-        } 
-       , "make_filter": function (source_row) {
+        },
+        "make_filter": function (source_row) {
            return function (candidate_row) {
                if (typeof source_row[1] === 'string') {
                    return candidate_row[4] == source_row[4];
@@ -278,11 +277,11 @@
          this.merge_group_results(
          GROUP.group_rows(
            this.row_data,
-           function (row) { return _.isString(row[0]) },
+           function (row) { return _.isString(row[0]);},
            { txt_cols: { 0: this.gt("sub_total"),
                1: function (g) {
                    var row = _.first(g);
-                   return _.isString(row[0]) ? self.gt("stat") : self.gt('voted')
+                   return _.isString(row[0]) ? self.gt("stat") : self.gt('voted');
                }
            },
                func_cols: this.sum_cols,
@@ -297,30 +296,30 @@
             "fr": "Total des autorisations et des dépenses budgétaires pour le premier trimestre de {{in_year}} et variation en pourcentage par rapport au même trimestre de l’exercice précédent ({{qfr_last_year}})."
         },
         prep_data: function () {
-          var ttf = this.app.formater;
-          var mapper = function (x) {
-              return [
-          x['Total available for use for the year ending March 31, {{in_year_short}}'],
-          x["{{in_year}}-Year to date used at quarter-end"],
-          x['Total available for use for the year ending March 31, {{qfr_last_year_short}}'],
-          x["{{qfr_last_year}}-Year to date used at quarter-end"]];
-          };
-          var lines = _.map(this.data, mapper);
-          var total = _.reduce(lines, UTILS.add_ar, [0, 0, 0, 0]);
-          var auth = total[0] / (total[2] + 1) - 1;
-          var exp = total[1] / (total[3] + 1) - 1;
-          this.rows = [
-          [this.gt("authorities"),
-            ttf("big-int", total[0]),
-            ttf("big-int", total[2]),
-            ttf("percentage", auth)],
-          [this.gt("expenditures"),
-            ttf("big-int", total[1]),
-            ttf("big-int", total[3]),
-              ttf("percentage", exp)]
-        ];
-      }
-      , render_data: function () {
+          //var ttf = this.app.formater;
+          //var mapper = function (x) {
+          //    return [
+          //x['Total available for use for the year ending March 31, {{in_year_short}}'],
+          //x["{{in_year}}-Year to date used at quarter-end"],
+          //x['Total available for use for the year ending March 31, {{qfr_last_year_short}}'],
+          //x["{{qfr_last_year}}-Year to date used at quarter-end"]];
+          //};
+          //var lines = _.map(this.data, mapper);
+          //var total = _.reduce(lines, UTILS.add_ar, [0, 0, 0, 0]);
+          //var auth = total[0] / (total[2] + 1) - 1;
+          //var exp = total[1] / (total[3] + 1) - 1;
+          //this.rows = [
+          //[this.gt("authorities"),
+          //  ttf("big-int", total[0]),
+          //  ttf("big-int", total[2]),
+          //  ttf("percentage", auth)],
+          //[this.gt("expenditures"),
+          //  ttf("big-int", total[1]),
+          //  ttf("big-int", total[3]),
+          //    ttf("percentage", exp)]
+        //];
+      },
+      render_data: function () {
           var headers = _.map(["Type",
                               "{{in_year_short}} ($000)",
                               "{{qfr_last_year_short}} ($000)",
@@ -342,8 +341,8 @@
                     "en": "Largest voted and statutory net expenditures used at quarter-end ($000)",
                     "fr": "Plus importantes dépenses nettes votées et législatives utilisées à la fin du trimestre (en milliers de dollars)"
                 }
-            }
-      , descriptions: {
+            },
+       descriptions: {
           1: {
               "en": "Graph 1 presents the organization’s five largest voted and statutory net expenditures used at quarter-end. Voted expenditures reflect spending that received parliamentary approval through an appropriation bill, while statutory expenditures reflect spending whose authority was granted through other legislation. Where applicable, the “Other” category captures all other expenditures up to the end of the specified period.",
               "fr": "Le graphique 1 présente les cinq plus importantes dépenses nettes votées et législatives utilisées à la fin du trimestre par le ministère ou l'organisme. Les dépenses votées représentent les dépenses approuvées par le Parlement par l'entremise d'un projet de loi de crédits tandis que les dépenses législatives correspondent aux dépenses autorisées par l'entremise d'autres lois. S’il y a lieu, l’autre catégorie intègre toutes les autres dépenses de l’organisation jusqu'à la fin de la période précisée."
@@ -397,6 +396,13 @@
       add_cols : function(){
         this.add_col("")
           .add_child([
+            {
+              "type":"int",
+              "key" : true,
+              "hidden" : true,
+              "nick" : "dept",
+              "header":'',
+            },
             {
               "key" : true,
               "type":"wide-str",
@@ -467,10 +473,11 @@
       }
     , mapper: {
         to: function (row) {
-            if (row[0] != 'ZGOC') {
-                row.splice(1, 1, sos[row[1]][this.lang]);
-            }
-            return _.tail(row)
+          row = _.tail(row,2);
+          if (row[0] != 'ZGOC') {
+            row.splice(1, 1, sos[row[1]][this.lang]);
+          }
+          return row;
         }
       , make_filter: function (source_row) {
           return function (candidate_row) {
@@ -499,26 +506,26 @@
             "fr": "Les trois plus importantes catégories de dépenses nettes lors du premier trimestre de {{in_year}} en fonction de leur valeur (en milliers de dollars) et en tant que pourcentage des dépenses totales (%)."
         }
       , prep_data: function () {
-          var ttf_f = _.partial(this.app.formater, 'big-int');
-          var ttf_p = _.partial(this.app.formater, 'percentage');
+          //var ttf_f = _.partial(this.app.formater, 'big-int');
+          //var ttf_p = _.partial(this.app.formater, 'percentage');
 
-          var col = "{{in_year}}-Year to date used at quarter-end";
-          var data = _.sortBy(this.data, function (d) {
-              return -d[col]
-          });
+          //var col = "{{in_year}}-Year to date used at quarter-end";
+          //var data = _.sortBy(this.data, function (d) {
+          //    return -d[col]
+          //});
 
-          var sum = _.reduce(_.map(data,
-                                 function (x) { return x[col] }),
-                          function (x, y) {
-                            if (y <= 0){ y = 0}
-                              return x + y
-                          },0
-        );
-          this.rows = _.map(_.head(data, 3), function (row) {
-              return [row["Standard Object"],
-                  ttf_f(row[col]),
-                  ttf_p(row[col] / (sum || 1))]
-          });
+          //var sum = _.reduce(_.map(data,
+          //                       function (x) { return x[col] }),
+          //                function (x, y) {
+          //                  if (y <= 0){ y = 0}
+          //                    return x + y
+          //                },0
+        //);
+        //  this.rows = _.map(_.head(data, 3), function (row) {
+        //      return [row["Standard Object"],
+        //          ttf_f(row[col]),
+        //          ttf_p(row[col] / (sum || 1))]
+        //  });
       }
       , render_data: function () {
           this.content = TABLES.build_table({
@@ -717,6 +724,13 @@
   "add_cols": function(){
      this.add_col("")
      .add_child([
+      {
+        "type":"int",
+        "key" : true,
+        "hidden" : true,
+        "nick" : "dept",
+        "header":'',
+      },
        {
          "type":"int",
          "key" : true,
@@ -727,8 +741,14 @@
          }
         },
         {
+          "type":"int",
+          "key" : true,
+          "hidden" : true,
+          "nick" : "votestattype",
+          "header":'',
+        },
+        {
          "type":"wide-str",
-         "key" : true,
           "header":{
             "en":"Description",
             "fr":"Description"
@@ -748,6 +768,7 @@
                  },
                  {
                    "type":"big-int",
+                   "nick" : header+"exp",
                    "header":{
                      "en":"Expenditures",
                      "fr":"Dépenses"
@@ -780,17 +801,33 @@
       }
       return grps[true].concat(grps[false]);
   },
+  on : {
+    "data_loaded" : function(app){
+      var group = this.depts.group().reduceSum(function(r){ return r['{{last_year_1}}exp']}).all();
+      var group_key = _.object(_.map(group,function(x){
+        return [x.key, x.value];
+      }));
+      _.chain(depts)
+        .each(function(dept,key){
+          dept.fin_size = group_key[key];
+        })
+        .filter(function(dept,key){
+          return _.isUndefined(dept.fin_size);
+        })
+        .each(function(dept,key){
+          dept.fin_size =0;
+        })
+    }
+  },
   mapper: {
         to: function (row) {
             if (this.lang == 'en') {
                 row.splice(3, 1);
-                row.splice(3, 1);
             } else {
-                row.splice(2, 1);
                 row.splice(4, 1);
             }
             // remove acronym and vote type
-            return _.tail(row, 2);
+            return row;
         }
       , make_filter: function (source_row) {
           return function (candidate_row) {
@@ -835,24 +872,24 @@
             "fr": "Montant total des autorisations et dépenses budgétaires votées et législatives."
         }
       , prep_data: function () {
-          var ttf = this.app.formater;
-          var total = _.map(["{{last_year_3}}-Total budgetary authority available for use",
-                          "{{last_year_3}}-Expenditures",
-                          "{{last_year_2}}-Total budgetary authority available for use",
-                          "{{last_year_2}}-Expenditures",
-                          "{{last_year}}-Total budgetary authority available for use",
-                          "{{last_year}}-Expenditures"],
-              function (col) {
-                  return _.reduce(_.pluck(this.data, col),
-                  function (x, y) {
-                      return x + y;
-                  });
-              }, this);
-          total = _.map(total, function (x) { return ttf("big-int", x) });
-          this.rows = [
-          [m('{{last_year_short}}'), total[4], total[5]],
-          [m('{{last_year_2_short}}'), total[2], total[3]],
-          [m('{{last_year_3_short}}'), total[0], total[1]]];
+          //var ttf = this.app.formater;
+          //var total = _.map(["{{last_year_3}}-Total budgetary authority available for use",
+          //                "{{last_year_3}}-Expenditures",
+          //                "{{last_year_2}}-Total budgetary authority available for use",
+          //                "{{last_year_2}}-Expenditures",
+          //                "{{last_year}}-Total budgetary authority available for use",
+          //                "{{last_year}}-Expenditures"],
+          //    function (col) {
+          //        return _.reduce(_.pluck(this.data, col),
+          //        function (x, y) {
+          //            return x + y;
+          //        });
+          //    }, this);
+          //total = _.map(total, function (x) { return ttf("big-int", x) });
+          //this.rows = [
+          //[m('{{last_year_short}}'), total[4], total[5]],
+          //[m('{{last_year_2_short}}'), total[2], total[3]],
+          //[m('{{last_year_3_short}}'), total[0], total[1]]];
       }
       , render_data: function () {
           this.content = TABLES.build_table({
@@ -985,6 +1022,14 @@
      "coverage": "historical",
      add_cols : function(){
        this.add_col(
+      {
+        "type":"int",
+        "key" : true,
+        "hidden" : true,
+        "nick" : "dept",
+        "header":'',
+      });
+       this.add_col(
            {
              "key" : true,
              "type":"wide-str",
@@ -1020,10 +1065,10 @@
      "sort": function (rows, lang) { return rows },
      mapper: {
         to: function (row) {
-            if (row[0] != 'ZGOC') {
-                row.splice(1, 1, sos[row[1]][this.lang]);
-            }
-            return _.tail(row)
+          if (row[0] != 'ZGOC') {
+            row.splice(1, 1, sos[row[1]][this.lang]);
+          }
+          return row;
         }
       , make_filter: function (source_row) {
           return function (candidate_row) {
@@ -1053,20 +1098,20 @@
         }
       , year: "{{last_year}}"
       , prep_data: function () {
-          var ttf = this.app.formater;
-          var name = "Standard Object";
-          var data = _.filter(_.pluck(this.data, this.year),function(x){
-             return x >= 0;
-          });
-          var total = UTILS.sum_ar(data) + 1;
-          var sorted = _.sortBy(this.data, function (obj) {
-              return obj[this.year];
-          }, this).reverse();
-          this.rows = _.map(_.head(sorted, 3), function (obj) {
-              return [obj[name],
-                    ttf("big-int", obj[this.year]),
-                    ttf("percentage", obj[this.year] / total)];
-          }, this);
+          //var ttf = this.app.formater;
+          //var name = "Standard Object";
+          //var data = _.filter(_.pluck(this.data, this.year),function(x){
+          //   return x >= 0;
+          //});
+          //var total = UTILS.sum_ar(data) + 1;
+          //var sorted = _.sortBy(this.data, function (obj) {
+          //    return obj[this.year];
+          //}, this).reverse();
+          //this.rows = _.map(_.head(sorted, 3), function (obj) {
+          //    return [obj[name],
+          //          ttf("big-int", obj[this.year]),
+          //          ttf("percentage", obj[this.year] / total)];
+          //}, this);
       }
       , render_data: function () {
           this.content = TABLES.build_table({
@@ -1077,21 +1122,6 @@
                  { 'text-align': 'right'}]
           , classes: ['', 'wrap-none', 'wrap-none']
           });
-      }
-      , post_render: function () {
-          this.$el.find('.description').append(
-         make_year_select()
-         );
-          _.bindAll(this, "on_select");
-          this.$el.find(".description select")
-          .on("change", this.on_select)
-          .val(this.year);
-      }
-      , on_select: function (e) {
-          this.year = $(e.target).val();
-          this.render();
-          this.$el.find("select").focus();
-          this.resize_my_row();
       }
     },
       graph_view: {
@@ -1200,6 +1230,14 @@
    "coverage": "historical",
    add_cols : function(){
        this.add_col(
+      {
+        "type":"int",
+        "key" : true,
+        "hidden" : true,
+        "nick" : "dept",
+        "header":'',
+      });
+       this.add_col(
            {
              "key" : true,
              "type":"wide-str",
@@ -1242,7 +1280,7 @@
             } else {
                 row.splice(1, 1);
             }
-            return _.tail(row);
+            return row;
         }
       , make_filter: function (source_row) {
           return function (candidate_row) {
@@ -1273,17 +1311,17 @@
         }
       , year: "{{last_year}}"
       , prep_data: function () {
-          var ttf = this.app.formater;
-          var name = "Program";
-          var total = UTILS.sum_ar(_.pluck(this.data, this.year)) + 1;
-          var sorted = _.sortBy(this.data, function (obj) {
-              return obj[this.year];
-          }, this).reverse();
-          this.rows = _.map(_.head(sorted, 3), function (obj) {
-              return [obj[name],
-                    ttf("big-int", obj[this.year]),
-                    ttf("percentage", obj[this.year] / total)];
-          }, this);
+          //var ttf = this.app.formater;
+          //var name = "Program";
+          //var total = UTILS.sum_ar(_.pluck(this.data, this.year)) + 1;
+          //var sorted = _.sortBy(this.data, function (obj) {
+          //    return obj[this.year];
+          //}, this).reverse();
+          //this.rows = _.map(_.head(sorted, 3), function (obj) {
+          //    return [obj[name],
+          //          ttf("big-int", obj[this.year]),
+          //          ttf("percentage", obj[this.year] / total)];
+          //}, this);
       }
       , render_data: function () {
           this.content = TABLES.build_table({
@@ -1293,21 +1331,6 @@
                   { 'text-align': 'right' }, { 'text-align': 'right'}]
           , classes: ['', 'wrap-none', 'wrap-none']
           });
-      }
-      , post_render: function () {
-          this.$el.find('.description').append(
-         make_year_select()
-         );
-          _.bindAll(this, "on_select");
-          this.$el.find(".description select")
-          .on("change", this.on_select)
-          .val(this.year);
-      }
-      , on_select: function (e) {
-          this.year = $(e.target).val();
-          this.render();
-          this.$el.find("select").focus();
-          this.resize_my_row();
       }
     },
       graph_view: {
@@ -1378,14 +1401,22 @@
    add_cols : function(){
      this.add_col("")
          .add_child([
-         { 
+          {
+          "type":"int",
+          "key" : true,
+          "hidden" : true,
+          "nick" : "dept",
+          "header":'',
+        },
+        { 
            "type":"int",
            "key" : true,
            "header":{
              "en":"Payment Type",
              "fr":"Type de paiement"
            }
-         },{
+         },
+         {
            "type":"wide-str",
            "key" : true,
            "nick" : 'tp',
@@ -1441,7 +1472,7 @@
                 row.splice(2, 1);
             }
             // remove acronym and vote type
-            return _.tail(row);
+            return row;
         },
         make_filter: function (source_row) {
             var is_stat = source_row[3].substring(0, 3) == '(S)';
@@ -1484,13 +1515,17 @@
             "en": "Organization’s transfer payments with the greatest expenditures by value ($000) and proportion of total expenditures (%). Select the fiscal year in the drop-down menu to display the expenditures.",
             "fr": "Les paiements de transfert représentant les plus importantes dépenses en fonction de leur valeur (en milliers de dollars) et en tant que pourcentage des dépenses totales (%). Sélectionnez l'exercice financier figurant dans le menu déroulant pour afficher les dépenses."
         },
-        year: "{{last_year_1}}",
+        options : [
+          {val:"{{last_year_1}}",default: true},
+          {val:"{{last_year_2}}"},
+          {val:"{{last_year_3}}"}
+        ],
         classes : [
             'left_text', 
             'right_number', 
             'right_number'],
         prep_data: function () {
-          var year = this.year + 'exp';
+          var year = this.option + 'exp';
           var total = this.da.get_total(year,{gross:true});
           var top3 = this.da.get_top_x([year,'tp'],3,
               {gross_percentage: true, format: true});
@@ -1498,24 +1533,10 @@
                top3['tp'],
                top3[year],
                top3[year+"gross_percentage"]);
-          var headers = [[
+          this.headers = [[
              this.header_lookup('tp'),
              this.gt("expenditures") + ' ($000)',
              "(%)" ]];
-      },
-      post_render: function () {
-          this.$el.find('.description').append(
-         make_year_select()
-         );
-          _.bindAll(this, "on_select");
-          this.$el.find(".description select")
-          .on("change", this.on_select)
-          .val(this.year);
-      },
-      on_select: function (e) {
-          this.year = $(e.target).val();
-          this.render();
-          this.$el.find("select").focus();
       }
     },
       graph_view: {
@@ -1648,6 +1669,13 @@
         .add_child([
           {
             "type":"int",
+            "key" : true,
+            "hidden" : true,
+            "nick" : "dept",
+            "header":'',
+          },
+          {
+            "type":"int",
             "key":true,
             'nick' : "votenum",
             "header":{
@@ -1656,8 +1684,14 @@
             }
           },
           {
+            "type":"int",
+            "key" : true,
+            "hidden" : true,
+            "nick" : "votestattype",
+            "header":'',
+          },
+          {
             "type":"wide-str",
-            "key":true,
             "header":{
               "en":"Description",
               "fr":"Description du crédit"
@@ -1746,7 +1780,7 @@
                 row.splice(3, 1);
             }
             // remove acronym and vote type
-            return [row[1]].concat(_.tail(row, 3))
+            return row;
         }
       , "make_filter": function (source_row) {
           return function (candidate_row) {
@@ -1792,18 +1826,18 @@
             "fr": "Les autorisations budgétaires délivrées par le Parlement pour l’exercice courant au moyen de la Loi de crédits à compter de {{month_name}} 2013 selon la valeur ($000) et la proportion des autorisations totales (%)."
         }
       , prep_data: function () {
-          var ttf = this.app.formater;
-          var total = UTILS.sum_ar(_.pluck(this.data, "Total Net Authority")) + 1;
-          var cols = ['Main Estimates',
-                    'Supplementary Estimates A',
-                    'Supplementary Estimates B',
-                    'Supplementary Estimates C'];
-          this.rows = _.map(cols, function (col) {
-              var col_total = UTILS.sum_ar(_.pluck(this.data, col));
-              return [this.to_lang(col),
-                  ttf("big-int", col_total),
-                  ttf("percentage", col_total / total)];
-          }, this);
+          //var ttf = this.app.formater;
+          //var total = UTILS.sum_ar(_.pluck(this.data, "Total Net Authority")) + 1;
+          //var cols = ['mains',
+          //          'suppsa',
+          //          'suppsb',
+          //          'suppsc'];
+          //this.rows = _.map(cols, function (col) {
+          //    var col_total = UTILS.sum_ar(_.pluck(this.data, col));
+          //    return [this.header_lookup(col),
+          //        ttf("big-int", col_total),
+          //        ttf("percentage", col_total / total)];
+          //}, this);
       }
       , render_data: function () {
           this.content = TABLES.build_table({

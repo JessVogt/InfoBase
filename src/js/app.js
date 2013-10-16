@@ -54,6 +54,7 @@
     APP.stateModel = Backbone.Model.extend({ });
 
     var _given = {};
+
     APP.make_unique = function(){
       var val, given=true;
       while (given ) {
@@ -63,6 +64,7 @@
       _given[val] = true;
       return val;
     }
+    APP._given = _given;
 
     APP.types_to_format = {
       "percentage" :  function(val,lang){
@@ -72,7 +74,11 @@
           precision : 0
         }
         if (val <= 0.01){ options.precision = 1}
-        val = val * 100;
+        if (_.isArray(val)){
+          val = _.map(val, function(x){return x*100;})
+        } else {
+          val = val * 100;
+        }
         if (lang === 'en'){
           return accounting.formatMoney(val,options);
         } else if (lang === 'fr'){
@@ -84,6 +90,11 @@
         }
       },
       "big-int" :  function(val,lang){
+        if (_.isArray(val)){
+          val = _.map(val, function(x){return x/1000;})
+        } else {
+          val = val / 1000;
+        }
         if (lang === 'en'){
           return accounting.formatNumber(val,{precision: 0});
         } else if (lang === 'fr'){
@@ -102,11 +113,7 @@
 
     APP.find_all_in_ministry = function(dept,lang){
       // find all departments with a ministry name, matching
-      // the ministry AND that has data for the requested table
-      return _.filter(depts,
-            function(d){
-              return d['min'][lang] == dept['min'][lang];
-      });
+      return depts_cf.min.filter(dept.min[lang]).top(Infinity);
     }
 
     APP.fullDeptList = Backbone.View.extend({

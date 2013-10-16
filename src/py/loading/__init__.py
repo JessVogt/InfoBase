@@ -6,13 +6,13 @@ import itertools
 import xlrd
 from ..reporting import table_defs
 tables = table_defs.tables
-f  = '../data/LESWEB.XLS'
-f2 = '../data/CODES WEB LES.XLS'
-f3 = '../data/ISLED.XLS'
-
-wb = xlrd.open_workbook(f)
-wb2 = xlrd.open_workbook(f2)
-wb3 = xlrd.open_workbook(f3)
+#f  = '../data/LESWEB.XLS'
+#f2 = '../data/CODES WEB LES.XLS'
+#f3 = '../data/ISLED.XLS'
+#
+#wb = xlrd.open_workbook(f)
+#wb2 = xlrd.open_workbook(f2)
+#wb3 = xlrd.open_workbook(f3)
 wb4 = xlrd.open_workbook("../data/open data.xls")
 wb7 = xlrd.open_workbook("../data/g_and_c.xlsx")
 wb8 = xlrd.open_workbook("../data/inyear.xlsx")

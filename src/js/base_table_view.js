@@ -394,6 +394,47 @@
     }
   }) // end of BaseTableView
 
+  var make_select = function (app,options) {
+      var m = TABLES.m;
+      var rand = APP.make_unique();
+      var sel = $('<select>').attr("id", rand);
+      d3.select(sel[0]).selectAll("option")
+        .data(options)
+        .enter()
+        .append("option")
+        .html(function(x){ return m(x.val);})
+        .attr("val",function(d){return d;})
+        .filter(function(d){return d.default;})
+        .attr("selected","selected");
+      return $('<span>')
+        .append($("<label>")
+        .attr({ "for": rand, 'class': 'wb-invisible' })
+        .html(app.get_text("select_fy"))
+        ).append(sel);
+  };
+
+  var miniTableSelectMixin = {
+    selectmixininit : function(){
+      this.option = _.find(this.options ,function(x){
+        return x.default;
+      });
+    },
+    post_render: function () {
+      var desc = this.$el.find('.description');
+      var select =  make_select(this.app,this.options)
+        .addClass("minisel");
+      desc.append(select);
+      this.$el.find(".description select")
+        .on("change", this.on_select)
+        .val(this.year);
+    },
+    on_select: function (e) {
+        this.option = e.target.__data__.val;
+        this.render();
+        this.$el.find("select.minisel").focus();
+    }                          
+  };
+
   TABLES.miniTableVew = Backbone.View.extend({
 
     template : '#mini_t'
@@ -406,7 +447,10 @@
       this.ttf = this.app.formater;
       this.gt = this.app.get_text;
       this.da = TABLES.queries(this.app,this.def);
-
+      if (_.has(this, "options")){
+        _.extend(this,miniTableSelectMixin);
+        this.selectmixininit();
+      }
       _.extend(this,this.def.mini_view);
       _.bindAll.apply(this,[this].concat(_.functions(this)));
 
@@ -439,6 +483,7 @@
       this.$el.find('p.description').remove();
     }
     ,render : function(){
+      // why this if?
       if (this.$el.children().length ===0 ){
         this.$el.append(this.template({
           details_title : this.gt("more_details") + " " + this.def.name[this.lang]
@@ -448,8 +493,24 @@
       this.add_description();
       if (this.data){
         this.prep_data();
-        this.render_data();
-        this.content.css({"width" : "100%"});
+        if (this.rows && this.headers) {
+          TABLES.prepare_data({
+            rows : this.rows,
+            headers : this.headers,
+            dup_header_options : true,
+            headers_class : this.classes,
+            headers_css : this.css,
+          });
+          this.content = $('<div>');
+          TABLES.d3_build_table({
+            node : this.content[0],
+            headers : this.headers,
+            rows : this.rows
+          });
+          this.content.find("table")
+            .addClass("well-table")
+            .css({"width" : "100%"});
+        }
       } else {
         this.set_no_content();
       }
@@ -481,39 +542,40 @@
         {txt_cols: {0:this.gt('min_total')},
           func_cols : this.sum_cols,
           func : GROUP.sum_rows})];
-    }
-   TABLES.add_ministry_year_sums = function(){
-      var min_totals = GROUP.group_rows(
-          this.min_data,
-          function(row){ return row[2]},
-          {txt_cols : {0 : this.gt('min_total'),
-                       2 : function(g){return _.first(g)[2]} },
-           func_cols : this.sum_cols,
-           func : GROUP.sum_rows}); 
-      return _.pluck(min_totals,1);
-    }
+  };
 
-    TABLES.excel_format = function(table,strip_footer){
-      strip_footer = strip_footer | false;
-      var clone = $(table).clone();
-      if (strip_footer){
-        clone.find('tfoot').remove();
-      }
-      clone.find('th').css({"vertical-align" : "bottom"});
-      clone.find('table,td,th').css({'border' : '1px solid black'});
-      clone.find('table,td,th').css({'border-width' : 'thin'});
-      clone.find('td,th').css({"width" : '200px'});
-      clone.find('tr:even').css({'background-color' : 'rgb(245,245,245)'})
-      clone.find('tr.info').css({'background-color' : '#d9edf7'});
-      clone.find('tr.warning').css({'background-color' : '#fcf8e3'});
-      clone.find('tr.success').css({'background-color' : '#dff0d8'});
-      var table_text =  clone .wrap('<p></p>') .parent() .html();
-      // this will only work with IE7/8/9
-      try {
-        window.clipboardData.setData("Text",table_text );
-      }
-      catch(err){}
+  TABLES.add_ministry_year_sums = function(){
+     var min_totals = GROUP.group_rows(
+         this.min_data,
+         function(row){ return row[2]},
+         {txt_cols : {0 : this.gt('min_total'),
+                      2 : function(g){return _.first(g)[2]} },
+          func_cols : this.sum_cols,
+          func : GROUP.sum_rows}); 
+     return _.pluck(min_totals,1);
+  };
+
+  TABLES.excel_format = function(table,strip_footer){
+    strip_footer = strip_footer | false;
+    var clone = $(table).clone();
+    if (strip_footer){
+      clone.find('tfoot').remove();
     }
+    clone.find('th').css({"vertical-align" : "bottom"});
+    clone.find('table,td,th').css({'border' : '1px solid black'});
+    clone.find('table,td,th').css({'border-width' : 'thin'});
+    clone.find('td,th').css({"width" : '200px'});
+    clone.find('tr:even').css({'background-color' : 'rgb(245,245,245)'})
+    clone.find('tr.info').css({'background-color' : '#d9edf7'});
+    clone.find('tr.warning').css({'background-color' : '#fcf8e3'});
+    clone.find('tr.success').css({'background-color' : '#dff0d8'});
+    var table_text =  clone .wrap('<p></p>') .parent() .html();
+    // this will only work with IE7/8/9
+    try {
+      window.clipboardData.setData("Text",table_text );
+    }
+    catch(err){}
+  }
 
     TABLES.prepare_data = function(options){
       var x = dup_header_options = options.dup_header_options;
@@ -562,12 +624,14 @@
     TABLES.d3_build_table = function(options){
       var table = d3.select(options.node).append("table");
       var headers = table.append("thead")
+          .selectAll("tr")
           .data(options.headers)
           .enter()
           .append("tr")
-          .selectAll("td")
+          .selectAll("th")
             .data(Object)
-            .append("td")
+            .enter()
+            .append("th")
             .html(function(d){return d.val;})
             .style(function(){ return d.css})
             .attr("id",function(d){return d.id;})
@@ -577,11 +641,13 @@
          headers.each(options.headerseach);
       }
       var rows = table.append("tbody")
+          .selectAll("tr")
           .data(options.rows)
           .enter()
           .append("tr")
           .selectAll("td")
             .data(Object)
+            .enter()
             .append("td")
             .html(function(d){return d.val;})
             .attr("headers",function(d){return d.headers;})

@@ -5,37 +5,53 @@
 
   TABLES.tables = [];
 
-  function map_data(lang,table){
-    // this === a department
-    var mapper = new MAPPERS.mapper(lang,table)
-    return mapper.map(this.tables[table.id]);
+  function setup_tables(app){
+    // all tables should register themselves
+    APP.dispatcher.trigger("load_tables",app);
+
+    // all tables should download their respective datasets
+    $.when.apply(null, load_data()).done(function(){
+      // this function will be called with a number of arguments equal
+      // to the number of tables
+      // each entry will be a triple consisting of 
+      // [data, "result",request_object]
+      // hold reference to arguments
+      var args = arguments;
+      _.each(this, function(table,i){
+        var mapper = map_objs(app.state.get("lang"),table);
+        table.data = _.map(_.tail(d3.csv.parseRows(args[i][0])),mapper);
+        table.cf = crossfilter(table.data);
+        table.depts = table.cf.dimension(function(row){return row['dept']});
+      })
+      APP.dispatcher.trigger("data_loaded",app);
+    });
   }
-  map_data.hasher = function(lang,table){
-    return lang+table.id;
+  APP.dispatcher.once("init", setup_tables);
+
+  var load_data = function(){
+    return _.map(TABLES.tables, function(t){
+       return $.ajax({
+         url: "data/"+t.id+".csv",
+         context : t
+       });
+    });
   }
 
   function map_objs(lang,table){
-    // this === a department
-    var mapped = this.mapped_data(lang, table);
-    return _.map(mapped,function(mapped_row){
-      return _.object(table.unique_headers,mapped_row);
-    });
+    var mapper = new MAPPERS.mapper(lang,table);
+    return function(row){
+      var row_obj =  _.object(table.unique_headers,mapper.map(row));
+      _.each(row_obj, function(val, key){
+        var type =  table.col_from_nick(key).type ;
+        if ( type == 'big-int'){
+          row_obj[key]=accounting.unformat($.trim(val));
+        } else if (type == 'int' && !_.isNaN(parseInt(val))){
+          row_obj[key]=parseInt(val);
+        }
+      },this);
+      return row_obj;
+    };
   }
-  map_objs.hasher = function(lang,table){
-    return lang+table.id;
-  }                  
-
-  function setup_tables(app){
-    //setup each department with data mapper functions
-    _.each(depts, function (org){
-      org.mapped_data = _.memoize(map_data,map_data.hasher);
-      org.mapped_objs = _.memoize(map_objs,map_objs.hasher);
-    });
-    APP.dispatcher.trigger("load_tables",app);
-    APP.dispatcher.trigger("tables_loaded",app);
-  }
-  APP.dispatcher.once("app_ready", setup_tables);
-
 
   function add_child(x){
     // this === a column parent
@@ -74,7 +90,7 @@
 
   function col_from_nick(nick){
     return _.find(this.flat_headers, function(col){
-      return col.nick === nick;
+      return col.nick === nick || col.wcag === nick;
     }) || false;
   };
 
@@ -85,8 +101,15 @@
     table.flat_headers = [];
     table._levels = [];
 
+    // add in new functions
     table.col_from_nick = _.memoize(col_from_nick);
     table.add_col = col_adder;
+
+    // register callbacks
+    _.each(table.on,function(func, signal){
+      // bind the listener to the table 
+      APP.dispatcher.on(signal,_.bind(func,table));
+    });
 
     table.add_cols();
 
@@ -106,7 +129,7 @@
       .value();
     table.unique_headers = to_chain
       .filter(function(h){ return !h.children;})
-      .map(function(h){ return h.nick || h.header.en;})
+      .map(function(h){ return h.nick || h.wcag;})
       .value();
   });
 

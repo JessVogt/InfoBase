@@ -8,7 +8,9 @@ transition to-do:
 		//data
 		//	add universal data acess functions across the tables definitions
 		//remove jqnumberformat in favour of smaller library
-		investigate using d3 to create the tables declaratively
+		//investigate using d3 to create the tables declaratively
+		download the data files
+		add in crossfilter
     add invidivual dispatch call listeners (example, add qfr links for qfr tables)
 	d3
 		create tooltip templates
