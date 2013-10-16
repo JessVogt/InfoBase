@@ -78,11 +78,24 @@
     }
   });
 
+  APP.welcomeView = Backbone.View.extend({
+    template : '#home_t',
+    initialize: function(){
+      _.bindAll(this,"render");
+      this.template = APP.t(this.template);
+    },
+    render : function(){
+      this.title.html(this.get_text("title"));
+      this.app_area.html(this.template({
+        greeting : APP.t('#greeting_'+this.lang)()
+      }));
+      APP.dispatcher.trigger_a("home",this);
+    }
+  });
 
   /************APP VIEW***********/
   APP.appView = Backbone.View.extend({
     el : $('body')
-    ,template : '#home_t'
     ,events : {
       "click #lang_change" : "toggle_lang"
       ,"click a.home" : "reset"
@@ -98,7 +111,6 @@
 
       //initialize values
       this.lang = this.state.get("lang");
-      this.template = APP.t(this.template);
       this.nav_bar_ul = $('#navbar_ul');
       this.title = $('#title');
       this.app_area = $('#app');
@@ -156,19 +168,9 @@
     ,render: function(){
       this.change_lang = $('#lang_change');
 
-      this.title.html(this.get_text("title"));
       this.remove();
 
-
-      this.app_area.html(this.template({
-        greeting : APP.t('#greeting_'+this.lang)()
-      }));
       this.app = this.app_area.find('.dept_zone');
-
-      if (this.state.get("dept")){ 
-        return;
-      }
-      APP.dispatcher.trigger_a("home",this);
     }
     ,horizontal_explore : function(){
       APP.dispatcher.trigger("horizontal_explore",this);
