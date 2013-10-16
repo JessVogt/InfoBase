@@ -1,4 +1,4 @@
-ns().APP.dispatcher.on("init", function(app){
+ns().APP.dispatcher.once("init", function(app){
   Handlebars.registerHelper("gt",function(context){
     return app.get_text(context);
   });
