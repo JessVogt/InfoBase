@@ -39,7 +39,7 @@
     window.depts_cf.min = window.depts_cf.dimension(function(row){
       return row.min[app.state.get("lang")];
     });
-    APP.dispatcher.trigger_a("app_ready",app);
+    APP.dispatcher.trigger("app_ready",app);
     Backbone.history.start();
   });
 
@@ -91,6 +91,7 @@
       this.app_area.html(this.template({
         greeting : APP.t('#greeting_'+this.app.lang)()
       }));
+      this.app.app = this.app_area.find('.dept_zone');
       APP.dispatcher.trigger_a("home",this);
     }
   });
@@ -111,11 +112,11 @@
       _.bindAll.apply(this,[this].concat(_.functions(this)));
 
       this.state = new APP.stateModel(_.extend({app:this},this.options.state));
+
       APP.dispatcher.trigger("init",this);
 
       //initialize values
       this.lang = this.state.get("lang");
-      this.app_area = $('#app');
       // check for a language or set the default of english
       this.state
         .on("change:lang", this.render)
@@ -170,7 +171,6 @@
     }
     ,render: function(){
       this.remove();
-      this.app = this.app_area.find('.dept_zone');
     }
     ,remove : function(){
       if (this.app){
@@ -188,6 +188,19 @@
       (new  APP.welcomeView({app:app})).render();
     } 
 
+    // set state for all other depts in the current
+    // ministry
+    APP.dispatcher.on("dept_selected", function(app){
+      var org = app.state.get("dept");
+      var lang = app.state.get("lang");
+      var ministry_depts = APP.find_all_in_ministry(org,lang);
+      var other_depts = _.filter(ministry_depts,
+      function(dept) {
+        return dept['accronym'] != org['accronym'];
+      }); 
+      app.state.set("other_depts",other_depts); 
+    });  
+
     // create a new organization view and link its rendering to 
     // the dept_ready signal
     var org_view = new APP.OrgView({app:app});
@@ -197,6 +210,9 @@
     // stuff to the screen such as all the mini widgets and the list of 
     // all other departments in the same ministry
     APP.dispatcher.on("new_org_view",function(view){
+      // scroll to hte top of the window
+      window.scrollTo(0, $('h1.dept').position().top);
+
       // create the drop down menu for ministries
       (new APP.otherDeptsDropDown({ app : app })).render();
 
@@ -233,18 +249,6 @@
       $('.panels').hide();
     });
 
-    // set state for all other depts in the current
-    // ministry
-    APP.dispatcher.on("dept_selected", function(app){
-      var org = app.state.get("dept");
-      var lang = app.state.get("lang");
-      var ministry_depts = APP.find_all_in_ministry(org,lang);
-      var other_depts = _.filter(ministry_depts,
-      function(dept) {
-        return dept['accronym'] != org['accronym'];
-      }); 
-      app.state.set("other_depts",other_depts); 
-    });  
 
     // go directly to a table if there one is already active
     APP.dispatcher.on("mini_tables_rendered", function(ctx){

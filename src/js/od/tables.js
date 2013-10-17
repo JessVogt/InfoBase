@@ -42,16 +42,16 @@
 
     // customize the final app initialization by activating
     // selected gui elements
-    APP.dispatcher.once("app_ready", function (app) {
-        app.full_dept_list = new APP.fullDeptList({
+   APP.dispatcher.once("app_ready", function (app) {
+      app.full_dept_list = new APP.fullDeptList({
         app: app,
         cols: 2,
         target: '.org_list_by_min'
-        });
-    app.universe_view = new D3.bubleDeptList({
-      app:app
-     });
-    });
+      });
+      app.universe_view = new D3.bubleDeptList({
+        app:app
+      });
+   });
 
   APP.dispatcher.on("dept_ready", function (app) {
       // add the reset button
@@ -66,10 +66,6 @@
 
   APP.dispatcher.on("reset", function (app) {
       $('#back_button').find("a").remove();
-  });
-
-  APP.dispatcher.on("new_org_view", function (dv) {
-      window.scrollTo(0, $('h1.dept').position().top);
   });
 
   APP.dispatcher.on("new_details_view", function (dv) {
