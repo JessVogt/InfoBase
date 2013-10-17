@@ -7,6 +7,8 @@
   var PARSER = ns('PARSER');
 
   APP.start = function(){
+    // download initialization data files and when that's done,
+    // parse the data and create a new app
     var lang = _.last(location.pathname.replace(".html",""),3).join("")=='eng' ? 'en' : 'fr';
     $.when(
       $.ajax("data/lang.csv"),
@@ -37,7 +39,8 @@
     window.depts_cf.min = window.depts_cf.dimension(function(row){
       return row.min[app.state.get("lang")];
     });
-    APP.dispatcher.trigger("app_ready",app);
+    APP.dispatcher.trigger_a("app_ready",app);
+    Backbone.history.start();
   });
 
   APP.dispatcher.once("init", function(app){
@@ -53,16 +56,13 @@
   });
 
   APP.AppRouter = Backbone.Router.extend({
-
     initialize : function(options){
       this.app = options.app;
       _.bindAll(this,"nav");
     },
-
     routes: {
-      ":splat":              "nav"  // #AGR
+      ":splat": "nav"  // #AGR
     },
-
     nav: function(splat) {
       var dept,table,args = splat.split("_");
       dept = args[0];
@@ -83,25 +83,29 @@
     initialize: function(){
       _.bindAll(this,"render");
       this.template = APP.t(this.template);
+      this.app = this.options.app;
+      this.app_area = $('#app');
     },
     render : function(){
-      this.title.html(this.get_text("title"));
+      this.app.remove();
       this.app_area.html(this.template({
-        greeting : APP.t('#greeting_'+this.lang)()
+        greeting : APP.t('#greeting_'+this.app.lang)()
       }));
       APP.dispatcher.trigger_a("home",this);
     }
+  });
+
+  APP.dispatcher.on("reset",function(app){
+    (new  APP.welcomeView({app:app})).render();
   });
 
   /************APP VIEW***********/
   APP.appView = Backbone.View.extend({
     el : $('body')
     ,events : {
-      "click #lang_change" : "toggle_lang"
-      ,"click a.home" : "reset"
-      ,"hover .horizontal" : "highlighter"
-      ,"click .horizontal" : "horizontal_explore"
-      //,"click a.page-nav" : "nav"
+      "click #lang_change" : "toggle_lang",
+      "click a.home" : "reset",
+      "hover .horizontal" : "highlighter"
     }
     ,initialize: function(){
       _.bindAll.apply(this,[this].concat(_.functions(this)));
@@ -111,8 +115,6 @@
 
       //initialize values
       this.lang = this.state.get("lang");
-      this.nav_bar_ul = $('#navbar_ul');
-      this.title = $('#title');
       this.app_area = $('#app');
       // check for a language or set the default of english
       this.state
@@ -124,7 +126,7 @@
       this.render();
 
       this.router = new APP.AppRouter({app:this});
-      Backbone.history.start();
+
     },
     dept_change : function(model, attr){
       this.router.navigate(attr.accronym);
@@ -133,14 +135,14 @@
     },
     formater : function(format,val){
       return APP.types_to_format[format](val,this.lang);
-    }
-    ,lang_change : function(state,lang){
+    },
+    lang_change : function(state,lang){
       APP.dispatcher.trigger("lang_change",lang);
-    }
-    ,get_text : function(txt){
+    },
+    get_text : function(txt){
       return LANG.l(txt,this.state.get('lang'));
-    }
-    ,toggle_lang : function(){
+    },
+    toggle_lang : function(){
       this.state.set({
         lang:this.state.get("lang") == "en" ? "fr" : "en" 
       });
@@ -161,19 +163,14 @@
         ,min_tot : min_tot
         ,goc_tot : goc_tot
       });
+      APP.dispatcher.trigger("reset");
     }
     ,highlighter : function(e){
        $(e.currentTarget).toggleClass('alert-info');
     }
     ,render: function(){
-      this.change_lang = $('#lang_change');
-
       this.remove();
-
       this.app = this.app_area.find('.dept_zone');
-    }
-    ,horizontal_explore : function(){
-      APP.dispatcher.trigger("horizontal_explore",this);
     }
     ,remove : function(){
       if (this.app){
@@ -185,9 +182,20 @@
 
   // setup the OrgView and hook it into the dept_ready signal
   APP.dispatcher.once("app_ready", function(app){
+    // if no department is selected, then paint a welcome screen
+    // 
+    if (!app.state.get("dept")){
+      (new  APP.welcomeView({app:app})).render();
+    } 
+
+    // create a new organization view and link its rendering to 
+    // the dept_ready signal
     var org_view = new APP.OrgView({app:app});
     APP.dispatcher.on("dept_ready", org_view.render);
 
+    // when a new org view has been fully created, add additional 
+    // stuff to the screen such as all the mini widgets and the list of 
+    // all other departments in the same ministry
     APP.dispatcher.on("new_org_view",function(view){
       // create the drop down menu for ministries
       (new APP.otherDeptsDropDown({ app : app })).render();

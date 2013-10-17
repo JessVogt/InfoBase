@@ -64,7 +64,7 @@
     .focus();
   });
 
-  APP.dispatcher.on("home", function (app) {
+  APP.dispatcher.on("reset", function (app) {
       $('#back_button').find("a").remove();
   });
 
