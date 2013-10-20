@@ -402,9 +402,9 @@
         .data(options)
         .enter()
         .append("option")
-        .html(function(x){ return m(x.val);})
-        .attr("val",function(d){return d;})
-        .filter(function(d){return d.default;})
+        .html(function(d){ return m(d.val);})
+        .attr("val",function(d){return d.val;})
+        .filter(function(d){return d.selected == true;})
         .attr("selected","selected");
       return $('<span>')
         .append($("<label>")
@@ -415,23 +415,29 @@
 
   var miniTableSelectMixin = {
     selectmixininit : function(){
-      this.option = _.find(this.options ,function(x){
-        return x.default;
-      });
+      this.option = _.find(this.drop_down_options ,function(x){
+        return x.selected;
+      }) || this.drop_down_options[0];
     },
     post_render: function () {
       var desc = this.$el.find('.description');
-      var select =  make_select(this.app,this.options)
+      desc.find('.minisel').remove();
+      var select =  make_select(this.app,this.drop_down_options)
         .addClass("minisel");
       desc.append(select);
-      this.$el.find(".description select")
+      desc.find("select")
         .on("change", this.on_select)
-        .val(this.year);
     },
     on_select: function (e) {
-        this.option = e.target.__data__.val;
-        this.render();
-        this.$el.find("select.minisel").focus();
+      this.option = $(":selected",e.target)[0].__data__;
+      _.each(this.drop_down_options, function(o){o.selected = false;});
+
+      this.option.selected = true;
+      this.render();
+      APP.dispatcher.once(this.make_signal(),this.focus);
+    },
+    focus : function(){
+      this.$el.find("select").focus();
     }                          
   };
 
@@ -447,15 +453,14 @@
       this.ttf = this.app.formater;
       this.gt = this.app.get_text;
       this.da = TABLES.queries(this.app,this.def);
-      if (_.has(this, "options")){
+      _.extend(this,this.def.mini_view);
+
+      if (_.has(this, "drop_down_options")){
         _.extend(this,miniTableSelectMixin);
         this.selectmixininit();
       }
-      _.extend(this,this.def.mini_view);
       _.bindAll.apply(this,[this].concat(_.functions(this)));
 
-      this.data = this.org.mapped_objs(this.lang,this.def);
-      if (this.data.length === 0){ this.data = null;}
       // find the target div for this minigraph
       // based on the def which was provided
       this.$el = $('#'+this.def.id);
@@ -491,15 +496,14 @@
       }
       this.make_title();
       this.add_description();
-      if (this.data){
+      if (this.da.data){
         this.prep_data();
         if (this.rows && this.headers) {
           TABLES.prepare_data({
             rows : this.rows,
             headers : this.headers,
-            dup_header_options : true,
-            headers_class : this.classes,
-            headers_css : this.css,
+            headers_class : this.classes || this.headers_classes,
+            row_class : this.classes || this.row_classes
           });
           this.content = $('<div>');
           TABLES.d3_build_table({
@@ -515,10 +519,12 @@
         this.set_no_content();
       }
       this.$el.find('.mini_payload')
-        .html("")
+        .children()
+        .remove()
+      this.$el.find('.mini_payload')
         .append(this.content);
 
-      if (this.data){
+      if (this.da.data){
         this.post_render();
       }
 
@@ -578,14 +584,17 @@
   }
 
     TABLES.prepare_data = function(options){
-      var x = dup_header_options = options.dup_header_options;
-      var rows = options.rows;
-      var headers = options.headers;
-      var headers_css = options.headers_css || new Array(headers[0].length);
-      var row_css = x ? headers_css : options.row_css || new Array(headers[0].length);
-      var headers_class = options.headers_class || new Array(headers[0].length);
-      var row_class = x ? headers_class : options.row_class || new Array(headers[0].length);
-      var header_links = _.map(rows[0],function(){return '';});
+      var x = dup_header_options = options.dup_header_options,
+      rows = options.rows,
+      headers = options.headers,
+
+      headers_css = options.headers_css || new Array(headers[0].length),
+      row_css = x ? headers_css : options.row_css || new Array(headers[0].length),
+
+      headers_class = options.headers_class || new Array(headers[0].length),
+      row_class = x ? headers_class : options.row_class || new Array(headers[0].length),
+
+      header_links = _.map(rows[0],function(){return '';});
 
       _.each(headers, function(header_row,i){
         _.each(header_row, function(header,j){
@@ -614,8 +623,8 @@
            row[j] = {
              val : val,
              headers : $.trim(header_links[j]),
-             css : headers_css[j],
-             class : headers_class[j]
+             css : row_css[j],
+             class : row_class[j]
            };
         });
       });

@@ -43,18 +43,6 @@
     Backbone.history.start();
   });
 
-  APP.dispatcher.once("init", function(app){
-    TABLES.m = function(s){
-      var lang = app.state.get('lang');
-      var args = TABLES.template_args['common'];
-      _.extend(args,TABLES.template_args[lang]);
-      if (s){
-        return Handlebars.compile(s)(args);
-      }
-      return '';
-    };
-  });
-
   APP.AppRouter = Backbone.Router.extend({
     initialize : function(options){
       this.app = options.app;

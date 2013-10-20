@@ -1,6 +1,5 @@
 (function (root) {
 
-
   var D3 = ns('D3');
   var GRAPHS = ns('GRAPHS');
   var GROUP = ns('GROUP');
@@ -39,6 +38,7 @@
           'last_year_3': '2009‒2010'
       }
   };
+
 
     // customize the final app initialization by activating
     // selected gui elements
@@ -107,8 +107,15 @@
 
 
   APP.dispatcher.on("load_tables", function (app) {
-    var m = TABLES.m;
-
+    var m = TABLES.m = function(s){
+      var lang = app.state.get('lang');
+      var args = TABLES.template_args['common'];
+      _.extend(args,TABLES.template_args[lang]);
+      if (s){
+        return Handlebars.compile(s)(args);
+      }
+      return '';
+    };
 
     APP.dispatcher.trigger("new_table",
     {"id": 'table1',
@@ -121,7 +128,7 @@
         "key" : true,
         "hidden" : true,
         "nick" : "dept",
-        "header":'',
+        "header":''
       },
       { 
         "type":"int",
@@ -137,7 +144,7 @@
         "key" : true,
         "hidden" : true,
         "nick" : "votestattype",
-        "header":'',
+        "header":''
       },
       {
         "type":"wide-str",
@@ -152,7 +159,7 @@
       .add_child([
         {
           "type":"big-int",
-          "nick" : 'thisyearauth',
+          "nick" : 'thisyearauthorities',
           "header":{
             "en":"Total available for use for the year ending March 31, {{in_year_short}}",
             "fr":"Crédits totaux disponibles pour l'exercice se terminant le 31 mars {{in_year_short}}"
@@ -167,7 +174,7 @@
         },
         {
           "type":"big-int",
-          "nick" : 'thisyearspending',
+          "nick" : 'thisyearexpenditures',
           "header":{
             "en":"Year to date used at quarter-end",
             "fr":"Cumul des crédits utilisés à la fin du trimestre"
@@ -178,7 +185,7 @@
         .add_child([
           {
             "type":"big-int",
-            "nick" : 'lastyearauth',
+            "nick" : 'lastyearauthorities',
             "header":{
               "en":"Total available for use for the year ending March 31, {{qfr_last_year_short}}",
               "fr":"Crédits totaux disponibles pour l'exercice se terminant le 31 mars {{qfr_last_year_short}}"
@@ -193,7 +200,7 @@
           },
           {
             "type":"big-int",
-            "nick" : 'lastyearspending',
+            "nick" : 'lastyearexpenditures',
             "header":{
               "en":"Year to date used at quarter-end",
               "fr":"Cumul des crédits utilisés à la fin du trimestre"
@@ -202,12 +209,6 @@
       ]);
      },
      "data_access" : {
-        "default_cols" : [
-          'thisyearauth',
-          'thisyearspending',
-          'lastyearauth',
-          'lastyearspending'
-        ]
      },
      "link": {
          "en": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-eng.asp",
@@ -287,49 +288,29 @@
        }
      },
      mini_view: {
-        description: {
+       description: {
             "en": "Total budgetary authorities and expenditures for Q{{q}} {{in_year}} and percent change from the same quarter of the previous fiscal year ({{qfr_last_year}}).",
             "fr": "Total des autorisations et des dépenses budgétaires pour le premier trimestre de {{in_year}} et variation en pourcentage par rapport au même trimestre de l’exercice précédent ({{qfr_last_year}})."
-        },
-        prep_data: function () {
-          //var ttf = this.app.formater;
-          //var mapper = function (x) {
-          //    return [
-          //x['Total available for use for the year ending March 31, {{in_year_short}}'],
-          //x["{{in_year}}-Year to date used at quarter-end"],
-          //x['Total available for use for the year ending March 31, {{qfr_last_year_short}}'],
-          //x["{{qfr_last_year}}-Year to date used at quarter-end"]];
-          //};
-          //var lines = _.map(this.data, mapper);
-          //var total = _.reduce(lines, UTILS.add_ar, [0, 0, 0, 0]);
-          //var auth = total[0] / (total[2] + 1) - 1;
-          //var exp = total[1] / (total[3] + 1) - 1;
-          //this.rows = [
-          //[this.gt("authorities"),
-          //  ttf("big-int", total[0]),
-          //  ttf("big-int", total[2]),
-          //  ttf("percentage", auth)],
-          //[this.gt("expenditures"),
-          //  ttf("big-int", total[1]),
-          //  ttf("big-int", total[3]),
-          //    ttf("percentage", exp)]
-        //];
-      },
-      render_data: function () {
-          var headers = _.map(["Type",
+       },
+       headers_classes : ['left_text','right_text','right_text','right_text'],
+       row_classes : [ 'left_text', 'right_number', 'right_number', 'right_number'],
+       prep_data: function () {
+          this.rows = _.map(['authorities',"expenditures"],
+              function(type){
+                var ty = "thisyear"+type, 
+                ly= "lastyear"+type,
+                total = this.da.get_total([ty, ly]),
+                change =  total[ty] / (total[ly] + 1) - 1;
+            return [type,
+                    this.ttf('big-int',total[ty]),
+                    this.ttf("big-int",total[ly]),
+                    this.ttf("percentage",change)];
+          },this);
+          this.headers = [_.map(["Type",
                               "{{in_year_short}} ($000)",
                               "{{qfr_last_year_short}} ($000)",
-                              this.gt("change") + " (%)"], m);
-          this.content = TABLES.build_table({
-              headers: [headers],
-              body: this.rows,
-              css: [{ 'font-weight': 'bold','text-align': 'left' },
-                  { 'text-align': 'right' },
-                  { 'text-align': 'right' },
-                  { 'text-align': 'right' }],
-              classes :  ['','wrap-none','wrap-none','wrap-none']
-          });
-      }
+                              this.gt("change") + " (%)"], m)];
+       }
     },
      graph_view: {
             titles: {
@@ -402,9 +383,10 @@
             {
               "key" : true,
               "type":"wide-str",
+              "nick" : "so",
               "header":{
                 "en":"Standard Object",
-              "fr":"Article Courant"
+                "fr":"Article Courant"
               }
             } 
         ]);
@@ -416,21 +398,22 @@
                   "en":"Planned expenditures for the year ending March 31, {{in_year_short}}",
                   "fr":"Dépenses prévues pour l'exercice se terminant le 31 mars {{in_year_short}}"
                 }
-              },
-              {
+             },
+             {
                 "type":"big-int",
                 "header":{
                   "en":"Expended during the quarter ended {{qfr_month_name}}, {{qfr_last_year_short}}",
                   "fr":"Dépensées durant le trimestre terminé le {{qfr_month_name}} {{qfr_last_year_short}}"
                 }
-              },
-              {
+             },
+             {
                 "type":"big-int",
+                "nick" : "ytd-exp",
                 "header":{
                   "en":"Year to date used at quarter-end",
                   "fr":"Cumul des crédits utilisés à la fin du trimestre"
                 }
-              }
+             }
         ]);
         this.add_col("{{qfr_last_year}}")
           .add_child([
@@ -495,44 +478,23 @@
                 func: GROUP.sum_rows
             })]]);
       }
-    }
-    , mini_view: {
-        description: {
-            "en": "Top three net expenditure categories as of Q{{q}} {{in_year}} by value ($000) and proportion of total expenditures (%).",
-            "fr": "Les trois plus importantes catégories de dépenses nettes lors du premier trimestre de {{in_year}} en fonction de leur valeur (en milliers de dollars) et en tant que pourcentage des dépenses totales (%)."
-        }
-      , prep_data: function () {
-          //var ttf_f = _.partial(this.app.formater, 'big-int');
-          //var ttf_p = _.partial(this.app.formater, 'percentage');
-
-          //var col = "{{in_year}}-Year to date used at quarter-end";
-          //var data = _.sortBy(this.data, function (d) {
-          //    return -d[col]
-          //});
-
-          //var sum = _.reduce(_.map(data,
-          //                       function (x) { return x[col] }),
-          //                function (x, y) {
-          //                  if (y <= 0){ y = 0}
-          //                    return x + y
-          //                },0
-        //);
-        //  this.rows = _.map(_.head(data, 3), function (row) {
-        //      return [row["Standard Object"],
-        //          ttf_f(row[col]),
-        //          ttf_p(row[col] / (sum || 1))]
-        //  });
-      }
-      , render_data: function () {
-          this.content = TABLES.build_table({
-              headers: [[this.gt("so"), ' ($000)', '(%)']],
-              body: this.rows,
-              css: [{ 'font-weight': 'bold', 'text-align': 'left' },
-                 { 'text-align': 'right' },
-                 { 'text-align': 'right' }],
-              classes :  ['','wrap-none','wrap-none']
-
-          });
+    },
+    mini_view: {
+      description: {
+         "en": "Top three net expenditure categories as of Q{{q}} {{in_year}} by value ($000) and proportion of total expenditures (%).",
+         "fr": "Les trois plus importantes catégories de dépenses nettes lors du premier trimestre de {{in_year}} en fonction de leur valeur (en milliers de dollars) et en tant que pourcentage des dépenses totales (%)."
+      },
+      classes : [ 'left_text', 
+        'right_number', 
+        'right_number'],
+      prep_data: function () {
+        var top3 = this.da.get_top_x(["ytd-exp",'so'],3,
+            {gross_percentage: true, format: true});
+        this.rows = _.zip(
+         top3['so'],
+         top3["ytd-exp"],
+         top3["ytd-expgross_percentage"]);
+        this.headers= [[this.gt("so"), ' ($000)', '(%)']];
       }
     },
       graph_view: {
@@ -751,12 +713,13 @@
           }
         }
      ]);
-     _.each(['{{last_year_3}}','{{last_year_2}}','{{last_year_1}}'],
+     _.each(['{{last_year_3}}','{{last_year_2}}','{{last_year}}'],
          function(header){
            this.add_col(header)
              .add_child([
                  {
                    "type":"big-int",
+                   "nick" : header+"auth",
                    "header":{
                      "en":"Total budgetary authority available for use",
                      "fr":"Autorisations budgétaires disponibles pour l'emploi"
@@ -782,8 +745,8 @@
   },
   "title": { "en": "Authorities and Actual Expenditures ($000)",
       "fr": "Autorisations et dépenses réelles (en milliers de dollars)"
-  }
-  ,"sort": function (mapped_rows, lang) {
+  },
+  "sort": function (mapped_rows, lang) {
       var grps = _.groupBy(mapped_rows, function (row) { return _.isNumber(row[0]) });
       if (_.has(grps, true)) {
           grps[true] = _.sortBy(grps[true], function (row) { return row[0] });
@@ -797,9 +760,9 @@
       }
       return grps[true].concat(grps[false]);
   },
-  on : {
+  "on": {
     "data_loaded" : function(app){
-      var group = this.depts.group().reduceSum(function(r){ return r['{{last_year_1}}exp']}).all();
+      var group = this.depts.group().reduceSum(function(r){ return r['{{last_year}}exp']}).all();
       var group_key = _.object(_.map(group,function(x){
         return [x.key, x.value];
       }));
@@ -834,8 +797,8 @@
               }
           }
       }
-    }
-    , table_view: {
+  },
+  table_view: {
         sum_cols: [2, 3, 4, 5, 6, 7]
       , min_func: TABLES.add_ministry_sum
       , init_row_data: function () {
@@ -861,45 +824,28 @@
             }));
           this.merge_group_results([[this.row_data, total]]);
       }
-    }
-    , mini_view: {
-        description: {
-            "en": "Total budgetary voted and statutory authorities and expendiures.",
-            "fr": "Montant total des autorisations et dépenses budgétaires votées et législatives."
-        }
-      , prep_data: function () {
-          //var ttf = this.app.formater;
-          //var total = _.map(["{{last_year_3}}-Total budgetary authority available for use",
-          //                "{{last_year_3}}-Expenditures",
-          //                "{{last_year_2}}-Total budgetary authority available for use",
-          //                "{{last_year_2}}-Expenditures",
-          //                "{{last_year}}-Total budgetary authority available for use",
-          //                "{{last_year}}-Expenditures"],
-          //    function (col) {
-          //        return _.reduce(_.pluck(this.data, col),
-          //        function (x, y) {
-          //            return x + y;
-          //        });
-          //    }, this);
-          //total = _.map(total, function (x) { return ttf("big-int", x) });
-          //this.rows = [
-          //[m('{{last_year_short}}'), total[4], total[5]],
-          //[m('{{last_year_2_short}}'), total[2], total[3]],
-          //[m('{{last_year_3_short}}'), total[0], total[1]]];
-      }
-      , render_data: function () {
-          this.content = TABLES.build_table({
-              headers: [[this.gt("year"),
-                      this.gt("authorities") + ' ($000)',
-                      this.gt("expenditures") + ' ($000)']],
-              body: this.rows,
-              css: [{ 'font-weight': 'bold', 'text-align': 'left' },
-                 { 'text-align': 'right' },
-                 { 'text-align': 'right'}]
-          , classes: ['', 'wrap-none', 'wrap-none']
-          });
-      }
-    },
+  },
+  mini_view: {
+   description: {
+       "en": "Total budgetary voted and statutory authorities and expendiures.",
+       "fr": "Montant total des autorisations et dépenses budgétaires votées et législatives."
+   },
+   classes : [ 'left_text', 
+     'right_number', 
+     'right_number'],
+   prep_data: function () {
+     this.rows = _.map(['{{last_year}}','{{last_year_2}}','{{last_year_3}}'],
+         function(year){
+           var vals = this.da.get_total([year+'auth',year+'exp'],{format: true});
+           return [m(year),vals[year+'auth'],vals[year+'exp']];
+     },this);
+     this.headers = [
+       [this.gt("year"),
+       this.gt("authorities") + ' ($000)',
+       this.gt("expenditures") + ' ($000)']
+     ];
+   }
+  },
   graph_view: {
       titles: {
           1: {
@@ -1029,21 +975,20 @@
            {
              "key" : true,
              "type":"wide-str",
+             "nick" : 'so',
              "header":{
                "en":"Standard Object",
                "fr":"Article courtant"
              }
            }
        );
-       _.each(['{{last_year_3}}','{{last_year_2}}','{{last_year_1}}'],
+       _.each(['{{last_year_3}}','{{last_year_2}}','{{last_year}}'],
            function(header){
                this.add_col(
                    {
                      "type":"big-int",
-                     "header":{
-                       "en":header,
-                       "fr":header
-                     }
+                     "nick":header,
+                     "header":header
                    }
                );
        },this);
@@ -1086,38 +1031,32 @@
                 func: GROUP.sum_rows
             })]]);
       }
-    }
-    , mini_view: {
-        description: {
-            "en": "Organization’s top three standard objects with the greatest expenditures by value ($000) and proportion of total expenditures (%). Select the fiscal year in the drop-down menu to display the expenditures.",
-            "fr": "Les trois articles courants représentant les plus importantes dépenses en fonction de leur valeur (en milliers de dollars) et en tant que pourcentage des dépenses totales (%). Sélectionnez l'exercice financier figurant dans le menu déroulant pour afficher les dépenses."
-        }
-      , year: "{{last_year}}"
-      , prep_data: function () {
-          //var ttf = this.app.formater;
-          //var name = "Standard Object";
-          //var data = _.filter(_.pluck(this.data, this.year),function(x){
-          //   return x >= 0;
-          //});
-          //var total = UTILS.sum_ar(data) + 1;
-          //var sorted = _.sortBy(this.data, function (obj) {
-          //    return obj[this.year];
-          //}, this).reverse();
-          //this.rows = _.map(_.head(sorted, 3), function (obj) {
-          //    return [obj[name],
-          //          ttf("big-int", obj[this.year]),
-          //          ttf("percentage", obj[this.year] / total)];
-          //}, this);
-      }
-      , render_data: function () {
-          this.content = TABLES.build_table({
-              headers: [[this.gt("so"), '($000)', "(%)"]],
-              body: this.rows,
-              css: [{ 'font-weight': 'bold', 'text-align': 'left' },
-                 { 'text-align': 'right' },
-                 { 'text-align': 'right'}]
-          , classes: ['', 'wrap-none', 'wrap-none']
-          });
+    },
+    mini_view: {
+      description: {
+        "en": "Organization’s top three standard objects with the greatest expenditures by value ($000) and proportion of total expenditures (%). Select the fiscal year in the drop-down menu to display the expenditures.",
+        "fr": "Les trois articles courants représentant les plus importantes dépenses en fonction de leur valeur (en milliers de dollars) et en tant que pourcentage des dépenses totales (%). Sélectionnez l'exercice financier figurant dans le menu déroulant pour afficher les dépenses."
+      },
+      drop_down_options : [
+        {val:"{{last_year}}",selected: true},
+        {val:"{{last_year_2}}"},
+        {val:"{{last_year_3}}"}
+      ],
+      classes : [ 'left_text', 
+        'right_number', 
+        'right_number'],
+      prep_data: function () {
+        var year = this.option.val ;
+        var top3 = this.da.get_top_x([year,'so'],3,
+            {gross_percentage: true, format: true});
+        this.rows = _.zip(
+             top3['so'],
+             top3[year],
+             top3[year+"gross_percentage"]);
+        this.headers = [[
+           this.header_lookup('so'),
+           this.gt("expenditures") + ' ($000)',
+           "(%)" ]];
       }
     },
       graph_view: {
@@ -1234,24 +1173,22 @@
         "header":'',
       });
        this.add_col(
-           {
-             "key" : true,
-             "type":"wide-str",
-             "header":{
-               "en":"Program",
-               "fr":"Programme"
-             }
-           }
-       );
-       _.each(['{{last_year_3}}','{{last_year_2}}','{{last_year_1}}'],
+         {
+           "key" : true,
+           "type":"wide-str",
+           'nick' : 'prgm',
+           "header":{
+             "en":"Program",
+             "fr":"Programme"
+         }
+       });
+       _.each(['{{last_year_3}}','{{last_year_2}}','{{last_year}}'],
            function(header){
                this.add_col(
                    {
                      "type":"big-int",
-                     "header":{
-                       "en":header,
-                       "fr":header
-                     }
+                     "nick":header,
+                     "header":header
                    }
                );
        },this);
@@ -1299,34 +1236,32 @@
                 func: GROUP.sum_rows
             })]]);
       }
-    }
-    , mini_view: {
-        description: {
-            "en": "Organization’s programs with the greatest expenditures by value ($000) and proportion of total expenditures (%).Select the fiscal year in the drop-down menu to display the expenditures. ",
-            "fr": "Les programmes représentant les plus importantes dépenses en fonction de leur valeur (en milliers de dollars) et en tant que pourcentage des dépenses totales (%). Sélectionnez l'exercice financier figurant dans le menu déroulant pour afficher les dépenses. "
-        }
-      , year: "{{last_year}}"
-      , prep_data: function () {
-          //var ttf = this.app.formater;
-          //var name = "Program";
-          //var total = UTILS.sum_ar(_.pluck(this.data, this.year)) + 1;
-          //var sorted = _.sortBy(this.data, function (obj) {
-          //    return obj[this.year];
-          //}, this).reverse();
-          //this.rows = _.map(_.head(sorted, 3), function (obj) {
-          //    return [obj[name],
-          //          ttf("big-int", obj[this.year]),
-          //          ttf("percentage", obj[this.year] / total)];
-          //}, this);
-      }
-      , render_data: function () {
-          this.content = TABLES.build_table({
-              headers: [[this.gt("program"), '($000)', "(%)"]],
-              body: this.rows,
-              css: [{ 'font-weight': 'bold', 'text-align': 'left' },
-                  { 'text-align': 'right' }, { 'text-align': 'right'}]
-          , classes: ['', 'wrap-none', 'wrap-none']
-          });
+    },
+    mini_view: {
+      description: {
+        "en": "Organization’s programs with the greatest expenditures by value ($000) and proportion of total expenditures (%).Select the fiscal year in the drop-down menu to display the expenditures. ",
+        "fr": "Les programmes représentant les plus importantes dépenses en fonction de leur valeur (en milliers de dollars) et en tant que pourcentage des dépenses totales (%). Sélectionnez l'exercice financier figurant dans le menu déroulant pour afficher les dépenses. "
+      },
+      drop_down_options : [
+        {val:"{{last_year}}",selected: true},
+        {val:"{{last_year_2}}"},
+        {val:"{{last_year_3}}"}
+      ],
+      classes : [ 'left_text', 
+        'right_number', 
+        'right_number'],
+      prep_data: function () {
+        var year = this.option.val ;
+        var top3 = this.da.get_top_x([year,'prgm'],3,
+            {gross_percentage: true, format: true});
+        this.rows = _.zip(
+             top3['prgm'],
+             top3[year],
+             top3[year+"gross_percentage"]);
+        this.headers = [[
+           this.header_lookup('prgm'),
+           this.gt("expenditures") + ' ($000)',
+           "(%)" ]];
       }
     },
       graph_view: {
@@ -1422,7 +1357,7 @@
            }
          }
      ]);
-     _.each(['{{last_year_3}}','{{last_year_2}}','{{last_year_1}}'],
+     _.each(['{{last_year_3}}','{{last_year_2}}','{{last_year}}'],
          function(header){
            this.add_col(header)
             .add_child([
@@ -1511,8 +1446,8 @@
             "en": "Organization’s transfer payments with the greatest expenditures by value ($000) and proportion of total expenditures (%). Select the fiscal year in the drop-down menu to display the expenditures.",
             "fr": "Les paiements de transfert représentant les plus importantes dépenses en fonction de leur valeur (en milliers de dollars) et en tant que pourcentage des dépenses totales (%). Sélectionnez l'exercice financier figurant dans le menu déroulant pour afficher les dépenses."
         },
-        options : [
-          {val:"{{last_year_1}}",default: true},
+        drop_down_options : [
+          {val:"{{last_year}}",selected: true},
           {val:"{{last_year_2}}"},
           {val:"{{last_year_3}}"}
         ],
@@ -1521,8 +1456,7 @@
             'right_number', 
             'right_number'],
         prep_data: function () {
-          var year = this.option + 'exp';
-          var total = this.da.get_total(year,{gross:true});
+          var year = this.option.val + 'exp';
           var top3 = this.da.get_top_x([year,'tp'],3,
               {gross_percentage: true, format: true});
           this.rows = _.zip(
@@ -1815,37 +1749,25 @@
             }));
           this.merge_group_results([[this.row_data, total]]);
       }
-    }
-    , mini_view: {
-        description: {
-            "en": "Current-year budgetary authorities granted by Parliament by appropriation act as of {{month_name}}, 2013, by value ($000) and proportion of total authorities (%).",
-            "fr": "Les autorisations budgétaires délivrées par le Parlement pour l’exercice courant au moyen de la Loi de crédits à compter de {{month_name}} 2013 selon la valeur ($000) et la proportion des autorisations totales (%)."
-        }
-      , prep_data: function () {
-          //var ttf = this.app.formater;
-          //var total = UTILS.sum_ar(_.pluck(this.data, "Total Net Authority")) + 1;
-          //var cols = ['mains',
-          //          'suppsa',
-          //          'suppsb',
-          //          'suppsc'];
-          //this.rows = _.map(cols, function (col) {
-          //    var col_total = UTILS.sum_ar(_.pluck(this.data, col));
-          //    return [this.header_lookup(col),
-          //        ttf("big-int", col_total),
-          //        ttf("percentage", col_total / total)];
-          //}, this);
-      }
-      , render_data: function () {
-          this.content = TABLES.build_table({
-              headers: [[this.gt("Estimates"),
-                         this.gt("Amount") + ' ($000)', 
-                         '(%)']],
-              body: this.rows,
-              css: [{ 'font-weight': 'bold', 'text-align': 'left' },
-                  { 'text-align': 'right' },
-                  { 'text-align': 'right' }] ,
-              classes :  ['wrap-none','wrap-none','wrap-none']
-          });
+    },
+    mini_view: {
+      description: {
+        "en": "Current-year budgetary authorities granted by Parliament by appropriation act as of {{month_name}}, 2013, by value ($000) and proportion of total authorities (%).",
+        "fr": "Les autorisations budgétaires délivrées par le Parlement pour l’exercice courant au moyen de la Loi de crédits à compter de {{month_name}} 2013 selon la valeur ($000) et la proportion des autorisations totales (%)."
+      },
+      classes : ['left_text','right_number','right_number'],
+      prep_data: function () {
+        var headers = ['mains', 'suppsa', 'suppsb', 'suppsc'];
+        var data = this.da.get_total(headers);
+        var total = _.reduce(_.values(this.data),function(x,y){return x+y});
+        this.rows = _.map(headers, function(h){
+          return [this.header_lookup(h),
+                  this.ttf("big-int",data[h]),
+                  this.ttf("percentage",data[h]/(total+1)-1)];
+        },this);
+        this.headers= [[this.gt("Estimates"),
+                       this.gt("Amount") + ' ($000)', 
+                       '(%)']];
       }
     }
     , graph_view: {
