@@ -2,38 +2,47 @@
   var APP = ns('APP');
   var TABLES = ns('TABLES');
   var MAPPERS = ns('MAPPERS');
+  var WAIT = ns('WAIT');
 
   TABLES.tables = [];
 
   function setup_tables(app){
     // all tables should register themselves
     APP.dispatcher.trigger("load_tables",app);
-
     // all tables should download their respective datasets
-    $.when.apply(null, load_data()).done(function(){
-      // this function will be called with a number of arguments equal
-      // to the number of tables
-      // each entry will be a triple consisting of 
-      // [data, "result",request_object]
-      // hold reference to arguments
-      var args = arguments;
-      _.each(this, function(table,i){
-        var mapper = map_objs(app.state.get("lang"),table);
-        table.data = _.map(_.tail(d3.csv.parseRows(args[i][0])),mapper);
-        table.cf = crossfilter(table.data);
-        table.depts = table.cf.dimension(function(row){return row['dept']});
-      })
-      APP.dispatcher.trigger("data_loaded",app);
-    });
+    $.when.apply(null, load_data(app))
+      .done(function(){
+        APP.dispatcher.trigger("data_loaded",app);
+      });
   }
   APP.dispatcher.once("init", setup_tables);
 
-  var load_data = function(){
-    return _.map(TABLES.tables, function(t){
-       return $.ajax({
-         url: "data/"+t.id+".csv",
-         context : t
+  var load_data = function(app){
+    return _.map(TABLES.tables, function(table){
+      var key = table.name[app.state.get("lang")];
+      var promise1= $.Deferred(),promise2 =$.Deferred();
+      WAIT.w.update_item(key,"download")
+       var req = $.ajax({
+         url: "data/"+table.id+".csv",
+         context : table
        });
+       req.done(function(data){
+          WAIT.w.update_item(key,"loading");
+          setTimeout(function(){
+            promise1.resolve(data);
+          })
+       })
+       promise1.done(function(data){
+        var mapper = map_objs(app.state.get("lang"),table);
+        table.data = _.map(_.tail(d3.csv.parseRows(data)),mapper);
+        table.cf = crossfilter(table.data);
+        table.depts = table.cf.dimension(function(row){return row['dept']});
+        WAIT.w.update_item(key,"finished");
+          setTimeout(function(){
+            promise2.resolve();
+          })
+       })
+      return promise2;
     });
   }
 

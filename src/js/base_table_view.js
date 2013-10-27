@@ -632,11 +632,18 @@
 
     TABLES.d3_build_table = function(options){
       var table = d3.select(options.node).append("table");
+      if (options.table_class){
+        table.attr("class",options.table_class);
+      }
+      if (options.table_css){
+        table.style(options.table_css);
+      }
       var headers = table.append("thead")
           .selectAll("tr")
           .data(options.headers)
           .enter()
           .append("tr")
+      var ths = headers
           .selectAll("th")
             .data(Object)
             .enter()
@@ -654,6 +661,7 @@
           .data(options.rows)
           .enter()
           .append("tr")
+      var tds = rows
           .selectAll("td")
             .data(Object)
             .enter()
@@ -662,8 +670,11 @@
             .attr("headers",function(d){return d.headers;})
             .attr("class",function(d){return d.class;})
             .style(function(){ return d.css});
-      if (options.dataeach){
-         rows.each(options.dataeach);
+      if (options.rowseach){
+         rows.each(options.rowseach);
+      }
+      if (options.tdseach){
+        tds.each(options.tdseach);
       }
       return table.node();
     }

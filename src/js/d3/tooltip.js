@@ -3,22 +3,34 @@
   var APP = ns('APP');
   var TOOLTIP = ns('D3.TOOLTIP');
 
-  D3.basetooltip = Backbone.View.extend({
+  TOOLTIP.basetooltip = Backbone.View.extend({
     initialize: function(){
       _.bindAll(this,"render","un_render");
       this.data = this.options.data;
-      this.init_body();
+      this.offsetx = this.options.offsetx || 0;
+      this.offsety = this.options.offsety || 0;
+      this.top = Math.round(this.options.top);
+      this.left = Math.round(this.options.left);
     },
-    init_body : function({
+    init_body : function(){
       var template = APP.t(this.template);
-      this.body = template(
+      this.body = template({
        items : this.data 
-      );
-    })
+      });
+    },
     render : function(event){
-      var top = (event.pageY-10)+"px";
-      var left =  (event.pageX-10)+"px";
-      this.$el = $('<div>')
+
+      var top = (this.top || (event.pageY+this.offsety))+"px";
+      var left =(this.left ||  (event.pageX+this.offsetx))+"px";
+      this.$el = $('<div>');
+      if (this.options.body_func){
+        this.options.body_func(this.$el);
+      }
+      else {
+        this.init_body();
+        this.$el.append(this.body);
+      }
+      this.$el
         .appendTo('body')
         .css({
           'z-index' : 100,
@@ -31,20 +43,19 @@
           'left' :  left
         })
         .append(this.body)
-        .on("mouseout",this.un_render);
       return this;
     }
     ,un_render : function(event){
-      this.body.remove();
       this.$el.remove();
       this.$el = null;
     }
-    ,remove : function(){
-
-    }
   });
 
-  D3.TableGraph = D3.basetooltip({
+  TOOLTIP.TableGraph = TOOLTIP.basetooltip.extend({
+    template : '#tablegraph_tooltip'
+  });
+
+  TOOLTIP.ExploreTooltip = TOOLTIP.basetooltip.extend({
     template : '#tablegraph_tooltip'
   });
 

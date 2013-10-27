@@ -48,9 +48,6 @@
         cols: 2,
         target: '.org_list_by_min'
       });
-      app.universe_view = new D3.bubleDeptList({
-        app:app
-      });
    });
 
   APP.dispatcher.on("dept_ready", function (app) {

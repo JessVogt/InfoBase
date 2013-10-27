@@ -67,6 +67,37 @@
     APP._given = _given;
 
     APP.types_to_format = {
+      "compact" : function(val,lang){
+         var symbol,abbrev = {
+           1000000000 : {en : 'B', fr: 'Mds'},
+           1000000 : {en : 'M', fr: 'm'},
+           1000 : {en : 'K', fr: 'k'},
+         }
+         if (val >= 1000000000){
+           val = val /  1000000000;
+           symbol = abbrev[1000000000][lang];
+         }
+         if (val >= 1000000){
+           val = val /  1000000;
+           symbol = abbrev[1000000][lang];
+         }
+         if (val >= 10000){
+           val = val /  1000;
+           symbol = abbrev[1000][lang];
+         }
+         if (lang === 'en'){
+           return accounting.formatMoney(val,
+               {symbol:symbol,precision: 0, format: "%v %s" });
+         } else if (lang === 'fr'){
+           return accounting.formatMoney(val,{
+             decimal : ',',
+             thousand:' ',
+             format: "%v %s",
+             symbol:symbol,
+             precision: 0
+         });
+         }
+      },
       "percentage" :  function(val,lang){
         var options = {
           symbol : "%",

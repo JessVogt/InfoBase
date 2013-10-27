@@ -45,6 +45,7 @@ set ignorecase
 set iminsert=0
 set imsearch=0
 set incsearch
+set isident=@,48-57,_,192-255,$
 set laststatus=2
 set mouse=a
 set printoptions=paper:letter
@@ -74,17 +75,27 @@ if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
   let s:wipebuf = bufnr('%')
 endif
 set shortmess=aoO
-badd +20 les/src/js/app.js
-badd +1 les/src/js/tables.js
-badd +281 les/src/js/od/tables.js
+badd +78 les/src/js/app.js
+badd +26 les/src/js/tables.js
+badd +707 les/src/js/od/tables.js
 badd +63 les/src/js/queries.js
-badd +457 les/src/js/base_table_view.js
-badd +1 les/src/js/d3/core.js
-badd +1 les/src/js/d3/bar.js
-badd +1 les/src/js/d3/tooltip.js
-badd +0 les/src/js/d3/circle.js
+badd +22 les/src/js/base_table_view.js
+badd +53 les/src/js/d3/core.js
+badd +121 les/src/js/d3/bar.js
+badd +25 les/src/js/d3/tooltip.js
+badd +82 les/test/test-data.js
+badd +15 les/test/test.html
+badd +29 les/src/js/od/od.js
+badd +21 les/src/js/mappers.js
+badd +73 les/Gruntfile.js
+badd +1 les/src/js/d3/dept_explore.js
+badd +189 les/src/js/d3/pack.js
+badd +28 les/test/test-d3.js
+badd +157 les/src/mako/od_handlebars_templates.html
+badd +47 les/src/js/waiting.js
+badd +38 les/src/mako/extracss.html
 silent! argdel *
-edit les/src/js/d3/circle.js
+edit les/src/js/d3/dept_explore.js
 set splitbelow splitright
 wincmd _ | wincmd |
 vsplit
@@ -202,15 +213,15 @@ set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 1 - ((0 * winheight(0) + 21) / 43)
+let s:l = 181 - ((15 * winheight(0) + 21) / 43)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-1
-normal! 0
+181
+normal! 09|
 wincmd w
 argglobal
-edit les/src/js/od/tables.js
+edit les/src/js/app.js
 setlocal keymap=
 setlocal noarabic
 setlocal noautoindent
@@ -316,12 +327,12 @@ set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 1044 - ((26 * winheight(0) + 21) / 43)
+let s:l = 94 - ((37 * winheight(0) + 21) / 43)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-1044
-normal! 013|
+94
+normal! 029|
 wincmd w
 exe 'vert 1resize ' . ((&columns * 79 + 79) / 159)
 exe 'vert 2resize ' . ((&columns * 79 + 79) / 159)

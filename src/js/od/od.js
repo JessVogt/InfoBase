@@ -5,25 +5,58 @@
   var MAPPERS = ns('MAPPERS');
   var LANG = ns('LANG');
   var PARSER = ns('PARSER');
+  var WAIT = ns('WAIT');
+
+  function lang_load(promises,data){
+   LANG.lookups = PARSER.parse_lang(d3.csv.parseRows(data));
+  };
+  function table_text_load(promises,data){
+    $('html').append(data);
+  };
+  function template_load(promises,data){
+    $('html').append(data);
+  };
+  function org_load(promises,data){
+    window.depts = PARSER.parse_orgs(d3.csv.parseRows(data));
+  };
+  function sos_load(promises,data){
+    window.sos = PARSER.parse_sos(d3.csv.parseRows(data));
+  };
+  function qfr_links_load(promises,data){
+    promises['Organizations'].done(function(){
+      PARSER.parse_qfrlinks(window.depts, d3.csv.parseRows(data));
+    });
+  };
 
   APP.start = function(){
     // download initialization data files and when that's done,
     // parse the data and create a new app
     var lang = _.last(location.pathname.replace(".html",""),3).join("")=='eng' ? 'en' : 'fr';
-    $.when(
-      $.ajax("data/lang.csv"),
-      $.ajax("templates/od_table_text.html"),
-      $.ajax("templates/od_handlebars_templates.html"),
-      $.ajax("data/orgs.csv"),
-      $.ajax("data/sos.csv"),
-      $.ajax("data/QFRLinks.csv")
-    ).done(function(text,table_text,handlebars,orgs,sos,qfrlinks){
-      LANG.lookups = PARSER.parse_lang(d3.csv.parseRows(text[0]));
-      $('html').append(table_text[0]);
-      $('html').append(handlebars[0]);
-      window.depts = PARSER.parse_orgs(d3.csv.parseRows(orgs[0]));
-      window.sos = PARSER.parse_sos(d3.csv.parseRows(sos[0]));
-      PARSER.parse_qfrlinks(window.depts, d3.csv.parseRows(qfrlinks[0]));
+    WAIT.w = WAIT.waitscreen(lang);
+    var setup_material = {
+      "Language" :  {url:"data/lang.csv", onload:lang_load},
+      "Table Text" :  {url:"templates/od_table_text.html", onload:table_text_load},
+      "Templates" :  {url:"templates/od_handlebars_templates.html", onload:template_load},
+      "Organizations" :  {url:"data/orgs.csv", onload:org_load},
+      "Standard Objects" :  {url:"data/sos.csv", onload:sos_load},
+      "QFR Links" :  {url:"data/QFRLinks.csv", onload:qfr_links_load},
+    };
+    var promises = _.object(_.map(setup_material,function(obj,key){
+      var promise1 = $.Deferred(),promise2 = $.Deferred();
+      WAIT.w.update_item(key,"download");
+      var req = $.ajax(obj.url)
+      req.done(function(data){
+        WAIT.w.update_item(key,"loading");
+        setTimeout(function(){ promise1.resolve(data);});
+      });
+      promise1.done(function(data){
+        obj.onload(promises,data);
+        WAIT.w.update_item(key,"finished");
+        setTimeout(function(){ promise2.resolve();});
+      })
+      return [key,promise2];
+    }));
+    $.when.apply(null,_.values(promises)).done(function(){
       APP.app = new APP.appView({
         state : {
           "lang":lang,
@@ -80,10 +113,13 @@
         greeting : APP.t('#greeting_'+this.app.lang)()
       }));
       this.app.app = this.app_area.find('.dept_zone');
-      APP.dispatcher.trigger_a("home",this);
+      APP.dispatcher.trigger_a("home",this.app);
     }
   });
 
+  APP.dispatcher.on("home",function(app){
+    ns().D3.bubbleDeptList(app);
+  });
   APP.dispatcher.on("reset",function(app){
     (new  APP.welcomeView({app:app})).render();
   });
@@ -152,7 +188,7 @@
         ,min_tot : min_tot
         ,goc_tot : goc_tot
       });
-      APP.dispatcher.trigger("reset");
+      APP.dispatcher.trigger("reset",this);
     }
     ,highlighter : function(e){
        $(e.currentTarget).toggleClass('alert-info');
