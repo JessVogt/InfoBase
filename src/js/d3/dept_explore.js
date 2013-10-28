@@ -177,7 +177,7 @@
            "margin-top":"10px",
            "margin-right":"10px",
            "width": "150px"
-          })
+          });
         containers
           .append("div")
           .on("click",chart.dispatch.dataClick)
@@ -186,7 +186,7 @@
           .attr("width","100%")
           .append("circle")
           .attr({ cx : 75, cy : 25, r : function(d){return scale(d.r)} })
-          .append("text")
+          .append("text");
 
         containers
           .append("div")

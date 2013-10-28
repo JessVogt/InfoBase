@@ -173,7 +173,7 @@
         text
          .transition()
          .each(function(d){
-           if (d.zoom_r > 30){
+           if (d.zoom_r > 40){
             d.zoom_text= _.first(d.name.split(" "),2).join(" "); 
            } else {
             d.zoom_text  = '...'
