@@ -37,10 +37,12 @@
         soften : false,
         scale : d3.scale.log()
           .domain([_.last(ministries).value,ministries[0].value])
-          .rangeRound([10,11])
+          .rangeRound([10,11]),
+        per_group : function(grp){
+          grp.fin_size = d3.sum(grp.children,function(x){return x.value});
+        }
       });
       data.name = app.get_text("goc_total");
-      data.fin_size = depts.ZGOC.fin_size;
 
       var chart = PACK.pack({
         width: 880, 

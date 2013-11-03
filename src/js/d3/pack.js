@@ -18,7 +18,8 @@
       // expects an array of objects
       //
       //
-      var soften = typeof options.soften == undefined ? true : soften,
+      options = options || {};
+      var soften = typeof options.soften == undefined ? true : options.soften,
        levels = options.levels || 2,
        attr = options.attr || 'value',
        accessor = function(d){return d[attr]},
@@ -37,6 +38,9 @@
         group = _.find(groups,function(x){return parseInt(x.key) === _i});
         softened = soften ? PACK.soften_spread(group.values,attr):  group.values;
         pointer.children = softened;
+        if (options.per_group){
+          options.per_group(pointer);
+        }
         if (_i>group_extent[0]){
           pointer = {name:level_name};
           softened.push(pointer);
@@ -180,7 +184,7 @@
            }
            var first_word = d.zoom_text.split(" ")[0];
            d.zoom_text = d.zoom_text.replace(" and ",'').replace(" et ",'');
-           d.font_size =  font_scale(d.zoom_r);
+           d.font_size =  font_scale(d.zoom_r)+"px";
          })
          .attr({
            "x": function(d) { return d.zoom_pos.x; } ,

@@ -28,9 +28,10 @@
     D3.extend_base = function(chart){
       return function(options){
         options = options || {};
+        options.chart = my;
         options.height = options.height || 400;
         options.width = options.width || 800;
-        options.is_mini = options.width < 200;
+        options.is_mini = options.width <= 200;
         options.hover_legend = options.hover_legend || true;
 
         function my(selection){

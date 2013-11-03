@@ -1,8 +1,9 @@
 (function() {
 
     var D3 = ns('D3');
+    var BAR = ns('D3.BAR');
 
-    D3.bar = D3.extend_base(function(svg,index){
+    BAR.bar = D3.extend_base(function(svg,index){
       /* data in the format of 
       *  { "series 1" : [y1,y2,y3],
       *     "series 2" : [y1,y2,y3]}
@@ -10,91 +11,78 @@
       var margin = this.margin || {top: 20, 
                                     right: 20, 
                                     bottom: 30, 
-                                    left: 40};
-      var height = this.height;
-      var y_axis = this.y_axis || '';
-      var legend = this.legend;
-      var y_range_top = this.is_mini ? 0 : legend.length * 20 + 20;
-      var series = d3.keys(this.series);
-      var values = d3.values(this.series);
-      var data = _.map(this.series,function(data,series_name){
-        return {series_name : series_name,
-                data :  _.map(data, function(d,i){
-                  return {name : legend[i],
-                          val : d};
-                })};
-      });
-      /*  x0 scale sets out the chunks of space for each 
-      *  of the series
-      *  x1 uses the chunks of space from x0 to then create 
-      *  sub-spaces for each of the labels
-      *  y maps the domain of the input data onto the available 
-      *  height
-      *  max->merge will merge all the arrays into a single
-      *  and fine the max value 
-      */  
-      var x0 = d3.scale.ordinal()
-        .domain(series)
-        .rangeRoundBands([0, this.width], 0.1);
-      var x1 = d3.scale.ordinal()
-        .domain(legend)
-        .rangeRoundBands([0,x0.rangeBand()]);
-      var y = d3.scale.linear()
-              .range([this.height, y_range_top])
-              .domain(d3.extent(d3.merge(values)));
+                                    left: 40},
+          height = this.height - margin.top - margin.bottom,
+          width = this.width - margin.left - margin.right,
+          
+          y_axis = this.y_axis || '',
+          ticks = this.ticks,
+          series = d3.keys(this.series),
+          y_range_top = this.is_mini ? 0 : series.length * 20 + 20,
+          values = d3.values(this.series),
+          data = _.map(ticks,function(tick,i){
+            return {tick : tick,
+                    data :  _.map(series, function(serie){
+                      return {name : serie, val : this.series[serie][i]};
+                    },this)
+            };
+          },this),
+          extent = d3.extent(d3.merge(values)),
+          y_bottom = extent[0] > 0 ? 0 : extent[0],
+          y_top = extent[1] < 0 ? 0 : extent[1],
+          zero = 0,
+          /*  x0 scale sets out the chunks of space for each 
+          *  of the series
+          *  x1 uses the chunks of space from x0 to then create 
+          *  sub-spaces for each of the labels
+          *  y maps the domain of the input data onto the available 
+          *  height
+          *  max->merge will merge all the arrays into a single
+          *  and fine the max value 
+          */  
+          x0 = d3.scale.ordinal()
+            .domain(ticks)
+            .rangeRoundBands([0, width], 0.1),
+          x1 = d3.scale.ordinal()
+            .domain(series)
+            .rangeRoundBands([0,x0.rangeBand()]),
+          y = d3.scale.linear()
+            .domain([y_bottom, y_top])
+            .range([height, y_range_top]),
+          xAxis = d3.svg.axis()
+            .scale(x0)
+            .tickPadding(5)
+            .orient("bottom"),
+          yAxis = d3.svg.axis()
+            .scale(y)
+            .ticks(10)
+            .tickSize(-width)
+            //.tickFormat(d3.format(this.yAxisTickFormat || ".2s"))
+            .orient("left");
+
       /*
       * setup the main graph area and add the bars
       * set up the axes  
       */
        svg  = svg
         .attr({
-          width : this.width + margin.left + margin.right,
-          height : this.height + margin.top + margin.bottom})
+          width : width+margin.left+margin.right,
+          height : height+margin.top+margin.bottom})
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 
-      var xAxis = d3.svg.axis()
-          .scale(x0)
-          .orient("bottom");
-      var yAxis = d3.svg.axis()
-          .scale(y)
-          .orient("right")
-          .ticks(6)
-          .tickSize(this.width)
-          .tickFormat(d3.format(this.yAxisTickFormat || ".2s"));
-
-      if (!this.is_mini){
-        make_legend(svg,this.width);
-      } else {
-
+      if (!this.is_mini && series.length > 1){
+        make_legend(svg,series,width);
+      } else if (this.is_mini){
         yAxis.tickSize(1);
         xAxis.tickSize(1);
         yAxis.tickValues(y.domain());
-
-        if (this.hover_legend) { 
-          var legend_height = legend.length * 20; 
-          var canvas = d3.selectAll("svg.legend")
-            .data([1])
-            .enter()
-            .append("svg")
-            .attr({
-              class : "legend",
-              width  : '200px',
-              height : legend_height + 'px'
-          });
-          make_legend(canvas, 200);
-          new D3.tooltip({
-            body: canvas.node(), 
-            tipper : svg.node(),
-            height : legend_height
-          });
-        }
       }
 
       svg.append("g")
             .attr("class", "x axis")
-            .attr("transform", "translate(0," + y(0) + ")")
+            .attr("transform", "translate(0," + height+ ")")
             .call(xAxis);
 
       svg.append("g")
@@ -102,7 +90,6 @@
             .call(yAxis)
             .call( function (g) {
               g.selectAll("text")
-                  .attr("x", 4)
                   .attr("dy", -4);
             })
             .append("text")
@@ -116,7 +103,7 @@
             .data(data)
           .enter().append("g")
             .attr("class", "g")
-            .attr("transform", function(d) { return "translate(" + x0(d.series_name) + ",0)"; });
+            .attr("transform", function(d) { return "translate(" + x0(d.tick) + ",0)"; });
 
       groups.selectAll("rect")
           .data(function(d) { return d.data; })
@@ -127,41 +114,19 @@
             if (d.val > 0){
               return y(d.val); 
             } else {
-              return y(0);
+              return y(zero);
             }
           })
           .attr("height", function(d) { 
             if (d.val >= 0){
-              return y(0) - y(d.val);
+              return y(zero) - y(d.val);
             } else {
-              return y(d.val) - y(0);
+              return y(d.val) - y(zero);
             }
           })
           .style("fill", function(d) { return D3.tbs_color(d.name); })
           .on("mouseover", this.dispatch.dataHover);
 
-      function make_legend(sel,width){
-
-        var el = sel.selectAll(".legend")
-              .data(legend)
-            .enter().append("g")
-              .attr("class", "legend")
-              .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
-        el.append("rect")
-            .attr("x", width - 18)
-            .attr("width", 18)
-            .attr("height", 18)
-            .style("fill", D3.tbs_color);
-
-        el.append("text")
-            .attr("x", width - 24)
-            .attr("y", 9)
-            .attr("dy", ".35em")
-            .style("text-anchor", "end")
-            .text(function(d) { return d; });
-
-        return el;
-      }
 
       if (!this.is_mini){
 
@@ -171,16 +136,27 @@
       }
    });
 
-   D3.bar_test = function(){
-      $('#app')
-        .children()
-        .remove() ; 
-      var bar = D3.bar({
-        series : {'x' : [1,2,3],'y' : [-4,3,9]}, 
-        legend: ['a','b','c'], 
-        width: 350, 
-        height: 299
-      });
-   };
+   function make_legend(sel,legend,width){
+
+     var el = sel.selectAll(".legend")
+           .data(legend)
+         .enter().append("g")
+           .attr("class", "legend")
+           .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+     el.append("rect")
+         .attr("x", width - 18)
+         .attr("width", 18)
+         .attr("height", 18)
+         .style("fill", D3.tbs_color);
+
+     el.append("text")
+         .attr("x", width - 24)
+         .attr("y", 9)
+         .attr("dy", ".35em")
+         .style("text-anchor", "end")
+         .text(function(d) { return d; });
+
+     return el;
+   }
 
 })();

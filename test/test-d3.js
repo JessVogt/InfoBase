@@ -5,6 +5,8 @@
   if (_.keys(D3).length === 0){ return;}
 
   var PACK = D3.PACK;
+  var BAR = D3.BAR;
+
   jQuery.fn.d3Click = function () {
     this.each(function (i, e) {
       var evt = document.createEvent("MouseEvents");
@@ -13,21 +15,15 @@
     });
   };
 
-  jQuery.fn.d3MouseEnter = function () {
-    this.each(function (i, e) {
-      var evt = document.createEvent("MouseEvents");
-      evt.initMouseEvent("mouseover", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-      e.dispatchEvent(evt);
-    });
-  };
-
   module("test circle packing code")
 
   var get_div = function(){
     if ($('#pack_div').length == 0){
-      d3.select('body').insert("div").attr("id",'pack_div');
+      d3.select('body').insert("div").attr("id",'pack_div')
     }
-    return  d3.select('#pack_div').append("div");
+    return  d3.select('#pack_div')
+      .append("div")
+      .style("float","left");
   }
 
   circle_test_data = {
@@ -109,19 +105,21 @@
   });
 
   test("test soften spread",1, function(){
+    var data = [{value: 0.1},{value: 1}, {value: 5},{value: 9}];
+    PACK.soften_spread(data,"value",0.1);
     var expected = [
       {value: 0.99},
       {value: 1.7999999999999998},
       {value: 5.4},
       {value: 9}
     ];
-    deepEqual(expected, 
-              PACK.soften_spread([{value: 0.1},{value: 1}, {value: 5},{value: 9}]));
+    deepEqual(expected,data);
   });
 
 
   test("test nested circle structure mini", 0,function(){
     var div = get_div();
+    div.style("width",200)
     var pack = PACK.pack({
       data :  circle_test_data[0],
       width : 199
@@ -132,6 +130,7 @@
   test("test flat circle structure mini",0, function(){
     var level_name = 'smallerer';
     var div = get_div();
+    div.style("width",150)
     var data = PACK.create_data_nodes(
        circle_test_data[1][1],
        circle_test_data[1][0]
@@ -145,38 +144,26 @@
 
   });
 
-  asyncTest("test hover event", 1,function(){
-    var div = get_div();
-    var pack = PACK.pack({
-      data :  circle_test_data[0],
-      width : 400
-    });
-    pack(div);
-    pack.dispatch.on("dataHover",function(d){
-      equal(d.name, 'A')
-      var tooltip = new D3.tooltip({
-        body : new d.tooltip({data:d})
-      })
-      tooltip.render({
-        pageX : d3.event.offsetX,
-        pageY : d3.event.offsetY
-      })
-      setTimeout(function(){
-        equal(tooltip.$el.top, d3.event.offsetX-10)
-        start();
-      });
-    });
-    setTimeout(function(){
-      var node = div.selectAll("circle.parent")
-         .filter(function(d){return d.name === 'A' })
-        .node();
-      $(node).d3MouseEnter();
-    },100)
-  });
+  //asyncTest("test hover event", 1,function(){
+  //  var div = get_div();
+  //  div.style("width",400)
+  //  var pack = PACK.pack({
+  //    data :  circle_test_data[0],
+  //    width : 400
+  //  });
+  //  pack(div);
+  //  pack.dispatch.on("dataMouseEnter",function(d){
+  //    if (d.depth===0){return;}
+  //    equal(d.name, 'A')
+  //    start();
+  //    pack.dispatch.on("dataMouseEnter",null);
+  //  });
+  //});
 
   asyncTest("test drill down",1, function(){
     var level_name = 'smallerest';
     var div = get_div();
+    div.style("width",400)
     var data = PACK.create_data_nodes(
        circle_test_data[1][1],
        circle_test_data[1][0]
@@ -189,6 +176,7 @@
     pack(div);
     pack.dispatch.on("dataClick",function(d){
       equal(d.name, level_name )
+      pack.dispatch.on("dataClick",'')
       start();
     });
     setTimeout(function(){
@@ -197,6 +185,86 @@
         .node();
       $(node).d3Click();
     },100)
+  });
+
+  test("test bar",0, function(){
+    var chart = BAR.bar({
+      series :  {'authorities': [10,15,12],
+                 'expenditures': [8,5,19]
+      },
+      ticks : ['2010','2011','2012'],
+      height : 400,
+      width : 400
+    })(get_div().style("width",400));
+  });
+
+  test("test bar2",0, function(){
+    var chart = BAR.bar({
+      series :  {'authorities': [-10,-15,-12],
+                 'expenditures': [-8,-5,-19]
+      },
+      ticks : ['2010','2011','2012'],
+      height : 400,
+      width : 400
+    })(get_div().style("width",400));
+  });
+
+  test("test bar3",0, function(){
+    var chart = BAR.bar({
+      series :  {'authorities': [10,-15,12],
+                 'expenditures': [-8,5,-19]
+      },
+      ticks : ['2010','2011','2012'],
+      height : 400,
+      width : 400
+    })(get_div().style("width",400));
+  });
+
+  test("test bar4",0, function(){
+    var chart = BAR.bar({
+      series :  {'authorities': [10,5,12]
+      },
+      ticks : ['2010','2011','2012'],
+      height : 400,
+      width : 400
+    })(get_div().style("width",400));
+  });
+
+  test("test bar4",0, function(){
+    var chart = BAR.bar({
+      series :  {'authorities': [10,5,12]
+      },
+      ticks : ['2010','2011','2012'],
+      height : 200,
+      width : 200
+    })(get_div().style("width",200));
+  });
+                 
+  test("test mini bar4",0, function(){
+    var data = [
+          {val: 10, name : 'ABC'},
+          {val: 12, name : 'ABD'},
+          {val: 16, name : 'ABE'},
+          {val: 18, name : 'ABF'},
+          {val: -6, name : 'ABG'},
+          {val: 13, name : 'ABH'},
+          {val: 60, name : 'ABI'}
+      ],
+    el = get_div().style("width",600)
+    chart = BAR.hbar({
+      data : data,
+      x_scale : d3.scale.linear(),
+      width : 600
+    })(el);
+    setTimeout(function(){
+      _.each(data, function(d){
+        d.val = _.random(-20,50);
+      });
+      chart.update({
+        data : _.sortBy(data,function(d){return -d.val})
+      })
+    },1500)
+
   });
 
 })();

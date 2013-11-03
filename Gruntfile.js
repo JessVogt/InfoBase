@@ -67,8 +67,10 @@ module.exports = function(grunt) {
           "src/js/queries.js",
           "src/js/d3/core.js",
           "src/js/d3/tooltip.js",
+          "src/js/d3/hbar.js",
           "src/js/d3/bar.js",
           "src/js/d3/dept_explore.js",
+          "src/js/d3/horizontal.js",
           "src/js/d3/pack.js",
           "src/js/tables.js",
           "src/js/od/text.js",
@@ -77,7 +79,7 @@ module.exports = function(grunt) {
           "src/js/ExDB-start.js"
           ],
           dest: '../ExDB/ExDB.js',
-        },
+        }
       }
   });
 

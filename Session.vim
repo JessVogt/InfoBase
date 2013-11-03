@@ -75,27 +75,29 @@ if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
   let s:wipebuf = bufnr('%')
 endif
 set shortmess=aoO
-badd +78 les/src/js/app.js
+badd +20 les/src/js/app.js
 badd +26 les/src/js/tables.js
 badd +707 les/src/js/od/tables.js
 badd +63 les/src/js/queries.js
 badd +22 les/src/js/base_table_view.js
-badd +53 les/src/js/d3/core.js
-badd +121 les/src/js/d3/bar.js
+badd +48 les/src/js/d3/core.js
+badd +4 les/src/js/d3/bar.js
 badd +25 les/src/js/d3/tooltip.js
 badd +82 les/test/test-data.js
-badd +15 les/test/test.html
-badd +29 les/src/js/od/od.js
+badd +37 les/test/test.html
+badd +121 les/src/js/od/od.js
 badd +21 les/src/js/mappers.js
-badd +73 les/Gruntfile.js
-badd +1 les/src/js/d3/dept_explore.js
-badd +189 les/src/js/d3/pack.js
-badd +28 les/test/test-d3.js
+badd +81 les/Gruntfile.js
+badd +46 les/src/js/d3/dept_explore.js
+badd +3 les/src/js/d3/pack.js
+badd +191 les/test/test-d3.js
 badd +157 les/src/mako/od_handlebars_templates.html
 badd +47 les/src/js/waiting.js
 badd +38 les/src/mako/extracss.html
+badd +16 les/src/js/d3/horizonal.js
+badd +6 les/src/js/ExDB-start.js
 silent! argdel *
-edit les/src/js/d3/dept_explore.js
+edit les/src/js/d3/bar.js
 set splitbelow splitright
 wincmd _ | wincmd |
 vsplit
@@ -213,15 +215,15 @@ set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 181 - ((15 * winheight(0) + 21) / 43)
+let s:l = 43 - ((27 * winheight(0) + 21) / 43)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-181
+43
 normal! 09|
 wincmd w
 argglobal
-edit les/src/js/app.js
+edit les/src/js/od/od.js
 setlocal keymap=
 setlocal noarabic
 setlocal noautoindent
@@ -327,12 +329,12 @@ set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 94 - ((37 * winheight(0) + 21) / 43)
+let s:l = 119 - ((19 * winheight(0) + 21) / 43)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-94
-normal! 029|
+119
+normal! 0
 wincmd w
 exe 'vert 1resize ' . ((&columns * 79 + 79) / 159)
 exe 'vert 2resize ' . ((&columns * 79 + 79) / 159)
