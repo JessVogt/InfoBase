@@ -136,6 +136,9 @@
           });
         }
       },
+      "big-int2" :  function(val,lang){
+        return this['big-int'](val*1000,lang);
+      },
       "int" :  function(val,lang){return val},
       "str" : function(val,lang){return val},
       "wide-str" : function(val,lang){return val},
@@ -144,7 +147,7 @@
 
     APP.find_all_in_ministry = function(dept,lang){
       // find all departments with a ministry name, matching
-      return depts_cf.min.filter(dept.min[lang]).top(Infinity);
+      return window.mins[dept.min.en].values;
     }
 
     APP.fullDeptList = Backbone.View.extend({

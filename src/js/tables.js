@@ -17,8 +17,29 @@
   }
   APP.dispatcher.once("init", setup_tables);
 
+  var make_horizontal_func = function(app,func,table){
+     var f = function(col,dept_rollup){
+        dept_rollup = dept_rollup ||  false;
+        var nest = d3.nest()
+                     .key(func({app:app,table:table}))
+                     .key(function(d){return d.dept;}) ;
+        if (dept_rollup) {
+            nest.rollup(function(leaves){
+                            return d3.sum(leaves, function(leaf){
+                              return leaf[col];});
+                        });
+        }
+        return  nest.entries(table.data);
+     };
+     f.resolver = function(x,y){ return x+y; };
+     return _.memoize(f,f.resolver);
+  };
+
   var load_data = function(app){
     return _.map(TABLES.tables, function(table){
+      /*
+       *
+       */
       var key = table.name[app.state.get("lang")];
       var promise1= $.Deferred(),promise2 =$.Deferred();
       WAIT.w.update_item(key,"download")
@@ -33,10 +54,37 @@
           })
        })
        promise1.done(function(data){
-        var mapper = map_objs(app.state.get("lang"),table);
-        table.data = _.map(_.tail(d3.csv.parseRows(data)),mapper);
-        table.cf = crossfilter(table.data);
-        table.depts = table.cf.dimension(function(row){return row['dept']});
+         var lang =  app.state.get("lang"),
+          // create the mapper
+            mapper = map_objs(lang,table);
+            data = _.chain(d3.csv.parseRows(data))
+                     .tail()
+                     .map(mapper)
+                     .groupBy(function(row){ return row.dept === 'ZGOC';})
+                     .value();
+        // attached mapped data to the table object
+        table.data = data[false];
+        table.GOC = data[true];
+        // create all other dimensions
+        _.each(table.dimensions, function(func,d){
+          table[d] =  make_horizontal_func(app,func,table);
+        });
+        // add the table 
+        table.depts = d3.nest()
+         .key(function(d){ return d.dept;})
+         .map(table.data);
+        table.dept_rollup = _.memoize(function(col){
+           return d3.nest()
+            .key(function(d){ return d.dept;})
+            .rollup(function(leaves){
+              return d3.sum(leaves, function(leaf){
+                return leaf[col];
+              });
+            })
+            .map(table.data); 
+        });
+        // create the fully qualified names
+        table.add_fully_qualified_col_name(lang);
         WAIT.w.update_item(key,"finished");
           setTimeout(function(){
             promise2.resolve();
@@ -83,6 +131,9 @@
     if (_.isString(x)){
       x =  {header : {en: x, fr: x}};
     }
+    if (_.isString(x.header)){
+      x.header = {en: x.header, fr: x.header};
+    }
     x.table = this;
     if (!_.has(x,"key")){
        x.key = false;
@@ -98,9 +149,30 @@
   };
 
   function col_from_nick(nick){
+    // find a column obj from either the nick name or the wvag uniq ID
     return _.find(this.flat_headers, function(col){
       return col.nick === nick || col.wcag === nick;
     }) || false;
+  };
+
+  function add_fully_qualified_col_name(lang){
+    _.chain(this.flat_headers)
+     .filter( function(header){
+       // filter out nodes with children and  key nodes
+       return _.isUndefined(header.children) && !header.key;
+     })
+     .each( function(col){
+         var name = col.header[lang];
+         var pointer = col ;
+         while (pointer.parent){
+           pointer = pointer.parent;
+           if (pointer.header[lang].length > 0){
+             name = pointer.header[lang] +' - '+ name;
+           }
+         }
+         // run this once and attach to the col obj
+         col.fully_qualified_name = TABLES.m(name);
+     });
   };
 
   APP.dispatcher.on("new_table", function(table){
@@ -113,6 +185,7 @@
     // add in new functions
     table.col_from_nick = _.memoize(col_from_nick);
     table.add_col = col_adder;
+    table.add_fully_qualified_col_name = add_fully_qualified_col_name;
 
     // register callbacks
     _.each(table.on,function(func, signal){

@@ -242,13 +242,13 @@
                  
   test("test mini bar4",0, function(){
     var data = [
-          {val: 10, name : 'ABC'},
-          {val: 12, name : 'ABD'},
-          {val: 16, name : 'ABE'},
-          {val: 18, name : 'ABF'},
-          {val: -6, name : 'ABG'},
-          {val: 13, name : 'ABH'},
-          {val: 60, name : 'ABI'}
+          {value: 10, name : 'ABC'},
+          {value: 12, name : 'ABD'},
+          {value: 16, name : 'ABE'},
+          {value: 18, name : 'ABF'},
+          {value: -6, name : 'ABG'},
+          {value: 13, name : 'ABH'},
+          {value: 60, name : 'ABI'}
       ],
     el = get_div().style("width",600)
     chart = BAR.hbar({
@@ -258,10 +258,10 @@
     })(el);
     setTimeout(function(){
       _.each(data, function(d){
-        d.val = _.random(-20,50);
+        d.value = _.random(-20,50);
       });
       chart.update({
-        data : _.sortBy(data,function(d){return -d.val})
+        data : _.sortBy(data,function(d){return -d.value})
       })
     },1500)
 

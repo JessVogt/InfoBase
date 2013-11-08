@@ -146,6 +146,7 @@
       {
         "type":"wide-str",
         "nick" : "desc",
+        "key" : true,
         "header":{
           "en":"Description",
           "fr":"Description"
@@ -205,7 +206,30 @@
           }
       ]);
      },
-     "data_access" : {
+     "dimensions" : {
+       "horizontal" : function(options){
+         var interesting_stats = _.chain(options.table.data)
+           .filter(function(d){return d.votestattype === 999})
+           .groupBy(function(d){return d.desc})
+           .pairs()
+           .filter(function(key_grp){
+             return key_grp[1].length > 3;
+           })
+           .map(function(key_grp){return key_grp[0]})
+           .value();
+         return function(row){
+            if (row.votestattype === 999){
+              if (_.contains(interesting_stats, row.desc)) {
+                return row.desc;
+              }
+              return app.get_text("stat");
+            }
+            if (row['votestattype']){
+              return app.get_text("vstype"+row['votestattype']);
+            }
+            return ;
+          };
+       }
      },
      "link": {
          "en": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-eng.asp",
@@ -217,44 +241,33 @@
      "title": { "en": "Statement of Authorities and Expenditures ($000)",
          "fr": "État des autorisations et des dépenses (en milliers de dollars)"
      },
-     "mapper": {
-         "to": function (row) {
-            if (this.lang == 'en') {
-              row.splice(4, 1);
-            } else {
-              row.splice(3, 1);
-            }
-            return _.tail(row,2);
-         },
-        "sort": function (mapped_rows) {
-            var grps = _.groupBy(mapped_rows, function (row) { 
-              return _.isNumber(row[0]);
-            });
-            if (_.has(grps, true)) {
-                grps[true] = _.sortBy(grps[true], function (row) { 
-                  return row[0];
-                });
-            } else {
-                grps[true] = [];
-            }
-            if (_.has(grps, false)) {
-                grps[false] = _.sortBy(grps[false], function (row) { 
-                  return row[1]; 
-                });
-            } else {
-                grps[false] = [];
-            }
-            return grps[true].concat(grps[false]);
-        },
-        "make_filter": function (source_row) {
-           return function (candidate_row) {
-               if (typeof source_row[1] === 'string') {
-                   return candidate_row[4] == source_row[4];
-               } else {
-                   return candidate_row[2] === source_row[2];
-               }
-           };
-       }
+     "sort": function (mapped_rows) {
+         var grps = _.groupBy(mapped_rows, function (row) { 
+           return _.isNumber(row[0]);
+         });
+         if (_.has(grps, true)) {
+             grps[true] = _.sortBy(grps[true], function (row) { 
+               return row[0];
+             });
+         } else {
+             grps[true] = [];
+         }
+         if (_.has(grps, false)) {
+             grps[false] = _.sortBy(grps[false], function (row) { 
+               return row[1]; 
+             });
+         } else {
+             grps[false] = [];
+         }
+         return grps[true].concat(grps[false]);
+     },
+     "mapper": function (row) {
+        if (this.lang == 'en') {
+          row.splice(6, 1);
+        } else {
+          row.splice(5, 1);
+        }
+        return _.tail(row,2);
      },
      "table_view": {
        hide_col_ids: [],
@@ -437,6 +450,13 @@
             }
         ]);
       },
+      "dimensions" : {
+        "horizontal" : function(options){
+          return function(row){
+            return row['so'];
+          };
+        }
+      },
       link: {
          "en": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-eng.asp",
          "fr": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-fra.asp"
@@ -446,22 +466,15 @@
       },
       title: { "en": "Expenditures by Standard Object ($000)",
           "fr": "Dépenses par article courant (en milliers de dollars)"
-      }
-    , mapper: {
-        to: function (row) {
-          row = _.tail(row,2);
-          if (row[0] != 'ZGOC') {
-            row.splice(1, 1, sos[row[1]][this.lang]);
-          }
-          return row;
-        }
-      , make_filter: function (source_row) {
-          return function (candidate_row) {
-              return (candidate_row[1] == source_row[1]);
-          }
-      }
-    }
-    , table_view: {
+      },
+      "mapper": function (row) {
+         row = _.tail(row,2);
+         if (row[0] != 'ZGOC') {
+           row.splice(1, 1, sos[row[1]][this.lang]);
+         }
+         return row;
+      },
+     table_view: {
         sum_cols: [1, 2, 3, 4, 5, 6]
       , min_func: TABLES.add_ministry_sum
       , init_row_data: function () {
@@ -679,36 +692,38 @@
   "add_cols": function(){
      this.add_col("")
      .add_child([
-      {
+       {
         "type":"int",
         "key" : true,
         "hidden" : true,
         "nick" : "dept",
-        "header":'',
-      },
+        "header":''
+       },
        {
-         "type":"int",
-         "key" : true,
-         "nick" : "votenum",
-         "header":{
-           "en":"Vote {{last_year}} / Statutory",
-           "fr":"Crédit {{last_year}} / Légis."
-         }
-        },
-        {
-          "type":"int",
-          "key" : true,
-          "hidden" : true,
-          "nick" : "votestattype",
-          "header":'',
-        },
-        {
-         "type":"wide-str",
-          "header":{
-            "en":"Description",
-            "fr":"Description"
-          }
+        "type":"int",
+        "key" : true,
+        "nick" : "votenum",
+        "header":{
+          "en":"Vote {{last_year}} / Statutory",
+          "fr":"Crédit {{last_year}} / Légis."
         }
+       },
+       {
+        "type":"int",
+        "key" : true,
+        "hidden" : true,
+        "nick" : "votestattype",
+        "header":''
+       },
+       {
+        "type":"wide-str",
+        "key" : true,
+        "nick" : "desc",
+        "header":{
+           "en":"Description",
+           "fr":"Description"
+        }
+       }
      ]);
      _.each(['{{last_year_3}}','{{last_year_2}}','{{last_year}}'],
          function(header){
@@ -743,6 +758,31 @@
   "title": { "en": "Authorities and Actual Expenditures ($000)",
       "fr": "Autorisations et dépenses réelles (en milliers de dollars)"
   },
+  "dimensions" : {
+    "horizontal" : function(options){
+      var interesting_stats = _.chain(options.table.data)
+        .filter(function(d){return d.votestattype === 999})
+        .groupBy(function(d){return d.desc})
+        .pairs()
+        .filter(function(key_grp){
+          return key_grp[1].length > 3;
+        })
+        .map(function(key_grp){return key_grp[0]})
+        .value();
+      return function(row){
+         if (row.votestattype === 999){
+           if (_.contains(interesting_stats, row.desc)) {
+             return row.desc;
+           }
+           return app.get_text("stat");
+         }
+         if (row['votestattype']){
+           return app.get_text("vstype"+row['votestattype']);
+         }
+         return ;
+       };
+    }
+  },
   "sort": function (mapped_rows, lang) {
       var grps = _.groupBy(mapped_rows, function (row) { return _.isNumber(row[0]) });
       if (_.has(grps, true)) {
@@ -759,13 +799,10 @@
   },
   "on": {
     "data_loaded" : function(app){
-      var group = this.depts.group().reduceSum(function(r){ return r['{{last_year}}exp']}).all();
-      var group_key = _.object(_.map(group,function(x){
-        return [x.key, x.value];
-      }));
+      var fin_sizes = this.dept_rollup('{{last_year}}exp',true);
       _.chain(depts)
         .each(function(dept,key){
-          dept.fin_size = group_key[key];
+          dept.fin_size = fin_sizes[key];
         })
         .filter(function(dept,key){
           return _.isUndefined(dept.fin_size);
@@ -773,27 +810,17 @@
         .each(function(dept,key){
           dept.fin_size =0;
         })
+        .value();
     }
   },
-  mapper: {
-        to: function (row) {
-            if (this.lang == 'en') {
-                row.splice(3, 1);
-            } else {
-                row.splice(4, 1);
-            }
-            // remove acronym and vote type
-            return row;
-        }
-      , make_filter: function (source_row) {
-          return function (candidate_row) {
-              if (typeof source_row[2] === 'string') {
-                  return candidate_row[4] == source_row[4];
-              } else {
-                  return candidate_row[1] === source_row[1];
-              }
-          }
-      }
+  mapper: function (row) {
+    if (this.lang == 'en') {
+        row.splice(3, 1);
+    } else {
+        row.splice(4, 1);
+    }
+    // remove acronym and vote type
+    return row;
   },
   table_view: {
         sum_cols: [2, 3, 4, 5, 6, 7]
@@ -990,6 +1017,13 @@
                );
        },this);
      },
+      "dimensions" : {
+        "horizontal" : function(options){
+          return function(row){
+            return row['so'];
+          }
+        }
+      },
       "link": {
           "en": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-eng.asp",
           "fr": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-fra.asp"
@@ -1001,19 +1035,12 @@
           "fr": "Dépenses par article courant de {{last_year_3}} à {{last_year}} (en milliers de dollars)"
       },
      "sort": function (rows, lang) { return rows },
-     mapper: {
-        to: function (row) {
+     "mapper": function (row) {
           if (row[0] != 'ZGOC') {
             row.splice(1, 1, sos[row[1]][this.lang]);
           }
           return row;
-        }
-      , make_filter: function (source_row) {
-          return function (candidate_row) {
-              return (candidate_row[1] == source_row[1]);
-          }
-      }
-    }
+     }
     , table_view: {
         sum_cols: [1, 2, 3]
       , min_func: TABLES.add_ministry_sum
@@ -1190,6 +1217,25 @@
                );
        },this);
    },
+   "dimensions" : {
+     "horizontal": function(options){
+      var app = options.app;
+      var func  = function(col){
+            return  function(row){
+              if (row['prgm'] === 'Internal Services' || row['prgm'] === 'Services internes'){
+                return row['prgm'];
+              }
+              var floor = Math.floor(Math.log(row[col])/ Math.log(10));
+              if (floor <= 5){
+                return app.formater("big-int2",Math.pow(10,5));
+              } else {
+                return app.formater("big-int2",Math.pow(10,floor));
+              }
+            };
+      };
+      return func;
+      }
+   },
    "link": {
        "en": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-eng.asp",
        "fr": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-fra.asp"
@@ -1200,25 +1246,17 @@
    "title": { "en": "Expenditures by Program from {{last_year_3}} to {{last_year}} ($000)",
        "fr": "Dépenses par programme de {{last_year_3}} à {{last_year}} (en milliers de dollars)"
    },
-    "sort": function (mapped_rows, lang) {
+   "sort": function (mapped_rows, lang) {
        return _.sortBy(mapped_rows, function (row) { return row[0] });
    },
-   mapper: {
-        to: function (row) {
-            if (this.lang == 'en') {
-                row.splice(2, 1);
-            } else {
-                row.splice(1, 1);
-            }
-            return row;
-        }
-      , make_filter: function (source_row) {
-          return function (candidate_row) {
-              return (candidate_row[1] == source_row[1] &&
-                    candidate_row[0] != 'ZGOC');
-          }
+   mapper: function (row) {
+      if (this.lang == 'en') {
+          row.splice(2, 1);
+      } else {
+          row.splice(1, 1);
       }
-    }
+      return row;
+   }
     , table_view: {
         sum_cols: [1, 2, 3]
       , min_func: TABLES.add_ministry_sum
@@ -1339,6 +1377,7 @@
         { 
            "type":"int",
            "key" : true,
+            "nick" : "type",
            "header":{
              "en":"Payment Type",
              "fr":"Type de paiement"
@@ -1387,29 +1426,31 @@
      "en": "Transfer Payments from {{last_year_3}} to {{last_year}} ($000)",
      "fr": "Paiements de transfert de {{last_year_3}} à {{last_year}} (en milliers de dollars)"
    },
+   "dimensions" : {
+      "horizontal" : function(options){
+        return function(row){
+          var type = row['type'];
+          if (row['tp'].substring(0,3) === '(S)'){
+            return type + ' - ' + app.get_text("stat");
+          } else {
+            return type + ' - ' + app.get_text("voted");
+          }
+        };
+      }
+   },
    "sort": function (mapped_rows, lang) {
         return _.sortBy(mapped_rows, function (row) { return row[0] });
-    }
-    , mapper: {
-        to: function (row) {
-            if (this.lang == 'en') {
-                row.splice(2, 1);
-                row.splice(3, 1);
-            } else {
-                row.splice(1, 1);
-                row.splice(2, 1);
-            }
-            // remove acronym and vote type
-            return row;
-        },
-        make_filter: function (source_row) {
-            var is_stat = source_row[3].substring(0, 3) == '(S)';
-            return function (candidate_row) {
-                var is_stat_2 = candidate_row[3].substring(0, 3) == '(S)';
-                return (candidate_row[1] == source_row[1] &&
-                   is_stat == is_stat_2);
-            }
-        }
+    },
+    "mapper": function (row) {
+       if (this.lang == 'en') {
+           row.splice(2, 1);
+           row.splice(3, 1);
+       } else {
+           row.splice(1, 1);
+           row.splice(2, 1);
+       }
+       // remove acronym and vote type
+       return row;
     }
     , table_view: {
         sum_cols: [2, 3, 4, 5, 6, 7]
@@ -1619,6 +1660,8 @@
           },
           {
             "type":"wide-str",
+            "key" : true,
+            "nick" : "desc",
             "header":{
               "en":"Description",
               "fr":"Description du crédit"
@@ -1689,6 +1732,31 @@
           }
       ]);
    },
+     "dimensions" : {
+       "horizontal" : function(options){
+         var interesting_stats = _.chain(options.table.data)
+           .filter(function(d){return d.votestattype === 999})
+           .groupBy(function(d){return d.desc})
+           .pairs()
+           .filter(function(key_grp){
+             return key_grp[1].length > 3;
+           })
+           .map(function(key_grp){return key_grp[0]})
+           .value();
+         return function(row){
+            if (row.votestattype === 999){
+              if (_.contains(interesting_stats, row.desc)) {
+                return row.desc;
+              }
+              return app.get_text("stat");
+            }
+            if (row['votestattype']){
+              return app.get_text("vstype"+row['votestattype']);
+            }
+            return ;
+          };
+       }
+     },
      "link": {
       "en": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-eng.asp",
       "fr": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-fra.asp"
@@ -1698,27 +1766,16 @@
      },
      "title": { "en": "Current-year Authorities ($000)",
          "fr": "Autorisations pour l'exercice en cours (en milliers de dollars)"
-     }
-    , "mapper": {
-        "to": function (row) {
-            if (this.lang == 'en') {
-                row.splice(4, 1);
-            } else {
-                row.splice(3, 1);
-            }
-            // remove acronym and vote type
-            return row;
+     },
+     "mapper": function (row) {
+        if (this.lang == 'en') {
+            row.splice(4, 1);
+        } else {
+            row.splice(3, 1);
         }
-      , "make_filter": function (source_row) {
-          return function (candidate_row) {
-              if (typeof source_row[1] === 'string') {
-                  return candidate_row[3] == source_row[3];
-              } else {
-                  return candidate_row[2] === source_row[2];
-              }
-          };
-      }
-    }
+        // remove acronym and vote type
+        return row;
+     }
     , table_view: {
         hide_col_ids: []
       , sum_cols: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]

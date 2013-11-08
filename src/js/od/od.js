@@ -68,10 +68,9 @@
   }
 
   APP.dispatcher.on("data_loaded",function(app){
-    window.depts_cf = crossfilter(_.values(window.depts));
-    window.depts_cf.min = window.depts_cf.dimension(function(row){
-      return row.min[app.state.get("lang")];
-    });
+    window.mins = d3.nest()
+      .key(function(d){ return d.min.en})
+      .map(_.values(window.depts));
     APP.dispatcher.trigger("app_ready",app);
     Backbone.history.start();
   });
@@ -119,7 +118,7 @@
 
   APP.dispatcher.on("home",function(app){
     //ns().D3.bubbleDeptList(app);
-    //ns().D3.horizontal_gov(app);
+    ns().D3.horizontal_gov(app);
   });
   APP.dispatcher.on("reset",function(app){
     (new  APP.welcomeView({app:app})).render();

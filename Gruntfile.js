@@ -54,7 +54,7 @@ module.exports = function(grunt) {
         dist: {
           src: [
           "src/js/sandbox.js",
-          "src/js/datatables.js",
+          //"src/js/datatables.js",
           "src/js/group_funcs.js" ,
           "src/js/table_popup.js" ,
           "src/js/mappers.js" ,
