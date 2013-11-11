@@ -22,7 +22,11 @@
     }
 
     D3.get_offset = function(elem){
-       return $(elem.node()).parents("svg").parent().offset();
+       return $(D3.get_html_parent(elem)).offset();
+    }
+
+    D3.get_html_parent = function(elem){
+       return $(elem.node()).parents("svg").parent()[0];
     }
 
     D3.extend_base = function(chart){

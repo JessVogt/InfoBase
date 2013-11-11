@@ -21,7 +21,7 @@
      var f = function(col,dept_rollup){
         dept_rollup = dept_rollup ||  false;
         var nest = d3.nest()
-                     .key(func({app:app,table:table}))
+                     .key(func({app:app,table:table,col:col}))
                      .key(function(d){return d.dept;}) ;
         if (dept_rollup) {
             nest.rollup(function(leaves){
@@ -29,7 +29,7 @@
                               return leaf[col];});
                         });
         }
-        return  nest.entries(table.data);
+        return  nest.map(table.data);
      };
      f.resolver = function(x,y){ return x+y; };
      return _.memoize(f,f.resolver);

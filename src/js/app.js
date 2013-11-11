@@ -72,16 +72,18 @@
            1000000000 : {en : 'B', fr: 'Mds'},
            1000000 : {en : 'M', fr: 'm'},
            1000 : {en : 'K', fr: 'k'},
-         }
-         if (val >= 1000000000){
+         },abs = Math.abs(val)
+         if (val == 0) { 
+           return accounting.formatMoney(0,{precision: 0, symbol: ''})
+         } else if (abs >= 1000000000){
            val = val /  1000000000;
            symbol = abbrev[1000000000][lang];
          }
-         if (val >= 1000000){
+         else if (abs >= 1000000){
            val = val /  1000000;
            symbol = abbrev[1000000][lang];
          }
-         if (val >= 10000){
+         else {
            val = val /  1000;
            symbol = abbrev[1000][lang];
          }

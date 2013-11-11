@@ -17,13 +17,16 @@
       // main chart area
       var area = d3.select("#app")
             .append("div")
-            .attr("class","span-8 horizontal_gov"),
+            .attr("class","span-8 horizontal_gov")
+            .style("margin-left","0px"),
           selections  = area
             .append("div")
-            .attr("class","span-2 well selections");
+            .attr("class","span-2 well selections border-all margin-none")
+            .style("margin-left","10px");
       this.chart_area  = area
             .append("div")
-            .attr("class","span-5 chart");
+            .attr("class","span-6 chart border-all margin-none")
+            .style("margin-left","10px");
 
       // setup each of the four sections for the time period covers, the relevant tale names
       // then the columns of a particular table and then the groups
@@ -129,30 +132,28 @@
     _horizontal_gov.prototype.on_column_click = function(col){
       var col = this.current_column  = col;
       var shown = _.chain(this.current_table.horizontal(col.nick || col.wcag,true))
-                // filter out null key
-                .filter(function(d){ return d.key; })
-                .value();
+                   .keys()
+                  // filter out any null values
+                  .compact()
+                  .value();
 
       // add the Al option
-      shown.unshift({
-        key : this.gt("all"),
-        values: ''
-      });
+      shown.unshift( this.gt("all") );
 
       shown_sel = this.shown.selectAll("li")
-        .data(shown);
+        .data(shown,_.identity);
+
+      shown_sel
+        .exit()
+        .remove();
 
       shown_sel
         .enter()
         .append("li")
         .append("a")
         .attr("href","#")
-        .html(function(d){ return  d.key; })
+        .html(_.identity)
         .on("click",this.dispatcher.shown_click);
-
-      shown_sel
-        .exit()
-        .remove();
 
       _.delay(this.dispatcher.shown_click,0,this.current_shown || shown[0],this.shown);
     };
@@ -168,39 +169,48 @@
             group = this.current_shown,
             data;
 
-        if (group.key === this.gt("all")){
-          data = table.dept_rollup(col);
+        if (_.isFunction(table.horizontal_data_prep)){
+          data = table.horizontal_data_prep(col,group);
         } else {
-          data = table.horizontal(col,true);
-        }
 
-        data =  _.chain(data)
-          .map(function(val,key){
-            return {name : window.depts[key].dept[this.lang],
-                    dept : window.depts[key],
-                    value : val
-              }
-          },this)
+          if (group === this.gt("all")){
+            data = table.dept_rollup(col);
+          } else {
+            data = table.horizontal(col,true)[group];
+          }
+
+          data =  _.chain(data)
+            .map(function(val,key){
+              return {name : window.depts[key].dept[this.lang],
+                      dept : window.depts[key],
+                      value : val
+                }
+            },this)
           .sortBy(function(d){return -d.value;})
           .value();
 
-        debugger
-        //this.graph_data(data);
+        }
+       
+        this.graph_data(data);
       }
     };
 
     _horizontal_gov.prototype.graph_data = function(data){
-      this.chart_area.selectAll("svg").remove();
+      //this.chart_area.selectAll("svg").remove();
       var formater = this.formater;
       var type = this.current_column.type;
-      // create the chart
-      D3.BAR.hbar({ 
-        x_scale : d3.scale.linear(),
-        data : data,
-        scale_factor : 1000,
-        formater : function(x){ return formater(type,x);},
+      if (!this.chart) {
+        this.chart = D3.BAR.hbar({ 
+        x_scale : d3.scale.pow().exponent(0.5),
+        axisFormater : function(d){ return formater("compact",d)},
         width : 860 
       })(this.chart_area);
+      }
+      // create the chart
+      this.chart.update({
+        data : data,
+        formater : function(x){ return formater(type,x);}
+      });
 
     }
       

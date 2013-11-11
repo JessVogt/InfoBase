@@ -1220,21 +1220,29 @@
    "dimensions" : {
      "horizontal": function(options){
       var app = options.app;
-      var func  = function(col){
-            return  function(row){
-              if (row['prgm'] === 'Internal Services' || row['prgm'] === 'Services internes'){
-                return row['prgm'];
-              }
-              var floor = Math.floor(Math.log(row[col])/ Math.log(10));
-              if (floor <= 5){
-                return app.formater("big-int2",Math.pow(10,5));
-              } else {
-                return app.formater("big-int2",Math.pow(10,floor));
-              }
-            };
+      var col = options.col;
+      var func  = function(row){
+         if (row['prgm'] === 'Internal Services' || row['prgm'] === 'Services internes'){
+           return row['prgm'];
+         }
+         var val = row[col];
+         // capture the negative and 0 values and return them as being
+         // smaller than 100k
+         if (val<=0){
+           return app.formater("big-int2",Math.pow(10,5));
+         }
+         var floor = Math.floor(Math.log(val)/ Math.log(10));
+         if (floor <= 5){
+           return app.formater("big-int2",Math.pow(10,5));
+         } else {
+           return app.formater("big-int2",Math.pow(10,floor));
+         }
       };
       return func;
       }
+   },
+   "horizontal_data_prep" : function(){
+
    },
    "link": {
        "en": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-eng.asp",
