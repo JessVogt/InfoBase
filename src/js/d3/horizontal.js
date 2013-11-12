@@ -55,6 +55,7 @@
           .on("click",this.dispatcher.period_click);
 
       this.dispatcher.period_click(data[0],this.period);
+
     };
 
     _horizontal_gov.prototype.highlight = function(data,select){
@@ -72,6 +73,9 @@
         .addClass("background-medium")
         .siblings()
         .removeClass("background-medium");
+      if (d3.event){
+        $(d3.event.target).focus();
+      }
     };
 
     _horizontal_gov.prototype.on_period_click = function(d){
@@ -133,15 +137,14 @@
       var col = this.current_column  = col;
       var shown = _.chain(this.current_table.horizontal(col.nick || col.wcag,true))
                    .keys()
-                  // filter out any null values
-                  .compact()
-                  .value();
+                   .sortBy(this.current_table.horizontal_group_sort)
+                   .value();
 
       // add the Al option
       shown.unshift( this.gt("all") );
 
       shown_sel = this.shown.selectAll("li")
-        .data(shown,_.identity);
+        .data(shown,function(d,i){return d+i;});
 
       shown_sel
         .exit()
@@ -186,6 +189,9 @@
                       value : val
                 }
             },this)
+          .filter(function(d){
+            return d.value != 0;
+          })
           .sortBy(function(d){return -d.value;})
           .value();
 

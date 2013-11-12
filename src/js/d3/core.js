@@ -47,7 +47,11 @@
           return my;
         }
 
-        my.dispatch = options.dispatch = d3.dispatch('dataMouseEnter','dataMouseLeave',"dataClick");
+        my.dispatch = options.dispatch = d3.dispatch(
+            'dataMouseEnter',
+            'datahFocus',
+            'dataMouseLeave',
+            "dataClick");
 
         my.options =  function(){
           return options;

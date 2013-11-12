@@ -119,27 +119,20 @@
           "font-size" : "10px"
         })
         .append("a")
-        .attr("href","#");
+        .attr("href","#")
+        .style("color","black");
 
       text.exit().remove();
 
-       //newg
-       //  .append("text")
-       //    .attr({
-       //      "x":  this.width- 20+"px",
-       //      "y": (1+this.padding)*y.rangeBand()/2+"px" ,
-       //      "dy" : "4px",
-       //      "text-anchor": "end"
-       //    })
-       //   .style({
-       //    "font-weight":"bold",
-       //    "fill":"#000"
-       //   })
+       //newg .append("text") .attr({ "x":  this.width- 20+"px", "y": (1+this.padding)*y.rangeBand()/2+"px" , "dy" : "4px", "text-anchor": "end" }) .style({ "font-weight":"bold", "fill":"#000" })
+
+       text.order();
+
        text.each(function(d,i){
          single = d3.select(this);
          single
            .transition()
-           .duration(2000)
+           .duration(1000)
            .style({
               "top" : margins.top +4+ y(d.name) + "px"
            });
@@ -152,13 +145,14 @@
          single = d3.select(this);
          single
           .transition()
-          .duration(2000)
+          .duration(1000)
           .attr("transform", "translate(0,"+x_val+")" ); 
 
          single
            .selectAll("rect.fill")
            .transition()
-           .duration(2000)
+           .delay(1000)
+           .duration(500)
            .attr({
              "x": x_scale(Math.min(0, d.value)),
              "width": Math.abs(x_scale(d.value) - x_scale(0))
@@ -167,11 +161,7 @@
              "fill" : d.value > 0 ?  "#1f77b4" : '#A52A2A'
            });
 
-         //single
-         // .transition()
-         // .duration(2000)
-         // .text( d.name + " - "+ formater(d.value));
-
+         //single .transition() .duration(2000) .text( d.name + " - "+ formater(d.value)); 
        });
 
     }

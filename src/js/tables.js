@@ -42,16 +42,16 @@
        */
       var key = table.name[app.state.get("lang")];
       var promise1= $.Deferred(),promise2 =$.Deferred();
+      // sent signal to indicate the files is being downloaded
       WAIT.w.update_item(key,"download")
        var req = $.ajax({
          url: "data/"+table.id+".csv",
          context : table
        });
        req.done(function(data){
+         // sent signal to indicate the loading is starting
           WAIT.w.update_item(key,"loading");
-          setTimeout(function(){
-            promise1.resolve(data);
-          })
+          _.delay(promise1.resolve,0,data) ;
        })
        promise1.done(function(data){
          var lang =  app.state.get("lang"),
@@ -65,14 +65,16 @@
         // attached mapped data to the table object
         table.data = data[false];
         table.GOC = data[true];
-        // create all other dimensions
+        // create the horizontal dimensions
         _.each(table.dimensions, function(func,d){
           table[d] =  make_horizontal_func(app,func,table);
         });
-        // add the table 
+        // create the departments mapping 
         table.depts = d3.nest()
          .key(function(d){ return d.dept;})
          .map(table.data);
+        // create a departmental mapping which sums up all the values
+        // for a particular column
         table.dept_rollup = _.memoize(function(col){
            return d3.nest()
             .key(function(d){ return d.dept;})
@@ -83,12 +85,13 @@
             })
             .map(table.data); 
         });
+
         // create the fully qualified names
         table.add_fully_qualified_col_name(lang);
+
+        // send signal to indicate the table loading is finished
         WAIT.w.update_item(key,"finished");
-          setTimeout(function(){
-            promise2.resolve();
-          })
+        _.delay(promise2.resolve,0) ;
        })
       return promise2;
     });
@@ -186,8 +189,10 @@
     table.col_from_nick = _.memoize(col_from_nick);
     table.add_col = col_adder;
     table.add_fully_qualified_col_name = add_fully_qualified_col_name;
+    table.horizontal_group_sort=  table.horizontal_group_sort || _.identity; 
 
-    // register callbacks
+    // register callbacks for things like after the data has been
+    // loaded
     _.each(table.on,function(func, signal){
       // bind the listener to the table 
       APP.dispatcher.on(signal,_.bind(func,table));
@@ -195,8 +200,11 @@
 
     table.add_cols();
 
-    var to_chain = _.chain(table.flat_headers);
 
+    // add useful attributes to each table
+    // for all the nick names, how many levels of headers
+    // the key columns and the unique header names
+    var to_chain = _.chain(table.flat_headers);
     table._nicks = to_chain
       .map(function(x){ return x.nick})
       .compact()

@@ -102,6 +102,40 @@
       //  .append($('#'+ dv.def.id+'_horizontal_instructions_' + dv.lang).html());
   });
 
+  TABLES.vote_stat_dimension = function(options){
+    var app = options.app,
+    by_type_and_desc = d3.nest()
+      .key(function(d){return d.votestattype})
+      .key(function(d){return d.desc})
+      .map(options.table.data),
+    interesting_stats= _.chain(by_type_and_desc['999'])
+      .pairs()
+      .filter(function(key_grp){ return key_grp[1].length > 3; })
+      .map(function(key_grp){return key_grp[0]})
+      .value(),
+    sort_map = _.chain(by_type_and_desc)
+      .pairs()
+      .map(function(key_grp){
+         return [app.get_text("vstype"+key_grp[0]),+key_grp[0]];
+      })
+      .object()
+      .value();
+
+    options.table.horizontal_group_sort = function(group){
+      return +sort_map[group] || 998;
+    }
+    return function(row){
+       if (row.votestattype === 999){
+         if (_.contains(interesting_stats, row.desc)) {
+           return "(S) "+row.desc;
+         }
+       }
+       if (row['votestattype']){
+         return app.get_text("vstype"+row['votestattype']);
+       }
+     };
+  }               
+  
 
   APP.dispatcher.on("load_tables", function (app) {
     var m = TABLES.m = function(s){
@@ -207,29 +241,7 @@
       ]);
      },
      "dimensions" : {
-       "horizontal" : function(options){
-         var interesting_stats = _.chain(options.table.data)
-           .filter(function(d){return d.votestattype === 999})
-           .groupBy(function(d){return d.desc})
-           .pairs()
-           .filter(function(key_grp){
-             return key_grp[1].length > 3;
-           })
-           .map(function(key_grp){return key_grp[0]})
-           .value();
-         return function(row){
-            if (row.votestattype === 999){
-              if (_.contains(interesting_stats, row.desc)) {
-                return row.desc;
-              }
-              return app.get_text("stat");
-            }
-            if (row['votestattype']){
-              return app.get_text("vstype"+row['votestattype']);
-            }
-            return ;
-          };
-       }
+       "horizontal" :  TABLES.vote_stat_dimension
      },
      "link": {
          "en": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-eng.asp",
@@ -378,115 +390,124 @@
 
   APP.dispatcher.trigger("new_table",
   {
-      id: "table2",
-      coverage: "in_year",
-      add_cols : function(){
-        this.add_col("")
-          .add_child([
-            {
-              "type":"int",
-              "key" : true,
-              "hidden" : true,
-              "nick" : "dept",
-              "header":'',
-            },
-            {
-              "key" : true,
-              "type":"wide-str",
-              "nick" : "so",
-              "header":{
-                "en":"Standard Object",
-                "fr":"Article Courant"
-              }
-            } 
-        ]);
-        this.add_col("{{in_year}}")
-          .add_child([
-             {
-                "type":"big-int",
-                "header":{
-                  "en":"Planned expenditures for the year ending March 31, {{in_year_short}}",
-                  "fr":"Dépenses prévues pour l'exercice se terminant le 31 mars {{in_year_short}}"
-                }
-             },
-             {
-                "type":"big-int",
-                "header":{
-                  "en":"Expended during the quarter ended {{qfr_month_name}}, {{qfr_last_year_short}}",
-                  "fr":"Dépensées durant le trimestre terminé le {{qfr_month_name}} {{qfr_last_year_short}}"
-                }
-             },
-             {
-                "type":"big-int",
-                "nick" : "ytd-exp",
-                "header":{
-                  "en":"Year to date used at quarter-end",
-                  "fr":"Cumul des crédits utilisés à la fin du trimestre"
-                }
+   id: "table2",
+   coverage: "in_year",
+   add_cols : function(){
+     this.add_col("")
+       .add_child([
+         {
+           "type":"int",
+           "key" : true,
+           "hidden" : true,
+           "nick" : "dept",
+           "header":'',
+         },
+         {
+           "key" : true,
+           "type":"wide-str",
+           "nick" : "so",
+           "header":{
+             "en":"Standard Object",
+             "fr":"Article Courant"
+           }
+         } 
+     ]);
+     this.add_col("{{in_year}}")
+       .add_child([
+          {
+             "type":"big-int",
+             "header":{
+               "en":"Planned expenditures for the year ending March 31, {{in_year_short}}",
+               "fr":"Dépenses prévues pour l'exercice se terminant le 31 mars {{in_year_short}}"
              }
-        ]);
-        this.add_col("{{qfr_last_year}}")
-          .add_child([
-            {
-              "type":"big-int",
-              "header":{
-                "en":"Planned expenditures for the year ending March 31, {{qfr_last_year_short}}",
-                "fr":"Dépenses prévues pour l'exercice se terminant le 31 mars {{qfr_last_year_short}}"
-              }
-            },
-            {
-              "type":"big-int",
-              "header":{
-                "en":"Expended during the quarter ended {{qfr_month_name}}, {{last_year_short}}",
-                "fr":"Dépensées durant le trimestre terminé le {{qfr_month_name}} {{last_year_short}}"
-              }
-            },
-            {
-              "type":"big-int",
-              "header":{
-                "en":"Year to date used at quarter-end",
-                "fr":"Cumul des crédits utilisés à la fin du trimestre"
-              }
-            }
-        ]);
-      },
-      "dimensions" : {
-        "horizontal" : function(options){
-          return function(row){
-            return row['so'];
-          };
-        }
-      },
-      link: {
-         "en": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-eng.asp",
-         "fr": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-fra.asp"
-      },
-      name: { "en": "Expenditures by Standard Object",
-          "fr": "Dépenses par article courant"
-      },
-      title: { "en": "Expenditures by Standard Object ($000)",
-          "fr": "Dépenses par article courant (en milliers de dollars)"
-      },
-      "mapper": function (row) {
-         row = _.tail(row,2);
-         if (row[0] != 'ZGOC') {
-           row.splice(1, 1, sos[row[1]][this.lang]);
+          },
+          {
+             "type":"big-int",
+             "header":{
+               "en":"Expended during the quarter ended {{qfr_month_name}}, {{qfr_last_year_short}}",
+               "fr":"Dépensées durant le trimestre terminé le {{qfr_month_name}} {{qfr_last_year_short}}"
+             }
+          },
+          {
+             "type":"big-int",
+             "nick" : "ytd-exp",
+             "header":{
+               "en":"Year to date used at quarter-end",
+               "fr":"Cumul des crédits utilisés à la fin du trimestre"
+             }
+          }
+     ]);
+     this.add_col("{{qfr_last_year}}")
+       .add_child([
+         {
+           "type":"big-int",
+           "header":{
+             "en":"Planned expenditures for the year ending March 31, {{qfr_last_year_short}}",
+             "fr":"Dépenses prévues pour l'exercice se terminant le 31 mars {{qfr_last_year_short}}"
+           }
+         },
+         {
+           "type":"big-int",
+           "header":{
+             "en":"Expended during the quarter ended {{qfr_month_name}}, {{last_year_short}}",
+             "fr":"Dépensées durant le trimestre terminé le {{qfr_month_name}} {{last_year_short}}"
+           }
+         },
+         {
+           "type":"big-int",
+           "header":{
+             "en":"Year to date used at quarter-end",
+             "fr":"Cumul des crédits utilisés à la fin du trimestre"
+           }
          }
-         return row;
-      },
-     table_view: {
-        sum_cols: [1, 2, 3, 4, 5, 6]
-      , min_func: TABLES.add_ministry_sum
-      , init_row_data: function () {
-          var txt = this.gt("total");
-          this.merge_group_results(
-          [[this.row_data,
-          GROUP.fnc_on_group(
-            this.row_data,
-            { txt_cols: { 0: txt },
-                func_cols: this.sum_cols,
-                func: GROUP.sum_rows
-            })]]);
+     ]);
+   },
+   "dimensions" : {
+     "horizontal" : function(options){
+       var lang = options.app.state.get("lang"),
+           sort_map = _.chain(sos)
+             .map(function(val,key){
+               return [val[lang],key];
+             })
+             .object()
+             .value();
+       options.table.horizontal_group_sort = function(group){
+          return +sort_map[group];
+       }
+       return function(row){
+         return row['so'];
+       };
+     }
+   },
+   link: {
+      "en": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-eng.asp",
+      "fr": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-fra.asp"
+   },
+   name: { "en": "Expenditures by Standard Object",
+       "fr": "Dépenses par article courant"
+   },
+   title: { "en": "Expenditures by Standard Object ($000)",
+       "fr": "Dépenses par article courant (en milliers de dollars)"
+   },
+   "mapper": function (row) {
+      row = _.tail(row,2);
+      if (row[0] != 'ZGOC') {
+        row.splice(1, 1, sos[row[1]][this.lang]);
+      }
+      return row;
+   },
+   table_view: {
+     min_func: TABLES.add_ministry_sum,
+     init_row_data: function () {
+        var txt = this.gt("total");
+        this.merge_group_results(
+        [[this.row_data,
+        GROUP.fnc_on_group(
+          this.row_data,
+          { txt_cols: { 0: txt },
+              func_cols: this.sum_cols,
+              func: GROUP.sum_rows
+          })]]);
       }
     },
     mini_view: {
@@ -759,29 +780,7 @@
       "fr": "Autorisations et dépenses réelles (en milliers de dollars)"
   },
   "dimensions" : {
-    "horizontal" : function(options){
-      var interesting_stats = _.chain(options.table.data)
-        .filter(function(d){return d.votestattype === 999})
-        .groupBy(function(d){return d.desc})
-        .pairs()
-        .filter(function(key_grp){
-          return key_grp[1].length > 3;
-        })
-        .map(function(key_grp){return key_grp[0]})
-        .value();
-      return function(row){
-         if (row.votestattype === 999){
-           if (_.contains(interesting_stats, row.desc)) {
-             return row.desc;
-           }
-           return app.get_text("stat");
-         }
-         if (row['votestattype']){
-           return app.get_text("vstype"+row['votestattype']);
-         }
-         return ;
-       };
-    }
+    "horizontal" : TABLES.vote_stat_dimension
   },
   "sort": function (mapped_rows, lang) {
       var grps = _.groupBy(mapped_rows, function (row) { return _.isNumber(row[0]) });
@@ -1242,7 +1241,8 @@
       }
    },
    "horizontal_data_prep" : function(){
-
+     var data;
+     return data
    },
    "link": {
        "en": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-eng.asp",
@@ -1741,29 +1741,7 @@
       ]);
    },
      "dimensions" : {
-       "horizontal" : function(options){
-         var interesting_stats = _.chain(options.table.data)
-           .filter(function(d){return d.votestattype === 999})
-           .groupBy(function(d){return d.desc})
-           .pairs()
-           .filter(function(key_grp){
-             return key_grp[1].length > 3;
-           })
-           .map(function(key_grp){return key_grp[0]})
-           .value();
-         return function(row){
-            if (row.votestattype === 999){
-              if (_.contains(interesting_stats, row.desc)) {
-                return row.desc;
-              }
-              return app.get_text("stat");
-            }
-            if (row['votestattype']){
-              return app.get_text("vstype"+row['votestattype']);
-            }
-            return ;
-          };
-       }
+       "horizontal" : TABLES.vote_stat_dimension
      },
      "link": {
       "en": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-eng.asp",

@@ -47,12 +47,13 @@
       var req = $.ajax(obj.url)
       req.done(function(data){
         WAIT.w.update_item(key,"loading");
-        setTimeout(function(){ promise1.resolve(data);});
+        _.delay(promise1.resolve,0,data);
+
       });
       promise1.done(function(data){
         obj.onload(promises,data);
         WAIT.w.update_item(key,"finished");
-        setTimeout(function(){ promise2.resolve();});
+        _.delay(promise2.resolve,0);
       })
       return [key,promise2];
     }));
