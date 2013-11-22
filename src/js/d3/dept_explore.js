@@ -14,17 +14,25 @@
       // use crossfilter to group the departments by
       // minisries and then do a reduce sum to extract the fin size
       // of each ministry
-        min_sizes = depts_cf
-        .min
-        .group()
-        .reduceSum(function(x){return Math.abs(x.fin_size)}),
+        min_sizes =d3.nest()
+          .key(function(d){ return d.min[lang];})
+          .rollup(function(leaves){
+            return d3.sum(leaves,function(leaf){return Math.abs(leaf.fin_size);})
+          })
+          .entries(d3.values(window.depts)),
       // extract the ministries ordered by fin_size and drop the first
       // since it's the GoC
-         ministries = _.tail(min_sizes.top(Infinity));
+         ministries = _.chain(min_sizes)
+           .sortBy(function(d){return d.values;})
+           .tail()
+           .tap(function(x){x.reverse();})
+           .value();
       _.each(ministries,function(min){
         min.name = min.key
+        min.value = min.values;
         min.fin_size = min.value;
-        min.children = depts_cf.min.filter(min.key).top(Infinity);
+        delete min.values;
+        min.children = window.mins[min.key];
         _.each(min.children, function(dept){
            dept.value = Math.abs(dept.fin_size);
            dept.name = dept.dept[lang];

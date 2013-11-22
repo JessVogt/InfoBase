@@ -1018,9 +1018,19 @@
      },
       "dimensions" : {
         "horizontal" : function(options){
+          var lang = options.app.state.get("lang"),
+              sort_map = _.chain(sos)
+                .map(function(val,key){
+                  return [val[lang],key];
+                })
+                .object()
+                .value();
+          options.table.horizontal_group_sort = function(group){
+              return +sort_map[group];
+          }
           return function(row){
             return row['so'];
-          }
+          };
         }
       },
       "link": {
@@ -1220,6 +1230,13 @@
      "horizontal": function(options){
       var app = options.app;
       var col = options.col;
+      options.table.horizontal_group_sort = function(group){
+        // ensure internal services is listed last
+        if (group ==='Internal Services' || group === 'Services internes'){
+          return Math.pow(10,100);
+        }
+         return -accounting.unformat(group);
+      };
       var func  = function(row){
          if (row['prgm'] === 'Internal Services' || row['prgm'] === 'Services internes'){
            return row['prgm'];
@@ -1228,21 +1245,17 @@
          // capture the negative and 0 values and return them as being
          // smaller than 100k
          if (val<=0){
-           return app.formater("big-int2",Math.pow(10,5));
+           return app.get_text("less_than")+ " " +app.formater("big-int2",Math.pow(10,5));
          }
          var floor = Math.floor(Math.log(val)/ Math.log(10));
          if (floor <= 5){
-           return app.formater("big-int2",Math.pow(10,5));
+           return app.get_text("less_than")+ " " +app.formater("big-int2",Math.pow(10,5));
          } else {
-           return app.formater("big-int2",Math.pow(10,floor));
+           return app.get_text("greater_than")+ " " +app.formater("big-int2",Math.pow(10,floor));
          }
       };
       return func;
       }
-   },
-   "horizontal_data_prep" : function(){
-     var data;
-     return data
    },
    "link": {
        "en": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-eng.asp",
@@ -1740,20 +1753,20 @@
           }
       ]);
    },
-     "dimensions" : {
-       "horizontal" : TABLES.vote_stat_dimension
-     },
-     "link": {
-      "en": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-eng.asp",
-      "fr": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-fra.asp"
-     },
-     "name": { "en": "Current-year Authorities",
-         "fr": "Autorisations pour l'exercice en cours"
-     },
-     "title": { "en": "Current-year Authorities ($000)",
-         "fr": "Autorisations pour l'exercice en cours (en milliers de dollars)"
-     },
-     "mapper": function (row) {
+   "dimensions" : {
+     "horizontal" : TABLES.vote_stat_dimension
+   },
+   "link": {
+    "en": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-eng.asp",
+    "fr": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-fra.asp"
+   },
+   "name": { "en": "Current-year Authorities",
+       "fr": "Autorisations pour l'exercice en cours"
+   },
+   "title": { "en": "Current-year Authorities ($000)",
+       "fr": "Autorisations pour l'exercice en cours (en milliers de dollars)"
+   },
+   "mapper": function (row) {
         if (this.lang == 'en') {
             row.splice(4, 1);
         } else {

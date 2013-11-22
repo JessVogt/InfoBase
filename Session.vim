@@ -75,28 +75,28 @@ if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
   let s:wipebuf = bufnr('%')
 endif
 set shortmess=aoO
-badd +149 les/src/js/app.js
-badd +20 les/src/js/tables.js
-badd +801 les/src/js/od/tables.js
-badd +26 les/src/js/queries.js
-badd +22 les/src/js/base_table_view.js
-badd +37 les/src/js/d3/core.js
+badd +81 les/src/js/app.js
+badd +29 les/src/js/tables.js
+badd +1755 les/src/js/od/tables.js
+badd +25 les/src/js/queries.js
+badd +658 les/src/js/base_table_view.js
+badd +2 les/src/js/d3/core.js
 badd +29 les/src/js/d3/bar.js
 badd +25 les/src/js/d3/tooltip.js
 badd +83 les/test/test-data.js
 badd +42 les/test/test.html
-badd +73 les/src/js/od/od.js
+badd +273 les/src/js/od/od.js
 badd +13 les/src/js/mappers.js
 badd +59 les/Gruntfile.js
 badd +46 les/src/js/d3/dept_explore.js
 badd +107 les/src/js/d3/pack.js
 badd +249 les/test/test-d3.js
-badd +157 les/src/mako/od_handlebars_templates.html
+badd +436 les/src/mako/od_handlebars_templates.html
 badd +47 les/src/js/waiting.js
-badd +36 les/src/mako/extracss.html
+badd +47 les/src/mako/extracss.html
 badd +6 les/src/js/ExDB-start.js
-badd +125 les/src/js/d3/hbar.js
-badd +170 les/src/js/d3/horizontal.js
+badd +126 les/src/js/d3/hbar.js
+badd +192 les/src/js/d3/horizontal.js
 badd +14 les/src/mako/od_script_includes.html
 silent! argdel *
 edit les/src/js/d3/horizontal.js
@@ -217,15 +217,15 @@ set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 69 - ((32 * winheight(0) + 21) / 43)
+let s:l = 198 - ((23 * winheight(0) + 21) / 43)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-69
-normal! 09|
+198
+normal! 0
 wincmd w
 argglobal
-edit les/src/mako/extracss.html
+edit les/src/js/base_table_view.js
 setlocal keymap=
 setlocal noarabic
 setlocal noautoindent
@@ -234,13 +234,13 @@ setlocal nobinary
 setlocal bufhidden=
 setlocal buflisted
 setlocal buftype=
-setlocal nocindent
+setlocal cindent
 setlocal cinkeys=0{,0},0),:,0#,!^F,o,O,e
-setlocal cinoptions=
+setlocal cinoptions=j1,J1
 setlocal cinwords=if,else,while,do,for,switch
 setlocal colorcolumn=
-setlocal comments=s:<!--,m:\ \ \ \ ,e:-->
-setlocal commentstring=<!--%s-->
+setlocal comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,://
+setlocal commentstring=//%s
 setlocal complete=.,w,b,u,t,i
 setlocal concealcursor=
 setlocal conceallevel=0
@@ -257,8 +257,8 @@ setlocal nodiff
 setlocal equalprg=
 setlocal errorformat=
 setlocal expandtab
-if &filetype != 'html'
-setlocal filetype=html
+if &filetype != 'javascript'
+setlocal filetype=javascript
 endif
 setlocal foldcolumn=0
 setlocal foldenable
@@ -271,15 +271,15 @@ setlocal foldminlines=1
 setlocal foldnestmax=20
 setlocal foldtext=foldtext()
 setlocal formatexpr=
-setlocal formatoptions=tcq
+setlocal formatoptions=croql
 setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*
 setlocal grepprg=
 setlocal iminsert=0
 setlocal imsearch=0
 setlocal include=
 setlocal includeexpr=
-setlocal indentexpr=HtmlIndent()
-setlocal indentkeys=o,O,<Return>,<>>,{,},!^F
+setlocal indentexpr=
+setlocal indentkeys=0{,0},:,0#,!^F,o,O,e
 setlocal noinfercase
 setlocal iskeyword=@,48-57,_,192-255
 setlocal keywordprg=
@@ -287,14 +287,14 @@ setlocal nolinebreak
 setlocal nolisp
 setlocal nolist
 setlocal makeprg=
-setlocal matchpairs=(:),{:},[:],<:>
+setlocal matchpairs=(:),{:},[:]
 setlocal modeline
 setlocal modifiable
 setlocal nrformats=octal,hex
 set number
 setlocal number
 setlocal numberwidth=4
-setlocal omnifunc=htmlcomplete#CompleteTags
+setlocal omnifunc=javascriptcomplete#CompleteJS
 setlocal path=
 setlocal nopreserveindent
 setlocal nopreviewwindow
@@ -317,8 +317,8 @@ setlocal statusline=
 setlocal suffixesadd=
 setlocal swapfile
 setlocal synmaxcol=3000
-if &syntax != 'html'
-setlocal syntax=html
+if &syntax != 'javascript'
+setlocal syntax=javascript
 endif
 setlocal tabstop=2
 setlocal tags=
@@ -331,12 +331,12 @@ set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 46 - ((27 * winheight(0) + 21) / 43)
+let s:l = 641 - ((13 * winheight(0) + 21) / 43)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-46
-normal! 018|
+641
+normal! 011|
 wincmd w
 exe 'vert 1resize ' . ((&columns * 88 + 88) / 177)
 exe 'vert 2resize ' . ((&columns * 88 + 88) / 177)

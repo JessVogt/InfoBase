@@ -18,20 +18,26 @@
   APP.dispatcher.once("init", setup_tables);
 
   var make_horizontal_func = function(app,func,table){
-     var f = function(col,dept_rollup){
-        dept_rollup = dept_rollup ||  false;
+     var f = function(col,include_dept,rollup ){
+        include_dept =  include_dept == false ? false : true;
+        rollup =   rollup == false ? false : true;
         var nest = d3.nest()
                      .key(func({app:app,table:table,col:col}))
-                     .key(function(d){return d.dept;}) ;
-        if (dept_rollup) {
+        if (include_dept) {
+          nest.key(function(d){return d.dept;}) ;
+        }
+        if (rollup) {
             nest.rollup(function(leaves){
                             return d3.sum(leaves, function(leaf){
                               return leaf[col];});
-                        });
+            });
         }
-        return  nest.map(table.data);
+        return nest.map(table.data);
      };
-     f.resolver = function(x,y){ return x+y; };
+
+     f.resolver = function (col,include_dept,rollup){ 
+       return [col,include_dept,rollup].join("");
+     }
      return _.memoize(f,f.resolver);
   };
 

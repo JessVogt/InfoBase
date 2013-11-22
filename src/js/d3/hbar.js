@@ -66,6 +66,7 @@
 
       this.xAxis = d3.svg.axis()
             .scale(this.x_scale)
+            .ticks(7)
             .orient("top");
       if (this.ticks){
         this.xAxis.ticks(this.ticks);

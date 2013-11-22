@@ -632,50 +632,72 @@
 
     TABLES.d3_build_table = function(options){
       var table = d3.select(options.node).append("table");
+      var data_key_func = options.key_func || function(d,i){return i};
+
       if (options.table_class){
         table.attr("class",options.table_class);
       }
+
       if (options.table_css){
         table.style(options.table_css);
       }
+
       var headers = table.append("thead")
           .selectAll("tr")
-          .data(options.headers)
-          .enter()
-          .append("tr")
+          .data(options.headers);
+      headers.exit().remove();
+      headers
+        .enter()
+        .append("tr")
+        .order();
+
       var ths = headers
           .selectAll("th")
-            .data(Object)
-            .enter()
-            .append("th")
-            .html(function(d){return d.val;})
-            .style(function(){ return d.css})
-            .attr("id",function(d){return d.id;})
-            .attr("headers",function(d){return d.headers;})
-            .attr("class",function(d){return d.class;});
+            .data(Object);
+      ths.exit().remove();
+      ths
+        .enter()
+        .append("th")
+        .html(function(d){return d.val;})
+        .style(function(){ return d.css})
+        .attr("id",function(d){return d.id;})
+        .attr("headers",function(d){return d.headers;})
+        .attr("class",function(d){return d.class;});
+
       if (options.headerseach){
          headers.each(options.headerseach);
       }
+
       var rows = table.append("tbody")
           .selectAll("tr")
-          .data(options.rows)
-          .enter()
-          .append("tr")
+          .data(options.rows,data_key_func)
+
+      rows.exit().remove();
+      rows
+        .enter()
+        .append("tr")
+        .order();
       var tds = rows
           .selectAll("td")
             .data(Object)
-            .enter()
-            .append("td")
-            .html(function(d){return d.val;})
-            .attr("headers",function(d){return d.headers;})
-            .attr("class",function(d){return d.class;})
-            .style(function(){ return d.css});
+      tds.exit().remove();
+
+      tds
+        .enter()
+        .append("td")
+        .html(function(d){return d.val;})
+        .attr("headers",function(d){return d.headers;})
+        .attr("class",function(d){return d.class;})
+        .style(function(){ return d.css});
+
       if (options.rowseach){
          rows.each(options.rowseach);
       }
+
       if (options.tdseach){
         tds.each(options.tdseach);
       }
+
       return table.node();
     }
 
