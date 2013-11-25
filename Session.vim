@@ -75,31 +75,34 @@ if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
   let s:wipebuf = bufnr('%')
 endif
 set shortmess=aoO
-badd +81 les/src/js/app.js
+badd +78 les/src/js/app.js
 badd +29 les/src/js/tables.js
 badd +1755 les/src/js/od/tables.js
 badd +25 les/src/js/queries.js
-badd +658 les/src/js/base_table_view.js
-badd +2 les/src/js/d3/core.js
-badd +29 les/src/js/d3/bar.js
+badd +1 les/src/js/base_table_view.js
+badd +27 les/src/js/d3/core.js
+badd +5 les/src/js/d3/bar.js
 badd +25 les/src/js/d3/tooltip.js
 badd +83 les/test/test-data.js
-badd +42 les/test/test.html
-badd +273 les/src/js/od/od.js
+badd +7 les/test/test.html
+badd +121 les/src/js/od/od.js
 badd +13 les/src/js/mappers.js
-badd +59 les/Gruntfile.js
+badd +67 les/Gruntfile.js
 badd +46 les/src/js/d3/dept_explore.js
-badd +107 les/src/js/d3/pack.js
-badd +249 les/test/test-d3.js
+badd +135 les/src/js/d3/pack.js
+badd +23 les/test/test-d3.js
 badd +436 les/src/mako/od_handlebars_templates.html
 badd +47 les/src/js/waiting.js
 badd +47 les/src/mako/extracss.html
 badd +6 les/src/js/ExDB-start.js
-badd +126 les/src/js/d3/hbar.js
-badd +192 les/src/js/d3/horizontal.js
+badd +44 les/src/js/d3/hbar.js
+badd +5 les/src/js/d3/horizontal.js
 badd +14 les/src/mako/od_script_includes.html
+badd +23 les/src/js/d3/story.js
+badd +16 les/src/js/d3/government_story.js
+badd +1 les/src/js/d3/circle_chart.js
 silent! argdel *
-edit les/src/js/d3/horizontal.js
+edit les/src/js/d3/circle_chart.js
 set splitbelow splitright
 wincmd _ | wincmd |
 vsplit
@@ -217,15 +220,15 @@ set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 198 - ((23 * winheight(0) + 21) / 43)
+let s:l = 28 - ((27 * winheight(0) + 21) / 43)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-198
-normal! 0
+28
+normal! 042|
 wincmd w
 argglobal
-edit les/src/js/base_table_view.js
+edit les/src/js/d3/hbar.js
 setlocal keymap=
 setlocal noarabic
 setlocal noautoindent
@@ -331,12 +334,12 @@ set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 641 - ((13 * winheight(0) + 21) / 43)
+let s:l = 52 - ((4 * winheight(0) + 21) / 43)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-641
-normal! 011|
+52
+normal! 0
 wincmd w
 exe 'vert 1resize ' . ((&columns * 88 + 88) / 177)
 exe 'vert 2resize ' . ((&columns * 88 + 88) / 177)

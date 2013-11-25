@@ -23,6 +23,7 @@
     }
     return  d3.select('#pack_div')
       .append("div")
+      .attr("class","border-all")
       .style("float","left");
   }
 
