@@ -268,4 +268,17 @@
 
   });
 
+  test("test circle chart",0, function(){
+    var data = [
+          {value: 1000, name : 'ABC'},
+          {value: 1200, name : 'ABD'},
+          {value: 1600, name : 'ABE'},
+      ],
+    el = get_div().style("width",600),
+    chart = PACK.simple_circle_chart({
+      data : data,
+      height : 300,
+      width : 600
+    })(el);
+  });
 })();

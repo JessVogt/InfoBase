@@ -128,7 +128,7 @@
 
        var font_scale  = d3.scale.linear()
          .domain(d3.extent(nodes_with_text, function(d){return d.zoom_r}))
-         .range([4,30]);
+         .range([10,30]);
 
         // join the filtered data to the circles
         var circle = svg.selectAll(".node")
