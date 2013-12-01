@@ -74,7 +74,7 @@
       var that = this,
           rand = Math.round(Math.random()*1000000),
           k,
-          is_mini = this.is_mini,
+          zoomable = this.zoomable || false,
           dispatch = this.dispatch,
           data = this.data,
           radius = this.width,
@@ -83,7 +83,7 @@
           pack=  d3.layout.pack() .size([this.width,this.width]),
           nodes = pack.nodes(data);
       this.nodes = nodes;
-      if (is_mini){
+      if (!zoomable){
         nodes = _.filter(nodes,function(d){ return d.depth <= 1;});
       }
 
@@ -101,12 +101,11 @@
           draw(node);
         }
       }
-      if (!is_mini){
+      if (zoomable){
         dispatch.on("dataClick.__zoom__",on_circle_click);
         dispatch.dataClick.call(null, nodes[0],0);
       } else {
         on_circle_click(nodes[0]);
-
       }
 
 

@@ -35,7 +35,6 @@
         options.chart = my;
         options.height = options.height || 400;
         options.width = options.width || 800;
-        options.is_mini = options.width <= 200;
         options.hover_legend = options.hover_legend || true;
 
         function my(selection){
@@ -60,12 +59,6 @@
         my.series = function(value) {
           if (!arguments.length) return series;
           options.series = value;
-          return my;
-        };
-
-        my.is_mini = function(value) {
-          if (!arguments.length) return is_mini;
-          options.is_mini = value;
           return my;
         };
 

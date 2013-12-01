@@ -110,5 +110,75 @@
 
     });
 
+    PACK.circle_pie_chart = D3.extend_base(function(svg,index){
 
+      var margin = this.margin || {top: 30, 
+                                    right: 20, 
+                                    bottom: 30, 
+                                    left: 40};
+      this.width = this.width - margin.left - margin.right;
+      var height = this.height = this.height - margin.top - margin.bottom;
+
+      // based on the height of the pane
+      var scale = d3.scale.linear()
+        .domain([0,d3.max(this.data, function(d){return d.value;})])
+        .range([0,this.height/2]);
+
+
+      var x_offset = margin.left+this.width/2;
+
+      svg  = svg
+        .attr("width", this.width+margin.left+margin.right)
+        .attr("height", this.height+margin.top+margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + x_offset + "," + margin.top + ")");
+
+      var html = d3.select(D3.get_html_parent(svg));
+      _.each(this.data, function(d,i,col){
+        d.r = scale(d.value);
+      });
+
+      // join the filtered data to the circles
+      var circle = svg.selectAll("circle")
+          .data(this.data,function(d){ return d.name;});
+      var text = html.selectAll("div.middletext")
+          .data(this.data,function(d){ return d.name;});
+      // join the filtered data to any divs with labels
+
+      circle.exit().remove();
+
+      circle
+        .enter()
+          .append("circle")
+          .on("mouseenter", this.dispatch.dataMouseEnter)
+          .on("mouseleave", this.dispatch.dataMouseLeave)
+          .on("click", this.dispatch.dataClick)
+
+      circle
+        .attr({
+          "cy": function(d) { return d.r; },
+          "cx": "0px",
+          "r" : function(d) { return  d.r; }
+        })
+        .style({"fill" : function(d,i){ return D3.tbs_color(i);}});
+
+      text.exit().remove();
+      text.enter().append("div");
+      text
+        .html(function(d){ return d.value;})
+        .style({
+          "text-align": "center",
+          "position" : "absolute",
+          "width" : this.width+margin.bottom+margin.left+margin.right+"px",
+          "top"  : function(d,i){
+            if (i===0){
+              return height+"px";
+            } else {
+              return height-d.r-10+"px";
+            }
+          },
+          "left"  : "0px"
+        });
+
+    })
 })();

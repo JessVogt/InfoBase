@@ -1,6 +1,8 @@
 (function(){
 
   var D3 = ns('D3');
+  var APP =  ns('APP');
+  formater = APP.types_to_format;
   
   if (_.keys(D3).length === 0){ return;}
 
@@ -64,6 +66,22 @@
             [9,7,6,3,1,0.5]
          ]
   };
+
+  test("test circle chart",0, function(){
+    var data = [
+          {value: -0.03, name : 'ABF'},
+          {value: 0.05, name : 'ABC'},
+          {value: -0.01, name : 'ABD'}
+      ],
+    el = get_div().style("width",500),
+    chart = D3.arrows({
+      data : data,
+      formater : d3.format("%"),
+      height : 300,
+      is_mini : true,
+      width : 500
+    })(el);
+  });
 
   test("test create_data_nodes",1, function(){
     var data_nodes = PACK.create_data_nodes(
@@ -172,6 +190,7 @@
     var packed_data = PACK.pack_data(data,level_name)
     var pack = PACK.pack({
       data :  packed_data,
+      zoomable : true,
       width : 400
     });
     pack(div);
@@ -195,6 +214,9 @@
       },
       ticks : ['2010','2011','2012'],
       height : 400,
+      add_legend : true,
+      add_yaxis : true,
+      add_xaxis : true,
       width : 400
     })(get_div().style("width",400));
   });
@@ -206,6 +228,9 @@
       },
       ticks : ['2010','2011','2012'],
       height : 400,
+      add_legend : true,
+      add_yaxis : true,
+      add_xaxis : true,
       width : 400
     })(get_div().style("width",400));
   });
@@ -217,6 +242,9 @@
       },
       ticks : ['2010','2011','2012'],
       height : 400,
+      add_legend : true,
+      add_yaxis : true,
+      add_xaxis : true,
       width : 400
     })(get_div().style("width",400));
   });
@@ -227,6 +255,8 @@
       },
       ticks : ['2010','2011','2012'],
       height : 400,
+      add_yaxis : true,
+      add_xaxis : true,
       width : 400
     })(get_div().style("width",400));
   });
@@ -237,11 +267,38 @@
       },
       ticks : ['2010','2011','2012'],
       height : 200,
+      add_xaxis : true,
       width : 200
     })(get_div().style("width",200));
   });
+
+  test("test bar with labels",0, function(){
+    var chart = BAR.bar({
+      series :  {'authorities': [10000,50000,120000]
+      },
+      ticks : ['2010','2011','2012'],
+      height : 400,
+      add_xaxis : true,
+      add_labels : true,
+      label_formater : function(val){return formater['compact'](val,"en")},
+      width : 400
+    })(get_div().style("width",200));
+  });
+
+  test("test bar with labels 2",0, function(){
+    var chart = BAR.bar({
+      series :  {'authorities': [-10000,50000,-120000]
+      },
+      ticks : ['2010','2011','2012'],
+      height : 400,
+      add_xaxis : true,
+      add_labels : true,
+      label_formater : function(val){return formater['compact'](val,"en")},
+      width : 400
+    })(get_div().style("width",200));
+  });
                  
-  test("test mini bar4",0, function(){
+  test("test horizontal bar",0, function(){
     var data = [
           {value: 10, name : 'ABC'},
           {value: 12, name : 'ABD'},
@@ -281,4 +338,18 @@
       width : 600
     })(el);
   });
+
+  test("test circle chart",0, function(){
+    var data = [
+          {value: 1200, name : 'ABC'},
+          {value: 1000, name : 'ABD'},
+      ],
+    el = get_div().style("width",300),
+    chart = PACK.circle_pie_chart({
+      data : data,
+      height : 300,
+      width : 300
+    })(el);
+  });
+
 })();

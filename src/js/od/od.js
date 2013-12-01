@@ -118,8 +118,8 @@
   });
 
   APP.dispatcher.on("home",function(app){
-    ns().D3.bubbleDeptList(app);
-    //ns().D3.horizontal_gov(app);
+    //ns().D3.bubbleDeptList(app);
+    ns().D3.horizontal_gov(app);
   });
   APP.dispatcher.on("reset",function(app){
     (new  APP.welcomeView({app:app})).render();
