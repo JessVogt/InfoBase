@@ -102,20 +102,20 @@
             .on("keyup",on_search);
           $(node).find('.nav-header').after(input);
         };
-    D3.horizontal_gov =  function(app){
-      return new _horizontal_gov(app);
+
+    D3.horizontal_gov =  function(app,container){
+      return new _horizontal_gov(app,container);
     };
 
-    _horizontal_gov = function(app){
+    _horizontal_gov = function(app,container){
       // ensure all functions on this object are always bound to this
       _.bindAll(this, _.functions(this));
-      app.app.hide();
       this.gt = app.get_text;
       var lang = this.lang = app.state.get("lang");
       this.formater = app.formater;
       // create the span-8 contain and then the selections side bar and the 
       // main chart area
-      var area = d3.select("#app")
+      var area = d3.select(container[0])
             .append("div")
             .attr("class","span-8 horizontal_gov")
             .style("min-height","800px")

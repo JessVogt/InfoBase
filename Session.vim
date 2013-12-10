@@ -75,34 +75,37 @@ if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
   let s:wipebuf = bufnr('%')
 endif
 set shortmess=aoO
-badd +78 les/src/js/app.js
+badd +152 les/src/js/app.js
 badd +29 les/src/js/tables.js
-badd +1755 les/src/js/od/tables.js
+badd +8 les/src/js/od/tables.js
 badd +25 les/src/js/queries.js
 badd +1 les/src/js/base_table_view.js
-badd +25 les/src/js/d3/core.js
-badd +5 les/src/js/d3/bar.js
+badd +48 les/src/js/d3/core.js
+badd +94 les/src/js/d3/bar.js
 badd +25 les/src/js/d3/tooltip.js
 badd +83 les/test/test-data.js
-badd +38 les/test/test.html
-badd +121 les/src/js/od/od.js
+badd +8 les/test/test.html
+badd +157 les/src/js/od/od.js
 badd +13 les/src/js/mappers.js
-badd +67 les/Gruntfile.js
-badd +46 les/src/js/d3/dept_explore.js
-badd +135 les/src/js/d3/pack.js
-badd +261 les/test/test-d3.js
-badd +436 les/src/mako/od_handlebars_templates.html
-badd +47 les/src/js/waiting.js
-badd +197 les/src/mako/extracss.html
-badd +6 les/src/js/ExDB-start.js
-badd +160 les/src/js/d3/hbar.js
-badd +5 les/src/js/d3/horizontal.js
+badd +61 les/Gruntfile.js
+badd +54 les/src/js/d3/dept_explore.js
+badd +86 les/src/js/d3/pack.js
+badd +54 les/test/test-d3.js
+badd +316 les/src/mako/od_handlebars_templates.html
+badd +50 les/src/js/waiting.js
+badd +87 les/src/mako/extracss.html
+badd +3 les/src/js/ExDB-start.js
+badd +54 les/src/js/d3/hbar.js
+badd +119 les/src/js/d3/horizontal.js
 badd +14 les/src/mako/od_script_includes.html
-badd +23 les/src/js/d3/story.js
-badd +16 les/src/js/d3/government_story.js
-badd +7 les/src/js/d3/circle_chart.js
+badd +10 les/src/js/d3/story.js
+badd +11 les/src/js/d3/government_story.js
+badd +40 les/src/js/d3/circle_chart.js
+badd +78 les/src/js/d3/arrow.js
+badd +5 les/src/mako/od.html
+badd +22 les/src/js/router.js
 silent! argdel *
-edit les/src/js/d3/pack.js
+edit les/src/js/od/od.js
 set splitbelow splitright
 wincmd _ | wincmd |
 vsplit
@@ -220,15 +223,15 @@ set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 149 - ((20 * winheight(0) + 21) / 43)
+let s:l = 166 - ((15 * winheight(0) + 21) / 43)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-149
-normal! 053|
+166
+normal! 0
 wincmd w
 argglobal
-edit les/src/js/d3/circle_chart.js
+edit les/src/js/router.js
 setlocal keymap=
 setlocal noarabic
 setlocal noautoindent
@@ -334,13 +337,14 @@ set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 103 - ((34 * winheight(0) + 21) / 43)
+let s:l = 32 - ((22 * winheight(0) + 21) / 43)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-103
-normal! 042|
+32
+normal! 041|
 wincmd w
+2wincmd w
 exe 'vert 1resize ' . ((&columns * 88 + 88) / 177)
 exe 'vert 2resize ' . ((&columns * 88 + 88) / 177)
 tabnext 1

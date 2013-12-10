@@ -39,32 +39,6 @@
       }
   };
 
-
-    // customize the final app initialization by activating
-    // selected gui elements
-   APP.dispatcher.once("app_ready", function (app) {
-      app.full_dept_list = new APP.fullDeptList({
-        app: app,
-        cols: 2,
-        target: '.org_list_by_min'
-      });
-   });
-
-  APP.dispatcher.on("dept_ready", function (app) {
-      // add the reset button
-      $('#back_button').children().remove();
-      $('<a class="button button-alert"></a>')
-    .html(app.get_text("restart"))
-    .attr("href", "#")
-    .on("vclick", app.reset)
-    .appendTo($('#back_button'))
-    .focus();
-  });
-
-  APP.dispatcher.on("reset", function (app) {
-      $('#back_button').find("a").remove();
-  });
-
   APP.dispatcher.on("new_details_view", function (dv) {
       // add event listener to the back button
       dv.$el.find('li a.back').on("click", dv.tear_down);
@@ -1819,7 +1793,7 @@
                   this.ttf("percentage",data[h]/(total+1)-1)];
         },this);
         this.headers= [[this.gt("Estimates"),
-                       this.gt("Amount") + ' ($000)', 
+                       this.gt("amount") + ' ($000)', 
                        '(%)']];
       }
     }

@@ -2,6 +2,7 @@
 
   var D3 = ns('D3');
   var APP =  ns('APP');
+  var STORY =  D3.STORY;
   formater = APP.types_to_format;
   
   if (_.keys(D3).length === 0){ return;}
@@ -67,6 +68,36 @@
          ]
   };
 
+  test("test story chapter",0, function(){
+    var el = get_div().style("width",800);
+    var chapter = new STORY.chapter({get_text : function(){return "previously" }},
+      {history: true, target : el}
+    );
+
+    var data = [
+          {value: 1200, name : 'ABC'},
+          {value: 1000, name : 'ABD'},
+      ],
+    chart = PACK.circle_pie_chart({
+      data : data,
+      height : 300,
+      width : 300
+    })(chapter.graph_area());
+
+    var data = [
+          {value: 1000, name : 'ABC'},
+          {value: 1200, name : 'ABD'},
+          {value: 1600, name : 'ABE'},
+      ],
+    chart = PACK.simple_circle_chart({
+      data : data,
+      height : 300,
+      width : 600
+    })(chapter.history_area());
+
+    chapter.text_area().html("<p class='font-large'>text here</p>");
+  });
+
   test("test circle chart",0, function(){
     var data = [
           {value: -0.03, name : 'ABF'},
@@ -77,7 +108,7 @@
     chart = D3.arrows({
       data : data,
       formater : d3.format("%"),
-      height : 300,
+      height : 400,
       is_mini : true,
       width : 500
     })(el);
@@ -326,30 +357,9 @@
   });
 
   test("test circle chart",0, function(){
-    var data = [
-          {value: 1000, name : 'ABC'},
-          {value: 1200, name : 'ABD'},
-          {value: 1600, name : 'ABE'},
-      ],
-    el = get_div().style("width",600),
-    chart = PACK.simple_circle_chart({
-      data : data,
-      height : 300,
-      width : 600
-    })(el);
   });
 
   test("test circle chart",0, function(){
-    var data = [
-          {value: 1200, name : 'ABC'},
-          {value: 1000, name : 'ABD'},
-      ],
-    el = get_div().style("width",300),
-    chart = PACK.circle_pie_chart({
-      data : data,
-      height : 300,
-      width : 300
-    })(el);
   });
 
 })();

@@ -1,36 +1,11 @@
-<script type='text/plain' id='home_t'>
-
-<div>
-  <div class='border-bottom span-8' 
-    style='padding-bottom:5px;'>
-    <div class='span-5'>
-      <a href='#'  class='gov_uni ui-link clickable'> 
-        blah
-      </a>
-      <a href='#' class='dept_sel ui-link clickable'>
-        {{{gt "to_select"}}}
-      </a>
-    </div>
-    <div class='span-1' id='back_button'>
-    </div>
-  </div>
-  <div class='clear'></div>
-  <div class='org_list_by_min span-8'>
-
+<script type='text/plain' id='greeting'>
+<div class='span-8'>
+<div class='span-1'></div>
+<div class='span-6'> {{{greeting}}} </div>
 </div>
-  <div class='dept_zone span-8'>
-    <div class='span-1'></div>
-    <div class=' span-6'>
-      {{{greeting}}}
-    </div>
-  </div>
-</div>
-
 </script>
 <script type='text/plain' id='greeting_en'>
-  <h1>Welcome to the Expenditure Database.</h1>
-
-  <p><a class='dept_sel ui-link clickable' href='#'>{{gt "to_select"}}</a> from a list presented either by ministry, alphabetically or by 2011-12 budgetary net expenditures.  Users will then be directed to the organization’s overview page.</p>
+  <p><a class='dept_sel ui-link router' href='#search'>{{gt "to_select"}}</a> from a list presented either by ministry, alphabetically or by 2011-12 budgetary net expenditures.  Users will then be directed to the organization’s overview page.</p>
                                                 
   <h2>Navigation</h2>
 <ul>
@@ -80,8 +55,7 @@
 <p>The government’s fiscal year ends March 31st, but audited financial information only becomes available when the Public Accounts of Canada is released in the fall of each year. Information for 2012-13 currently presented in the Expenditure Database is unaudited and limited to the organizations’ 2013-14 Quarterly Financial Reports. The Expenditure Database will be updated to reflect the figures displayed in the Public Accounts of Canada after it is published.</p>
 </script>
 <script type='text/plain' id='greeting_fr'>
-  <h1>Bienvenue sur la Base de données des dépenses.</h1>
-  <p><a class='dept_sel ui-link clickable' href='#'>{{gt "to_select"}}</a>  à partir d’une liste organisée soit par portefeuille ministériel ou sous forme alphabétique ou encore selon les dépenses nettes pour l’exercice 2011-2012.  Les utilisateurs seront ensuite redirigés vers la page « Aperçu » de l’organisation choisie.</p>
+  <p><a class='dept_sel ui-link router ' href='#search'>{{gt "to_select"}}</a>  à partir d’une liste organisée soit par portefeuille ministériel ou sous forme alphabétique ou encore selon les dépenses nettes pour l’exercice 2011-2012.  Les utilisateurs seront ensuite redirigés vers la page « Aperçu » de l’organisation choisie.</p>
   <h2>Navigation</h2>
 
 <ul>
@@ -130,10 +104,6 @@
 </datalist>
 </script>
 <script type='text/plain' id='main_t'>
-  <h1 class='dept'>
-    {{gt 'fin_data'}} {{lang org.dept}}
-  </h1>
-
 <div class='span-5 margin-bottom-none margin-right-none margin-left-none'>
   <div class='margin-top-none margin-bottom-none margin-right-medium margin-left-medium' 
     style='padding: 0px;outline: 1px solid #ccc'>
@@ -264,14 +234,15 @@
     </div>
     <div class='clear'></div>
     <div class='details_button section-footer'>
-      <a class='button button-none details float-right' href='#'
+      <a class='button button-none details float-right' 
+        href='#{{href}}'
         title='{{details_title}}' > 
             {{gt 'details'}} </a>
     </div>
   </div>
 </script>
 <script type='text/plain' id='nav_li'>
-  <li><a href='#' class='ui-link'>{{text}}</a></li>
+<li><a href='#d{{accronym}}' class='ui-link router'>{{text}}</a></li>
 </script>
 <script type='text/plain' id='dataview_t'>
 <div class='tables margin-top-large'>
@@ -327,17 +298,19 @@
 </div>
 </script>
 <script type='text/plain' id='org_list_t'>
-<div class='org_list'>
-  <div class='sort_buttons'>
-    <ul class="menu-horizontal margin-top-none margin-bottom-medium">
-      <li><a href="#" sort-func-name='min_sort' class="button">{{gt "ministry"}}</a></li>
-      <li><a href="#" sort-func-name='alpha_sort' class="button">{{gt "alphabetical"}}</a></li>
-      <li><a href="#" sort-func-name='fin_size_sort' class="button">{{gt "financial_size"}}</a></li>
+<div class='org_list span-8 '>
+  <div class='sort_buttons margin-bottom-medium'>
+    <ul class="menu-horizontal margin-top-none">
+      <li><a href="#" sort-func-name='min_sort' class="button ">{{gt "ministry"}}</a></li>
+      <li><a href="#" sort-func-name='alpha_sort' class="button ">{{gt "alphabetical"}}</a></li>
+      <li><a href="#" sort-func-name='fin_size_sort' class="button ">{{gt "financial_size"}}</a></li>
     </ul>
   </div>
   <ul class='list-bullet-none orgs'>
     {{#each depts}}
-       <li min='{{lang this.min}}' fin-size='{{this.fin_size}}'><a class='org_select' href='#' >{{lang this.dept}}</a></li>
+       <li min='{{lang this.min}}' fin-size='{{this.fin_size}}'>
+          <a class='org_select router' href='#d{{this.accronym}}' >{{lang this.dept}}</a>
+      </li>
     {{/each}}
   </ul>
 </div>
@@ -409,36 +382,5 @@
 </script>
 <script type='text/plain' id='header_t'>
   <{{el}} colspan='{{colspan}}'><div class='{{class_}}'> {{header}} </div></{{el}}>
-</script>
-<script type='text/plain' id='tablegraph_tooltip'>
-  <div class='tooltip'>
-    <div class='span-2'>
-      <table class='well-table table-medium margin-top-none margin-bottom-none'>
-        <tbody>
-          {{#items}}
-            <tr class='well'>
-              <th id='legal_name__'>{{.th}} </th>
-              <td headers='legal_name__'>{{.td}}</td>
-            </tr>
-          {{/items}}
-        </tbody>
-      </table>
-    </div>
-    <div class='tooltipgraph span-2'>
-
-    </div>
-    <div class='clear'></div>
-    <div class='span-4 section-footer'>
-      <button>Cross Government Comparison</button>
-      <button>Details</button>
-    </div>
-  </div>
-</script>
-<script type='text/plain' id='svg_arrow'>
-    <path
-       id="path3757"
-       style="stroke:#000000;stroke-width:0.46900755000000000;stroke-miterlimit:4;stroke-opacity:1;stroke-dashoffset:0;fill-opacity:1"
-       d="M 63.885514,43.152093 6.3481598,43.126993 35.145782,5.6396534 z m -45.027766,0.0307 32.518181,0 0,61.987787 -32.518181,0 z"
-       inkscape:connector-curvature="0" />
 </script>
 

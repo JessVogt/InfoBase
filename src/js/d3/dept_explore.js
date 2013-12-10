@@ -4,11 +4,11 @@
     PACK = ns('D3.PACK'),
     TABLES = ns('TABLES');
 
-    D3.bubbleDeptList =  function(app){
-      return new _bubbleDeptList(app);
+    D3.bubbleDeptList =  function(app,container){
+      return new _bubbleDeptList(app,container);
     }
 
-    _bubbleDeptList = function(app){
+    _bubbleDeptList = function(app,container){
        var lang = app.state.get("lang"),
 
       // use crossfilter to group the departments by
@@ -55,12 +55,12 @@
       var chart = PACK.pack({
         width: 880, 
         height: 880,
-        data: data
+        zoomable : true,
+        data: data                                                             
       });
 
-      var width = app.app.width();
+      var width = container.width();
       var xoffset =(this.width - this.raidus)/2;
-      app.app.hide();
       
       // create the layout for the explorer
       //  <div class='span-1'></div>
@@ -68,7 +68,7 @@
       //     <div class='breadcrumb'/>
       //     <div class='svg-container'/>
       //  </div>
-      var target = $('#app').append(
+      var target = container.append(
           $('<div>').addClass("span-1"),
           $('<div>').addClass("dept-explorer span-6")
             .append(
@@ -210,132 +210,5 @@
       chart(target);
     };
 
-      //,show_dept : function(){
-      //  //remove circles and text
-      //  // and center the current department in question
-      //  d3.selectAll("div.svg_label").remove();
-      //  var departments = this.vis.selectAll(".node")
-      //      .data([this.node],function(d){ return d.name+d.depth})
-      //  departments.exit().remove();
-      //  departments
-      //    .transition()
-      //    .duration(1000)
-      //    .attr({
-      //     "transform" : "translate(600,400)"
-      //    }).selectAll("circle")
-      //    .attr({
-      //      "cx" : 0
-      //      ,"cy" : 0
-      //      ,"r" : 100
-      //    })
-
-      //  // quick scale to evenly map the angle around 
-      //  // the circle
-      //  var scale = d3.scale.linear()
-      //    .domain([0,TABLES.tables.length])
-      //    .range([0,2*Math.PI]);
-
-      //  var tables = TABLES.tables.map(function(m,i){
-      //    return {model: m
-      //            ,xy : D3.rotate_2d_point(300,0,scale(i))
-      //            ,name : m.get('name')['en']
-      //            ,coverage : m.get("coverage")
-      //    }
-      //  });
-
-      //  var nodes = this.vis
-      //    .append("g")
-      //    .attr({
-      //      "class" : "node",
-      //      "transform" : "translate(600,400)"
-      //    })
-      //    .selectAll(".node")
-      //    .data(tables)
-      //    .enter()
-      //    .append("g")
-      //    .attr({
-      //      "class" : "node"
-      //    });
-
-      //  nodes
-      //    .append("circle")
-      //    .attr({ "cx" : 0, "cy" :0, "r" : 1 })
-      //    .transition()
-      //    .duration(500)
-      //    .delay(1000)
-      //    .attr({
-      //      "transform" : function(d,i){
-      //        return "translate("+d.xy[0] +","+ d.xy[1]+")";
-      //      }
-      //      ,"r" : 100
-      //      ,"class" : "widget"
-      //    })
-
-      //  nodes
-      //    .append("text")
-      //    .transition()
-      //    .duration()
-      //    .delay(1700)
-      //    .attr({
-      //      "dy" : ".31em"
-      //      ,"text-anchor" : "middle"
-      //      ,"transform" : function(d,i){
-      //        return "translate("+d.xy[0] +","+ (d.xy[1]-110)+")";
-      //      }
-      //    })
-      //    .text(function(d){ return d.name})
-      //  nodes
-      //    .append("text")
-      //    .transition()
-      //    .duration()
-      //    .delay(1700)
-      //    .attr({
-      //      "dy" : ".31em"
-      //      ,"text-anchor" : "middle"
-      //      ,"transform" : function(d,i){
-      //        return "translate("+d.xy[0] +","+ (d.xy[1]+110)+")";
-      //      }
-      //    })
-      //    .text(function(d){ return d.coverage})
-
-
-      //  //APP.app.state.set('dept',depts[data.accronym]);
-      //  //this.hide();
-      //  //this.app.app.show();
-      //}
-      //,on_circle_click : function(data){
-      //   var node = this.node = data;
-      //   this.k = this.radius / node.r / 2;
-      //   this.x_scale.domain([node.x - node.r, node.x + node.r]);
-      //   this.y_scale.domain([node.y - node.r, node.y + node.r]);
-      //   // if the current node has any children
-      //   if (node.children){
-      //    this.re_draw();
-      //   }
-      //   else {
-      //     this.show_dept();
-      //   }
-      //}
-      //,start_hover : function(data){
-      //  console.log("hover");
-      //  if (this.tooltip){
-      //    this.tooltip.remove();
-      //  }
-      //  if (data.depth > this.node.depth){
-      //    this.tooltip = new APP.bubleDeptListTip({
-      //      data:data
-      //    });  
-      //    this.tooltip.render();
-      //  }
-      //}
-      //,stop_hover : function(){
-      //  if (this.tooltip){
-      //    this.tooltip.remove();
-      //  }
-      //}
-      //,hide : function(){
-      //  $('#gov_bubble').children().remove();
-      //  $('.svg_label').remove();
-      //}
 })();
 

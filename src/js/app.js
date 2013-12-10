@@ -13,9 +13,10 @@
     }
 
     APP.dispatcher = _.extend({
-      trigger_a : function(signal,context){
+      trigger_a : function(){
+        var args = arguments;
         setTimeout(_.bind(function(){
-          APP.dispatcher.trigger(signal,context);
+          APP.dispatcher.trigger.apply(APP.dispatcher,args);
         }));
       }
       ,deferred_signal : function(signal){
@@ -147,60 +148,58 @@
       "date" : function(val,lang){return val}
     }
 
-    APP.find_all_in_ministry = function(dept,lang){
-      // find all departments with a ministry name, matching
-      return window.mins[dept.min.en].values;
-    }
-
     APP.fullDeptList = Backbone.View.extend({
-      el : 'body'
-      ,template : '#org_list_t'
-      ,events : {
-       "click a.dept_sel" : "render",
-       "click a.dept_sel_cancel" : "cancel",
-       "click a.org_select" : "onClick",
-      "click .org_list .sort_buttons a" : "sort"
+      events : {
+        "click a.dept_sel_cancel" : "cancel",
+        "click .org_list .sort_buttons a" : "sort"
       }
       ,initialize: function(){
-        this.template = APP.t(this.template)
-        _.bindAll(this,"render","sort","cancel","onClick");
-        this.app = this.options['app'];
-        this.cols = this.options['cols'];
-        this.target = this.options['target'];
+        this.template = APP.t('#org_list_t')
+        _.bindAll(this,"render","sort","cancel");
+        this.app = this.options.app;
+        this.container = this.options.container;
         this.state = this.app.state;
         this.lookup = depts;
         this.sort_func = 'min_sort';
       }
-      ,render : function(event){
-        this.app.app.hide();
-        this.controller_button = $('a.dept_sel');
-
-        // in case the target was a selector string
-        if (_.isString(this.target)){
-          this.drop_zone = $(this.target);
-        } else { 
-          this.drop_zone = this.target;
-        }
-        this.drop_zone.children().remove();
-
+      ,add_search_button : function(){
+        this.controller_button  = $('<a>')
+          .addClass("clickable")
+          .attr("href","#search");
+        $('.nav_area').children().remove();
+        $('.nav_area').append(this.controller_button);
+         this.show();
+      }
+      ,cancel : function(){
         this.controller_button
+         .html(this.app.get_text("to_select"))
+         .addClass("dept_sel")
+         .removeClass("dept_sel_cancel")
+        //this.router.back();
+      }
+      , show : function(){
+        this.controller_button =  $('a.dept_sel')
           .html(this.app.get_text("cancel"))
           .removeClass("dept_sel")
-          .addClass("dept_sel_cancel")
-
+          .addClass("dept_sel_cancel");
+      }
+      ,render : function(){
         var lang = this.state.get('lang');
-
+       
+        // render the template and append to the container
         var el = $($.trim(this.template({
           depts : this[this.sort_func]['group_by'](lang,this)
         })));
-        this.drop_zone.append(el);
-        //enable listview
+        this.container.append(el);
+
+        //activate listview
         el.find('ul.orgs').listview({
           autodividers:true,
           filter:true,
           autodividersSelector : this[this.sort_func]['dividers_func'](this),
           filterPlaceholder : this.app.get_text("search")
         });
+
         // add WCAG required label
         el.find('div.ui-input-search input')
           .attr("id","dept_search_filter")
@@ -208,12 +207,14 @@
                   .attr("for","dept_search_filter")
                   .addClass("wb-invisible")
                   .html(this.app.get_text("search")));
+
         // add the class
         // to the active button
         el.find('a[sort-func-name="'+this.sort_func+'"]')
           .addClass('button-accent');
+
         // focus the cursor on the cancel button
-        this.controller_button.focus();
+        //this.controller_button.focus();
       }
       ,min_sort : {
         group_by : function(lang,view){
@@ -278,73 +279,22 @@
         this.sort_func =  btn.attr("sort-func-name");
         this.render();
       }
-      ,cancel : function(){
-        this.controller_button
-         .html(this.app.get_text("to_select"))
-         .addClass("dept_sel")
-         .removeClass("dept_sel_cancel")
-        this.drop_zone.find(".org_list").remove();
-        this.app.app.show();
-      }
-      ,onClick : function(event){
-        var lang = this.state.get('lang');
-        var dept = $.trim($(event.target).text());
-        dept = _.first(_.filter(_.values(this.lookup),
-              function(x){ return x['dept'][lang] == dept}));
-        // why ?
-        this.state.unset("dept",{silent: true});
-        this.cancel();
-        this.state.set('dept',dept);
-      }
-    });
-
-    // the popup window for the LED which displays the departmental 
-    // information with search tools
-    APP.deptInfoView = Backbone.View.extend({
-      initialize: function(){ 
-        this.template = APP.t('#dept_info_t');
-
-        _.bindAll(this,"render","on_search");
-        // retrieve passed in data
-        this.app = this.options["app"];
-
-        this.gt = this.app.get_text;
-        this.state = this.app.state;
-      }
-      ,render : function(){
-        var body = $(this.template({ dept: this.state.get("dept") }));
-
-        this.search_box = body.find('input.site-search');
-        this.search_button = body.find('a.site-search');
-        this.search_button.on("click",this.on_search);
-
-        this.app.modal_view.render({
-          body: body,
-          header : "Info",
-          footer : this.gt("close") 
-        });
-
-      }
-      ,on_search : function(e){
-        var dept = this.state.get("dept");
-        var site = 'site:'+ dept['website']['en'].split("/")[0].replace("http://","");
-        var q = 'q='+encodeURI(this.search_box.val()) + "+"+site;
-        window.open("http://www.google.com/search?"+q); 
-      }
     });
 
     APP.otherDeptsDropDown = Backbone.View.extend({
       template : '#nav_li'
       ,initialize: function(){
         _.bindAll(this,"render");
-        this.app = this.options["app"];
+        this.app = this.options.app;
       }
-      ,render: function(other_depts){
+      ,render: function(){
         this.template = APP.t(this.template)
         var state = this.app.state;
         var dept = state.get('dept');
         var lang = state.get("lang");
-        var other_depts = state.get("other_depts");
+        var other_depts = _.filter(window.mins[dept.min.en],function(d){
+          return d !== dept;
+        });
         var other_depts_list = $('#other_depts_list');
         var template = this.template;
         if (other_depts.length > 0){
@@ -354,7 +304,8 @@
                           // create the link item with the
                           // department name
                           var nav = $( template({
-                            text:dept.dept[lang]
+                            text:dept.dept[lang],
+                            accronym : dept.accronym
                           }));
                           // set up the onclick for the link item
                           nav.on("click",
@@ -380,56 +331,22 @@
     ,initialize: function(){
       this.template = APP.t(this.template)
       this.template2 = APP.t(this.template2)
+      this.app = this.options.app
+      this.org = this.options.dept;
+      this.container = this.options.container;
       _.bindAll(this,"render");
     }
     ,render : function(app){
-
-      var org = app.state.get("dept");
       // render the main template
-      app.app.children().remove();
-      $(this.template({ org : org })).appendTo(app.app);
-      $(this.template2()).appendTo($('.panels',app.app));
-
-      APP.dispatcher.trigger_a("new_org_view",this);
+      this.container.children().remove();
+      $(this.template({ org : this.org })).appendTo(this.container);
+      $(this.template2()).appendTo($('.panels',this.container));
+      // move the title into the nav area
+      this.container.find('h1.dept_name').appendTo('.nav_area .left');
+      APP.dispatcher.trigger_a("new_org_view",this.app,this);
       return this;
     }
   });
-
-  APP.footnoteView = Backbone.View.extend({
-    template : '#footnotes_t'
-    ,initialize: function(){
-      this.template = APP.t(this.template)
-      _.bindAll(this,"render");
-      // retrieve passed in data
-      this.app = this.options["app"];
-      this.footnotes = this.options['footnotes'];
-      this.button = this.options['btn'];
-      // set some useful state based on these inputs
-      this.lang = this.app.lang;
-      this.button.on("click",this.render);
-    }
-    ,render : function () {
-      var gt = this.app.get_text;
-      var html = $(this.template({
-        fns : this.footnotes
-      }));
-
-      this.app.modal_view.render({
-        body : html,
-        header : gt("footnotes"),
-        footer : gt("close")
-      });
-    }
-  });
-
-  var ministry_total = function(depts,table){
-      var lines = _.map(depts,
-        function(dept){  //map function
-          return dept['tables'][table];
-        });
-      // flatten all these lists into one big list
-      return  _.flatten(_.compact(lines),true);
-  };
 
   APP.DetailsView = Backbone.View.extend({
     template : '#dataview_t'
@@ -523,7 +440,7 @@
       return this;
     }
     ,tear_down : function(e){
-       this.app.router.navigate(this.dept.accronym);
+       this.app.router.navigate("data/"+this.dept.accronym);
        this.table_view.remove();
        this.remove();
        this.app.state.unset("table");
@@ -567,17 +484,18 @@
     }
   });
 
-  APP.listen_for_tables = function(app){
+  APP.listen_for_tables = function(container,app, dept){
     var signals = _.map(TABLES.tables,function(table){
       return 'table_' + table.id +"_rendered";
     });
-    APP.size_panels(app,signals);
+    APP.size_panels(container, app,signals);
   };
 
-  APP.size_row = function(i,row)   {
+  APP.dispatcher.on("dept_selected", APP.listen_for_tables);
+
+  APP.size_row = function(container, i,row)   {
      var panels =  $('.mini_t',row);
-     var p = $(this).parents('.dept_zone');
-     panels.width( (p.width() - 60)/3  - 1);
+     panels.width( (container.width() - 60)/3  - 1);
      _.each(['.section-header', 'p.description','th','.mini_payload'],
          function(selector){
             $(selector,row)
@@ -588,9 +506,7 @@
      })
   };
 
-  APP.dispatcher.on("dept_selected", APP.listen_for_tables);
-
-  APP.size_panels = function(app,signals){
+  APP.size_panels = function(container, app,signals){
     // once all the mini table signals have been sent
     // do some prettying up on the page
     APP.dispatcher.on_these(signals, function(){
@@ -611,11 +527,7 @@
         current_view = undefined;
       }
 
-      $('.widget-row').each(APP.size_row);
-      APP.dispatcher.trigger("mini_tables_rendered",
-          {current_view : current_view,
-            views : views} 
-      ); 
+      $('.widget-row').each(function(i,row){ APP.size_row(container, i,row)});
     });
   };
 

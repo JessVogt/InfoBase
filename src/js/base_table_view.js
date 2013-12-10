@@ -491,7 +491,8 @@
       // why this if?
       if (this.$el.children().length ===0 ){
         this.$el.append(this.template({
-          details_title : this.gt("more_details") + " " + this.def.name[this.lang]
+          details_title : this.gt("more_details") + " " + this.def.name[this.lang],
+          href : "t" + this.org.accronym +"-"+this.def.id
         }));
       }
       this.make_title();
@@ -542,24 +543,6 @@
       this.$el.find('a.details').trigger("click");
     }
   });
-
-  TABLES.add_ministry_sum = function(){
-    return  [GROUP.fnc_on_group(this.min_data,
-        {txt_cols: {0:this.gt('min_total')},
-          func_cols : this.sum_cols,
-          func : GROUP.sum_rows})];
-  };
-
-  TABLES.add_ministry_year_sums = function(){
-     var min_totals = GROUP.group_rows(
-         this.min_data,
-         function(row){ return row[2]},
-         {txt_cols : {0 : this.gt('min_total'),
-                      2 : function(g){return _.first(g)[2]} },
-          func_cols : this.sum_cols,
-          func : GROUP.sum_rows}); 
-     return _.pluck(min_totals,1);
-  };
 
   TABLES.excel_format = function(table,strip_footer){
     strip_footer = strip_footer | false;

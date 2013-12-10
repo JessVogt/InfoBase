@@ -6,7 +6,7 @@
     WAIT.waitscreen = function(lang){
      return new waitscreen(lang);
     };
-
+    
     var waitscreen = function(lang){
       this.lang = lang;
       this.items = {};
