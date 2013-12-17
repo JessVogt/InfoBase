@@ -112,10 +112,11 @@
   
 
   APP.dispatcher.on("load_tables", function (app) {
-    var m = TABLES.m = function(s){
+    var m = TABLES.m = function(s,extra_args){
+      extra_args = extra_args || {};
       var lang = app.state.get('lang');
       var args = TABLES.template_args['common'];
-      _.extend(args,TABLES.template_args[lang]);
+      _.extend(args,TABLES.template_args[lang],extra_args);
       if (s){
         return Handlebars.compile(s)(args);
       }
@@ -215,7 +216,15 @@
       ]);
      },
      "dimensions" : {
-       "horizontal" :  TABLES.vote_stat_dimension
+       "horizontal" :  TABLES.vote_stat_dimension,
+        "voted_stat"  : function(options) {
+          return function(d){
+            if (d.votestattype != 999) {
+              return "voted";
+            }
+            return 'stat';
+          }    
+        }
      },
      "link": {
          "en": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-eng.asp",
@@ -390,6 +399,7 @@
        .add_child([
           {
              "type":"big-int",
+             "nick" : "plannedexp",
              "header":{
                "en":"Planned expenditures for the year ending March 31, {{in_year_short}}",
                "fr":"Dépenses prévues pour l'exercice se terminant le 31 mars {{in_year_short}}"
@@ -451,7 +461,29 @@
        return function(row){
          return row['so'];
        };
-     }
+     },
+     "spending_type" : function(options) {
+       var lang = options.app.state.get("lang"),
+           gt = options.app.get_text;
+      return function(d){
+        if (d.dept === 'FIN' && d.so === sos[10][lang]) {
+          return "prov_spend_type";
+        }
+        if (d.dept === 'HRSD' && d.so === sos[10][lang]) {
+          return "person_spend_type";
+        }
+        if (d.dept === 'FIN' && d.so === sos[11][lang]) {
+          return "debt_spend_type";
+        }
+        if (d.dept === 'ND'){
+          return 'defense_spend_type';
+        }
+        if (d.so === sos[10][lang]){
+          return 'other_trsf_spend_type';
+        }
+        return 'op_spend_type';
+      }
+    }
    },
    link: {
       "en": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-eng.asp",
@@ -754,7 +786,15 @@
       "fr": "Autorisations et dépenses réelles (en milliers de dollars)"
   },
   "dimensions" : {
-    "horizontal" : TABLES.vote_stat_dimension
+    "horizontal" : TABLES.vote_stat_dimension,
+    "voted_stat"  : function(options) {
+      return function(d){
+        if (d.votestattype != 999) {
+          return "voted";
+        }
+        return 'stat';
+      }    
+    }
   },
   "sort": function (mapped_rows, lang) {
       var grps = _.groupBy(mapped_rows, function (row) { return _.isNumber(row[0]) });

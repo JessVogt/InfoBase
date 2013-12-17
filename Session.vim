@@ -75,22 +75,22 @@ if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
   let s:wipebuf = bufnr('%')
 endif
 set shortmess=aoO
-badd +152 les/src/js/app.js
-badd +29 les/src/js/tables.js
-badd +8 les/src/js/od/tables.js
+badd +72 les/src/js/app.js
+badd +30 les/src/js/tables.js
+badd +484 les/src/js/od/tables.js
 badd +25 les/src/js/queries.js
 badd +1 les/src/js/base_table_view.js
-badd +48 les/src/js/d3/core.js
+badd +19 les/src/js/d3/core.js
 badd +94 les/src/js/d3/bar.js
 badd +25 les/src/js/d3/tooltip.js
 badd +83 les/test/test-data.js
 badd +8 les/test/test.html
-badd +157 les/src/js/od/od.js
+badd +166 les/src/js/od/od.js
 badd +13 les/src/js/mappers.js
-badd +61 les/Gruntfile.js
+badd +79 les/Gruntfile.js
 badd +54 les/src/js/d3/dept_explore.js
-badd +86 les/src/js/d3/pack.js
-badd +54 les/test/test-d3.js
+badd +27 les/src/js/d3/pack.js
+badd +131 les/test/test-d3.js
 badd +316 les/src/mako/od_handlebars_templates.html
 badd +50 les/src/js/waiting.js
 badd +87 les/src/mako/extracss.html
@@ -98,14 +98,14 @@ badd +3 les/src/js/ExDB-start.js
 badd +54 les/src/js/d3/hbar.js
 badd +119 les/src/js/d3/horizontal.js
 badd +14 les/src/mako/od_script_includes.html
-badd +10 les/src/js/d3/story.js
-badd +11 les/src/js/d3/government_story.js
-badd +40 les/src/js/d3/circle_chart.js
+badd +77 les/src/js/d3/story.js
+badd +85 les/src/js/d3/government_story.js
+badd +24 les/src/js/d3/circle_chart.js
 badd +78 les/src/js/d3/arrow.js
 badd +5 les/src/mako/od.html
-badd +22 les/src/js/router.js
+badd +131 les/src/js/router.js
 silent! argdel *
-edit les/src/js/od/od.js
+edit les/src/js/od/tables.js
 set splitbelow splitright
 wincmd _ | wincmd |
 vsplit
@@ -115,8 +115,8 @@ set nosplitbelow
 set nosplitright
 wincmd t
 set winheight=1 winwidth=1
-exe 'vert 1resize ' . ((&columns * 88 + 88) / 177)
-exe 'vert 2resize ' . ((&columns * 88 + 88) / 177)
+exe 'vert 1resize ' . ((&columns * 84 + 88) / 177)
+exe 'vert 2resize ' . ((&columns * 92 + 88) / 177)
 argglobal
 setlocal keymap=
 setlocal noarabic
@@ -223,15 +223,15 @@ set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 166 - ((15 * winheight(0) + 21) / 43)
+let s:l = 483 - ((20 * winheight(0) + 21) / 43)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-166
-normal! 0
+483
+normal! 031|
 wincmd w
 argglobal
-edit les/src/js/router.js
+edit les/src/js/d3/government_story.js
 setlocal keymap=
 setlocal noarabic
 setlocal noautoindent
@@ -337,16 +337,16 @@ set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 32 - ((22 * winheight(0) + 21) / 43)
+let s:l = 87 - ((15 * winheight(0) + 21) / 43)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-32
-normal! 041|
+87
+normal! 033|
 wincmd w
 2wincmd w
-exe 'vert 1resize ' . ((&columns * 88 + 88) / 177)
-exe 'vert 2resize ' . ((&columns * 88 + 88) / 177)
+exe 'vert 1resize ' . ((&columns * 84 + 88) / 177)
+exe 'vert 2resize ' . ((&columns * 92 + 88) / 177)
 tabnext 1
 if exists('s:wipebuf')
   silent exe 'bwipe ' . s:wipebuf

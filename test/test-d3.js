@@ -85,9 +85,9 @@
     })(chapter.graph_area());
 
     var data = [
-          {value: 1000, name : 'ABC'},
-          {value: 1200, name : 'ABD'},
-          {value: 1600, name : 'ABE'},
+          {value: 1000, name : 'ABC', top_text : 'toptext', bottom_text : "bottom text"},
+          {value: 1200, name : 'ABD', top_text : 'toptext', bottom_text : "bottom text"},
+          {value: 1600, name : 'ABE', top_text : 'toptext', bottom_text : "bottom text"}
       ],
     chart = PACK.simple_circle_chart({
       data : data,

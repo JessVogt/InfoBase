@@ -124,16 +124,16 @@
     explore : function(container){
      this.add_title($('<h1>').html("Explore"));
       if (!this.app.explore){
-        this.app.explore = ns().D3.bubbleDeptList(this.app, container);
+        this.app.explore =  ns().D3.STORY.gov_story(container, this.app);
       }
+      // ns().D3.bubbleDeptList(this.app, container);
     },
     explore_dept : function(container,dept){
-      //ns().D3.STORY.gov_story(app);
     },
     analysis: function(container){
      this.add_title($('<h1>').html("Horizontal Analysis"));
       if (!this.app.analysis){
-        this.app.analysis = ns().D3.horizontal_gov(this.app,container);
+        this.app.analysis =   ns().D3.horizontal_gov(this.app,container);
       }
     },
   });

@@ -39,7 +39,7 @@
     var chapterp = _chapter.prototype;
 
     chapterp.text_area = function(){
-      return this.el.select(".text");
+      return this.el.select(".text .inner");
     }
 
     chapterp.graph_area = function(){
@@ -71,6 +71,12 @@
         .append("div")
         .attr("class","span-8 history_chapter border_all");
       el.append("div").attr("class","span-4 text margin-bottom-none margin-left-none");
+      el.select(".text")
+        .append("div")
+        .attr("class", "inner margin-top-large margin-left-large")
+        .style({
+          "font-size" : "20px"
+        });
       el.append("div").attr("class","span-4 graphic margin-bottom-none margin-left-none");
       el.append("div").attr("class","clear margin-bottom");
       return el;

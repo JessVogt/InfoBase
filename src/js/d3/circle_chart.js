@@ -9,6 +9,8 @@
                                     right: 20, 
                                     bottom: 30, 
                                     left: 40};
+      this.width = $(svg.node().parentNode).width() ;
+      var formater = this.formater;
       var padding = 5;
       this.width = this.width - margin.left - margin.right;
       this.height = this.height - margin.top - margin.bottom;
@@ -17,6 +19,11 @@
       var scale = d3.scale.linear()
         .domain([0,d3.max(this.data, function(d){return d.value;})])
         .range([0,this.height/2]);
+      // set the font scale
+      var font_size = d3.scale.linear()
+        .domain([100,500])
+        .rangeRound([16,40])(this.height);
+         
 
       // get offset to shift the circles into the middle of the 
       // pane
@@ -70,44 +77,50 @@
           "cy": function(d) { return d.y; },
           "r" : function(d) { return  d.r; }
         })
-        .style({"fill" : function(d,i){ return D3.tbs_color(i);}});
+        .style({
+          "fill" : function(d,i){ return D3.tbs_color(i);},
+          "fill-opacity" : 0.8,
+          "stroke" : function(d,i){ return D3.tbs_color(i);},
+          "stroke-width" : "2px",
+          "stroke-opacity" : 1
+        });
+
+      text_style = {
+          "text-align": "center",
+          "position" : "absolute",
+          "color" : "#222",
+          "font-size" : font_size+"px",
+          "width" : function(d){ return d.r*2+"px";},
+          "left"  : function(d){ return x_offset+d.x-d.r+"px";}
+        }
 
       toptext.exit().remove();
       toptext.enter().append("div");
       toptext
-        .html(function(d){ return d.name})
-        .style({
-          "text-align": "center",
-          "position" : "absolute",
-          "width" : function(d){ return d.r*2+"px";},
-          "top"  : "0px",
-          "left"  : function(d){ return x_offset+d.x-d.r+"px";}
-        });
+        .html(function(d){ return d.top_text})
+         .attr("class", "font-serif")
+        .style(_.extend({ "top"  : "0px"
+                        },text_style)
+        );
 
       bottomtext.exit().remove();
       bottomtext.enter().append("div");
       bottomtext
-        .html(function(d){ return d.name})
-        .style({
-          "text-align": "center",
-          "position" : "absolute",
-          "width" : function(d){ return d.r*2+"px";},
-          "top"  : this.height+margin.bottom+"px",
-          "left"  : function(d){ return x_offset+d.x-d.r+"px";}
-        });
+        .html(function(d){ return d.bottom_text})
+         .attr("class", "font-serif")
+        .style(_.extend({ "top"  : this.height+margin.bottom+"px"
+                        },text_style)
+        );
 
-     bottomtext.exit().remove();
+     middletext.exit().remove();
      middletext.enter().append("div");
      middletext
-        .html(function(d){ return d.value})
-        .style({
-          "text-align": "center",
-          "position" : "absolute",
-          "width" : function(d){ return d.r*2+"px";},
-          "top"  : function(d){return d.y+10+"px"},
-          "left"  : function(d){ return x_offset+d.x-d.r+"px";}
-        });
-
+        .html(function(d){ return formater(d.value);})
+         .attr("class", "font-serif")
+        .style(_.extend({ "top"  : function(d){return d.y+font_size/2+"px"}
+                        },text_style)
+        );
+                   
     });
 
     PACK.circle_pie_chart = D3.extend_base(function(svg,index){

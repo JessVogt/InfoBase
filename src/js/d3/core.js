@@ -10,9 +10,8 @@
           "#ff8c00"]);
 
     D3.tbs_color = d3.scale.ordinal()
-      .range(['#4d4d4d',
-      '#2b6c7b', '#a3d6e3', '#3e97ab', '#cfc7a9',
-      '#919191', '#e0e0e0', '#c3e4ec', '#595959' ]);
+      .range([ '#2b6c7b', '#a3d6e3', '#3e97ab', '#cfc7a9',
+              '#919191', '#e0e0e0', '#c3e4ec', '#4d4d4d','#595959' ]);
 
     D3.rotate_2d_point = function(x,y,theta){
       return [
