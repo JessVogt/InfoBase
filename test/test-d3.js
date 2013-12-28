@@ -20,13 +20,14 @@
 
   module("test circle packing code")
 
-  var get_div = function(){
+  var get_div = function(width){
     if ($('#pack_div').length == 0){
       d3.select('body').insert("div").attr("id",'pack_div')
     }
     return  d3.select('#pack_div')
       .append("div")
       .attr("class","border-all")
+      .style("width",width+"px")
       .style("float","left");
   }
 
@@ -70,8 +71,11 @@
 
   test("test story chapter",0, function(){
     var el = get_div().style("width",800);
-    var chapter = new STORY.chapter({get_text : function(){return "previously" }},
-      {history: true, target : el}
+    var chapter = new STORY.chapter(
+      {add_toggle_section: true, 
+        target : el,
+        toggle_text : 'historical data'
+      }
     );
 
     var data = [
@@ -93,7 +97,7 @@
       data : data,
       height : 300,
       width : 600
-    })(chapter.history_area());
+    })(chapter.toggle_area());
 
     chapter.text_area().html("<p class='font-large'>text here</p>");
   });
@@ -168,7 +172,7 @@
 
 
   test("test nested circle structure mini", 0,function(){
-    var div = get_div();
+    var div = get_div(200);
     div.style("width",200)
     var pack = PACK.pack({
       data :  circle_test_data[0],
@@ -179,7 +183,7 @@
 
   test("test flat circle structure mini",0, function(){
     var level_name = 'smallerer';
-    var div = get_div();
+    var div = get_div(200);
     div.style("width",150)
     var data = PACK.create_data_nodes(
        circle_test_data[1][1],
@@ -212,7 +216,7 @@
 
   asyncTest("test drill down",1, function(){
     var level_name = 'smallerest';
-    var div = get_div();
+    var div = get_div(400);
     div.style("width",400)
     var data = PACK.create_data_nodes(
        circle_test_data[1][1],

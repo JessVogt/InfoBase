@@ -467,21 +467,21 @@
            gt = options.app.get_text;
       return function(d){
         if (d.dept === 'FIN' && d.so === sos[10][lang]) {
-          return "prov_spend_type";
+          return "prov";
         }
         if (d.dept === 'HRSD' && d.so === sos[10][lang]) {
-          return "person_spend_type";
+          return "person";
         }
         if (d.dept === 'FIN' && d.so === sos[11][lang]) {
-          return "debt_spend_type";
+          return "debt";
         }
         if (d.dept === 'ND'){
-          return 'defense_spend_type';
+          return 'defense';
         }
         if (d.so === sos[10][lang]){
-          return 'other_trsf_spend_type';
+          return 'other_trsf';
         }
-        return 'op_spend_type';
+        return 'op';
       }
     }
    },

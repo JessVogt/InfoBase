@@ -77,35 +77,36 @@ endif
 set shortmess=aoO
 badd +72 les/src/js/app.js
 badd +30 les/src/js/tables.js
-badd +484 les/src/js/od/tables.js
-badd +25 les/src/js/queries.js
-badd +1 les/src/js/base_table_view.js
-badd +19 les/src/js/d3/core.js
-badd +94 les/src/js/d3/bar.js
+badd +1830 les/src/js/od/tables.js
+badd +26 les/src/js/queries.js
+badd +406 les/src/js/base_table_view.js
+badd +29 les/src/js/d3/core.js
+badd +1 les/src/js/d3/bar.js
 badd +25 les/src/js/d3/tooltip.js
 badd +83 les/test/test-data.js
-badd +8 les/test/test.html
-badd +166 les/src/js/od/od.js
+badd +32 les/test/test.html
+badd +14 les/src/js/od/od.js
 badd +13 les/src/js/mappers.js
 badd +79 les/Gruntfile.js
 badd +54 les/src/js/d3/dept_explore.js
-badd +27 les/src/js/d3/pack.js
-badd +131 les/test/test-d3.js
+badd +199 les/src/js/d3/pack.js
+badd +138 les/test/test-d3.js
 badd +316 les/src/mako/od_handlebars_templates.html
 badd +50 les/src/js/waiting.js
-badd +87 les/src/mako/extracss.html
+badd +201 les/src/mako/extracss.html
 badd +3 les/src/js/ExDB-start.js
-badd +54 les/src/js/d3/hbar.js
+badd +110 les/src/js/d3/hbar.js
 badd +119 les/src/js/d3/horizontal.js
 badd +14 les/src/mako/od_script_includes.html
-badd +77 les/src/js/d3/story.js
-badd +85 les/src/js/d3/government_story.js
-badd +24 les/src/js/d3/circle_chart.js
+badd +62 les/src/js/d3/story.js
+badd +133 les/src/js/d3/government_story.js
+badd +109 les/src/js/d3/circle_chart.js
 badd +78 les/src/js/d3/arrow.js
 badd +5 les/src/mako/od.html
 badd +131 les/src/js/router.js
+badd +104 les/src/js/loader.js
 silent! argdel *
-edit les/src/js/od/tables.js
+edit les/src/mako/od_handlebars_templates.html
 set splitbelow splitright
 wincmd _ | wincmd |
 vsplit
@@ -115,8 +116,8 @@ set nosplitbelow
 set nosplitright
 wincmd t
 set winheight=1 winwidth=1
-exe 'vert 1resize ' . ((&columns * 84 + 88) / 177)
-exe 'vert 2resize ' . ((&columns * 92 + 88) / 177)
+exe 'vert 1resize ' . ((&columns * 88 + 88) / 177)
+exe 'vert 2resize ' . ((&columns * 88 + 88) / 177)
 argglobal
 setlocal keymap=
 setlocal noarabic
@@ -126,13 +127,13 @@ setlocal nobinary
 setlocal bufhidden=
 setlocal buflisted
 setlocal buftype=
-setlocal cindent
+setlocal nocindent
 setlocal cinkeys=0{,0},0),:,0#,!^F,o,O,e
-setlocal cinoptions=j1,J1
+setlocal cinoptions=
 setlocal cinwords=if,else,while,do,for,switch
 setlocal colorcolumn=
-setlocal comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,://
-setlocal commentstring=//%s
+setlocal comments=s:<!--,m:\ \ \ \ ,e:-->
+setlocal commentstring=<!--%s-->
 setlocal complete=.,w,b,u,t,i
 setlocal concealcursor=
 setlocal conceallevel=0
@@ -149,8 +150,8 @@ setlocal nodiff
 setlocal equalprg=
 setlocal errorformat=
 setlocal expandtab
-if &filetype != 'javascript'
-setlocal filetype=javascript
+if &filetype != 'html'
+setlocal filetype=html
 endif
 setlocal foldcolumn=0
 setlocal foldenable
@@ -163,15 +164,15 @@ setlocal foldminlines=1
 setlocal foldnestmax=20
 setlocal foldtext=foldtext()
 setlocal formatexpr=
-setlocal formatoptions=croql
+setlocal formatoptions=tcq
 setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*
 setlocal grepprg=
 setlocal iminsert=0
 setlocal imsearch=0
 setlocal include=
 setlocal includeexpr=
-setlocal indentexpr=
-setlocal indentkeys=0{,0},:,0#,!^F,o,O,e
+setlocal indentexpr=HtmlIndent()
+setlocal indentkeys=o,O,<Return>,<>>,{,},!^F
 setlocal noinfercase
 setlocal iskeyword=@,48-57,_,192-255
 setlocal keywordprg=
@@ -179,14 +180,14 @@ setlocal nolinebreak
 setlocal nolisp
 setlocal nolist
 setlocal makeprg=
-setlocal matchpairs=(:),{:},[:]
+setlocal matchpairs=(:),{:},[:],<:>
 setlocal modeline
 setlocal modifiable
 setlocal nrformats=octal,hex
 set number
 setlocal number
 setlocal numberwidth=4
-setlocal omnifunc=javascriptcomplete#CompleteJS
+setlocal omnifunc=htmlcomplete#CompleteTags
 setlocal path=
 setlocal nopreserveindent
 setlocal nopreviewwindow
@@ -209,8 +210,8 @@ setlocal statusline=
 setlocal suffixesadd=
 setlocal swapfile
 setlocal synmaxcol=3000
-if &syntax != 'javascript'
-setlocal syntax=javascript
+if &syntax != 'html'
+setlocal syntax=html
 endif
 setlocal tabstop=2
 setlocal tags=
@@ -223,12 +224,12 @@ set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 483 - ((20 * winheight(0) + 21) / 43)
+let s:l = 309 - ((14 * winheight(0) + 21) / 43)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-483
-normal! 031|
+309
+normal! 029|
 wincmd w
 argglobal
 edit les/src/js/d3/government_story.js
@@ -337,16 +338,15 @@ set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 87 - ((15 * winheight(0) + 21) / 43)
+let s:l = 198 - ((10 * winheight(0) + 21) / 43)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-87
-normal! 033|
+198
+normal! 048|
 wincmd w
-2wincmd w
-exe 'vert 1resize ' . ((&columns * 84 + 88) / 177)
-exe 'vert 2resize ' . ((&columns * 92 + 88) / 177)
+exe 'vert 1resize ' . ((&columns * 88 + 88) / 177)
+exe 'vert 2resize ' . ((&columns * 88 + 88) / 177)
 tabnext 1
 if exists('s:wipebuf')
   silent exe 'bwipe ' . s:wipebuf

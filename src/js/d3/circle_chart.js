@@ -10,7 +10,7 @@
                                     bottom: 30, 
                                     left: 40};
       this.width = $(svg.node().parentNode).width() ;
-      var formater = this.formater;
+      var formater = this.formater || _.identity;
       var padding = 5;
       this.width = this.width - margin.left - margin.right;
       this.height = this.height - margin.top - margin.bottom;

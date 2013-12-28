@@ -25,7 +25,12 @@
     }
 
     D3.get_html_parent = function(elem){
-       return $(elem.node()).parents("svg").parent()[0];
+      var node = $(elem.node());
+      if (node.prop("tagName").toLowerCase() === 'svg'){
+        return node.parent()[0];
+      } else {
+        return node.parents("svg").parent()[0];
+      }
     }
 
     D3.extend_base = function(chart){

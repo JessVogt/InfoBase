@@ -4,35 +4,21 @@
   var D3 = ns('D3');
   var STORY = ns('D3.STORY');
 
-    D3.story =  function(app){
-      return new _story(app);
-    };
-
-    _story = function(app){
-      this.chapters = [];
-
-
-    };
-
-    var storyp = _story.prototype;
-
-    storyp.add_chapter = function(options){
-      this.chapters.push(new chapter(options));
-    };
-
-    STORY.chapter = function(app,options){
-      return new _chapter(app,options);
+    STORY.chapter = function(options){
+      return new _chapter(options);
     };               
 
-    var _chapter = function(app,options){
+    var _chapter = function(options){
       _.bindAll(this, _.functions(this));
-      this.gt = app.get_text;
-      this.history = options.history || false;
-      this.target = options.target;
-      if (this.history) {
-        this.el = this.make_section_with_history();
-      }else {
-        this.el = this.make_section();
+      this.el = options.target.append("div");
+
+      add_section(this.el);
+
+      if (options.add_toggle_section) {
+        add_toggle_section(this.el,options.toggle_text);
+      } 
+      if (options.add_section_to_toggle){
+        add_section(this.el.select(".toggle"));
       }
     };
 
@@ -46,41 +32,46 @@
       return this.el.select(".graphic");
     }
 
-    chapterp.history_area = function(){
-      return this.el.select(".history");
+    chapterp.toggle_area = function(){
+      return this.el.select(".toggle");
     }
 
-    chapterp.make_section_with_history = function(){
-      var el = this.make_section();
-      el.append("div").attr("class","span-8 border-all margin-top-none")
+    function add_toggle_section(target,text){
+      target.append("div").attr("class","span-8 toggler margin-top-none")
         .append("a")
-          .html(this.gt("previous_year_fisc"))
-          .on("click", this.expand_historical); 
-      el.append("div").attr("class", "span-8 history ui-screen-hidden");
-      return el;
-    };
+          .html(text)
+          .on("click", expand); 
+      target.append("div").attr("class", "span-8 toggle ui-screen-hidden");
+    }
 
-    chapterp.expand_historical = function(e){
+    function expand(e){
       var parent = d3.event.target.parentNode.parentNode,
-          el = d3.select(parent).select(".history");
+          el = d3.select(parent).select(".toggle");
       el.classed("ui-screen-hidden",!el.classed("ui-screen-hidden"));
     }
 
-    chapterp.make_section = function(){
-      var el =  this.target
+    function add_section(target){
+      /*
+       * adds a 
+       * div.span-8
+       *   div.span-4.text
+       *     div.inner
+       *   div.span-4.graphic
+       */
+      var el =  target
         .append("div")
-        .attr("class","span-8 history_chapter border_all");
+        .attr("class","span-8 border-all");
       el.append("div").attr("class","span-4 text margin-bottom-none margin-left-none");
       el.select(".text")
         .append("div")
         .attr("class", "inner margin-top-large margin-left-large")
         .style({
+          "position" : "absolute",
           "font-size" : "20px"
         });
       el.append("div").attr("class","span-4 graphic margin-bottom-none margin-left-none");
       el.append("div").attr("class","clear margin-bottom");
-      return el;
-    };
+    }
 
 })();
 
