@@ -109,7 +109,29 @@
        }
      };
   }               
-  
+
+  TABLES.standard_object_dimension =  function(options) {
+       var lang = options.app.state.get("lang"),
+           gt = options.app.get_text;
+      return function(d){
+        if (d.dept === 'FIN' && d.so === sos[10][lang]) {
+          return "prov";
+        }
+        if (d.dept === 'HRSD' && d.so === sos[10][lang]) {
+          return "person";
+        }
+        if (d.dept === 'FIN' && d.so === sos[11][lang]) {
+          return "debt";
+        }
+        if (d.dept === 'ND'){
+          return 'defense';
+        }
+        if (d.so === sos[10][lang]){
+          return 'other_trsf';
+        }
+        return 'op';
+      }
+  }
 
   APP.dispatcher.on("load_tables", function (app) {
     var m = TABLES.m = function(s,extra_args){
@@ -215,6 +237,32 @@
           }
       ]);
      },
+     "queries" : {
+        "auth_change" : function(format) {
+          // returns last year, this year, and change
+          var this_year = "thisyearauthorities", 
+              last_year= "lastyearauthorities",
+              total = this.sum([this_year, last_year]),
+              change =  total[this_year] / (total[last_year] + 1) - 1,
+              data =  [total[this_year],total[last_year],change];
+          if (!format){
+            return data;
+          }
+          return this.app.list_formater(['big-int','big-int',"percentage"], data);
+        },
+        "exp_change" : function(format) {
+          // returns last year, this year, and change
+          var this_year = "thisyearexpenditures", 
+              last_year= "lastyearexpenditures",
+              total = this.sum([this_year, last_year]),
+              change =  total[this_year] / (total[last_year] + 1) - 1,
+              data =  [total[this_year],total[last_year],change];
+          if (!format){
+            return data;
+          }
+          return this.app.list_formater(['big-int','big-int',"percentage"], data);
+        }
+     },
      "dimensions" : {
        "horizontal" :  TABLES.vote_stat_dimension,
         "voted_stat"  : function(options) {
@@ -300,17 +348,10 @@
        headers_classes : ['left_text','right_text','right_text','right_text'],
        row_classes : [ 'left_text', 'right_number', 'right_number', 'right_number'],
        prep_data: function () {
-          this.rows = _.map(['authorities',"expenditures"],
-              function(type){
-                var ty = "thisyear"+type, 
-                ly= "lastyear"+type,
-                total = this.da.get_total([ty, ly]),
-                change =  total[ty] / (total[ly] + 1) - 1;
-            return [type,
-                    this.ttf('big-int',total[ty]),
-                    this.ttf("big-int",total[ly]),
-                    this.ttf("percentage",change)];
-          },this);
+          this.rows = [
+            ["Authorities"].concat(this.da.auth_change(true)),
+            ["Expenditures"].concat(this.da.exp_change(true))
+          ];
           this.headers = [_.map(["Type",
                               "{{in_year_short}} ($000)",
                               "{{qfr_last_year_short}} ($000)",
@@ -462,28 +503,7 @@
          return row['so'];
        };
      },
-     "spending_type" : function(options) {
-       var lang = options.app.state.get("lang"),
-           gt = options.app.get_text;
-      return function(d){
-        if (d.dept === 'FIN' && d.so === sos[10][lang]) {
-          return "prov";
-        }
-        if (d.dept === 'HRSD' && d.so === sos[10][lang]) {
-          return "person";
-        }
-        if (d.dept === 'FIN' && d.so === sos[11][lang]) {
-          return "debt";
-        }
-        if (d.dept === 'ND'){
-          return 'defense';
-        }
-        if (d.so === sos[10][lang]){
-          return 'other_trsf';
-        }
-        return 'op';
-      }
-    }
+     "spending_type" : TABLES.standard_object_dimension
    },
    link: {
       "en": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-eng.asp",
@@ -785,6 +805,13 @@
   "title": { "en": "Authorities and Actual Expenditures ($000)",
       "fr": "Autorisations et dépenses réelles (en milliers de dollars)"
   },
+  "queries" : {
+     "exp_auth_by_year" : function(year,format){
+        format =  format === undefined ? false : true;
+        var vals = this.sum([year+'auth',year+'exp'],{format: format});
+        return [m(year),vals[year+'auth'],vals[year+'exp']];
+     }
+  },
   "dimensions" : {
     "horizontal" : TABLES.vote_stat_dimension,
     "voted_stat"  : function(options) {
@@ -871,11 +898,11 @@
      'right_number', 
      'right_number'],
    prep_data: function () {
-     this.rows = _.map(['{{last_year}}','{{last_year_2}}','{{last_year_3}}'],
-         function(year){
-           var vals = this.da.get_total([year+'auth',year+'exp'],{format: true});
-           return [m(year),vals[year+'auth'],vals[year+'exp']];
-     },this);
+     this.rows = [
+      this.da.exp_auth_by_year("{{last_year}}",true),
+      this.da.exp_auth_by_year("{{last_year_2}}",true),
+      this.da.exp_auth_by_year("{{last_year_3}}",true)
+    ];
      this.headers = [
        [this.gt("year"),
        this.gt("authorities") + ' ($000)',
@@ -1045,7 +1072,8 @@
           return function(row){
             return row['so'];
           };
-        }
+        },
+        "spending_type" : TABLES.standard_object_dimension
       },
       "link": {
           "en": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-eng.asp",
@@ -1767,6 +1795,34 @@
           }
       ]);
    },
+   "queries" : {
+      "estimates_split"  : function(add_percentage,format){
+        var headers = ['mains', 'suppsa', 'suppsb', 'suppsc'],
+            data = this.sum(headers),
+            rtn,
+            rows = _.map(headers,function(h){
+              return [this.table.col_from_nick(h).header[this.lang], data[h]];
+            },this);
+        if (add_percentage){
+          var total = d3.sum(d3.values(data));
+          rtn = _.map(rows,function(row){
+              var row =  row.concat(row[1]/(total+1));
+              if (format){
+               return this.app.list_formater(["","big-int","percentage"],row);
+              }
+              return row
+            },this);
+        } else {
+          rtn =  _.map(rows,function(row){
+                if (format){
+                  return this.app.list_formater(["","big-int"],row);
+                }
+                return row
+              },this);
+        }
+        return _.object(rtn);
+      }
+   },
    "dimensions" : {
      "horizontal" : TABLES.vote_stat_dimension
    },
@@ -1824,14 +1880,7 @@
       },
       classes : ['left_text','right_number','right_number'],
       prep_data: function () {
-        var headers = ['mains', 'suppsa', 'suppsb', 'suppsc'];
-        var data = this.da.get_total(headers);
-        var total = _.reduce(_.values(this.data),function(x,y){return x+y});
-        this.rows = _.map(headers, function(h){
-          return [this.header_lookup(h),
-                  this.ttf("big-int",data[h]),
-                  this.ttf("percentage",data[h]/(total+1)-1)];
-        },this);
+        this.rows = this.da.estimates_split(true,true);
         this.headers= [[this.gt("Estimates"),
                        this.gt("amount") + ' ($000)', 
                        '(%)']];

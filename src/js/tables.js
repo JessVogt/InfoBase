@@ -17,30 +17,6 @@
   }
   APP.dispatcher.once("init", setup_tables);
 
-  var make_horizontal_func = function(app,func,table){
-     var f = function(col,include_dept,rollup ){
-        include_dept =  include_dept == false ? false : true;
-        rollup =   rollup == false ? false : true;
-        var nest = d3.nest()
-                     .key(func({app:app,table:table,col:col}))
-        if (include_dept) {
-          nest.key(function(d){return d.dept;}) ;
-        }
-        if (rollup) {
-            nest.rollup(function(leaves){
-                            return d3.sum(leaves, function(leaf){
-                              return leaf[col];});
-            });
-        }
-        return nest.map(table.data);
-     };
-
-     f.resolver = function (col,include_dept,rollup){ 
-       return [col,include_dept,rollup].join("");
-     }
-     return _.memoize(f,f.resolver);
-  };
-
   var load_data = function(app){
     return _.map(TABLES.tables, function(table){
       /*
@@ -68,33 +44,10 @@
                      .map(mapper)
                      .groupBy(function(row){ return row.dept === 'ZGOC';})
                      .value();
-        // attached mapped data to the table object
-        table.data = data[false];
-        table.GOC = data[true];
-        // create the horizontal dimensions
-        _.each(table.dimensions, function(func,d){
-          table[d] =  make_horizontal_func(app,func,table);
-        });
-        // create the departments mapping 
-        table.depts = d3.nest()
-         .key(function(d){ return d.dept;})
-         .map(table.data);
-        // create a departmental mapping which sums up all the values
-        // for a particular column
-        table.dept_rollup = _.memoize(function(col){
-           return d3.nest()
-            .key(function(d){ return d.dept;})
-            .rollup(function(leaves){
-              return d3.sum(leaves, function(leaf){
-                return leaf[col];
-              });
-            })
-            .map(table.data); 
-        });
 
         // create the fully qualified names
         table.add_fully_qualified_col_name(lang);
-
+        TABLES.setup_table_for_queries(app,table,data);
         // send signal to indicate the table loading is finished
         WAIT.w.update_item(key,"finished");
         _.delay(promise2.resolve,0) ;

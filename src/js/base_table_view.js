@@ -451,8 +451,9 @@
       this.org = this.app.state.get("dept");
       this.lang = this.app.state.get('lang');
       this.ttf = this.app.formater;
+      this.list_ttf = this.app.list_formater;
       this.gt = this.app.get_text;
-      this.da = TABLES.queries(this.app,this.def);
+      this.da = this.def.q(this.org.accronym);
       _.extend(this,this.def.mini_view);
 
       if (_.has(this, "drop_down_options")){

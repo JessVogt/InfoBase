@@ -64,7 +64,7 @@
           "use_footer":false,
           "min_tot":true,
           "goc_tot":true
-        }});
+       }});
     });
   }
 
@@ -108,7 +108,24 @@
 
     },
     formater : function(format,val){
-      return APP.types_to_format[format](val,this.lang);
+      if (_.has(APP.types_to_format,format)){
+        if (_.isArray(val)){
+          return _.map(val, function(v){ return this.formater(format,v)},this);
+        } else if (_.isObject(val)){
+          return _.chain(val)
+            .map(function(v,k){ return [k,this.formater(format,v)]},this)
+            .object()
+            .value();
+        } else {
+          return APP.types_to_format[format](val,this.lang);
+        }
+      } 
+      return val;
+    },
+    list_formater : function(formats,vals){
+      return _.map(formats, function(format,i){
+        return this.formater(format,vals[i]);
+      },this);
     },
     lang_change : function(state,lang){
       APP.dispatcher.trigger("lang_change",lang);
