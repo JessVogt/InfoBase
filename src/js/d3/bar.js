@@ -8,10 +8,11 @@
       *  { "series 1" : [y1,y2,y3],
       *     "series 2" : [y1,y2,y3]}
       */
-
+      this.width = $(svg.node().parentNode).width() ;
       var series = d3.keys(this.series),
           add_xaxis = this.add_xaxis,
           add_yaxis = this.add_yaxis,
+          x_axis_line = this.x_axis_line  === undefined ? true : this.x_axis_line,
           add_legend = this.add_legend,
           add_labels = this.add_labels,
           label_formater = add_labels ? this.label_formater : undefined,
@@ -85,6 +86,9 @@
               .attr("class", "x axis")
               .attr("transform", "translate(0," + height+ ")")
               .call(xAxis);
+        if (!x_axis_line){
+          graph_area.select(".x.axis path").remove();
+        }
       }
 
       if (add_yaxis){
@@ -129,11 +133,20 @@
           });
       }
 
-      groups.selectAll("rect")
+      var bars = groups.selectAll("rect")
           .data(function(d) { return d.data; })
         .enter().append("rect")
           .attr( "width", x1.rangeBand())
           .attr( "x", function(d) { return x1(d.name); })
+          .style({
+           "fill": function(d) { return D3.tbs_color(d.name); },
+           "fill-opacity" : 0.8
+          })
+          .attr("height",0)
+          .on("mouseover", this.dispatch.dataHover);
+
+      bars.transition()
+          .duration(750)
           .attr("y", function(d) {  
             if (d.value > 0){
               return y(d.value); 
@@ -147,12 +160,7 @@
             } else {
               return y(d.value) - y(zero);
             }
-          })
-          .style({
-           "fill": function(d) { return D3.tbs_color(d.name); },
-           "fill-opacity" : 0.8
-          })
-          .on("mouseover", this.dispatch.dataHover);
+          });
 
    });
 

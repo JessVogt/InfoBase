@@ -53,20 +53,18 @@
         .value();
 
       this.data_prep();
-      //this.gov_spend();
+      this.gov_spend();
       this.gov_type_spend();
-      //this.vote_stat_spend();
+      this.vote_stat_spend();
       center_text(container);
     };
 
     var p = _gov_story.prototype;
 
-
-
     p.register_for_open  = function(chapter){
       chapter.dispatch.on("toggle",function(state){
          if (state === 'open'){
-            center_text(chapter.toggle_area());
+            center_text($(chapter.toggle_area().node()));
          }
       });
     }
@@ -123,7 +121,6 @@
       var d = this.data,
           text = this.app.get_text("this_year_gov_spending");
 
-      
       var chapter = new STORY.chapter({
         add_toggle_section: true, 
         toggle_text : this.app.get_text("previous_year_fisc"),
@@ -153,6 +150,7 @@
 
     p.gov_type_spend = function(){
       var text = this.app.get_text("gov_type_spending"),
+          compact = this.compact,
           d = this.data,
           cd = this.compact_data,
           wd = this.written_data,
@@ -185,7 +183,7 @@
       this.register_for_open(chapter);
 
       //add the text 
-      chapter.text_area().html(Handlebars.compile(text)(this.compact_data));
+      chapter.text_area().html(Handlebars.compile(text)(this.written_data));
 
       // create the pack chart for this year and add to the graph area
       var pack_chart = PACK.pack({
@@ -214,16 +212,28 @@
           .html(function(d){return d;})
           .on("click", function(d){on_label_click(d)});
 
-      //create the graph
-      var on_label_click = function(label){
-        // look the key back up
-        var key = label_mapping[label];
-        var data = [
-           T.m("{{last_year_3}}"),d.last_year_3_gov_type_spend[key],
-           T.m("{{last_year_2}}"),d.last_year_2_gov_type_spend[key],
-           T.m("{{last_year}}"),d.last_year_gov_type_spend[key]
-        ];
+        //create the graph
+        var on_label_click = function(label){
+          graph_div.select("*").remove();
+          // look the key back up
+          var key = label_mapping[label];
+          var years = [ T.m("{{last_year_3}}"), T.m("{{last_year_2}}"), T.m("{{last_year}}") ];
+          var data = [
+            d.last_year_3_gov_type_spend[key],
+            d.last_year_2_gov_type_spend[key],
+            d.last_year_gov_type_spend[key]
+          ];
         
+         BAR.bar({
+          series :  {'': data },
+          ticks : years,
+          height : 300,
+          add_xaxis : true,
+          x_axis_line : false,
+          add_labels : true,
+          label_formater : compact
+        })(graph_div);
+
       };
 
       // select the first item in the list
@@ -231,27 +241,41 @@
     }
 
     p.vote_stat_spend = function(){
+      var text = this.gt("gov_vote_stat_spending"),
+          d = this.data;
       // create the chapter
       var chapter = new STORY.chapter({
         toggle_text : this.app.get_text("previous_year_fisc"),
         target : this.container,
         add_toggle_section: true, 
-        add_section_to_toggle : true
       });
-      var data = _.chain(this_year_amounts)
-          .map(function(value,key){
-             return {
-               name : this.gt(key),
-               bottom_text : this.gt(key),
-               value : value
-             };
-          },this)
-          .value();
+      // setup the main chart
       PACK.simple_circle_chart({
         height : height,
         formater : this.compact,
-        data : data
+        data : [
+            {name: 'x', value:d.this_year_gov_stat_voted.stat, bottom_text : this.gt("stat") },
+            {name: 'y', value:d.this_year_gov_stat_voted.voted, bottom_text :this.gt("voted") }
+        ]
       })(chapter.graph_area());
+      //setup the text area
+      chapter.text_area().html(T.m(text, this.written_data));
+
+      // setup the toggle area
+      PACK.simple_circle_chart({
+        height : height*1.10,
+        formater : this.compact,
+        colors : function(x){ return D3.tbs_color(Math.floor(x/3));},
+        data : [
+          {name : 'z',value: d.last_year_3_gov_stat_voted.stat, bottom_text : T.m('{{last_year_3}}')},
+          {name : 'y',value: d.last_year_2_gov_stat_voted.stat, bottom_text : T.m('{{last_year_2}}'), top_text: this.gt("stat")},
+          {name : 'x',value:  d.last_year_gov_stat_voted.stat, bottom_text : T.m('{{last_year}}')} ,
+          {name : 'a',value: d.last_year_3_gov_stat_voted.voted, bottom_text : T.m('{{last_year_3}}')},
+          {name : 'b',value: d.last_year_2_gov_stat_voted.voted, bottom_text : T.m('{{last_year_2}}'),top_text: this.gt("voted")},
+          {name : 'c',value:  d.last_year_gov_stat_voted.voted, bottom_text : T.m('{{last_year}}')}
+        ]
+      })(chapter.toggle_area());
+
     }
 
 

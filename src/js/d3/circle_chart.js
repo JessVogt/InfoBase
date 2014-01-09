@@ -5,20 +5,22 @@
 
     PACK.simple_circle_chart = D3.extend_base(function(svg,index){
 
+      this.width = $(svg.node().parentNode).width() ;
       var margin = this.margin || {top: 30, 
                                     right: 20, 
                                     bottom: 30, 
                                     left: 40};
-      this.width = $(svg.node().parentNode).width() ;
       var formater = this.formater || _.identity;
       var padding = 5;
+      var colors = this.colors || D3.tbs_color;
       this.width = this.width - margin.left - margin.right;
       this.height = this.height - margin.top - margin.bottom;
+      var smallest_dimension = Math.min(this.height, this.width/this.data.length);
 
       // based on the height of the pane
       var scale = d3.scale.linear()
         .domain([0,d3.max(this.data, function(d){return d.value;})])
-        .range([0,this.height/2]);
+        .range([0,smallest_dimension/2]);
       // set the font scale
       var font_size = d3.scale.linear()
         .domain([100,500])
@@ -78,9 +80,9 @@
           "r" : function(d) { return  d.r; }
         })
         .style({
-          "fill" : function(d,i){ return D3.tbs_color(i);},
-          "fill-opacity" : 0.8,
-          "stroke" : function(d,i){ return D3.tbs_color(i);},
+          "fill" : function(d,i){ return colors(i);},
+          "fill-opacity" : 0.5,
+          "stroke" : function(d,i){ return colors(i);},
           "stroke-width" : "2px",
           "stroke-opacity" : 1
         });

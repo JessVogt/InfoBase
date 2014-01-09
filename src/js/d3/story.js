@@ -52,7 +52,7 @@
           el = d3.select(parent).select(".toggle"),
           new_state = !el.classed("ui-screen-hidden")
       el.classed("ui-screen-hidden",new_state);
-      this.dispatch.toggle(new_state ? "closed" : "open");
+      _.delay( this.dispatch.toggle,0,new_state ? "closed" : "open");
     }
 
     function add_section(target){
