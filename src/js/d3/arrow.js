@@ -19,6 +19,7 @@
 
   D3.arrows = D3.extend_base(function(svg,index){
 
+      this.width = $(svg.node().parentNode).width() ;
       var margin = this.margin || {top: 30, 
                                     right: 10, 
                                     bottom: 30, 
@@ -35,17 +36,27 @@
         .domain([0,d3.max(this.data, function(d){return Math.abs(d.value);})])
         .range([1,this.height/arrow_height])
         .clamp(true);
+
+      // get offset to shift the circles into the middle of the 
+      // pane
+      var required_width = d3.sum(this.data, function(d){
+        return scale(d.value)*arrow_width;
+      }) + this.data.length * padding;
+
+      var x_offset = (this.width - required_width)/2+margin.left;
     
       svg  = svg
         .attr("width", this.width+margin.left+margin.right)
         .attr("height", this.height+margin.top+margin.bottom)
         .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        .attr("transform", "translate(" + x_offset + "," + margin.top + ")");
 
       var html = d3.select(D3.get_html_parent(svg));
 
       // join the filtered data to the circles
       var arrow = svg.selectAll("g.arrow")
+          .data(this.data,function(d){ return d.name;});
+      var bottomtext = html.selectAll("div.bottomtext")
           .data(this.data,function(d){ return d.name;});
 
       _.each(this.data, function(d,i,col){
@@ -104,6 +115,20 @@
             return formater(d.value);
           })
 
+      bottomtext.exit().remove();
+      bottomtext.enter().append("div");
+      bottomtext
+        .html(function(d){ return d.name})
+         .attr("class", "font-serif bottomtext")
+         .style({
+          "top"  : this.height+margin.bottom+"px",
+          "text-align": "center",
+          "position" : "absolute",
+          "color" : "#222",
+          "font-size" : "12px",
+          "width" : function(d){ return d.width+"px";},
+          "left"  : function(d){ return x_offset+d.x+"px";}
+         });
 
 
   });

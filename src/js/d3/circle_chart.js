@@ -126,18 +126,19 @@
     });
 
     PACK.circle_pie_chart = D3.extend_base(function(svg,index){
-
+      this.width = $(svg.node().parentNode).width() ;
       var margin = this.margin || {top: 30, 
                                     right: 20, 
                                     bottom: 30, 
                                     left: 40};
       this.width = this.width - margin.left - margin.right;
       var height = this.height = this.height - margin.top - margin.bottom;
-
+      var formater = this.formater || _.identity;
       // based on the height of the pane
-      var scale = d3.scale.linear()
-        .domain([0,d3.max(this.data, function(d){return d.value;})])
-        .range([0,this.height/2]);
+      var scale = d3.scale.pow()
+        .exponent(0.5)
+        .domain([1,d3.max(this.data, function(d){return d.value;})])
+        .range([1,this.height/2]);
 
 
       var x_offset = margin.left+this.width/2;
@@ -149,6 +150,8 @@
         .attr("transform", "translate(" + x_offset + "," + margin.top + ")");
 
       var html = d3.select(D3.get_html_parent(svg));
+
+      //scale the value amount to set the circle radius
       _.each(this.data, function(d,i,col){
         d.r = scale(d.value);
       });
@@ -175,23 +178,24 @@
           "cx": "0px",
           "r" : function(d) { return  d.r; }
         })
-        .style({"fill" : function(d,i){ return D3.tbs_color(i);}});
+        .style({
+          "fill" : function(d,i){ return D3.tbs_color(i);},
+          "fill-opacity" : 0.5,
+          "stroke" : function(d,i){ return D3.tbs_color(i);},
+          "stroke-width" : "2px",
+          "stroke-opacity" : 1
+        });
 
       text.exit().remove();
       text.enter().append("div");
       text
-        .html(function(d){ return d.value;})
+        .html(function(d){ return formater(d.value);})
         .style({
           "text-align": "center",
           "position" : "absolute",
+          "text-weight" : "bold",
           "width" : this.width+margin.bottom+margin.left+margin.right+"px",
-          "top"  : function(d,i){
-            if (i===0){
-              return height+"px";
-            } else {
-              return height-d.r-10+"px";
-            }
-          },
+          "top"  : function(d){ return margin.top+2*d.r-25+"px"; },
           "left"  : "0px"
         });
 

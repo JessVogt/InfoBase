@@ -10,19 +10,21 @@
 
     var _chapter = function(options){
       _.bindAll(this, _.functions(this));
-      this.el = options.target.append("div")
-        .attr("class","span-8 border-all");
-
+      var toggles = options.toggles || [];
+      this.el = options.target.append("div").attr("class","span-8 border-all");
       this.dispatch = d3.dispatch("toggle","hover");
-
+      this.toggle_sections = [];
+      // add the main section
       add_section(this.el);
 
-      if (options.add_toggle_section) {
-        this.add_toggle_section(this.el,options.toggle_text);
-      } 
-      if (options.add_section_to_toggle){
-        add_section(this.el.select(".toggle"));
-      }
+      _.each(toggles, function(toggle_section){
+          var new_section= this.add_toggle_section(this.el,toggle_section.toggle_text);
+          this.toggle_sections.push(new_section);
+          if (toggle_section.add_divider){
+            add_section(new_section);
+          }
+      },this);
+
     };
 
     var chapterp = _chapter.prototype;
@@ -35,21 +37,24 @@
       return this.el.select(".graphic");
     }
 
-    chapterp.toggle_area = function(){
-      return this.el.select(".toggle");
+    chapterp.toggle_area = function(index){
+      index = index || 0;
+      return this.toggle_sections[index];
     }
 
     chapterp.add_toggle_section = function(target,text){
-      target.append("div").attr("class","span-8 toggler margin-top-none")
+      var toggler = target.append("div").attr("class","span-8 toggler margin-top-none")
         .append("a")
           .html(text)
           .on("click", this.onToggle); 
-      target.append("div").attr("class", "span-8 toggle ui-screen-hidden");
+      var div = target.append("div").attr("class", "span-8 toggle ui-screen-hidden");
+     toggler.datum(div);
+     return div
     }
 
     chapterp.onToggle = function (e){
-      var parent = d3.event.target.parentNode.parentNode,
-          el = d3.select(parent).select(".toggle"),
+      var target = d3.select(d3.event.target),
+          el = target.datum(),
           new_state = !el.classed("ui-screen-hidden")
       el.classed("ui-screen-hidden",new_state);
       _.delay( this.dispatch.toggle,0,new_state ? "closed" : "open");

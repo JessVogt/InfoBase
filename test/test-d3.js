@@ -70,7 +70,7 @@
   };
 
   test("test story chapter",0, function(){
-    var el = get_div().style("width",800);
+    var el = get_div(1180);
     var chapter = new STORY.chapter(
       {add_toggle_section: true, 
         target : el,
@@ -80,7 +80,7 @@
 
     var data = [
           {value: 1200, name : 'ABC'},
-          {value: 1000, name : 'ABD'},
+          {value: 200, name : 'ABD'},
       ],
     chart = PACK.circle_pie_chart({
       data : data,
@@ -108,13 +108,12 @@
           {value: 0.05, name : 'ABC'},
           {value: -0.01, name : 'ABD'}
       ],
-    el = get_div().style("width",500),
+    el = get_div(500),
     chart = D3.arrows({
       data : data,
       formater : d3.format("%"),
       height : 400,
-      is_mini : true,
-      width : 500
+      is_mini : true
     })(el);
   });
 
@@ -253,7 +252,7 @@
       add_yaxis : true,
       add_xaxis : true,
       width : 400
-    })(get_div().style("width",400));
+    })(get_div(400));
   });
 
   test("test bar2",0, function(){
@@ -267,7 +266,7 @@
       add_yaxis : true,
       add_xaxis : true,
       width : 400
-    })(get_div().style("width",400));
+    })(get_div(400));
   });
 
   test("test bar3",0, function(){
@@ -281,7 +280,7 @@
       add_yaxis : true,
       add_xaxis : true,
       width : 400
-    })(get_div().style("width",400));
+    })(get_div(400));
   });
 
   test("test bar4",0, function(){
@@ -293,7 +292,7 @@
       add_yaxis : true,
       add_xaxis : true,
       width : 400
-    })(get_div().style("width",400));
+    })(get_div(400));
   });
 
   test("test bar4",0, function(){
@@ -303,8 +302,7 @@
       ticks : ['2010','2011','2012'],
       height : 200,
       add_xaxis : true,
-      width : 200
-    })(get_div().style("width",200));
+    })(get_div(300));
   });
 
   test("test bar with labels",0, function(){
@@ -316,8 +314,7 @@
       add_xaxis : true,
       add_labels : true,
       label_formater : function(val){return formater['compact'](val,"en")},
-      width : 400
-    })(get_div().style("width",200));
+    })(get_div(300));
   });
 
   test("test bar with labels 2",0, function(){
@@ -330,7 +327,7 @@
       add_labels : true,
       label_formater : function(val){return formater['compact'](val,"en")},
       width : 400
-    })(get_div().style("width",200));
+    })(get_div(300));
   });
                  
   test("test horizontal bar",0, function(){
@@ -343,7 +340,7 @@
           {value: 13, name : 'ABH'},
           {value: 60, name : 'ABI'}
       ],
-    el = get_div().style("width",600)
+    el = get_div(600)
     chart = BAR.hbar({
       data : data,
       x_scale : d3.scale.linear(),

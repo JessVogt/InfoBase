@@ -129,6 +129,9 @@
         if (d.so === sos[10][lang]){
           return 'other_trsf';
         }
+        if (window.depts[d.dept].type.en === "Crown Corporations"){
+          return "crown";
+        }
         return 'op';
       }
   }
@@ -238,6 +241,9 @@
       ]);
      },
      "queries" : {
+       "missing_depts" : function(){
+
+       },
         "auth_change" : function(format) {
           // returns last year, this year, and change
           var this_year = "thisyearauthorities", 
@@ -895,8 +901,8 @@
        "fr": "Montant total des autorisations et dépenses budgétaires votées et législatives."
    },
    classes : [ 'left_text', 
-     'right_number', 
-     'right_number'],
+              'right_number', 
+              'right_number'],
    prep_data: function () {
      this.rows = [
       this.da.exp_auth_by_year("{{last_year}}",true),
@@ -1747,6 +1753,7 @@
           },
           {
             "type":"big-int",
+            "nick":"multi_year",
             "header":{
               "en":"Available from Previous Years",
               "fr":"Disponibles des exercices antérieurs"
@@ -1788,6 +1795,7 @@
           },
           {
             "type":"big-int",
+            "nick" : "total_net_auth",
             "header":{
               "en":"Total Net Authority",
               "fr":"Autorisations totales nettes"
@@ -1796,13 +1804,46 @@
       ]);
    },
    "queries" : {
-      "estimates_split"  : function(add_percentage,format){
-        var headers = ['mains', 'suppsa', 'suppsb', 'suppsc'],
+     "qfr_difference" : function(){
+       // this function is meant to cover the planned spending gap between qfrs
+       // and total approved authority
+       var data = this.data,
+           qfr_table = _.find(TABLES.tables,function(t){ return t.id === 'table1'}),
+           depts = _.difference( _.keys(this.table.depts), _.keys(qfr_table.depts));
+       return d3.nest()
+         .key(function(d){
+           var type = window.depts[d].type.en;
+           if (type === 'Crown Corporations'){
+             return "crown"
+           }
+           return "op"; 
+         })
+         .rollup(function(depts){
+           var rows = _.filter(data, function(d){ return _.include(depts,d.dept);});
+           return d3.sum(rows,function(r){return r["total_net_auth"];});
+         })
+         .map(depts);
+     },
+      "estimates_split"  : function(options,format){
+        var headers = ["multi_year",'mains', 'suppsa', 'suppsb', 'suppsc'],
             data = this.sum(headers),
+            format = format || false,
+            add_percentage = options.add_percentage || false,
+            as_tuple = options.as_tuple || false,
+            filter_zeros = options.filter_zeros || false,
             rtn,
-            rows = _.map(headers,function(h){
-              return [this.table.col_from_nick(h).header[this.lang], data[h]];
-            },this);
+            rows = _.chain(headers)
+              .map(function(h){
+                return [this.table.col_from_nick(h).header[this.lang], data[h]];
+              },this)
+              .filter(function(k_v){
+                 if (filter_zeros){
+                   return k_v[1] !== 0;
+                 } else {
+                   return true;
+                 }
+              })
+              .value();
         if (add_percentage){
           var total = d3.sum(d3.values(data));
           rtn = _.map(rows,function(row){
@@ -1820,11 +1861,23 @@
                 return row
               },this);
         }
-        return _.object(rtn);
+        if (as_tuple){
+          return rtn;
+        } else {
+          return _.object(rtn);
+        }
       }
    },
    "dimensions" : {
-     "horizontal" : TABLES.vote_stat_dimension
+     "horizontal" : TABLES.vote_stat_dimension,
+     "voted_stat"  : function(options) {
+       return function(d){
+         if (d.votestattype != 999) {
+           return "voted";
+         }
+         return 'stat';
+       }    
+     }
    },
    "link": {
     "en": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-eng.asp",
@@ -1880,7 +1933,7 @@
       },
       classes : ['left_text','right_number','right_number'],
       prep_data: function () {
-        this.rows = this.da.estimates_split(true,true);
+        this.rows = this.da.estimates_split({add_percentage: true},true);
         this.headers= [[this.gt("Estimates"),
                        this.gt("amount") + ' ($000)', 
                        '(%)']];

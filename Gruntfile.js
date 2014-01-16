@@ -73,6 +73,7 @@ module.exports = function(grunt) {
           "src/js/d3/bar.js",
           "src/js/d3/dept_explore.js",
           "src/js/d3/horizontal.js",
+          "src/js/d3/arrow.js",
           "src/js/d3/pack.js",
           "src/js/d3/circle_chart.js",
           "src/js/tables.js",

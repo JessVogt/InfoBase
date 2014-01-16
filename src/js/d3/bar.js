@@ -9,12 +9,14 @@
       *     "series 2" : [y1,y2,y3]}
       */
       this.width = $(svg.node().parentNode).width() ;
+      console.log(this.width)
       var series = d3.keys(this.series),
           add_xaxis = this.add_xaxis,
           add_yaxis = this.add_yaxis,
           x_axis_line = this.x_axis_line  === undefined ? true : this.x_axis_line,
           add_legend = this.add_legend,
           add_labels = this.add_labels,
+          html_ticks = this.html_ticks,
           label_formater = add_labels ? this.label_formater : undefined,
           top_margin = add_legend ? series.length * 20 + 15 : 20,
           margin = this.margin || {top: top_margin, 
@@ -52,6 +54,7 @@
           x1 = d3.scale.ordinal()
             .domain(series)
             .rangeRoundBands([0,x0.rangeBand()]),
+          bar_width = Math.min(x1.rangeBand(), this.max_width || 100),
           y = d3.scale.linear()
             .domain([y_bottom, y_top])
             .range([height, 0]),
@@ -64,11 +67,12 @@
             .ticks(10)
             .tickSize(-width)
             //.tickFormat(d3.format(this.yAxisTickFormat || ".2s"))
-            .orient("left")
+            .orient("left"),
           /*
           * setup the main graph area and add the bars
           * set up the axes  
           */
+          html = d3.select(D3.get_html_parent(svg)),
           graph_area  = svg
             .attr({
               width : width+margin.left+margin.right,
@@ -86,6 +90,24 @@
               .attr("class", "x axis")
               .attr("transform", "translate(0," + height+ ")")
               .call(xAxis);
+        if (html_ticks){
+          graph_area.select(".x.axis").selectAll(".tick text").remove();
+          html.selectAll("div.tick")
+            .data(ticks)
+            .enter()
+            .append("div")
+            .attr("class","tick")
+            .style({
+              "text-align": "center",
+              "position" : "absolute",
+              "text-weight" : "bold",
+              "top" : height+margin.top+5+"px",
+              "width": x0.rangeBand()+"px",
+              "left"  : function(d) {return x0(d)+margin.left+"px" ; }
+            })
+            .html(function(d){ return d;});
+            debugger
+        }
         if (!x_axis_line){
           graph_area.select(".x.axis path").remove();
         }
@@ -114,30 +136,50 @@
             .attr("transform", function(d) { return "translate(" + x0(d.tick) + ",0)"; });
 
       if (add_labels){
-        groups.selectAll("text.label")
-          .data(function(d) { return d.data; })
+        html.selectAll("div.labels")
+          .data(data)
           .enter()
-          .append("text")
-          .attr("class","label")
-          .style("text-anchor","middle")
-          .attr( "x", function(d) { return x1(d.name)+x1.rangeBand()/2 ; })
-          .attr("y", function(d) {  
-            if (d.value >= 0){
-              return y(d.value) - 5;
-            } else {
-              return y(d.value) + 20;
-            }
+          .append("div")
+          .attr("class","labels")
+          .style({
+            "position" : "absolute",
+            "top" : "0px",
+            "height" : "10px",
+            "width": x0.rangeBand()+"px",
+            "left"  : function(d) {return x0(d.tick)+margin.left+"px" ; }
           })
-          .text(function(d){
-            return label_formater(d.value);
+          .selectAll("div.label")
+          .data(function(d){ return d.data;})
+          .enter()
+          .append("div")
+          .attr("class","label")
+          .html(function(d){ return label_formater(d.value);})
+          .style({
+            "text-align": "center",
+            "position" : "absolute",
+            "text-weight" : "bold",
+            "width" : bar_width+"px",
+            "height" : "10px",
+            "top"  : function(d){
+              if (d.value >= 0){
+                return y(d.value) - 5+"px";
+              } else {
+                return y(d.value) + 20+"px";
+              }
+            },
+            "left"  : function(d) { return x1(d.name)+(x1.rangeBand()-bar_width)/2 +"px" ; }
           });
+        html.selectAll("div.labels")
+          .data(data)
+          .exit()
+          .remove();
       }
 
       var bars = groups.selectAll("rect")
           .data(function(d) { return d.data; })
         .enter().append("rect")
-          .attr( "width", x1.rangeBand())
-          .attr( "x", function(d) { return x1(d.name); })
+          .attr( "width", bar_width)
+          .attr( "x", function(d) { return x1(d.name) + (x1.rangeBand()-bar_width)/2 + "px"; })
           .style({
            "fill": function(d) { return D3.tbs_color(d.name); },
            "fill-opacity" : 0.8

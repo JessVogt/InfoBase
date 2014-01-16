@@ -69,46 +69,34 @@
 
     APP.types_to_format = {
       "compact_writen" : function(val,lang){
-         var symbol,abbrev = {
+         return this._compact(val,lang, {
            1000000000 : {en : 'billion', fr: 'millards'},
            1000000 : {en : 'million', fr: 'millions'},
            1000 : {en : 'thousands', fr: 'milliers'},
-         },
-         abs = Math.abs(val);
-         if (val == 0) { 
-           return accounting.formatMoney(0,{precision: 0, symbol: ''})
-         } else if (abs >= 1000000000){
-           val = val /  1000000000;
-           symbol = abbrev[1000000000][lang];
-         }
-         else if (abs >= 1000000){
-           val = val /  1000000;
-           symbol = abbrev[1000000][lang];
-         }
-         else {
-           val = val /  1000;
-           symbol = abbrev[1000][lang];
-         }
-         if (lang === 'en'){
-           return accounting.formatMoney(val,
-               {symbol:symbol,precision: 0, format: "%v %s" });
-         } else if (lang === 'fr'){
-           return accounting.formatMoney(val,{
-             decimal : ',', thousand:' ',
-             format: "%v %s", symbol:symbol,
-             precision: 1
-         });
-         }
+         },1);
       },
-      "compact" : function(val,lang){
-         var symbol,abbrev = {
+      "compact1" : function(val, lang){
+        return this._compact(val, lang, {
            1000000000 : {en : 'B', fr: 'Mds'},
            1000000 : {en : 'M', fr: 'm'},
            1000 : {en : 'K', fr: 'k'},
-         },
+         },1 );
+      },
+      "compact0" : function(val, lang){
+        return this._compact(val, lang, {
+           1000000000 : {en : 'B', fr: 'Mds'},
+           1000000 : {en : 'M', fr: 'm'},
+           1000 : {en : 'K', fr: 'k'},
+         },0 );
+      },
+      "compact" : function(val, lang){
+        return this.compact0(val, lang);
+      },
+      "_compact" : function(val,lang, abbrev, precision){
+         var symbol,
          abs = Math.abs(val);
          if (val == 0) { 
-           return accounting.formatMoney(0,{precision: 0, symbol: ''})
+           return accounting.formatMoney(0,{precision: precision, symbol: ''})
          } else if (abs >= 1000000000){
            val = val /  1000000000;
            symbol = abbrev[1000000000][lang];
@@ -123,12 +111,12 @@
          }
          if (lang === 'en'){
            return accounting.formatMoney(val,
-               {symbol:symbol,precision: 0, format: "%v %s" });
+               {symbol:symbol,precision: precision, format: "%v %s" });
          } else if (lang === 'fr'){
            return accounting.formatMoney(val,{
              decimal : ',', thousand:' ',
              format: "%v %s", symbol:symbol,
-             precision: 0
+             precision: precision
          });
          }
       },

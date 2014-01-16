@@ -211,12 +211,23 @@
             .style({
               "text-align": "center",
               "position" : "absolute",
-              "width" : function(d){ return d.zoom_r+"px";},
+              "width" : function(d){ return d.zoom_r*1.5+"px";},
               "font-size" : function(d){ return font_scale(d.zoom_r)+"px";},
-              "left" : function(d) { return x_offset + d.zoom_pos.x-d.zoom_r/2+"px"; },
-              "top": function(d) { return (d.zoom_pos.y-d.zoom_r+10)+"px"; },
+              "left" : function(d) { return x_offset + d.zoom_pos.x-d.zoom_r*1.5/2+"px"; }
             })
-            .html(function(d) {  return d.name; });  
+            .html(function(d) {  
+              if (d.r > 40) {
+                return d.name; 
+              } else {
+               return d.name.match(/\(.+?\)/g)[0].replace("(","").replace(")","").replace(" ","");
+            }})  
+            .transition()
+            .duration(10)
+            .each(function(d){
+              var t = d.zoom_pos.y - $(this).height()/2;
+              $(this).css("top",t);
+            })
+
 
         } else {
           text.each(function(d){

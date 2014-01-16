@@ -123,6 +123,11 @@
       return val;
     },
     list_formater : function(formats,vals){
+      // formats can be either an array of values or one single one
+      // which will be duplicated for each item in vals
+      if (!_.isArray(formats)){
+        formats = _.map(vals, function(){ return formats});
+      }
       return _.map(formats, function(format,i){
         return this.formater(format,vals[i]);
       },this);
