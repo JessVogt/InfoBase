@@ -106,7 +106,6 @@
               "left"  : function(d) {return x0(d)+margin.left+"px" ; }
             })
             .html(function(d){ return d;});
-            debugger
         }
         if (!x_axis_line){
           graph_area.select(".x.axis path").remove();

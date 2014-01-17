@@ -11,21 +11,23 @@
 
     center_text = function(container){
       // this function will vertically center all the inner text
-      _.delay(function(){
-         container.find(".text").each(function(){
-           var that = $(this);
-           var my_height = that.height();
-           var sibling_height = that.siblings(".graphic").height();
-           var height = Math.max(my_height, sibling_height);
-           if (height === 0 ) { return ;}
-           that.height(height);
-           that.find(".inner")
-           .css({
-             "position" : "absolute",
-             "top" : (height - that.find(".inner").height())/2
-           });
-         });
-      });
+      if (!is_mobile){
+        _.delay(function(){
+          container.find(".text").each(function(){
+            var that = $(this);
+            var my_height = that.height();
+            var sibling_height = that.siblings(".graphic").height();
+            var height = Math.max(my_height, sibling_height);
+            if (height === 0 ) { return ;}
+            that.height(height);
+            that.find(".inner")
+            .css({
+              "position" : "absolute",
+              "top" : (height - that.find(".inner").height())/2
+            });
+          });
+        });
+      }
     };
 
     STORY.gov_story =  function(container,app){
@@ -59,8 +61,8 @@
       this.vote_stat_spend();
 
       this.gov_type_spend();
-      //this.gov_spend();
-      //this.gov_spend_change();
+      this.gov_spend();
+      this.gov_spend_change();
       //this.top_3_stat_spend();
       //this.top_3_vote_spend();
       //this.so_spend();
@@ -359,9 +361,11 @@
           d = this.data;
       // create the chapter
       var chapter = new STORY.chapter({
-        toggle_text : T.m(this.app.get_text("this_time_last_year")),
-        target : this.container,
-        add_toggle_section: true, 
+        toggles : [{
+          toggle_text : T.m(this.app.get_text("this_time_last_year")),
+          add_divider: true 
+        }],
+        target : this.container
       });
       chapter.text_area().html(T.m(text, this.written_data));
 
@@ -393,7 +397,7 @@
 
       // create the chapter
       var chapter = new STORY.chapter({
-        target : this.container,
+        target : this.container
       });
       chapter.text_area().html(T.m(text, this.written_data));
 

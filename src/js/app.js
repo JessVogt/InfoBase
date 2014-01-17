@@ -3,6 +3,13 @@
     var LANG = ns('LANG');
     var TABLES = ns('TABLES');
 
+    if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+      window.is_mobile = true;
+    } else {
+      window.is_mobile = false;
+    }
+
+
     APP.t = function(id){
       var el =  $(id);
       if (el.length === 0 && !_.isUndefined(console)){

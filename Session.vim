@@ -66,7 +66,7 @@ set termencoding=utf-8
 set virtualedit=all
 set wildignore=*.pyc,*.o,*.m4a,*.avi
 set wildmode=longest,list,full
-set window=44
+set window=43
 let s:so_save = &so | let s:siso_save = &siso | set so=0 siso=0
 let v:this_session=expand("<sfile>:p")
 silent only
@@ -75,13 +75,13 @@ if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
   let s:wipebuf = bufnr('%')
 endif
 set shortmess=aoO
-badd +92 les/src/js/app.js
+badd +11 les/src/js/app.js
 badd +4 les/src/js/tables.js
 badd +907 les/src/js/od/tables.js
 badd +58 les/src/js/queries.js
 badd +580 les/src/js/base_table_view.js
 badd +70 les/src/js/d3/core.js
-badd +101 les/src/js/d3/bar.js
+badd +6 les/src/js/d3/bar.js
 badd +25 les/src/js/d3/tooltip.js
 badd +83 les/test/test-data.js
 badd +32 les/test/test.html
@@ -99,7 +99,7 @@ badd +110 les/src/js/d3/hbar.js
 badd +44 les/src/js/d3/horizontal.js
 badd +14 les/src/mako/od_script_includes.html
 badd +25 les/src/js/d3/story.js
-badd +243 les/src/js/d3/government_story.js
+badd +395 les/src/js/d3/government_story.js
 badd +193 les/src/js/d3/circle_chart.js
 badd +128 les/src/js/d3/arrow.js
 badd +5 les/src/mako/od.html
@@ -107,7 +107,7 @@ badd +54 les/src/js/router.js
 badd +104 les/src/js/loader.js
 badd +19 les/src/js/sandbox.js
 silent! argdel *
-edit les/src/js/d3/government_story.js
+edit les/src/js/d3/story.js
 set splitbelow splitright
 wincmd _ | wincmd |
 vsplit
@@ -225,12 +225,12 @@ set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 62 - ((22 * winheight(0) + 21) / 43)
+let s:l = 75 - ((34 * winheight(0) + 21) / 42)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-62
-normal! 033|
+75
+normal! 044|
 wincmd w
 argglobal
 edit les/src/js/d3/government_story.js
@@ -339,13 +339,14 @@ set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 327 - ((28 * winheight(0) + 21) / 43)
+let s:l = 29 - ((28 * winheight(0) + 21) / 42)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-327
-normal! 0
+29
+normal! 07|
 wincmd w
+2wincmd w
 exe 'vert 1resize ' . ((&columns * 88 + 88) / 177)
 exe 'vert 2resize ' . ((&columns * 88 + 88) / 177)
 tabnext 1

@@ -68,13 +68,14 @@
        *     div.inner
        *   div.span-4.graphic
        */
-      var el =  target
-      el.append("div").attr("class","span-4 text margin-bottom-none margin-left-none");
+      var el =  target,
+          span = is_mobile ? "span-8" : "span-4"
+      el.append("div").attr("class",span +" text margin-bottom-none margin-left-none");
       el.select(".text")
         .append("div")
         .attr("class", "inner margin-top-large margin-left-large")
         .style({ "font-size" : "20px" });
-      el.append("div").attr("class","span-4 graphic margin-bottom-none margin-left-none");
+      el.append("div").attr("class",span +" graphic margin-bottom-none margin-left-none");
       el.append("div").attr("class","clear margin-bottom");
     }
 
