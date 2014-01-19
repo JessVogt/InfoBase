@@ -685,5 +685,10 @@
       return table.node();
     }
 
+    TABLES.prepare_and_build_table = function(options){
+      TABLES.prepare_data(options);
+      return TABLES.d3_build_table(options);
+    }
+
 })(this); // end of scope
 

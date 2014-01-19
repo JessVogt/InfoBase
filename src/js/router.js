@@ -63,7 +63,7 @@
       "d:dept": "basic_dept_view", // #basic/AGR
       "t:dept-:table": "basic_dept_table_view", // #basic/AGR/1
       "explore" : "explore",  //#explore
-      "explore/:dept"  : "explore_dept",  //#explore/AGR
+      "explore-:dept"  : "explore_dept",  //#explore/AGR
       "analysis"  : "analysis"  //#analysis
     },
     back : function(){
@@ -97,6 +97,7 @@
         this.app.full_dept_list.render();
       }
     },
+
     basic_dept_view: function(container, dept) {
       var dept = depts[dept];
       if (dept){
@@ -107,6 +108,7 @@
       APP.dispatcher.trigger("dept_selected",container,this.app, dept);
       APP.dispatcher.trigger("dept_ready",container,this.app, dept);
     },
+
     basic_dept_table_view : function(container,dept,table){
       var dept,table,args = dept_table.split("_");
       dept = args[0];
@@ -129,6 +131,14 @@
       // ns().D3.bubbleDeptList(this.app, container);
     },
     explore_dept : function(container,dept){
+      var dept = depts[dept];
+      if (dept){
+        this.app.state.set("dept",dept);
+      }
+      var title =  dept.dept[this.app.lang] + " Infographic";
+      this.add_title($('<h1>').html(title));
+      container.children().remove();
+      this.app.dept_explore =  ns().D3.STORY.dept_story(container, this.app);
     },
     analysis: function(container){
      this.add_title($('<h1>').html("Horizontal Analysis"));

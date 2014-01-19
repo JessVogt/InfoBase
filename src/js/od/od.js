@@ -116,6 +116,8 @@
             .map(function(v,k){ return [k,this.formater(format,v)]},this)
             .object()
             .value();
+        } else  if (_.isString(val)){
+          return val;
         } else {
           return APP.types_to_format[format](val,this.lang);
         }

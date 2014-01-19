@@ -9,7 +9,6 @@
       *     "series 2" : [y1,y2,y3]}
       */
       this.width = $(svg.node().parentNode).width() ;
-      console.log(this.width)
       var series = d3.keys(this.series),
           add_xaxis = this.add_xaxis,
           add_yaxis = this.add_yaxis,
@@ -100,6 +99,7 @@
             .style({
               "text-align": "center",
               "position" : "absolute",
+              "font-size" : "12px",
               "text-weight" : "bold",
               "top" : height+margin.top+5+"px",
               "width": x0.rangeBand()+"px",
@@ -158,6 +158,7 @@
             "position" : "absolute",
             "text-weight" : "bold",
             "width" : bar_width+"px",
+            "font-size" : "12px",
             "height" : "10px",
             "top"  : function(d){
               if (d.value >= 0){

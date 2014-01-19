@@ -16,6 +16,7 @@
       this.width = this.width - margin.left - margin.right;
       this.height = this.height - margin.top - margin.bottom;
       var smallest_dimension = Math.min(this.height, this.width/this.data.length);
+      var font_range = this.font_range || [16,40];
 
       // based on the height of the pane
       var scale = d3.scale.linear()
@@ -24,7 +25,7 @@
       // set the font scale
       var font_size = d3.scale.linear()
         .domain([100,500])
-        .rangeRound([16,40])(this.height);
+        .rangeRound(font_range)(this.height);
          
 
       // get offset to shift the circles into the middle of the 
@@ -110,7 +111,7 @@
       bottomtext
         .html(function(d){ return d.bottom_text})
          .attr("class", "font-serif")
-        .style(_.extend({ "top"  : this.height+margin.bottom+"px"
+        .style(_.extend({ "top"  : this.height+margin.top+"px"
                         },text_style)
         );
 
@@ -119,7 +120,7 @@
      middletext
         .html(function(d){ return formater(d.value);})
          .attr("class", "font-serif")
-        .style(_.extend({ "top"  : function(d){return d.y+font_size/2+"px"}
+        .style(_.extend({ "top"  : function(d){return d.y+margin.top-font_size/2+"px"}
                         },text_style)
         );
                    
@@ -134,6 +135,7 @@
       this.width = this.width - margin.left - margin.right;
       var height = this.height = this.height - margin.top - margin.bottom;
       var formater = this.formater || _.identity;
+      var font_size = this.font_size || 16;
       // based on the height of the pane
       var scale = d3.scale.pow()
         .exponent(0.5)
@@ -194,8 +196,16 @@
           "text-align": "center",
           "position" : "absolute",
           "text-weight" : "bold",
+          "font-size" : font_size + "px",
           "width" : this.width+margin.bottom+margin.left+margin.right+"px",
-          "top"  : function(d){ return margin.top+2*d.r-25+"px"; },
+          "top"  : function(d,i){ 
+            if (i === 0) {
+              // the containing circle, the text should be located below
+              return margin.top +height+"px"; 
+            } else {
+              // the contained circle, the text should be located below
+              return margin.top+d.r+"px"; 
+            }},
           "left"  : "0px"
         });
 

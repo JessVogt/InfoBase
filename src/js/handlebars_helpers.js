@@ -12,6 +12,9 @@ ns().APP.dispatcher.once("init", function(app){
       return "";
     }
   });
+  Handlebars.registerHelper("dept",function(context){
+     return window.depts[context].dept[app.state.get("lang")];
+  });
   Handlebars.registerHelper("encodeURI",function(context,options){
     if (_.has(context,'en') && _.has(context,"fr")){
       context = context[app.state.get("lang")];
