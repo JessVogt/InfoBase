@@ -19,9 +19,12 @@
     });
     // add in query object for each table
     table.q = function(dept){
-      if (table.depts[dept]){
-        return new queries(app, table,table.depts[dept]);
-      }
+      if (!_.isUndefined(dept))
+        if (table.depts[dept]){
+          return new queries(app, table,table.depts[dept]);
+        } else {
+          return new queries(app, table, []);
+        }
       return new queries(app, table,data[false]);
     }
   }
@@ -34,9 +37,15 @@
      *
      */
      var f = function(col,include_dept,rollup ){
-        include_dept =  include_dept == false ? false : true;
+        var nest = d3.nest(), data;
+        if (table.depts && table.depts[include_dept]){
+          data = table.depts[include_dept];
+          include_dept = false;
+        } else {
+          data = table.data;
+          include_dept =  include_dept == false ? false : true;
+        }
         rollup =   rollup == false ? false : true;
-        var nest = d3.nest()
         if (_.isFunction(func)){
           nest = nest.key(func({app:app,table:table,col:col}));
         }
@@ -49,7 +58,7 @@
                               return leaf[col];});
             });
         }
-        return nest.map(table.data);
+        return nest.map(data);
      };
 
      f.resolver = function (col,include_dept,rollup){ 

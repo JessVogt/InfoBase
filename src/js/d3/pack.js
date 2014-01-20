@@ -16,24 +16,30 @@
     PACK.pack_data = function(data, level_name,options){
       //
       // expects an array of objects
-      //
+      //  and then packs them into a structure suitible for exploring
+      //  this is useful for when there are large difference between the numbers
       //
       options = options || {};
+      var  attr = options.attr || 'value';
+      if (options.force_positive){
+        _.map(data, function(x){
+          x[attr] = Math.abs(x);
+        });
+      }
       var soften = typeof options.soften === "undefined" ? true : options.soften,
-       levels = options.levels || 2,
-       attr = options.attr || 'value',
-       accessor = function(d){return d[attr];},
-       extent = d3.extent(_.map(data,accessor)),
-       scale = options.scale || d3.scale.log()
-         .domain(extent)
-         .rangeRound([0,levels]),
-       groups = d3.nest()
-        .key(function(d){ return scale(accessor(d));})
-        .entries(data),
-       pointer = { name: '' },
-       rtn = pointer,
-       group_extent = d3.extent(groups,function(d){return parseInt(d.key);}),
-       softened,group,_i;
+          levels = options.levels || 2,
+          accessor = function(d){return d[attr];},
+          extent = d3.extent(_.map(data,accessor)),
+          scale = options.scale || d3.scale.log()
+            .domain(extent)
+            .rangeRound([0,levels]),
+          groups = d3.nest()
+           .key(function(d){ return scale(accessor(d));})
+           .entries(data),
+          pointer = { name: '' },
+          rtn = pointer,
+          group_extent = d3.extent(groups,function(d){return parseInt(d.key);}),
+          softened,group,_i;
       for (_i=group_extent[1];_i>=group_extent[0]; --_i){
         group = _.find(groups,function(x){return parseInt(x.key) === _i;});
         softened = soften ? PACK.soften_spread(group.values,attr):  group.values;

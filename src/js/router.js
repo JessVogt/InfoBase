@@ -126,7 +126,7 @@
     explore : function(container){
      this.add_title($('<h1>').html("Explore"));
       if (!this.app.explore){
-        this.app.explore =  ns().D3.STORY.gov_story(container, this.app);
+        this.app.explore =  ns().D3.STORY.story(container, this.app);
       }
       // ns().D3.bubbleDeptList(this.app, container);
     },
@@ -138,14 +138,14 @@
       var title =  dept.dept[this.app.lang] + " Infographic";
       this.add_title($('<h1>').html(title));
       container.children().remove();
-      this.app.dept_explore =  ns().D3.STORY.dept_story(container, this.app);
+      this.app.dept_explore =  ns().D3.STORY.story(container, this.app, dept.accronym);
     },
     analysis: function(container){
      this.add_title($('<h1>').html("Horizontal Analysis"));
       if (!this.app.analysis){
         this.app.analysis =   ns().D3.horizontal_gov(this.app,container);
       }
-    },
+    }
   });
 
 

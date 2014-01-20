@@ -110,6 +110,13 @@
      };
   }               
 
+  TABLES.pack_stadnard_objects = function(col){
+      this.table.get_top_x([col,"so"],Infinity)
+      var rows = _.zip( top3['so'], top3[col]);
+
+
+  }
+
   TABLES.standard_object_dimension =  function(options) {
        var lang = options.app.state.get("lang"),
            gt = options.app.get_text;
@@ -249,7 +256,7 @@
           var this_year = "thisyearauthorities", 
               last_year= "lastyearauthorities",
               total = this.sum([this_year, last_year]),
-              change =  total[this_year] / (total[last_year] + 1) - 1,
+              change =  total[this_year] / (total[last_year])-1,
               data =  [total[this_year],total[last_year],change];
           if (!format){
             return data;
@@ -261,7 +268,7 @@
           var this_year = "thisyearexpenditures", 
               last_year= "lastyearexpenditures",
               total = this.sum([this_year, last_year]),
-              change =  total[this_year] / (total[last_year] + 1) - 1,
+              change =  total[this_year] / (total[last_year]) - 1,
               data =  [total[this_year],total[last_year],change];
           if (!format){
             return data;

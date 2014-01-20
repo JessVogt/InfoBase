@@ -10,7 +10,7 @@
     var height = 250;
 
     STORY.story =  function(container,app,dept){
-      return new _gov_story(container,app,dept);
+      return new _story(container,app,dept);
     };
 
     _story = function(container,app,dept){
@@ -33,27 +33,35 @@
         .map(function(x){ return [x.id, x.q()];})
         .object()
         .value();
-      this.dept_q =  _.chain(T.tables)
-        .map(function(x){ return [x.id, x.q(dept)];})
-        .object()
-        .value();
 
       this.data_prep();
-      this.gov_auth();
-      this.estimates_split();
-      this.vote_stat_spend();
+      if (_.isUndefined(dept)){
+        this.gov_auth();
+        this.estimates_split();
+        this.vote_stat_spend();
 
-      this.gov_type_spend();
-      this.gov_spend();
-      this.gov_spend_change();
-      //this.top_3_stat_spend();
-      //this.top_3_vote_spend();
-      //this.so_spend();
+        this.gov_type_spend();
+        this.gov_spend();
+        this.gov_spend_change();
+      } else {
+        this.dept_q =  _.chain(T.tables)
+          .map(function(x){ return [x.id, x.q(dept)];})
+          .object()
+          .value();
+        this.dept_data_prep(dept);
+        this.dept_auth();
+        this.estimates_split();
+        this.vote_stat_spend();
+        this.dept_type_spend();
+        this.dept_spend();
+        this.dept_spend_change();
+      }
+      
       STORY.center_text(container);
       this.container.selectAll(".toggle").classed("ui-screen-hidden",true);
     };
 
-    var p = _gov_story.prototype;
+    var p = _story.prototype;
 
 
     p.data_prep = function(){
@@ -75,6 +83,7 @@
         last_year_gov_stat_voted : t.table4.voted_stat('{{last_year}}auth',false), 
         last_year_2_gov_stat_voted :  t.table4.voted_stat('{{last_year_2}}auth',false), 
         last_year_3_gov_stat_voted : t.table4.voted_stat('{{last_year_2}}auth',false), 
+
         this_year_voted_num : t.table8.voted_stat("total_net_auth",false,false)['voted'].length,
         this_year_stat_num : t.table8.voted_stat("total_net_auth",false,false)['stat'].length,
         this_year_top_voted : _.chain(t.table8.voted_stat("total_net_auth",false,false)['voted']) 
@@ -125,12 +134,85 @@
       },this);
     }
 
+    p.dept_data_prep = function(dept){
+      var t = this.t,
+          q = this.dept_q,
+          app = this.app,
+          compact = this.compact,
+          written = function(x){return app.formater("compact_writen",x);},
+          qfr_difference = q.table8.qfr_difference();
+          dept_data = {
+          dept_this_year_auth : q.table8.sum("total_net_auth"),
+          dept_last_year_auth :  q.table4.sum('{{last_year}}auth'),
+          dept_last_year_2_auth : q.table4.sum('{{last_year_2}}auth'),
+          dept_last_year_3_auth : q.table4.sum('{{last_year_3}}auth'),
+
+          dept_this_year_stat_voted :  t.table8.voted_stat("total_net_auth",dept,true), 
+          dept_last_year_stat_voted : t.table4.voted_stat('{{last_year}}auth',dept,true), 
+          dept_last_year_2_stat_voted :  t.table4.voted_stat('{{last_year_2}}auth',dept,true), 
+          dept_last_year_3_stat_voted : t.table4.voted_stat('{{last_year_2}}auth',dept,true), 
+
+
+          dept_this_year_type_spend : _.map(q.table2.data, function(x){ 
+                                            return {value: x['plannedexp'],name: x['so'] }}),
+          dept_last_year_type_spend : _.map(q.table5.data, function(x){ 
+                                            return {value: x['{{last_year}}'],name: x['so'] }}),  
+          dept_last_year_2_type_spend :_.map(q.table5.data, function(x){ 
+                                            return {value: x['{{last_year_2}}'],name: x['so'] }}), 
+          dept_last_year_3_type_spend : _.map(q.table5.data, function(x){ 
+                                            return {value: x['{{last_year_3}}'],name: x['so'] }}),
+
+          dept_this_year_voted_num : t.table8.voted_stat("total_net_auth",dept,false)['voted'].length,
+          dept_this_year_stat_num : t.table8.voted_stat("total_net_auth",dept,false)['stat'].length,
+
+          dept_this_year_top_voted : _.chain(t.table8.voted_stat("total_net_auth",dept,false)['voted']) 
+                                .sortBy(function(x){ return -x['total_net_auth']}) 
+                                .first(3)
+                                .value(),
+          dept_this_year_top_stat : _.chain(t.table8.voted_stat("total_net_auth",dept,false)['stat']) 
+                                .sortBy(function(x){ return -x['total_net_auth']}) 
+                                .first(3)
+                                .value(),
+
+          dept_estimates_split : q.table8.estimates_split({filter_zeros : true, as_tuple : true}),
+
+          dept_auth_change: q.table1.auth_change(false)[2],
+          dept_spend_change : q.table1.exp_change(false)[2],
+          dept_this_year_qfr_auth :  q.table1.sum("thisyearauthorities"),
+          dept_this_year_qfr_spend :  q.table1.sum("thisyearexpenditures"),
+          dept_last_year_qfr_auth :  q.table1.sum("lastyearauthorities"),
+          dept_last_year_qfr_spend : q.table1.sum("lastyearexpenditures")
+          
+          },
+          // the QFR data needs to be enhanced to account for the missing 
+          // these two function calls assume that all numbers are in dollars, 
+          // however, some are percentages and will have to fixed mannually
+          compact_data =  _.chain(dept_data)
+            .map(function(v,k){return [k,compact(v)];})
+            .object()
+            .value(),
+          written_data =  _.chain(dept_data)
+            .map(function(v,k){return [k,written(v)];})
+            .object()
+            .value();
+
+      // these are the percentage corrections
+      written_data.auth_change = compact_data.auth_change = this.percent(dept_data.auth_change);
+      written_data.spend_change = this.compact_data.spend_change = this.percent(dept_data.spend_change);
+      _.each(dept_data.estimates_split,function(name_val,i){
+        written_data.estimates_split[i][0] = compact_data.estimates_split[i][0] = name_val[0];
+      });
+      _.extend(this.data, dept_data);
+      _.extend(this.compact_data, dept_data);
+      _.extend(this.written_data, dept_data);
+      debugger
+    }
+
     p.gov_auth = function(){
       var d = this.data,
           text = this.app.get_text("this_year_auth");
 
       var chapter = new STORY.chapter({
-        add_toggle_section: true, 
         toggles :[ {
           toggle_text : this.app.get_text("previous_year_fisc")
         }],
@@ -444,13 +526,58 @@
 
     }
 
-    p.top_3_stat_spend = function(){
+    p.dept_auth = function(){
+      var chapter = new STORY.chapter({
+        toggles :[ {
+          toggle_text : "toggle"
+        }],
+        target : this.container
+      });
 
     };
-    p.top_3_vote_spend = function(){
+    p.dept_estimates_split = function(){
+      var chapter = new STORY.chapter({
+        toggles :[ {
+          toggle_text : "toggle"
+        }],
+        target : this.container
+      });
 
     };
-    p.so_spend = function(){
+    p.dept_vote_stat_spend = function(){
+      var chapter = new STORY.chapter({
+        toggles :[ {
+          toggle_text :   "toggle"
+        }],
+        target : this.container
+      });
+
+    };
+    p.dept_type_spend = function(){
+      var chapter = new STORY.chapter({
+        toggles :[ {
+          toggle_text :   "toggle"
+        }],
+        target : this.container
+      });
+
+    };
+    p.dept_spend = function(){
+      var chapter = new STORY.chapter({
+        toggles :[ {
+          toggle_text :   "toggle"
+        }],
+        target : this.container
+      });
+
+    };
+    p.dept_spend_change = function(){
+      var chapter = new STORY.chapter({
+        toggles :[ {
+          toggle_text : "toggle"
+        }],
+        target : this.container
+      });
 
     };
 

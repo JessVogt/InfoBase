@@ -66,7 +66,7 @@ set termencoding=utf-8
 set virtualedit=all
 set wildignore=*.pyc,*.o,*.m4a,*.avi
 set wildmode=longest,list,full
-set window=43
+set window=44
 let s:so_save = &so | let s:siso_save = &siso | set so=0 siso=0
 let v:this_session=expand("<sfile>:p")
 silent only
@@ -77,35 +77,37 @@ endif
 set shortmess=aoO
 badd +11 les/src/js/app.js
 badd +4 les/src/js/tables.js
-badd +907 les/src/js/od/tables.js
-badd +58 les/src/js/queries.js
-badd +580 les/src/js/base_table_view.js
+badd +1066 les/src/js/od/tables.js
+badd +27 les/src/js/queries.js
+badd +621 les/src/js/base_table_view.js
 badd +70 les/src/js/d3/core.js
-badd +6 les/src/js/d3/bar.js
+badd +17 les/src/js/d3/bar.js
 badd +25 les/src/js/d3/tooltip.js
 badd +83 les/test/test-data.js
 badd +32 les/test/test.html
-badd +117 les/src/js/od/od.js
+badd +80 les/src/js/od/od.js
 badd +13 les/src/js/mappers.js
-badd +75 les/Gruntfile.js
-badd +82 les/src/js/d3/dept_explore.js
-badd +217 les/src/js/d3/pack.js
+badd +67 les/Gruntfile.js
+badd +6 les/src/js/d3/dept_explore.js
+badd +36 les/src/js/d3/pack.js
 badd +328 les/test/test-d3.js
-badd +310 les/src/mako/od_handlebars_templates.html
+badd +376 les/src/mako/od_handlebars_templates.html
 badd +50 les/src/js/waiting.js
-badd +201 les/src/mako/extracss.html
+badd +11 les/src/mako/extracss.html
 badd +3 les/src/js/ExDB-start.js
 badd +110 les/src/js/d3/hbar.js
 badd +44 les/src/js/d3/horizontal.js
 badd +14 les/src/mako/od_script_includes.html
-badd +25 les/src/js/d3/story.js
-badd +395 les/src/js/d3/government_story.js
-badd +193 les/src/js/d3/circle_chart.js
+badd +15 les/src/js/d3/chapter.js
+badd +93 les/src/js/d3/story.js
+badd +203 les/src/js/d3/circle_chart.js
 badd +128 les/src/js/d3/arrow.js
 badd +5 les/src/mako/od.html
-badd +54 les/src/js/router.js
+badd +125 les/src/js/router.js
 badd +104 les/src/js/loader.js
 badd +19 les/src/js/sandbox.js
+badd +28 les/src/js/handlebars_helpers.js
+badd +1 les/src/js/d3/government_story.js
 silent! argdel *
 edit les/src/js/d3/story.js
 set splitbelow splitright
@@ -117,8 +119,8 @@ set nosplitbelow
 set nosplitright
 wincmd t
 set winheight=1 winwidth=1
-exe 'vert 1resize ' . ((&columns * 88 + 88) / 177)
-exe 'vert 2resize ' . ((&columns * 88 + 88) / 177)
+exe 'vert 1resize ' . ((&columns * 79 + 79) / 159)
+exe 'vert 2resize ' . ((&columns * 79 + 79) / 159)
 argglobal
 setlocal keymap=
 setlocal noarabic
@@ -225,15 +227,15 @@ set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 75 - ((34 * winheight(0) + 21) / 42)
+let s:l = 177 - ((31 * winheight(0) + 21) / 43)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-75
-normal! 044|
+177
+normal! 012|
 wincmd w
 argglobal
-edit les/src/js/d3/government_story.js
+edit les/src/js/d3/story.js
 setlocal keymap=
 setlocal noarabic
 setlocal noautoindent
@@ -339,16 +341,16 @@ set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 29 - ((28 * winheight(0) + 21) / 42)
+let s:l = 556 - ((32 * winheight(0) + 21) / 43)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-29
-normal! 07|
+556
+normal! 011|
 wincmd w
 2wincmd w
-exe 'vert 1resize ' . ((&columns * 88 + 88) / 177)
-exe 'vert 2resize ' . ((&columns * 88 + 88) / 177)
+exe 'vert 1resize ' . ((&columns * 79 + 79) / 159)
+exe 'vert 2resize ' . ((&columns * 79 + 79) / 159)
 tabnext 1
 if exists('s:wipebuf')
   silent exe 'bwipe ' . s:wipebuf
