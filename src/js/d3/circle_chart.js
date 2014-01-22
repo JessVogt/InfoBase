@@ -16,16 +16,16 @@
       this.width = this.width - margin.left - margin.right;
       this.height = this.height - margin.top - margin.bottom;
       var smallest_dimension = Math.min(this.height, this.width/this.data.length);
-      var font_range = this.font_range || [16,40];
+      var font_range = this.font_range || [16,30];
 
       // based on the height of the pane
       var scale = d3.scale.linear()
         .domain([0,d3.max(this.data, function(d){return d.value;})])
-        .range([0,smallest_dimension/2]);
+        .range([30,smallest_dimension/2]);
       // set the font scale
       var font_size = d3.scale.linear()
-        .domain([100,500])
-        .rangeRound(font_range)(this.height);
+        .domain([0,d3.max(this.data, function(d){return d.value;})])
+        .rangeRound(font_range);
          
 
       // get offset to shift the circles into the middle of the 
@@ -92,7 +92,7 @@
           "text-align": "center",
           "position" : "absolute",
           "color" : "#222",
-          "font-size" : font_size+"px",
+          "font-size" : "20px",
           "width" : function(d){ return d.r*2+"px";},
           "left"  : function(d){ return x_offset+d.x-d.r+"px";}
         }
@@ -120,8 +120,10 @@
      middletext
         .html(function(d){ return formater(d.value);})
          .attr("class", "font-serif")
-        .style(_.extend({ "top"  : function(d){return d.y+margin.top-font_size/2+"px"}
-                        },text_style)
+        .style(_.extend(_.clone(text_style),{ 
+                          "top"  : function(d){ return d.y + margin.top - font_size(d.value)/2+"px"},
+                          "font-size" : function(d){ return font_size(d.value)+"px"}
+                        })
         );
                    
     });
@@ -133,9 +135,11 @@
                                     bottom: 30, 
                                     left: 40};
       this.width = this.width - margin.left - margin.right;
+      var centre = this.centre || false;
       var height = this.height = this.height - margin.top - margin.bottom;
       var formater = this.formater || _.identity;
       var font_size = this.font_size || 16;
+      var data = this.data;
       // based on the height of the pane
       var scale = d3.scale.pow()
         .exponent(0.5)
@@ -153,10 +157,6 @@
 
       var html = d3.select(D3.get_html_parent(svg));
 
-      //scale the value amount to set the circle radius
-      _.each(this.data, function(d,i,col){
-        d.r = scale(d.value);
-      });
 
       // join the filtered data to the circles
       var circle = svg.selectAll("circle")
@@ -176,9 +176,15 @@
 
       circle
         .attr({
-          "cy": function(d) { return d.r; },
+          "cy": function(d,i) { 
+            if (centre && i > 0){
+              return scale(data[0].value);
+            } else {
+              return scale(d.value); 
+            }
+          },
           "cx": "0px",
-          "r" : function(d) { return  d.r; }
+          "r" : function(d) { return  scale(d.value); }
         })
         .style({
           "fill" : function(d,i){ return D3.tbs_color(i);},
@@ -202,9 +208,11 @@
             if (i === 0) {
               // the containing circle, the text should be located below
               return margin.top +height+"px"; 
+            } else if (centre){
+              return scale(data[0].value)+"px";
             } else {
               // the contained circle, the text should be located below
-              return margin.top+d.r+"px"; 
+              return margin.top+scale(d.value)-font_size+"px"; 
             }},
           "left"  : "0px"
         });

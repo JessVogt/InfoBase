@@ -78,7 +78,7 @@ set shortmess=aoO
 badd +11 les/src/js/app.js
 badd +4 les/src/js/tables.js
 badd +1066 les/src/js/od/tables.js
-badd +27 les/src/js/queries.js
+badd +164 les/src/js/queries.js
 badd +621 les/src/js/base_table_view.js
 badd +70 les/src/js/d3/core.js
 badd +17 les/src/js/d3/bar.js
@@ -89,7 +89,7 @@ badd +80 les/src/js/od/od.js
 badd +13 les/src/js/mappers.js
 badd +67 les/Gruntfile.js
 badd +6 les/src/js/d3/dept_explore.js
-badd +36 les/src/js/d3/pack.js
+badd +185 les/src/js/d3/pack.js
 badd +328 les/test/test-d3.js
 badd +376 les/src/mako/od_handlebars_templates.html
 badd +50 les/src/js/waiting.js
@@ -99,8 +99,8 @@ badd +110 les/src/js/d3/hbar.js
 badd +44 les/src/js/d3/horizontal.js
 badd +14 les/src/mako/od_script_includes.html
 badd +15 les/src/js/d3/chapter.js
-badd +93 les/src/js/d3/story.js
-badd +203 les/src/js/d3/circle_chart.js
+badd +687 les/src/js/d3/story.js
+badd +212 les/src/js/d3/circle_chart.js
 badd +128 les/src/js/d3/arrow.js
 badd +5 les/src/mako/od.html
 badd +125 les/src/js/router.js
@@ -109,7 +109,7 @@ badd +19 les/src/js/sandbox.js
 badd +28 les/src/js/handlebars_helpers.js
 badd +1 les/src/js/d3/government_story.js
 silent! argdel *
-edit les/src/js/d3/story.js
+edit les/src/js/od/tables.js
 set splitbelow splitright
 wincmd _ | wincmd |
 vsplit
@@ -119,8 +119,8 @@ set nosplitbelow
 set nosplitright
 wincmd t
 set winheight=1 winwidth=1
-exe 'vert 1resize ' . ((&columns * 79 + 79) / 159)
-exe 'vert 2resize ' . ((&columns * 79 + 79) / 159)
+exe 'vert 1resize ' . ((&columns * 88 + 79) / 159)
+exe 'vert 2resize ' . ((&columns * 70 + 79) / 159)
 argglobal
 setlocal keymap=
 setlocal noarabic
@@ -227,15 +227,15 @@ set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 177 - ((31 * winheight(0) + 21) / 43)
+let s:l = 1103 - ((41 * winheight(0) + 21) / 43)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-177
-normal! 012|
+1103
+normal! 019|
 wincmd w
 argglobal
-edit les/src/js/d3/story.js
+edit les/src/js/queries.js
 setlocal keymap=
 setlocal noarabic
 setlocal noautoindent
@@ -341,16 +341,15 @@ set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 556 - ((32 * winheight(0) + 21) / 43)
+let s:l = 76 - ((33 * winheight(0) + 21) / 43)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-556
-normal! 011|
+76
+normal! 05|
 wincmd w
-2wincmd w
-exe 'vert 1resize ' . ((&columns * 79 + 79) / 159)
-exe 'vert 2resize ' . ((&columns * 79 + 79) / 159)
+exe 'vert 1resize ' . ((&columns * 88 + 79) / 159)
+exe 'vert 2resize ' . ((&columns * 70 + 79) / 159)
 tabnext 1
 if exists('s:wipebuf')
   silent exe 'bwipe ' . s:wipebuf

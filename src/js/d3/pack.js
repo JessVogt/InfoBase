@@ -22,8 +22,13 @@
       options = options || {};
       var  attr = options.attr || 'value';
       if (options.force_positive){
-        _.map(data, function(x){
-          x[attr] = Math.abs(x);
+        _.each(data, function(x){
+          x[attr] = Math.abs(x[attr]);
+        });
+      }
+      if (options.filter_zeros){
+        data = _.filter(data, function(x){
+          return x[attr] !== 0;
         });
       }
       var soften = typeof options.soften === "undefined" ? true : options.soften,
@@ -89,11 +94,10 @@
           zoomable = this.zoomable || false,
           dispatch = this.dispatch,
           data = this.data,
-          radius = this.width,
-          x_offset  = (parent_width-radius)/2,
-          x_scale = d3.scale.linear() .range([0,this.width]),
-          y_scale = d3.scale.linear() .range([0,this.width]),
-          pack=  d3.layout.pack() .size([this.width,this.width]),
+          radius = Math.min(parent_width, this.height),
+          x_scale = d3.scale.linear() .range([0,radius]),
+          y_scale = d3.scale.linear() .range([0,radius]),
+          pack=  d3.layout.pack().size([radius,radius]),
           nodes = pack.nodes(data);
       this.nodes = nodes;
       if (!zoomable){
@@ -105,7 +109,7 @@
           "width": parent_width,
           "height":radius})
         .append('g')
-         .attr("transform", "translate("+x_offset+",0)");
+         .attr("transform", "translate(0,0)");
 
       var on_circle_click = function(node){
         if (node.children && node.children.length > 0){
@@ -219,7 +223,7 @@
               "position" : "absolute",
               "width" : function(d){ return d.zoom_r*1.5+"px";},
               "font-size" : function(d){ return font_scale(d.zoom_r)+"px";},
-              "left" : function(d) { return x_offset + d.zoom_pos.x-d.zoom_r*1.5/2+"px"; }
+              "left" : function(d) { return d.zoom_pos.x-d.zoom_r*1.5/2+"px"; }
             })
             .html(function(d) {  
               if (d.r > 40) {

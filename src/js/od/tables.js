@@ -110,13 +110,6 @@
      };
   }               
 
-  TABLES.pack_stadnard_objects = function(col){
-      this.table.get_top_x([col,"so"],Infinity)
-      var rows = _.zip( top3['so'], top3[col]);
-
-
-  }
-
   TABLES.standard_object_dimension =  function(options) {
        var lang = options.app.state.get("lang"),
            gt = options.app.get_text;
@@ -1105,6 +1098,11 @@
           }
           return row;
      }
+     "queries" : {
+        "three_year_spend" : function(so){
+           return 
+        }
+     },
     , table_view: {
         sum_cols: [1, 2, 3]
       , min_func: TABLES.add_ministry_sum
