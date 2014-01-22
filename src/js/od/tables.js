@@ -1097,13 +1097,13 @@
             row.splice(1, 1, sos[row[1]][this.lang]);
           }
           return row;
-     }
+     },
      "queries" : {
         "three_year_spend" : function(so){
            return 
         }
      },
-    , table_view: {
+     table_view: {
         sum_cols: [1, 2, 3]
       , min_func: TABLES.add_ministry_sum
       , init_row_data: function () {
