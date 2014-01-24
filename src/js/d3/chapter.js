@@ -12,19 +12,19 @@
       // this function will vertically center all the inner text
       if (!is_mobile){
         _.delay(function(){
-          container.find(".text").each(function(){
-            var that = $(this);
-            var my_height = that.height();
-            var sibling_height = that.siblings(".graphic").height();
-            var height = Math.max(my_height, sibling_height);
-            if (height === 0 ) { return ;}
-            that.height(height);
-            that.find(".inner")
-            .css({
-              "position" : "absolute",
-              "top" : (height - that.find(".inner").height())/2
-            });
-          });
+           container.find(".text").each(function(){
+             var that = $(this);
+             var my_height = that.height();
+             var sibling_height = that.siblings(".graphic").height();
+             var height = Math.max(my_height, sibling_height);
+             if (height === 0 ) { return ;}
+             that.height(height);
+             that.find(".inner")
+             .css({
+               "position" : "absolute",
+               "top" : (height - that.find(".inner").height())/2
+             });
+           });
         });
       }
     };
@@ -56,6 +56,11 @@
     };
 
     var chapterp = _chapter.prototype;
+
+    chapterp.add_title = function(title){
+      this.el.append("h2").html(title);
+    }
+
 
     chapterp.text_area = function(){
       return this.el.select(".text .inner");

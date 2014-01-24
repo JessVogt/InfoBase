@@ -656,10 +656,13 @@
 
     p.dept_type_spend = function(){
       var d = this.data,
-          data = d.dept_this_year_type_spend,
-          table_data = _.zip(data["so"],data['plannedexp']),
-          to_be_packed_data = _.map(table_data,function(d){
-            return { name : d[0],value : d[1] };
+          q = this.dept_q,
+          compact = this.compact,
+          wd = this.written_data,
+          table_data = _.zip(wd.dept_this_year_type_spend.so,
+                             wd.dept_this_year_type_spend.plannedexp).reverse(),
+          to_be_packed_data = _.map(d.dept_this_year_type_spend.so,function(so,i){
+            return { name : so,value : d.dept_this_year_type_spend.plannedexp[i] };
           }),
           packed_data = PACK.pack_data(to_be_packed_data,this.gt("other"), {
             force_positive : true,
@@ -667,31 +670,77 @@
           }),
           chapter = new STORY.chapter({
            toggles :[ {
-             toggle_text :   "toggle"
+             toggle_text :   this.gt("previous_year_fisc"),
+             add_divider : true
            }],
            target : this.container
           }),
           graph = PACK.pack({
             height : 2 * height,
+            html_tags : true,
+            top_font_size : 12,
             data : packed_data,
-            zoomable : true,
-            cycle_colours : true
-          }),
-          table = T.prepare_and_build_table({
-            rows :  table_data,
-            headers : [["",""]] ,
-            row_class : ['left_text','right_number'],
-            node : chapter.toggle_area(1+i).select(".text .inner").node()
+            zoomable : true
           }),
           text = this.gt("dept_type_spending"),
           on_so_click = function(so){
+             // highlight the current link
+             list_div.selectAll("li").classed("background-medium",false);
+             list_div.selectAll("li").filter(function(d){return d === so;})
+               .classed("background-medium",true);
+             // remove the previous graph
+             graph_div.selectAll("*").remove();
+             // look the key back up
+             var years = [ T.m("{{last_year_3}}"), T.m("{{last_year_2}}"), T.m("{{last_year}}") ];
+             var row = q.table5.get_row({"so": so});
+             var data = [
+               row["{{last_year_3}}"],
+               row["{{last_year_2}}"],
+               row["{{last_year}}"]
+             ];
+             BAR.bar({
+               series :  {'': data },
+               ticks : years,
+               height : 300,
+               add_xaxis : true,
+               x_axis_line : false,
+               add_labels : true,
+               label_formater : compact
+             })(graph_div);
+          },
+          standard_objects = q.table5.get_cols(["so"]).so,
+          graph_div = chapter.toggle_area().select(".graphic"),
+          list_div = chapter.toggle_area()
+            .select(".text .inner");
 
-          };
-      debugger
+      chapter.text_area().html(T.m(text, this.written_data));
+      T.prepare_and_build_table({
+        rows :  table_data,
+        headers : [["","Expenditures"]] ,
+        row_class : ['left_text','right_number'],
+        node : chapter.text_area().node()
+      });
+
+      graph(chapter.graph_area());
+
+      list_div
+        .append("ul")
+        .attr("class","list-bullet-none")
+        .selectAll("li")
+        .data(standard_objects)
+        .enter()
+        .append("li")
+        .append("a")
+        .attr("class","ui-link")
+        .html(function(d){return d;})
+        .on("click", function(d){on_so_click(d)});
+
+      on_so_click(standard_objects[0]);
       
-      
-      ;
     };
+
+
+
     p.dept_spend = function(){
       var chapter = new STORY.chapter({
         toggles :[ {

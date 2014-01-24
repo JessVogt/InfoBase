@@ -1100,7 +1100,7 @@
      },
      "queries" : {
         "three_year_spend" : function(so){
-           return 
+           
         }
      },
      table_view: {

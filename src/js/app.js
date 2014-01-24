@@ -79,7 +79,7 @@
          return this._compact(val,lang, {
            1000000000 : {en : 'billion', fr: 'millards'},
            1000000 : {en : 'million', fr: 'millions'},
-           1000 : {en : 'thousands', fr: 'milliers'},
+           1000 : {en : 'thousand', fr: 'milliers'},
          },1);
       },
       "compact1" : function(val, lang){
@@ -103,7 +103,7 @@
          var symbol,
          abs = Math.abs(val);
          if (val == 0) { 
-           return accounting.formatMoney(0,{precision: precision, symbol: ''})
+           return "0";
          } else if (abs >= 1000000000){
            val = val /  1000000000;
            symbol = abbrev[1000000000][lang];

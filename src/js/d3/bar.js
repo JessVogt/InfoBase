@@ -161,10 +161,13 @@
             "font-size" : "12px",
             "height" : "10px",
             "top"  : function(d){
-              if (d.value >= 0){
+              if (d.value === 0){
+                return y(d.value)+"px";
+              }
+              else if (d.value > 0){
                 return y(d.value) - 5+"px";
               } else {
-                return y(d.value) + 20+"px";
+                return y(d.value) + 15+"px";
               }
             },
             "left"  : function(d) { return x1(d.name)+(x1.rangeBand()-bar_width)/2 +"px" ; }

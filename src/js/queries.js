@@ -216,16 +216,20 @@
     return all_vals;
   };
 
-  p.get_row = function (col, val, options) {
+  p.get_row = function (criteria, options) {
+    /*
+     * col = either a string or an array of strings for several columns
+     * val =
+     * options =
+     */
+    options = options || {};
     var only_one = options.only_one || true;
     var each_mapped_obj = function(obj){
-      return obj[col] == bal;
+        return _.all(_.map(criteria, function(val,key){
+           return obj[key] === criteria[key];
+        }));
     };
-    var found =  _.find(this.data, each_mapped_obj);
-    if (only_one){
-      return _.head(found);
-    }
-    return found;
+    return _.find(this.data, each_mapped_obj);
   };
 
   p.get_row_by_key = function(key){
