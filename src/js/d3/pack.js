@@ -1,6 +1,7 @@
 (function() {
     var D3 = ns('D3');
     var PACK = ns('D3.PACK');
+    var APP = ns('APP');
 
     PACK.create_data_nodes = function(data,labels){
       if (_.isUndefined(labels)){
@@ -41,22 +42,25 @@
           groups = d3.nest()
            .key(function(d){ return scale(accessor(d));})
            .entries(data),
-          pointer = { name: '' },
-          rtn = pointer,
-          group_extent = d3.extent(groups,function(d){return parseInt(d.key);}),
-          softened,group,_i;
-      for (_i=group_extent[1];_i>=group_extent[0]; --_i){
-        group = _.find(groups,function(x){return parseInt(x.key) === _i;});
-        softened = soften ? PACK.soften_spread(group.values,attr):  group.values;
-        pointer.children = softened;
+          sorted = _.sortBy(groups,function(g){ return parseInt(g.key);}),
+          // the value of pointer will be reassigned to new lower levels
+          rtn; 
+      
+      _.each(sorted,function(group,i){
+        var softened = soften ? PACK.soften_spread(group.values,attr):  group.values;
+        if (i === 0){
+          rtn = {name:level_name, children:softened};
+        } else if (i === groups.length -1){
+          softened = softened.concat(rtn);
+          rtn = {name:"", children:softened};
+        } else {
+          softened = softened.concat(rtn);
+          rtn = {name:level_name, children:softened};
+        }
         if (options.per_group){
-          options.per_group(pointer);
+          options.per_group(rtn);
         }
-        if (_i>group_extent[0]){
-          pointer = {name:level_name};
-          softened.push(pointer);
-        }
-      }
+      });
       return rtn;
     };
 
@@ -99,6 +103,10 @@
           y_scale = d3.scale.linear() .range([0,radius]),
           pack=  d3.layout.pack().size([radius,radius]),
           nodes = pack.nodes(data);
+
+      _.each(nodes, function(n){
+        n.rid = APP.make_unique();
+      })
       this.nodes = nodes;
       if (!zoomable){
         nodes = _.filter(nodes,function(d){ return d.depth <= 1;});
@@ -153,7 +161,7 @@
 
         // join the filtered data to the circles
         var circle = svg.selectAll(".node")
-            .data(nodes_shown,function(d){ return d.name+d.depth;});
+            .data(nodes_shown,function(d){ return d.rid;});
         // join the filtered data to any divs with labels
 
         circle.exit().remove();
@@ -226,10 +234,12 @@
               "left" : function(d) { return d.zoom_pos.x-d.zoom_r*1.5/2+"px"; }
             })
             .html(function(d) {  
-              if (d.r > 40) {
+              if (d.zoom_r > 60) {
                 return d.name; 
+              } else if (d.zoom_r > 40) {
+                return _.first(d.name.split(" "),2).join(" ");  
               } else {
-                return d.name;
+                return "...";
             }})  
             .transition()
             .duration(10)

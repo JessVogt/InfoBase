@@ -40,7 +40,9 @@
         .style({ "font-size" : "20px" });
       //clear the div
       //this will align the chapters vertically
-      options.target.append("div").attr("class","clear margin-bottom");
+      options.target.append("div")
+        .attr("class","clear")
+        .style("margin-bottom","15px");
       this.dispatch = d3.dispatch("toggle","hover");
       this.toggle_sections = [];
       // add the main section
@@ -134,7 +136,8 @@
         .append("div")
         .attr("class", "inner margin-top-large margin-left-large")
       el.append("div").attr("class",span +" graphic margin-bottom-none margin-left-none");
-      el.append("div").attr("class","clear margin-bottom");
+      el.append("div").attr("class","clear").style("margin-bottom","15px");
+
     }
 
 })();

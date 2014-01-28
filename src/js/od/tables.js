@@ -1098,25 +1098,7 @@
           }
           return row;
      },
-     "queries" : {
-        "three_year_spend" : function(so){
-           
-        }
-     },
      table_view: {
-        sum_cols: [1, 2, 3]
-      , min_func: TABLES.add_ministry_sum
-      , init_row_data: function () {
-          var txt = this.gt("total");
-          this.merge_group_results(
-          [[this.row_data,
-          GROUP.fnc_on_group(
-            this.row_data,
-            { txt_cols: { 0: txt },
-                func_cols: this.sum_cols,
-                func: GROUP.sum_rows
-            })]]);
-      }
     },
     mini_view: {
       description: {
@@ -1809,25 +1791,37 @@
       ]);
    },
    "queries" : {
-     "qfr_difference" : function(){
+     "qfr_difference" : function(rollup){
        // this function is meant to cover the planned spending gap between qfrs
        // and total approved authority
+       rollup = rollup || false;
        var data = this.data,
            qfr_table = _.find(TABLES.tables,function(t){ return t.id === 'table1'}),
            depts = _.difference( _.keys(this.table.depts), _.keys(qfr_table.depts));
        return d3.nest()
-         .key(function(d){
-           var type = window.depts[d].type.en;
-           if (type === 'Crown Corporations'){
-             return "crown"
-           }
-           return "op"; 
-         })
-         .rollup(function(depts){
-           var rows = _.filter(data, function(d){ return _.include(depts,d.dept);});
-           return d3.sum(rows,function(r){return r["total_net_auth"];});
-         })
-         .map(depts);
+              .key(function(d){
+                var type = window.depts[d].type.en;
+                if (type === 'Crown Corporations'){
+                  return "crown"
+                }
+                  return "op"; 
+              })
+              .rollup(function(depts){
+                if (rollup){
+                  var rows = _.filter(data, function(d){ return _.include(depts,d.dept);});
+                  return d3.sum(rows,function(r){return r["total_net_auth"];});
+                } else {
+                  return _.chain(depts)
+                   .map(function(dept){
+                     var rows = _.filter(data, function(d){ return d.dept === dept ;});
+                     var sum = d3.sum(rows,function(r){return r["total_net_auth"];});
+                       return [dept,sum ];
+                   })
+                   .object()
+                   .value();
+                }
+              })
+              .map(depts);
      },
       "estimates_split"  : function(options,format){
         var headers = ["multi_year",'mains', 'suppsa', 'suppsb', 'suppsc'],

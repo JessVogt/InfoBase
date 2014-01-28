@@ -9,7 +9,6 @@
       window.is_mobile = false;
     }
 
-
     APP.t = function(id){
       var el =  $(id);
       if (el.length === 0 && !_.isUndefined(console)){
@@ -112,9 +111,12 @@
            val = val /  1000000;
            symbol = abbrev[1000000][lang];
          }
-         else {
+         else if (abs >= 1000){
            val = val /  1000;
            symbol = abbrev[1000][lang];
+         }
+         else {
+           return String(val);
          }
          if (lang === 'en'){
            return accounting.formatMoney(val,

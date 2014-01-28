@@ -1,5 +1,8 @@
 (function() {
   var APP = ns('APP');
+  var TABLES = ns('TABLES');
+  var STORY = ns("STORY");
+  var D3 = ns("D3");
 
 
   APP.AppRouter = Backbone.Router.extend({
@@ -55,15 +58,17 @@
       "*splat"  : "default"
     },
     default : function(){
-     this.start(this.containers["start"]);
+     this.containers["start"].html("");
+     this.navigate("start",{trigger:true});
     },
     _routes: {
       "start"  : "start",  //#start
       "search" :  "search", // #search
-      "d:dept": "basic_dept_view", // #basic/AGR
-      "t:dept-:table": "basic_dept_table_view", // #basic/AGR/1
-      "explore" : "explore",  //#explore
-      "explore-:dept"  : "explore_dept",  //#explore/AGR
+      "d-:dept": "basic_dept_view", // #d-AGR
+      "t-:dept-:table": "basic_dept_table_view", // #d-AGR-1
+      "infograph" : "infographic",  //#inforgraph
+      "infograph-:dept"  : "infographic_dept",  //#inforgraph/AGR
+      "explore-:method"  : "explore",  //#explore
       "analysis"  : "analysis"  //#analysis
     },
     back : function(){
@@ -123,14 +128,11 @@
       }
 
     },
-    explore : function(container){
+    infographic : function(container){
      this.add_title($('<h1>').html("Explore"));
-      if (!this.app.explore){
-        this.app.explore =  ns().D3.STORY.story(container, this.app);
-      }
-      // ns().D3.bubbleDeptList(this.app, container);
+     this.app.explore =  D3.STORY.story(container, this.app);
     },
-    explore_dept : function(container,dept){
+    infographic_dept : function(container,dept){
       var dept = depts[dept];
       if (dept){
         this.app.state.set("dept",dept);
@@ -138,7 +140,14 @@
       var title =  dept.dept[this.app.lang] + " Infographic";
       this.add_title($('<h1>').html(title));
       container.children().remove();
-      this.app.dept_explore =  ns().D3.STORY.story(container, this.app, dept.accronym);
+      D3.STORY.story(container, this.app, dept.accronym);
+    },
+    explore : function(container, method){
+      if (!this.app.explorer){
+        this.app.explorer = D3.bubbleDeptList(this.app, container, method);
+      } else {
+        this.app.explorer.setup(method);
+      }
     },
     analysis: function(container){
      this.add_title($('<h1>').html("Horizontal Analysis"));

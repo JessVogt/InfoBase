@@ -22,7 +22,7 @@
 
       var top = (this.top || (event.pageY+this.offsety))+"px";
       var left =(this.left ||  (event.pageX+this.offsetx))+"px";
-      this.$el = $('<div>');
+      this.$el = $('<div>') ;
       if (this.options.body_func){
         this.options.body_func(this.$el);
       }
@@ -36,6 +36,9 @@
           'z-index' : 100,
           'class' : 'tooltip',
           'position' : 'absolute',
+          'max-height' : "500px",
+          "max-width"  : "500px",
+          "overflow-y" : "auto",
           'background' : '#FFF',
           'border' : '1px solid grey',
           'overflow' : 'auto',
@@ -49,14 +52,6 @@
       this.$el.remove();
       this.$el = null;
     }
-  });
-
-  TOOLTIP.TableGraph = TOOLTIP.basetooltip.extend({
-    template : '#tablegraph_tooltip'
-  });
-
-  TOOLTIP.ExploreTooltip = TOOLTIP.basetooltip.extend({
-    template : '#tablegraph_tooltip'
   });
 
 })();
