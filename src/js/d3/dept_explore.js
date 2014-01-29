@@ -144,6 +144,8 @@
 
     }
 
+
+
     p.nest_data_for_exploring = function(to_be_nested, top_name, rangeRound){
       // pack the data using a specialised scale to create a two level
       // packing
@@ -167,13 +169,26 @@
     p.build_graphic = function(data){
        var lang = this.lang,
            app = this.app,
+           formater = function(x){ return app.formater("compact",x)},
            container = this.container;
 
       var chart = PACK.pack({
         height: 880,
         zoomable : true,
         html_tags : true,
-        data: data                                                             
+        data: data,
+        text_func : function(d) {  
+          var val = formater(d.value);
+          if (d.zoom_r > 60) {
+            return d.name + " - "+ val; 
+          } else if (d.zoom_r > 40) {
+            return _.first(d.name.split(" "),2).join(" ")+ " - "+ val;  
+          } else if (d.zoom_r > 30){
+            return val;
+          } else {
+            return "...";
+          }
+        }
       });
       
       // create the layout for the explorer

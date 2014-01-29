@@ -85,31 +85,31 @@ badd +17 les/src/js/d3/bar.js
 badd +7 les/src/js/d3/tooltip.js
 badd +83 les/test/test-data.js
 badd +32 les/test/test.html
-badd +81 les/src/js/od/od.js
+badd +9 les/src/js/od/od.js
 badd +13 les/src/js/mappers.js
 badd +80 les/Gruntfile.js
-badd +106 les/src/js/d3/dept_explore.js
-badd +245 les/src/js/d3/pack.js
+badd +166 les/src/js/d3/dept_explore.js
+badd +303 les/src/js/d3/pack.js
 badd +328 les/test/test-d3.js
 badd +376 les/src/mako/od_handlebars_templates.html
 badd +50 les/src/js/waiting.js
-badd +11 les/src/mako/extracss.html
+badd +15 les/src/mako/extracss.html
 badd +3 les/src/js/ExDB-start.js
 badd +110 les/src/js/d3/hbar.js
 badd +44 les/src/js/d3/horizontal.js
 badd +14 les/src/mako/od_script_includes.html
 badd +140 les/src/js/d3/chapter.js
-badd +804 les/src/js/d3/story.js
+badd +609 les/src/js/d3/story.js
 badd +212 les/src/js/d3/circle_chart.js
 badd +128 les/src/js/d3/arrow.js
 badd +6 les/src/mako/od.html
-badd +147 les/src/js/router.js
+badd +104 les/src/js/router.js
 badd +104 les/src/js/loader.js
 badd +21 les/src/js/sandbox.js
 badd +28 les/src/js/handlebars_helpers.js
 badd +11 les/src/mako/od_fr.html
 silent! argdel *
-edit les/src/js/d3/dept_explore.js
+edit les/src/mako/extracss.html
 set splitbelow splitright
 wincmd _ | wincmd |
 vsplit
@@ -130,13 +130,13 @@ setlocal nobinary
 setlocal bufhidden=
 setlocal buflisted
 setlocal buftype=
-setlocal cindent
+setlocal nocindent
 setlocal cinkeys=0{,0},0),:,0#,!^F,o,O,e
-setlocal cinoptions=j1,J1
+setlocal cinoptions=
 setlocal cinwords=if,else,while,do,for,switch
 setlocal colorcolumn=
-setlocal comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,://
-setlocal commentstring=//%s
+setlocal comments=s:<!--,m:\ \ \ \ ,e:-->
+setlocal commentstring=<!--%s-->
 setlocal complete=.,w,b,u,t,i
 setlocal concealcursor=
 setlocal conceallevel=0
@@ -153,8 +153,8 @@ setlocal nodiff
 setlocal equalprg=
 setlocal errorformat=
 setlocal expandtab
-if &filetype != 'javascript'
-setlocal filetype=javascript
+if &filetype != 'html'
+setlocal filetype=html
 endif
 setlocal foldcolumn=0
 setlocal foldenable
@@ -167,15 +167,15 @@ setlocal foldminlines=1
 setlocal foldnestmax=20
 setlocal foldtext=foldtext()
 setlocal formatexpr=
-setlocal formatoptions=croql
+setlocal formatoptions=tcq
 setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*
 setlocal grepprg=
 setlocal iminsert=0
 setlocal imsearch=0
 setlocal include=
 setlocal includeexpr=
-setlocal indentexpr=
-setlocal indentkeys=0{,0},:,0#,!^F,o,O,e
+setlocal indentexpr=HtmlIndent()
+setlocal indentkeys=o,O,<Return>,<>>,{,},!^F
 setlocal noinfercase
 setlocal iskeyword=@,48-57,_,192-255
 setlocal keywordprg=
@@ -183,14 +183,14 @@ setlocal nolinebreak
 setlocal nolisp
 setlocal nolist
 setlocal makeprg=
-setlocal matchpairs=(:),{:},[:]
+setlocal matchpairs=(:),{:},[:],<:>
 setlocal modeline
 setlocal modifiable
 setlocal nrformats=octal,hex
 set number
 setlocal number
 setlocal numberwidth=4
-setlocal omnifunc=javascriptcomplete#CompleteJS
+setlocal omnifunc=htmlcomplete#CompleteTags
 setlocal path=
 setlocal nopreserveindent
 setlocal nopreviewwindow
@@ -213,8 +213,8 @@ setlocal statusline=
 setlocal suffixesadd=
 setlocal swapfile
 setlocal synmaxcol=3000
-if &syntax != 'javascript'
-setlocal syntax=javascript
+if &syntax != 'html'
+setlocal syntax=html
 endif
 setlocal tabstop=2
 setlocal tags=
@@ -227,15 +227,15 @@ set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 202 - ((23 * winheight(0) + 21) / 43)
+let s:l = 20 - ((19 * winheight(0) + 21) / 43)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-202
-normal! 07|
+20
+normal! 026|
 wincmd w
 argglobal
-edit les/src/js/d3/story.js
+edit les/src/mako/od_handlebars_templates.html
 setlocal keymap=
 setlocal noarabic
 setlocal noautoindent
@@ -244,13 +244,13 @@ setlocal nobinary
 setlocal bufhidden=
 setlocal buflisted
 setlocal buftype=
-setlocal cindent
+setlocal nocindent
 setlocal cinkeys=0{,0},0),:,0#,!^F,o,O,e
-setlocal cinoptions=j1,J1
+setlocal cinoptions=
 setlocal cinwords=if,else,while,do,for,switch
 setlocal colorcolumn=
-setlocal comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,://
-setlocal commentstring=//%s
+setlocal comments=s:<!--,m:\ \ \ \ ,e:-->
+setlocal commentstring=<!--%s-->
 setlocal complete=.,w,b,u,t,i
 setlocal concealcursor=
 setlocal conceallevel=0
@@ -267,8 +267,8 @@ setlocal nodiff
 setlocal equalprg=
 setlocal errorformat=
 setlocal expandtab
-if &filetype != 'javascript'
-setlocal filetype=javascript
+if &filetype != 'html'
+setlocal filetype=html
 endif
 setlocal foldcolumn=0
 setlocal foldenable
@@ -281,15 +281,15 @@ setlocal foldminlines=1
 setlocal foldnestmax=20
 setlocal foldtext=foldtext()
 setlocal formatexpr=
-setlocal formatoptions=croql
+setlocal formatoptions=tcq
 setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*
 setlocal grepprg=
 setlocal iminsert=0
 setlocal imsearch=0
 setlocal include=
 setlocal includeexpr=
-setlocal indentexpr=
-setlocal indentkeys=0{,0},:,0#,!^F,o,O,e
+setlocal indentexpr=HtmlIndent()
+setlocal indentkeys=o,O,<Return>,<>>,{,},!^F
 setlocal noinfercase
 setlocal iskeyword=@,48-57,_,192-255
 setlocal keywordprg=
@@ -297,14 +297,14 @@ setlocal nolinebreak
 setlocal nolisp
 setlocal nolist
 setlocal makeprg=
-setlocal matchpairs=(:),{:},[:]
+setlocal matchpairs=(:),{:},[:],<:>
 setlocal modeline
 setlocal modifiable
 setlocal nrformats=octal,hex
 set number
 setlocal number
 setlocal numberwidth=4
-setlocal omnifunc=javascriptcomplete#CompleteJS
+setlocal omnifunc=htmlcomplete#CompleteTags
 setlocal path=
 setlocal nopreserveindent
 setlocal nopreviewwindow
@@ -327,8 +327,8 @@ setlocal statusline=
 setlocal suffixesadd=
 setlocal swapfile
 setlocal synmaxcol=3000
-if &syntax != 'javascript'
-setlocal syntax=javascript
+if &syntax != 'html'
+setlocal syntax=html
 endif
 setlocal tabstop=2
 setlocal tags=
@@ -341,12 +341,12 @@ set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 608 - ((29 * winheight(0) + 21) / 43)
+let s:l = 397 - ((29 * winheight(0) + 21) / 43)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-608
-normal! 011|
+397
+normal! 022|
 wincmd w
 2wincmd w
 exe 'vert 1resize ' . ((&columns * 88 + 88) / 177)

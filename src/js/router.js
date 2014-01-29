@@ -69,6 +69,7 @@
       "infograph" : "infographic",  //#inforgraph
       "infograph-:dept"  : "infographic_dept",  //#inforgraph/AGR
       "explore-:method"  : "explore",  //#explore
+      "adv"  : "choose_your_adventure", //#analysis
       "analysis"  : "analysis"  //#analysis
     },
     back : function(){
@@ -102,7 +103,10 @@
         this.app.full_dept_list.render();
       }
     },
-
+    choose_your_adventure : function(container){
+      this.add_title("choose_adventure");
+      container.html(APP.t('#choose_adventure')());
+    },
     basic_dept_view: function(container, dept) {
       var dept = depts[dept];
       if (dept){

@@ -98,6 +98,7 @@
           zoomable = this.zoomable || false,
           dispatch = this.dispatch,
           data = this.data,
+          text_func = this.text_func || function(d){return d.name;},
           radius = Math.min(parent_width, this.height),
           x_scale = d3.scale.linear() .range([0,radius]),
           y_scale = d3.scale.linear() .range([0,radius]),
@@ -119,6 +120,10 @@
         .append('g')
          .attr("transform", "translate(0,0)");
 
+      if (html_tags){
+          html = html.append("ul").attr("class"," list-bullet-none");
+      }
+
       var on_circle_click = function(node){
         if (node.children && node.children.length > 0){
           k = radius / node.r / 2;
@@ -133,7 +138,6 @@
       } else {
         on_circle_click(nodes[0]);
       }
-
 
       function draw(node){
         _.each(nodes,apply_scales);
@@ -204,7 +208,7 @@
         }
 
         if (html_tags ){
-          text_element = "div";
+          text_element = "li";
           text_class = "text"+rand;
           sel = html;
         } else {
@@ -213,7 +217,7 @@
           sel = svg;
         }
         var text = sel.selectAll(text_element+"."+text_class)
-              .data(nodes_with_text,function(d){ return d.name+d.depth;});
+              .data(nodes_with_text,function(d){ return d.rid;});
 
         text.exit().remove();
 
@@ -224,7 +228,7 @@
             .on("mouseover", dispatch.dataHover)
             .on("click", dispatch.dataClick);
 
-          if (html_tags){
+        if (html_tags){
           text
             .style({
               "text-align": "center",
@@ -233,21 +237,13 @@
               "font-size" : function(d){ return font_scale(d.zoom_r)+"px";},
               "left" : function(d) { return d.zoom_pos.x-d.zoom_r*1.5/2+"px"; }
             })
-            .html(function(d) {  
-              if (d.zoom_r > 60) {
-                return d.name; 
-              } else if (d.zoom_r > 40) {
-                return _.first(d.name.split(" "),2).join(" ");  
-              } else {
-                return "...";
-            }})  
+            .html(text_func)  
             .transition()
             .duration(10)
             .each(function(d){
               var t = d.zoom_pos.y - $(this).height()/2;
               $(this).css("top",t);
             })
-
 
         } else {
           text.each(function(d){
