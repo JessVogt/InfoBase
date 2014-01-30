@@ -76,7 +76,8 @@
           return {
             name : min,
             children : depts,
-            value : d3.sum(depts, function(d){ return d.value;})
+            value : d3.sum(depts, function(d){ return d.value;}),
+            _value : d3.sum(depts, function(d){ return d._value;})
           }
         })
         .value();
@@ -125,26 +126,46 @@
 
     p.by_type = function(){
       var lang = this.lang;
+      // reference to the tables
       var table8 = _.find(TABLES.tables, function(t){ return t.id === 'table8'});
       var table2 = _.find(TABLES.tables, function(t){ return t.id === 'table2'});
+      // some additional data prep to merge in the extra authorities which aren't
+      // covered in the 
       var qfr_difference = table8.q().qfr_difference();
       var spend_type =  table2.spending_type("plannedexp",true);
       spend_type['crown'] = qfr_difference['crown'];
       _.extend(spend_type['op'], qfr_difference['op']);
-      _.each(spend_type, function(val,key){
-         spend_type[key] = _.map(val, function(amount, dept){
-            var dept = window.depts[dept];
-            return {
-              min : dept.min[lang],
-              name : dept.dept[lang],
-              value : amount
-            };
-         });
-      });
 
+      var children = _.map(spend_type, function(depts,key){
+          // key == the various spending types
+          var dept_objs = _.chain(depts)
+            .map( function(amount, dept_key){
+                // dept_key = "AGR", "FIN", etc...
+                var dept = window.depts[dept_key];
+                return {
+                  min : dept.min[lang],
+                  accronym : dept.accronym,
+                  name : dept.dept[lang],
+                  value : Math.abs(amount),
+                  _value : amount
+                };
+            })
+           .filter(function(dept_obj){
+             return dept_obj.value !== 0;
+           })
+           .value();
+          var node = this.nest_data_for_exploring(dept_objs, key, [9,12]);
+          node.name = this.gt(key+"_spend_type");
+          return node
+       },this);
+      var data = {
+        name : this.gt("goc_total"),
+        value : d3.sum(children, function(d){ return d.value;}),
+        _value : d3.sum(children, function(d){ return d._value;}),
+        children : children.reverse()
+      }
+      this.build_graphic(data);
     }
-
-
 
     p.nest_data_for_exploring = function(to_be_nested, top_name, rangeRound){
       // pack the data using a specialised scale to create a two level

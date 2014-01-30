@@ -15,6 +15,7 @@
 
     _story = function(container,app,dept){
       this.container = d3.select(container[0]);
+      this.container.selectAll("*").remove();
       this.app = app;
       this.gt = app.get_text;
       this.calculated_values = {};

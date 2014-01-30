@@ -5,7 +5,7 @@
 </div>
 </script>
 <script type='text/plain' id='greeting_en'>
-  <p><a class='dept_sel ui-link router' href='#search'>{{gt "to_select"}}</a> from a list presented either by ministry, alphabetically or by 2011-12 budgetary net expenditures.  Users will then be directed to the organization’s overview page.</p>
+  <p><a class='dept_sel ui-link router' href='#adv'>{{gt "to_select"}}</a> from a list presented either by ministry, alphabetically or by 2011-12 budgetary net expenditures.  Users will then be directed to the organization’s overview page.</p>
                                                 
   <h2>Navigation</h2>
 <ul>
@@ -55,7 +55,7 @@
 <p>The government’s fiscal year ends March 31st, but audited financial information only becomes available when the Public Accounts of Canada is released in the fall of each year. Information for 2012-13 currently presented in the Expenditure Database is unaudited and limited to the organizations’ 2013-14 Quarterly Financial Reports. The Expenditure Database will be updated to reflect the figures displayed in the Public Accounts of Canada after it is published.</p>
 </script>
 <script type='text/plain' id='greeting_fr'>
-  <p><a class='dept_sel ui-link router ' href='#search'>{{gt "to_select"}}</a>  à partir d’une liste organisée soit par portefeuille ministériel ou sous forme alphabétique ou encore selon les dépenses nettes pour l’exercice 2011-2012.  Les utilisateurs seront ensuite redirigés vers la page « Aperçu » de l’organisation choisie.</p>
+  <p><a class='dept_sel ui-link router ' href='#adv'>{{gt "to_select"}}</a>  à partir d’une liste organisée soit par portefeuille ministériel ou sous forme alphabétique ou encore selon les dépenses nettes pour l’exercice 2011-2012.  Les utilisateurs seront ensuite redirigés vers la page « Aperçu » de l’organisation choisie.</p>
   <h2>Navigation</h2>
 
 <ul>
@@ -103,6 +103,7 @@
  <!--[if lte IE 9]></select><![endif]-->
 </datalist>
 </script>
+
 <script type='text/plain' id='main_t'>
 <div class='span-5 margin-bottom-none margin-right-none margin-left-none'>
   <div class='margin-top-none margin-bottom-none margin-right-medium margin-left-medium' 
@@ -241,9 +242,11 @@
     </div>
   </div>
 </script>
+
 <script type='text/plain' id='nav_li'>
 <li><a href='#d{{accronym}}' class='ui-link router'>{{text}}</a></li>
 </script>
+
 <script type='text/plain' id='dataview_t'>
 <div class='tables margin-top-large'>
   <div class='border-bottom span-8' style='position:relative'>
@@ -309,7 +312,7 @@
   <ul class='list-bullet-none orgs'>
     {{#each depts}}
        <li min='{{lang this.min}}' fin-size='{{this.fin_size}}'>
-          <a class='org_select router' href='#d{{this.accronym}}' >{{lang this.dept}}</a>
+          <a class='org_select router' href='#d-{{this.accronym}}' >{{lang this.dept}}</a>
       </li>
     {{/each}}
   </ul>
