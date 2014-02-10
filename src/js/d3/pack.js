@@ -3,6 +3,13 @@
     var PACK = ns('D3.PACK');
     var APP = ns('APP');
 
+    PACK.count_nodes = function(d){
+      if (d.children){
+        return d.children.length + d3.sum(d.children, PACK.count_nodes);
+      } 
+      return 0;
+    }
+
     PACK.create_data_nodes = function(data,labels){
       if (_.isUndefined(labels)){
         return _.map(data, function(d){
@@ -173,8 +180,8 @@
         var new_circles = circle
           .enter()
             .append("circle")
-            .on("mouseenter", dispatch.dataMouseEnter)
-            .on("mouseleave", dispatch.dataMouseLeave)
+            .on("mouseover", dispatch.dataMouseOver)
+            .on("mouseout", dispatch.dataMouseOut)
             .on("click", dispatch.dataClick);
 
         var circles = circle

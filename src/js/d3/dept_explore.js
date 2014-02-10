@@ -233,91 +233,92 @@
         }
       });
 
-      //chart.dispatch.on("dataMouseEnter",function(d){
-      //  var depth = chart.options().depth, rows,headers,footer,rowseach,
-      //      tdseach,headers_class,current_d = chart.options().node,
-      //      fmt =function(x){return app.formater('big-int',x)};
-      //  // if mousing over the top level circle, exit immediately
-      //  // if mousing over nodes which aren't the direct parent or 
-      //  // children of the current node, exit immediatley
-      //  if (d.depth === 0){return;}
-      //  if (!_.contains([current_d, current_d.parent].concat(current_d.children),d)){
-      //    return;
-      //  }
-      //  // if the node has a "dept"  attribute, then it's a department
-      //  // otherwise it's a ministry or collection of smaller ministries
-      //  if (d.dept){
-      //    // extract some relevant fields to show in the tooltip for tihs
-      //    // department
-      //    rows =[ 
-      //       [app.get_text("legal_name"),d.legal_name[lang]],
-      //       [app.get_text("type"),d.type[lang]],
-      //       [app.get_text("mandate"),_.map(d.mandate,function(x){
-      //         return x[lang];
-      //       }).join(" ")],
-      //    ];
-      //    // finish with the site of spending
-      //    footer =  [app.get_text('financial_size'),fmt(d._value)];
-      //    headers = ['Information','Value'];
-      //    headers_class =  ['left_text',''];
-      //    tdseach = function(d,i){
-      //      if (i === 3){
-      //        d3.select(this).select("td:last").style("width","200px");
-      //      }
-      //    }
-      //  } else {
-      //    // collect all the children by name and financial size
-      //    rows = _.map(d.children,function(c){
-      //      return [c.name, fmt(c._value)];
-      //    });
-      //    //  add a total line
-      //    footer = [d.name,fmt(d._value)];
-      //    headers = [app.get_text('financial_size'),'($000)'];
-      //    headers_class =  ['left_text','right_number'];
-      //  }
-      //  // this function will be called per row creation
-      //  rowseach = function(d,i){
-      //    if (d===footer){
-      //      d3.select(this).attr("class","info-row");
-      //    }
-      //  };
-      //  // remake the headers to be [[]]
-      //  headers = [headers];
-      //  // push the footer onto the rows
-      //  rows.push(footer);
+      // todo if not a department or a ministry, then don't show list of departments'
+      var tip = d3.tip()
+            .attr('class', 'd3-tip')
+            .direction("w")
+            //.offset([-10, 0])
+            .html(function(d){
 
-      //  TABLES.prepare_data({
-      //    rows : rows,
-      //    headers : headers,
-      //    headers_class : headers_class,
-      //    dup_header_options : true
-      //  });
-      //  var tooltip = new TOOLTIP.basetooltip({
-      //    left : d.absolute_zoom_pos.x  + 10,
-      //    top : d.absolute_zoom_pos.y - 10 - 25*rows.length/2,
-      //    body_func : function(node){
-      //      return TABLES.d3_build_table({
-      //              table_class : 'table-condensed',
-      //              table_css : {'width':"450px"},
-      //              node: node[0],
-      //              rows : rows,
-      //              headers:headers,
-      //              rowseach : rowseach,
-      //              tdseach : tdseach
-      //            });
-      //    }
-      //  })
-      //  tooltip.render(d3.event);
+        var depth = chart.options().depth, rows,headers,footer,rowseach,
+            tdseach,headers_class,current_d = chart.options().node,
+            fmt =function(x){return app.formater('big-int',x)};
+        // if mousing over the top level circle, exit immediately
+        // if mousing over nodes which aren't the direct parent or 
+        // children of the current node, exit immediatley
+        if (d.depth === 0){return;}
+        if (!_.contains([current_d, current_d.parent].concat(current_d.children),d)){
+          return;
+        }
+        // if the node has a "dept"  attribute, then it's a department
+        // otherwise it's a ministry or collection of smaller ministries
+        if (d.dept){
+          // extract some relevant fields to show in the tooltip for tihs
+          // department
+          rows =[ 
+             [app.get_text("legal_name"),d.legal_name[lang]],
+             [app.get_text("type"),d.type[lang]],
+             [app.get_text("mandate"),_.map(d.mandate,function(x){
+               return x[lang];
+             }).join(" ")],
+          ];
+          // finish with the site of spending
+          footer =  [app.get_text('financial_size'),fmt(d._value)];
+          headers = ['Information','Value'];
+          headers_class =  ['left_text',''];
+          tdseach = function(d,i){
+            if (i === 3){
+              d3.select(this).select("td:last").style("width","200px");
+            }
+          }
+        //} else if (d.name === app.get_text("smaller_orgs")){
+        //    var children_num = d.children.leng
+        //   rows = [
+        //     
+        //   ];
+        //   footer = null;
+        } else {
 
-      //  var onleave = function(d){
-      //  // immediately unregister the onleave event
-      //    chart.dispatch.on("dataMouseLeave.tooltip",null);
-      //    if (d.depth === 0){return;}
-      //    tooltip.un_render()
-      //  }
-      //  // listen to the mouseLeave eevent
-      //  chart.dispatch.on("dataMouseLeave.tooltip",onleave);
-      //});
+          // collect all the children by name and financial size
+          rows = _.map(d.children,function(c){
+            return [c.name, fmt(c._value)];
+          });
+          //  add a total line
+          footer = [d.name,fmt(d._value)];
+          headers = [app.get_text('financial_size'),'($000)'];
+          headers_class =  ['left_text','right_number'];
+        }
+        // this function will be called per row creation
+        rowseach = function(d,i){
+          if (d===footer){
+            d3.select(this).attr("class","info-row");
+          }
+        };
+        // remake the headers to be [[]]
+        headers = [headers];
+        // push the footer onto the rows
+        rows.push(footer);
+
+        TABLES.prepare_data({
+          rows : rows,
+          headers : headers,
+          headers_class : headers_class,
+          dup_header_options : true
+        });
+        var table = TABLES.d3_build_table({
+                    table_class : 'table-condensed',
+                    table_css : {'width':"450px"},
+                    node: $('<div>')[0],
+                    rows : rows,
+                    headers:headers,
+                    rowseach : rowseach,
+                    tdseach : tdseach
+                  });
+         return $('<div>').append(table).html();
+        });
+     //chart.dispatch.on("dataMouseOver",tip.show);
+     //chart.dispatch.on("dataMouseOut",tip.show);
+
 
       chart.dispatch.on("dataClick.breadcrumb",function(d){
 
@@ -364,6 +365,7 @@
       });
 
       chart(target);
+      d3.select(target[0]).select("svg").call(tip);
     };
 
 })();
