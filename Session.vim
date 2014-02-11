@@ -89,7 +89,7 @@ badd +9 les/src/js/od/od.js
 badd +13 les/src/js/mappers.js
 badd +80 les/Gruntfile.js
 badd +166 les/src/js/d3/dept_explore.js
-badd +303 les/src/js/d3/pack.js
+badd +122 les/src/js/d3/pack.js
 badd +328 les/test/test-d3.js
 badd +397 les/src/mako/od_handlebars_templates.html
 badd +50 les/src/js/waiting.js
@@ -110,7 +110,7 @@ badd +28 les/src/js/handlebars_helpers.js
 badd +11 les/src/mako/od_fr.html
 badd +9 les/todo
 silent! argdel *
-edit les/src/js/d3/pack.js
+edit les/todo
 set splitbelow splitright
 wincmd _ | wincmd |
 vsplit
@@ -131,13 +131,13 @@ setlocal nobinary
 setlocal bufhidden=
 setlocal buflisted
 setlocal buftype=
-setlocal cindent
+setlocal nocindent
 setlocal cinkeys=0{,0},0),:,0#,!^F,o,O,e
-setlocal cinoptions=j1,J1
+setlocal cinoptions=
 setlocal cinwords=if,else,while,do,for,switch
 setlocal colorcolumn=
-setlocal comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,://
-setlocal commentstring=//%s
+setlocal comments=s1:/*,mb:*,ex:*/,://,b:#,:%,:XCOMM,n:>,fb:-
+setlocal commentstring=/*%s*/
 setlocal complete=.,w,b,u,t,i
 setlocal concealcursor=
 setlocal conceallevel=0
@@ -154,8 +154,8 @@ setlocal nodiff
 setlocal equalprg=
 setlocal errorformat=
 setlocal expandtab
-if &filetype != 'javascript'
-setlocal filetype=javascript
+if &filetype != ''
+setlocal filetype=
 endif
 setlocal foldcolumn=0
 setlocal foldenable
@@ -168,7 +168,7 @@ setlocal foldminlines=1
 setlocal foldnestmax=20
 setlocal foldtext=foldtext()
 setlocal formatexpr=
-setlocal formatoptions=croql
+setlocal formatoptions=tcq
 setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*
 setlocal grepprg=
 setlocal iminsert=0
@@ -191,7 +191,7 @@ setlocal nrformats=octal,hex
 set number
 setlocal number
 setlocal numberwidth=4
-setlocal omnifunc=javascriptcomplete#CompleteJS
+setlocal omnifunc=
 setlocal path=
 setlocal nopreserveindent
 setlocal nopreviewwindow
@@ -214,8 +214,8 @@ setlocal statusline=
 setlocal suffixesadd=
 setlocal swapfile
 setlocal synmaxcol=3000
-if &syntax != 'javascript'
-setlocal syntax=javascript
+if &syntax != ''
+setlocal syntax=
 endif
 setlocal tabstop=2
 setlocal tags=
@@ -228,12 +228,12 @@ set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 14 - ((13 * winheight(0) + 21) / 43)
+let s:l = 8 - ((7 * winheight(0) + 21) / 43)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-14
-normal! 041|
+8
+normal! 057|
 wincmd w
 argglobal
 edit les/src/js/d3/dept_explore.js
@@ -342,14 +342,13 @@ set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 319 - ((27 * winheight(0) + 21) / 43)
+let s:l = 242 - ((17 * winheight(0) + 21) / 43)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-319
-normal! 06|
+242
+normal! 020|
 wincmd w
-2wincmd w
 exe 'vert 1resize ' . ((&columns * 88 + 88) / 177)
 exe 'vert 2resize ' . ((&columns * 88 + 88) / 177)
 tabnext 1

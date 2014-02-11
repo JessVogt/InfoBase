@@ -11,7 +11,10 @@ transition to-do:
   rebuild details sections
   wordsmithing the infographics
   departmental search screen for bubbles
-	d3 - tooltips
+
+	remove d3 - tooltips
+  add in info section for exploration which will also work for touch devices
+
   phantomjs for accessibility
 	create secondary landing page for choice between graphics heavy and text based
 	jshint all the files

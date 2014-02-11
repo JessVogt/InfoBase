@@ -236,10 +236,11 @@
       // todo if not a department or a ministry, then don't show list of departments'
       var tip = d3.tip()
             .attr('class', 'd3-tip')
-            .direction("w")
-            //.offset([-10, 0])
             .html(function(d){
-
+        if (d.depth <= chart.options().node.depth){
+          return '';
+        }
+        tip.offset([-10, d.zoom_r/2]);
         var depth = chart.options().depth, rows,headers,footer,rowseach,
             tdseach,headers_class,current_d = chart.options().node,
             fmt =function(x){return app.formater('big-int',x)};
@@ -271,12 +272,14 @@
               d3.select(this).select("td:last").style("width","200px");
             }
           }
-        //} else if (d.name === app.get_text("smaller_orgs")){
-        //    var children_num = d.children.leng
-        //   rows = [
-        //     
-        //   ];
-        //   footer = null;
+        } else if (d.children &&  d.children.length > 8){
+           var children_num = PACK.count_nodes(d,function(d){ return !d.children;});
+           var val = d._value;
+           headers = ["Organizations",'($000)'];
+           rows = [
+             [children_num + " organisations", fmt(val)]
+           ];
+           footer = null;
         } else {
 
           // collect all the children by name and financial size
@@ -297,7 +300,9 @@
         // remake the headers to be [[]]
         headers = [headers];
         // push the footer onto the rows
-        rows.push(footer);
+        if (footer) {
+          rows.push(footer);
+        }
 
         TABLES.prepare_data({
           rows : rows,
@@ -316,8 +321,9 @@
                   });
          return $('<div>').append(table).html();
         });
-     //chart.dispatch.on("dataMouseOver",tip.show);
-     //chart.dispatch.on("dataMouseOut",tip.show);
+     chart.dispatch.on("dataMouseOver",tip.show);
+     chart.dispatch.on("dataMouseOut",tip.hide);
+     chart.dispatch.on("dataClick",tip.hide);
 
 
       chart.dispatch.on("dataClick.breadcrumb",function(d){

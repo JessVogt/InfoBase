@@ -3,11 +3,11 @@
     var PACK = ns('D3.PACK');
     var APP = ns('APP');
 
-    PACK.count_nodes = function(d){
+    PACK.count_nodes = function(d,test){
       if (d.children){
-        return d.children.length + d3.sum(d.children, PACK.count_nodes);
+        return d3.sum(d.children, function(child){return PACK.count_nodes(child,test)});
       } 
-      return 0;
+      return test(d) ? 1 : 0;
     }
 
     PACK.create_data_nodes = function(data,labels){
@@ -232,7 +232,6 @@
           .enter()
           .append(text_element)
             .attr("class",text_class) 
-            .on("mouseover", dispatch.dataHover)
             .on("click", dispatch.dataClick);
 
         if (html_tags){
