@@ -2,28 +2,32 @@ transition to-do:
   ochro
     migrate new tables definiitons
     add in infographic sections
-  fix the analysis settings section
-  add in appropriate links to details section 
-  add in appropriate links in infographic section
-  add in a return to choose your adventure button
-  table headers for infographic
-  hidden text in infographic
-  rebuild details sections
-  wordsmithing the infographics
-  departmental search screen for bubbles
 
-	remove d3 - tooltips
-  add in info section for exploration which will also work for touch devices
+  analytics
+    fix the analysis settings section
+    add in appropriate links to details section 
 
-  phantomjs for accessibility
-	create secondary landing page for choice between graphics heavy and text based
-	jshint all the files
-	add more documentation for docco	
-  fix loading screen
-  start work on FAQs
-  create definition for every column
-  investigate data extract functionality
-  reflow departmental datasheets for mobile browser
-  add in horizontal links between tables and analysis
-  create diagram of how site works
-  infograph - add in special cases for departments with missing data
+  infographic
+    add in appropriate links to more detailed pages section
+    table headers
+    hidden text
+    rebuild details sections
+    wordsmithing
+    add in special cases for departments with missing data
+
+  bubbles
+    departmental search screen for bubbles
+
+  general
+    add in a return to choose your adventure button
+    phantomjs for accessibility
+    create secondary landing page for choice between graphics heavy and text based
+    jshint all the files
+    add more documentation for docco	
+    fix loading screen
+    start work on FAQs
+    create definition for every column
+    investigate data extract functionality
+    reflow departmental datasheets for mobile browser
+    add in horizontal links between tables and analysis
+    create diagram of how site works

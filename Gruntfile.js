@@ -68,7 +68,6 @@ module.exports = function(grunt) {
           "src/js/d3/core.js",
           "src/js/d3/chapter.js",
           "src/js/d3/story.js",
-          "src/js/d3/tooltip.js",
           "src/js/d3/hbar.js",
           "src/js/d3/bar.js",
           "src/js/d3/dept_explore.js",

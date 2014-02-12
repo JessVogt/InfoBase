@@ -1,6 +1,5 @@
 (function() {
     var D3 = ns('D3'),
-    TOOLTIP = D3.TOOLTIP,
     PACK = ns('D3.PACK'),
     TABLES = ns('TABLES');
 
@@ -34,7 +33,6 @@
       }
     }
   
-
     p.by_min_dept = function(){
       // this function regroups departments into their respective ministries 
       // 1 - all departments in table8 are obtained
@@ -73,6 +71,7 @@
           return d.min;
         })
         .map(function(depts, min){
+          PACK.soften_spread(depts);
           return {
             name : min,
             children : depts,
@@ -82,7 +81,7 @@
         })
         .value();
         // smooth out differences between smaller and larger ministries
-        PACK.soften_spread(min_objs);
+        //PACK.soften_spread(min_objs);
         // nest the data for exploring
         var data = this.nest_data_for_exploring(min_objs,this.gt("goc_total") );
         this.build_graphic(data);
@@ -174,7 +173,7 @@
       var get_value = function(d){ return d.value;};
       var get__value = function(d){ return d._value;};
       var data = PACK.pack_data(to_be_nested,this.app.get_text("smaller_orgs"),{
-        soften : false,
+        soften : true,
         scale : d3.scale.log()
           .domain(d3.extent(to_be_nested, get_value))
           .rangeRound(rangeRound),
@@ -194,7 +193,7 @@
            container = this.container;
 
       var chart = PACK.pack({
-        height: 880,
+        height: 680,
         zoomable : true,
         html_tags : true,
         data: data,
@@ -204,7 +203,7 @@
             return d.name + " - "+ val; 
           } else if (d.zoom_r > 40) {
             return _.first(d.name.split(" "),2).join(" ")+ " - "+ val;  
-          } else if (d.zoom_r > 30){
+          } else if (d.zoom_r > 35){
             return val;
           } else {
             return "...";
@@ -219,116 +218,18 @@
       //     <div class='svg-container'/>
       //  </div>
       var target = container.append(
-          $('<div>').addClass("span-1"),
-          $('<div>').addClass("dept-explorer span-6")
+          $('<div>').addClass("dept-explorer span-8").css({margin : "0px"})
             .append(
-                $('<div>').addClass("breadcrumb well border-all span-6").css({'margin-bottom':'20px'}),
-                $('<div>').addClass("svg-container well span-6 border-all")
+                $('<div>').addClass("breadcrumb well border-all span-2").css({'margin':'0px', "padding" : "0px"}),
+                $('<div>').addClass("svg-container well span-6 border-all ").css({"margin" : "0px", "padding" : "0px"})
             )
           ).find('.svg-container');
 
-      chart.dispatch.on("dataClick.select_dept",function(d){
-        if (d.accronym){
-          _.delay(app.router.navigate,1,"infograph-"+d.accronym,{trigger:true});
-        }
-      });
-
-      // todo if not a department or a ministry, then don't show list of departments'
-      var tip = d3.tip()
-            .attr('class', 'd3-tip')
-            .html(function(d){
-        if (d.depth <= chart.options().node.depth){
-          return '';
-        }
-        tip.offset([-10, d.zoom_r/2]);
-        var depth = chart.options().depth, rows,headers,footer,rowseach,
-            tdseach,headers_class,current_d = chart.options().node,
-            fmt =function(x){return app.formater('big-int',x)};
-        // if mousing over the top level circle, exit immediately
-        // if mousing over nodes which aren't the direct parent or 
-        // children of the current node, exit immediatley
-        if (d.depth === 0){return;}
-        if (!_.contains([current_d, current_d.parent].concat(current_d.children),d)){
-          return;
-        }
-        // if the node has a "dept"  attribute, then it's a department
-        // otherwise it's a ministry or collection of smaller ministries
-        if (d.dept){
-          // extract some relevant fields to show in the tooltip for tihs
-          // department
-          rows =[ 
-             [app.get_text("legal_name"),d.legal_name[lang]],
-             [app.get_text("type"),d.type[lang]],
-             [app.get_text("mandate"),_.map(d.mandate,function(x){
-               return x[lang];
-             }).join(" ")],
-          ];
-          // finish with the site of spending
-          footer =  [app.get_text('financial_size'),fmt(d._value)];
-          headers = ['Information','Value'];
-          headers_class =  ['left_text',''];
-          tdseach = function(d,i){
-            if (i === 3){
-              d3.select(this).select("td:last").style("width","200px");
-            }
-          }
-        } else if (d.children &&  d.children.length > 8){
-           var children_num = PACK.count_nodes(d,function(d){ return !d.children;});
-           var val = d._value;
-           headers = ["Organizations",'($000)'];
-           rows = [
-             [children_num + " organisations", fmt(val)]
-           ];
-           footer = null;
-        } else {
-
-          // collect all the children by name and financial size
-          rows = _.map(d.children,function(c){
-            return [c.name, fmt(c._value)];
-          });
-          //  add a total line
-          footer = [d.name,fmt(d._value)];
-          headers = [app.get_text('financial_size'),'($000)'];
-          headers_class =  ['left_text','right_number'];
-        }
-        // this function will be called per row creation
-        rowseach = function(d,i){
-          if (d===footer){
-            d3.select(this).attr("class","info-row");
-          }
-        };
-        // remake the headers to be [[]]
-        headers = [headers];
-        // push the footer onto the rows
-        if (footer) {
-          rows.push(footer);
-        }
-
-        TABLES.prepare_data({
-          rows : rows,
-          headers : headers,
-          headers_class : headers_class,
-          dup_header_options : true
-        });
-        var table = TABLES.d3_build_table({
-                    table_class : 'table-condensed',
-                    table_css : {'width':"450px"},
-                    node: $('<div>')[0],
-                    rows : rows,
-                    headers:headers,
-                    rowseach : rowseach,
-                    tdseach : tdseach
-                  });
-         return $('<div>').append(table).html();
-        });
-     chart.dispatch.on("dataMouseOver",tip.show);
-     chart.dispatch.on("dataMouseOut",tip.hide);
-     chart.dispatch.on("dataClick",tip.hide);
-
-
       chart.dispatch.on("dataClick.breadcrumb",function(d){
 
-        var pointer=d,parents = [],crumbs,containers, height=50,scale,svg;
+        var pointer=d,parents = [],crumbs,containers, height=50,scale,svg,
+             // assuming a container setup of span-8
+            span_width = container.width()/4;
         // walk up the parent chain and collect them
         while (typeof pointer.parent != "undefined"){
           parents.push(pointer.parent);
@@ -339,17 +240,20 @@
 
         scale = d3.scale.linear().domain([0,parents[0].r]).range([2,height/2]);
 
+        d3.select(".info_graph_link").remove();
+
         crumbs = d3.select(".breadcrumb").selectAll("div.crumb")
           .data(parents,function(x){return x.rid;});
+
         crumbs.exit().remove();
+
         containers = crumbs
           .enter()
           .append("div")
           .attr("class",'crumb float-left')
           .style({
            "margin-top":"10px",
-           "margin-right":"10px",
-           "width": "150px"
+           "width": "100%"
           });
         containers
           .append("div")
@@ -357,21 +261,43 @@
           .style( "height",height+10+"px")
           .append("svg")
           .attr("width","100%")
+          .append("g")
+          //.attr("transform", function(){
+          //  return  "translate("+span_width/2-scale(d.r)/2+",0)"
+          //})
           .append("circle")
-          .attr({ cx : 75, cy : 25, r : function(d){return scale(d.r)} })
-          .append("text");
+          .attr({ cx : span_width/2, cy : height/2, r : function(d){return scale(d.r)} })
 
         containers
           .append("div")
           .attr({ "class" : "align-center" }) 
           .html(function(d){return d.name + ' - '+ app.formater("compact",d._value)});
 
+        if (d.accronym){
+          d3.select(".breadcrumb")
+            .append("div")
+            .attr("class","info_graph_link float-left align-center")
+            .style({
+              "margin-top":"10px",
+              "margin-right":"10px",
+              "width": "100%"
+            })
+            .append("a")
+            .attr("class","router")
+            .attr("href","#infograph-"+d.accronym)
+            .html(app.get_text("org_infograph"))
+        }
+
         d3.select(".breadcrumb .clear").remove();
         d3.select(".breadcrumb").append("div").attr("class","clear");
+
       });
 
       chart(target);
-      d3.select(target[0]).select("svg").call(tip);
+      // set the breadcrumb trail container height to that of the main container
+      setTimeout(function(){
+        container.find(".breadcrumb").css("min-height", container.find(".svg-container").height());
+      });
     };
 
 })();

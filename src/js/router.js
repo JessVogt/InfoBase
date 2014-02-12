@@ -25,7 +25,9 @@
       //  4 - wrap the function in a call which will ensure associated container
       //      is made visible when that route is called
       _.each(this._routes, function(func_name,key){
-        var container = $('<div>').attr("id",func_name),
+        var container = $('<div>')
+                          .attr("id",func_name)
+                          .addClass("grid-8"),
             func = that[func_name];
         $('#app').append(container);
         that.containers[func_name]=container;

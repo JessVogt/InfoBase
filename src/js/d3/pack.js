@@ -141,7 +141,7 @@
       };
       if (zoomable){
         dispatch.on("dataClick.__zoom__",on_circle_click);
-        dispatch.dataClick.call(null, nodes[0],0);
+        _.delay(dispatch.dataClick,1, nodes[0],0);
       } else {
         on_circle_click(nodes[0]);
       }
