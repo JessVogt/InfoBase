@@ -1,19 +1,7 @@
 /*
  *   This is module is structure in the following way:
- *   helper functions:
- *      show_all_options
- *      hide_all_otpions
- *      show_all_options2
- *      highlight
- *      _show_all_options
- *      _hide_all_options
- *      _highlight
- *      add_search_box
- *    these helper functions do not need to be part of the _horizontal_gov
- *    object listed below since they don't require any of the internal 
- *    state information'
  *
- *   after the helper functions is the main object _horizontal_gov 
+ *   the main object _horizontal_gov 
  *   with the following functions.
  *     -- setup and build functions --
  *     `horizontal_gov
@@ -25,7 +13,7 @@
        on_period_click
        on_display_as_click
        on_table_click
-       on_column_click
+       on_column_cdlick
        -- the functions are only needed for the org view ---
        build_shown_and_orgs
        dept_highlight
@@ -46,70 +34,54 @@
     TOOLTIP = D3.TOOLTIP,
     TABLES = ns('TABLES');
 
-   var show_all_options = function(data){ _show_all_options(d3.select(this)); },
-       hide_all_options = function(data){ _hide_all_options(d3.select(this)); },
-       show_all_options2 = function(data){ _show_all_options(d3.select(this.parentNode.parentNode.parentNode)); },
-       highlight = function(data,node){ _highlight(d3.select(node.parentNode)); }, 
-       _show_all_options = function(target){
-          target.selectAll("li").classed("ui-screen-hidden",false);
-          var jq = $(target.node()) ;
-          // get the max string
-          var max_string = _.max(jq.find("li").map(function(){return $(this).text().length;}));
-          // ensure smaller strings don't actually shrink the box'
-          max_string = _.max([max_string, 40]);
-          jq.width( Math.ceil(max_string / 40)* 280 ) ;
-          jq.css("z-index",1000);
-       },
-       _hide_all_options = function(target){
-          target.selectAll("li").classed("ui-screen-hidden",false);
-          target.selectAll("li.not-selected").classed("ui-screen-hidden",true);
-          var jq = $(target.node()) ;
-          jq.width(jq.parent().width());
-       } ;
-       _highlight = function(target){
-          if (d3.event){                
-            d3.event.target.focus(); 
-          }                             
-          $(target.node())                                      
-            .addClass("background-medium")               
-            .removeClass("not-selected")
-            .siblings()
-            .removeClass("background-medium")
-            .addClass("not-selected");
-        },
-        add_search_box  = function(node){
-          if ($(node).find("input").length > 0){
-            return;
-          }
-          function on_search(event){
-              var input = $(event.target);
-              var val = input.val();
-              var lis = $(node).find("li");
-              if ( val.length < 1){
-                lis.removeClass("ui-screen-hidden");
-                return;
-              }
-              lis.each(function(){
-                if ($(this).text().toLowerCase().search(new RegExp(val)) == -1){
-                  $(this).addClass("ui-screen-hidden");
-                } else {
-                  $(this).removeClass("ui-screen-hidden");
-                }
-              });
-          }
-          var input = $('<input>')
-            .css("margin-right","10px")
-            .on("keyup",on_search);
-          $(node).find('.nav-header').after(input);
-        };
+    var Config = function(currently_selected){
+      this._config = {};
+      this.currently_selected = currently_selected;
+    }
 
-    D3.horizontal_gov =  function(app,container){
-      return new _horizontal_gov(app,container);
+    Config.prototype.set_options = function(key,options,getter) {
+      this._config[key] = options;
+    }
+
+    Config.prototype.update_selection = function(key,val, updater){
+      updater = updater || function(vals,val){ return val; }
+      this.currently_selected[key] = updater(this._config[key],val);
+    }
+
+    Config.prototype.get_active = function(key,getter){
+      getter = getter || function(vals,currently_selected){
+        if (vals){
+          if (currently_selected){
+            var found =  _.find(vals, function(val){return val.val === currently_selected});
+          }
+          return found || _.first(vals) ;
+        }
+      }
+      return getter(this._config[key],this.currently_selected[key]);
+    }
+
+    Config.prototype.active_index = function(key,getter) {
+      if (_.isArray(this._config[key])) {
+        return this._config[key].indexOf(this.get_active(key,getter));
+      }
+    }
+
+    Config.prototype.to_url = function(){
+      return $.param(this.currently_selected);
+    }
+
+    D3.horizontal_gov =  function(app,container,config){
+      return new _horizontal_gov(app,container,config);
     };
 
-    _horizontal_gov = function(app,container){
+    _horizontal_gov = function(app,container,config){
+      container.children().remove();
+      config = config || {};
       // ensure all functions on this object are always bound to this
       _.bindAll(this, _.functions(this));
+      // this will eventually fill up with all the functions
+      this.app = app;
+      this.no_wrap = ['org'];
       this.gt = app.get_text;
       var lang = this.lang = app.state.get("lang");
       this.formater = app.formater;
@@ -131,8 +103,11 @@
 
       // setup each of the four sections for the time period covers, the relevant tale names
       // then the columns of a particular table and then the groups
+      var events = ["period", "table", "column", "display_as", "shown", 'org', "pres_level"];
+      this.select = d3.dispatch.apply(this,events);
+      // listen to all events to update the config object 
 
-      this.select = d3.dispatch("period", "table", "column", "display_as", "shown", 'org', "pres_level");
+      // add the default option sections
       this.add_section('pres_level',2);
       this.add_section('period',2);
       this.add_section('display_as',2);
@@ -141,60 +116,112 @@
 
       this.pres_level.attr("tabindex",0);
 
+      this.config = new Config(_.extend({org:['__all__']},config)); 
+
       this.orgs = _.chain(window.depts)
         .map(function(d){
           return {acronym : d.accronym, name : d.dept[lang], active : false };
         })
         .sortBy(function(d){ return d.name;})
         .value();
-      this.orgs.unshift({acronym :null, name : lang == 'en'? "All" : "Tout",active:true });
-
+      this.orgs.unshift({acronym :"__all__", name : lang == 'en'? "All" : "Tout"});
+      
+      this.config.set_options("org",this.orgs);
       this.start_build();
     };
 
     var p = _horizontal_gov.prototype;
 
-   p.add_section = function(_class, span){
-      //create the div
-      //
-      var that = this;
-      var old_func  =  this["on_"+_class+"_click"];
-      this["on_"+_class+"_click"] = function(d){
-        var _this = this;
-        // this is the startup case, where the clicks are being simulated
-        // this will find the relevant node
-         if (_this === that){
-           _this = _this[_class]
-             .selectAll("a").filter(function(x){ return x===d;})
-             .node();
+   p.update_url = function(){
+     var config = this.config.to_url();
+     this.app.router.navigate("analysis-"+config);
+   }
+
+   p.wrap_on_click = function(_class){
+     var that = this;
+     var standard_func_name = "on_"+_class+"_click";
+
+     // check and make sure this function should be wrapped
+     if (this.no_wrap.indexOf(_class) === -1) {
+       this.no_wrap.push(_class);
+       var old_func = this[standard_func_name];
+       // because of late declaration, this function won't be bound to horizontal_gov
+       // if the this in the funciton === horizontal_gov then it's during the setup
+       // phbase
+       // otherwise, it's as the result of an event 
+       this[standard_func_name] = function(){
+         // if d is indefined it's because it's from an event being fired from
+         // a change event on a select element
+         var selected_option
+         if ( this !== that){
+           var i = this.selectedIndex;
+           var d = that.config._config[_class][i];
+         } else {
+          var d = that.config.get_active(_class);
          }
-         old_func(d,_this);
-         that.select[_class](d,_this);
-      };
+         that.config.update_selection(_class,d.val);
+         // call the original function
+         old_func(d);
+         // 
+         that.select[_class](d);
+       };
+     }
+   }
+
+   p.add_section = function(_class, span,element){
+      this.wrap_on_click(_class);
+      
+      element = element || "select";
       this[_class] = this.selections.append("div")
                     .attr("class"," well span-"+span+" border-all "+_class)
                     .style("margin-right","0px")
-                    .style("margin-bottom","5px")
-                    .on("click", show_all_options)
-                    .on("mouseleave", hide_all_options)
-                    .on("mouseenter", show_all_options);
+                    .style("margin-bottom","5px");
       // add the header
       this[_class].append("p").html(this.gt(_class) ).attr("class","nav-header");
       // reset the selection for the list
       this[_class]
-        .append("ul")
-        .attr("class", "list-bullet-none");
+        .append(element)
+        .attr("class", "list-bullet-none")
+        .style({"width" : "95%"});
 
-      // attach the click handler 
-      this.select.on(_class+".highlight",highlight);
    };
 
    p.make_list = function(name,data,options){
+     //
+     //
+     options = options || {};
+     data_key = options.data_key || function(d,i){return d.val;};
+     html = options.html || _.identity;
+     each = options.each || _.identity;
+     var current_index = this.config.active_index(name);
+     var sel =  this[name]
+       .select("select").selectAll("option")
+       .data(data,data_key);
+
+     sel.exit().remove();
+
+     sel
+       .enter()
+       .append("option")
+       .html(html)
+       .attr("selected",function(d,i){
+         if (i === current_index){
+           return "selected";
+         }
+        });
+
+     this[name].select("select").on("change",this["on_"+name+"_click"])
+     
+     return sel;
+   };
+
+   p.make_dept_list = function(name,data,options){
      options = options || {};
      data_key = options.data_key || function(d,i){return i;};
      html = options.html || _.identity;
      each = options.each || _.identity;
      var sel =  this[name]
+       .style({"height" : "200px", "overflow-y": "auto"})
        .select("ul").selectAll("li")
        .data(data,data_key);
 
@@ -204,34 +231,31 @@
        .enter()
        .append("li")
        .append("a")
-       .on("focus", show_all_options2)
-       .on("click",this["on_"+name+"_click"])
        .attr("href","#")
        .html(html)
-       .each(each);
+       .on("click",this.on_org_click);
 
      return sel;
-   };
-
+   }
 
    p.start_build = function(_class, span){
       // setup the presentation level choice
       // the data
-       var pres_levels = this.pres_levels = [
-         {name : this.gt("government_stats"), func: _.throttle(this.fetch_gov_data,100) ,val : 'gov'},
-         {name : this.gt("org"), func : _.throttle(this.fetch_dept_data,100), val : 'depts'}
+       var pres_levels = [
+         {name : this.gt("government_stats"), func: this.fetch_gov_data ,val : 'gov'},
+         {name : this.gt("org"), func : this.fetch_dept_data, val : 'depts'}
        ];
+       this.config.set_options("pres_level",pres_levels);
        // create the list
-       var group_sel = this.pres_level.select("ul").selectAll("li")
-         .data(pres_levels);
        this.make_list("pres_level",pres_levels,{html : function(d){return d.name;}});
 
       // setup the period choice
       // the data
       var period_data = [ {val: "in_year",name: "In Year"},
                    {val: "historical",name: "Historical"}];
+      this.config.set_options("period",period_data);
        // create the list
-       this.make_list("period",period_data,{html : function(d){return d.name;}});
+      this.make_list("period",period_data,{html : function(d){return d.name;}});
 
       // setup the display as choice
       // the data
@@ -243,30 +267,20 @@
         { func:this.table_data ,
           name: this.gt("tabular"), 
           data_style : 'entries',
-          table : "table"} ]; 
+          val : "table"} ]; 
+       this.config.set_options("display_as",display_as_data);
        // create the list
        this.make_list("display_as",display_as_data,{html : function(d){return d.name;}});
 
        // for each of the elements fire off a selection of the first choice
-       // get them highlighted, and hide the other options
-      this.on_pres_level_click(pres_levels[0]);
-      this.on_display_as_click(display_as_data[0]);
-      this.on_period_click(period_data[0]);
-      _hide_all_options(this.period);
-      _hide_all_options(this.display_as);
-      _hide_all_options(this.pres_level);
+      this.on_pres_level_click();
 
       this.period.node().focus();
 
    };
 
     p.on_pres_level_click = function(d){
-      this.select.on("shown.get_data",null);
-      this.select.on("column.get_data",null);
-      this.select.on("org.get_data",null);
-      this.select.on("display_as.get_data",null);
 
-      this.current_pres_level = d;
       if (d.val === 'gov'){
         // remove the shown groups and organizations section
         if (_.has(this, 'shown')){ this.shown.remove();}
@@ -274,136 +288,154 @@
       } else {
         // add the shown groups and organizations section
         this.add_section('shown',2);
-        this.add_section('org',2);
-        this.build_shown_and_orgs();
+        this.add_section('org',2,"ul");
       }
-
+      // these on bindings will over-write what was there previously
       this.select.on("shown.get_data",d.func);
       this.select.on("column.get_data",d.func);
       this.select.on("org.get_data",d.func);
       this.select.on("display_as.get_data",d.func);
+
+      this.on_display_as_click();
+      this.on_period_click();
+
       if (d3.event){
         d.func();
       }
 
     };
 
-    p.on_period_click = function(d){
-      this.current_period = d;
-      delete this.current_table;
+    p.on_period_click = function(period){
 
       var lang = this.lang;
       // setup the tables choice
       // the data
-      var tables = _.filter(TABLES.tables, function(table){
-            return table.coverage === d.val;
-          });
+      var tables = _.chain(TABLES.tables)
+        .filter(function(table){
+            return table.coverage === period.val;
+        })
+        .map(function(table){
+           return _.extend({val: table.id},table);
+        })
+        .value();
+
+      this.config.set_options("table",tables);
       // make the list
       this.make_list("table",tables,{
         html : function(d){return d.name[lang];} ,
         data_key : function(d){return d.id;}
       });
-
-      this.on_table_click(tables[0]);
-      _hide_all_options(this.table);
-
+      this.on_table_click();
     };
 
-    p.on_display_as_click = function(d){
-      this.current_display_as = d;
-    };
+    p.on_display_as_click = function(d){};
 
     p.on_table_click = function(table){
-       // now a new table has been selected, the shown and column need to be
-       // reset
-       delete this.current_shown;
-       delete this.current_column;
-       delete this.current_group;
-       // set the current table
-       this.current_table = table;
 
        var lang = this.lang,
            // retrieve the columns of the current table
-           cols = _.filter(table.flat_headers, function(col){
-             return col.fully_qualified_name;
-           });
+           cols = _.chain(table.flat_headers)
+             .filter(function(col){
+                return col.fully_qualified_name;
+              })
+              .map(function(col){
+                return _.extend({val: col.fully_qualified_name},col);
+              })
+              .value();
 
+       this.config.set_options("column",cols);
        this.make_list("column",cols,{
          html: function(d){return d.fully_qualified_name;},
          data_key : function(d){ return d.wcag;}
        });
 
-      this.on_column_click(cols[0]);
-      _hide_all_options(this.column);
-
+      this.on_column_click();
     };
 
-    p.on_column_click = function(col){
-       this.current_column  = col;
-       if (this.current_pres_level.val !== 'gov'){
+    p.on_column_click = function(){
+       if (this.config.get_active("pres_level").val !== 'gov'){
          this.build_shown_and_orgs();
        }
     };
 
     p.build_shown_and_orgs  = function(){
-      var col = this.current_column,
-          shown = _.chain(this.current_table.horizontal(col.nick || col.wcag,true))
+      var col = this.config.get_active("column"),
+          table = col.table,
+          shown = _.chain(table.horizontal(col.nick || col.wcag,true))
                    .keys()
-                   .sortBy(this.current_table.horizontal_group_sort)
+                   .sortBy(table.horizontal_group_sort)
+                   .map(function(x){
+                     return {val :x};
+                   })
                    .value();
-        
-      // add the Al option
-      shown.unshift( this.gt("all") );
-      this.make_list("shown",shown, {data_key: function(d,i){return d;}});
-      this.make_list("org",this.orgs,{html: function(d){ return d.name;}});
-      add_search_box(this.org.node());
-      // override the default highlight behavior
-      this.select.on("org.highlight",this.dept_highlight);
-      // ensure the search box is cleared when mouse leaves
-      this.org.on("mouseleave.clear",function(){ $('input',this).val(""); });
-      // add in a search box to make it easier to find a department
-      this.on_shown_click(shown[0]);
-      _hide_all_options(this.shown);
-      var active_dept = this.active_depts()[0] || this.orgs[0];
-      active_dept.active = false;
-      this.on_org_click(active_dept);
-      _hide_all_options(this.org);
+      // add the All option
+      shown.unshift({val : this.gt("all")});
+
+      this.config.set_options("shown",shown);
+
+      this.make_list("shown",shown, {html: function(d,i){return d.val;}});
+      this.make_dept_list("org",this.orgs,{html: function(d){ return d.name;}});
+
+      this.on_shown_click();
+      this.on_org_click();
     };
 
-    p.dept_highlight = function(d){
-      // this function is needed to allow multiple departments to be selected
-      // and so that clicking "All" will toggle off all other departments
-      // selected
-      this.org.selectAll("li")
-        .classed("background-medium",function(d){ return d.active;})
-        .classed("not-selected",function(d){ return !d.active;});
-      if (d3.event.target) {
-        d3.event.target.focus(); 
-      }
-    };
+    p.on_shown_click = function(shown){ };
 
-    p.on_shown_click = function(shown){
-      this.current_shown = shown;
+    p.active_depts = function(){
+      return _.chain(this.orgs)
+              .filter(function(d){return d.active;})
+              .pluck("acronym")
+              .value();         
     };
 
     p.on_org_click = function(d){
-     // this functionality is handled in the dept_highlight function
-      d.active = !d.active;
-      if (d === this.orgs[0]){
-        _.each(this.orgs,function(d){d.active = false;});
-        d.active = true;
-      } else if (!_.isUndefined(d)){
-        var none_active  = _.isUndefined(_.find(this.orgs,function(d){return d.active;}));
-        this.orgs[0].active = none_active;
+      if (_.isUndefined(d)){
+         this.config.get_active("org", function(orgs, currently_selected){
+           _.each(orgs, function(org){
+             currently_selected = currently_selected || [];
+             if (currently_selected.indexOf(org.acronym) !== -1){
+               org.active = true;
+             } else {
+               org.active = false;
+             }
+           })
+         });
+      } else {
+        d.active = !d.active;
+        if (d === this.orgs[0]){
+          _.each(this.orgs,function(d){d.active = false;});
+          d.active = true;
+        } else {
+          this.orgs[0].active = false;
+        }
       }
+      this.config.update_selection("org",null,this.active_depts);
+
+      // highlight the active departments
+      this.org.selectAll("li")
+        .classed("background-medium",function(d){ return d.active;})
+        .classed("not-selected",function(d){ return !d.active;});
+      if (d3.event) {
+        d3.event.target.focus(); 
+      }
+      this.select["org"](d,null);
     };
 
     p.fetch_gov_data  = function(d){
+      var that = this,
+          config = this.config,
+          col = this.config.get_active("column"),
+          display_as = this.config.get_active("display_as");
 
-      if (this.current_column ){
-        var table = this.current_table,
-            col = this.current_column.nick || this.current_column.wcag,
-            data = table.horizontal(col, false,true);
+      setTimeout(function(){
+        that.rendered = false;
+      })
+
+      if (col && display_as && !this.rendered){
+        this.rendered = true;
+        var col_name = col.nick || col.wcag,
+            data = col.table.horizontal(col_name, false,true);
 
         data = _.chain(data)
           .map(function(val,key){
@@ -415,26 +447,43 @@
           .sortBy(function(d){return -d.value;});
 
         this.data = data.value();
-        this.current_display_as.func();
+
+        this.href = function(d,i){
+          // create URL to redirect to the per-org view of this data slice
+          d3.select(this).classed("router",true);
+          var cloned_config = new Config(_.clone(config.currently_selected));
+          cloned_config.currently_selected.pres_level = 'depts';
+          cloned_config.currently_selected.shown = d.name;
+          return "#analysis-"+cloned_config.to_url();
+        }
+        display_as.func();
       }
     };
 
     p.fetch_dept_data = function(){
+      var that = this,
+          col = this.config.get_active("column"),
+          display_as = this.config.get_active("display_as"),
+          shown = this.config.get_active("shown");
 
-      if (this.current_column && this.current_shown){
-        var table = this.current_table,
-            col = this.current_column.nick || this.current_column.wcag,
-            group = this.current_shown,
+      setTimeout(function(){
+        that.rendered = false;
+      })
+
+      if (col && shown && display_as && this.active_depts().length > 0 && !this.rendered){
+        this.rendered = true;
+        var table = col.table,
+            col_name = col.nick || col.wcag,
             data;
 
         if (_.isFunction(table.horizontal_data_prep)){
-          data = table.horizontal_data_prep(col,group);
+          data = table.horizontal_data_prep(col_name,shown.val);
         } else {
 
-          if (group === this.gt("all")){
-            data = table.dept_rollup(col,this.current_display_as);
+          if (shown.val === this.gt("all")){
+            data = table.dept_rollup(col_name,display_as);
           } else {
-            data = table.horizontal(col,true,true,this.current_display_as.data_style)[group];
+            data = table.horizontal(col_name,true,true,display_as.data_style)[shown.val];
           }
 
           data =  _.chain(data)
@@ -458,32 +507,30 @@
         }
        
         this.data = data.value();
-        this.current_display_as.func();
+        this.href = function(d,i){
+          // return href which will direct to the relevant data page
+          return "#t-"+d.dept.accronym+"-"+table.id.replace('table',"");
+        }
+        display_as.func();
       }
-    };
-
-    p.active_depts = function(){
-      return _.chain(this.orgs)
-              .filter(function(d){return d.active;})
-              .pluck("acronym")
-              .value();         
     };
 
     p.table_data = function(){
        delete this.chart;
        this.chart_area.selectAll("*").remove();
 
-       var type = this.current_column.type;
-       var _formater = this.formater;
-       var formater = function(d){ return _formater(type,d)};
-       var left_col_header  = this.current_pres_level === 'gov' ? this.gt("exp_category") : this.gt("org");
-       var right_col_header = this.gt("amount") + " $(000)";
-       var headers = [ [left_col_header, right_col_header , "%"] ];
-       var rows = _.map(this.data, function(d){
-         return [d.name,d.value];
-       });
-       var sum = d3.sum(rows,function(d){return d[1];});
-       var extent = d3.extent(rows,function(d){return d[1];});
+       var type = this.config.get_active("column").type;
+           _formater = this.formater,
+           formater = function(d){ return _formater(type,d)},
+           pres_level = this.config.get_active("pres_level"),
+           left_col_header  = pres_level.val === 'gov' ? this.gt("exp_category") : this.gt("org"),
+           right_col_header = this.gt("amount") + " $(000)",
+           headers = [ [left_col_header, right_col_header , "%"] ],
+           rows = _.map(this.data, function(d){
+             return [d.name,d.value];
+           }),
+           sum = d3.sum(rows,function(d){return d[1];}),
+           extent = d3.extent(rows,function(d){return d[1];});
        rows.push( ["Total", sum] );
        if (sum!==0){
         rows = _.map(rows, function(row){
@@ -518,26 +565,25 @@
          },
          node : this.chart_area.node()
        });
+      this.update_url();
     };
 
     p.graph_data = function(){
       //this.chart_area.selectAll("svg").remove();
       var formater = this.formater;
-      var type = this.current_column.type;
-      if (!this.chart) {
-        this.chart_area.selectAll("*").remove();
-        this.chart = D3.BAR.hbar({ 
+      var type = this.config.get_active("column").type;
+      this.chart_area.selectAll("*").remove();
+      var chart = D3.BAR.hbar({ 
         x_scale : d3.scale.pow().exponent(0.5),
         axisFormater : function(d){ return formater("compact",d);},
-        width : 860 
+        href : this.href
       })(this.chart_area);
-      }
       // create the chart
-      this.chart.update({
+      chart.update({
         data : this.data,
         formater : function(x){ return formater(type,x);}
       });
-
+      this.update_url();
     } ;
       
 

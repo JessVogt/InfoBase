@@ -45,7 +45,8 @@
           selection.each(function(i){
             var svg = d3.select(this)
                 .append("svg")
-             chart.call(options,svg,i);
+            options.width = $(this).width();
+            chart.call(options,svg,i);
           });
           return my;
         }

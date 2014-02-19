@@ -50,6 +50,7 @@
                  .domain(_.pluck(this.data, "name"))
                  .rangeRoundBands([0,this.height],this.padding,0),
            margins = this.margins,
+           href = this.href || function(d,i){return '#'},
            offset = D3.get_offset(this.svg),
            extent = d3.extent(this.data, function(d){return d.value;}),
            x_left = extent[0] > 0 ? 0 : extent[0],
@@ -88,7 +89,7 @@
 
       newg
          .append("rect")
-         .attr({ "width": "100%",
+         .attr({ "width": this.width +"px",
                   "height" : y.rangeBand()+"px",
                   "y": "0px",
          })
@@ -120,7 +121,7 @@
           "font-size" : "10px"
         })
         .append("a")
-        .attr("href","#")
+        .attr("href",href)
         .style("color","black");
 
       text.exit().remove();

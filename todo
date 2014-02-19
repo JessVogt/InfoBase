@@ -3,9 +3,11 @@ transition to-do:
     migrate new tables definiitons
     add in infographic sections
 
+  d3
+    refactor the width calculation
+
   analytics
-    fix the analysis settings section
-    add in appropriate links to details section 
+    construct automatic table/gaphic description
 
   infographic
     add in appropriate links to more detailed pages section
@@ -18,16 +20,19 @@ transition to-do:
   bubbles
     departmental search screen for bubbles
 
+  basic
+    reflow table widgets for tablets
+    redo the tables section
+
   general
+    fix loading screen
+    create definition for every column
     add in a return to choose your adventure button
-    phantomjs for accessibility
     create secondary landing page for choice between graphics heavy and text based
+    phantomjs for accessibility
     jshint all the files
     add more documentation for docco	
-    fix loading screen
     start work on FAQs
-    create definition for every column
     investigate data extract functionality
-    reflow departmental datasheets for mobile browser
     add in horizontal links between tables and analysis
     create diagram of how site works
