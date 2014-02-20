@@ -1,38 +1,47 @@
 transition to-do:
   ochro
-    migrate new tables definiitons
-    add in infographic sections
+    team
+      migrate new tables definiitons
+      add in infographic sections
 
   d3
-    refactor the width calculation
+    me
+      refactor the width calculation
 
   analytics
-    construct automatic table/gaphic description
+    team
+      construct automatic table/gaphic description
 
   infographic
-    add in appropriate links to more detailed pages section
-    table headers
-    hidden text
-    rebuild details sections
-    wordsmithing
-    add in special cases for departments with missing data
+    me
+      add in appropriate links to more detailed pages section
+      add in special cases for departments with missing data
+    team
+      table headers
+      hidden text
+      wordsmithing
 
   bubbles
-    departmental search screen for bubbles
+    me
+      departmental search screen for bubbles
 
   basic
-    reflow table widgets for tablets
-    redo the tables section
+    me 
+      reflow table widgets for tablets
+      rebuild details sections
 
   general
-    fix loading screen
-    create definition for every column
-    add in a return to choose your adventure button
-    create secondary landing page for choice between graphics heavy and text based
-    phantomjs for accessibility
-    jshint all the files
-    add more documentation for docco	
-    start work on FAQs
-    investigate data extract functionality
-    add in horizontal links between tables and analysis
-    create diagram of how site works
+    me
+      fix loading screen
+      add in breadcrumb trails
+      jshint all the files
+      add more documentation for docco	
+      create diagram of how site works
+    team
+      create definition for every column
+      start work on FAQs
+      add in horizontal links between tables and analysis
+      create secondary landing page for choice between graphics heavy and text based
+      phantomjs for accessibility
+      investigate data extract functionality
+

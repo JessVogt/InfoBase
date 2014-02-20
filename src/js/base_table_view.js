@@ -433,7 +433,6 @@
       _.each(this.drop_down_options, function(o){o.selected = false;});
 
       this.option.selected = true;
-      this.render();
       APP.dispatcher.once(this.make_signal(),this.focus);
     },
     focus : function(){

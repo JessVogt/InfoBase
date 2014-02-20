@@ -31,12 +31,18 @@
 
 (function() {
     var D3 = ns('D3'),
-    TOOLTIP = D3.TOOLTIP,
+    HORIZONTAL = ns("HORIZONTAL"),
     TABLES = ns('TABLES');
+    
 
-    var Config = function(currently_selected){
+    var Config = HORIZONTAL.Config = function(currently_selected){
       this._config = {};
       this.currently_selected = currently_selected;
+    }
+
+    Config.create_link = function(to_be_selected){
+      var temp_config = new Config(to_be_selected);
+      return "#analysis-"+temp_config.to_url();
     }
 
     Config.prototype.set_options = function(key,options,getter) {
@@ -70,11 +76,11 @@
       return $.param(this.currently_selected);
     }
 
-    D3.horizontal_gov =  function(app,container,config){
+    HORIZONTAL.horizontal_gov =  function(app,container,config){
       return new _horizontal_gov(app,container,config);
     };
 
-    _horizontal_gov = function(app,container,config){
+    var _horizontal_gov = function(app,container,config){
       container.children().remove();
       config = config || {};
       // ensure all functions on this object are always bound to this
@@ -451,10 +457,10 @@
         this.href = function(d,i){
           // create URL to redirect to the per-org view of this data slice
           d3.select(this).classed("router",true);
-          var cloned_config = new Config(_.clone(config.currently_selected));
-          cloned_config.currently_selected.pres_level = 'depts';
-          cloned_config.currently_selected.shown = d.name;
-          return "#analysis-"+cloned_config.to_url();
+          return Config.create_link(_.extend(_.clone(config.currently_selected),{
+            "pres_level" : "depts",
+            "shown" : d.name
+          }));
         }
         display_as.func();
       }

@@ -3,11 +3,24 @@
     var APP = ns('APP');
     var T = ns('TABLES');
     var D3 = ns('D3');
+    var HORIZONTAL = ns("HORIZONTAL");
     var STORY = ns('D3.STORY');
     var PACK = ns('D3.PACK');
     var BAR = ns('D3.BAR');
 
     var height = 250;
+
+    var create_table_link = function(table,col,lang){
+      var a = d3.select(document.createElement("a"));
+      var href =  HORIZONTAL.Config.create_link({
+        table : table.id,
+        col : table.col_from_nick(col).fully_qualified_name,
+        period : table.coverage
+      });
+      return a.attr("href",href).html(table.name[lang]);
+    }
+
+    window.ctl = create_table_link;
 
     STORY.story =  function(container,app,dept){
       return new _story(container,app,dept);
@@ -234,7 +247,8 @@
         toggles :[ {
           toggle_text : this.app.get_text("previous_year_fisc")
         }],
-        target : this.container
+        target : this.container,
+        sources : create_table_link(this.t.table8,"total_net_auth",this.lang)
       });
 
       PACK.simple_circle_chart({
@@ -255,6 +269,8 @@
       })(chapter.toggle_area());
 
       chapter.text_area().html(T.m(text, this.written_data));
+
+      
 
     };
 

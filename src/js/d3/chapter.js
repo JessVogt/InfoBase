@@ -34,10 +34,14 @@
     var _chapter = function(options){
       _.bindAll(this, _.functions(this));
       var toggles = options.toggles || [];
+
       this.el = options.target
         .append("div")
         .attr("class","span-8 border-all")
         .style({ "font-size" : "20px" });
+
+      this.el.append("h2").html("Title");
+      
       //clear the div
       //this will align the chapters vertically
       options.target.append("div")
@@ -47,6 +51,10 @@
       this.toggle_sections = [];
       // add the main section
       add_section(this.el);
+      // add in the source 
+      if (options.sources) {
+        add_source(this.el,options.sources);
+      }
 
       _.each(toggles, function(toggle_section){
           var new_section= this.add_toggle_section(this.el,toggle_section.toggle_text);
@@ -75,6 +83,10 @@
     chapterp.toggle_area = function(index){
       index = index || 0;
       return this.toggle_sections[index];
+    }
+
+    chapterp.source_area = function(){
+      return this.el.select("source");
     }
 
     chapterp.add_toggle_section = function(target,text){
@@ -121,6 +133,16 @@
       _.delay( this.dispatch.toggle,0,el,closed ? "closed" : "open");
     }
 
+    function add_source(target,sources){
+      if (!_.isArray(sources)){
+        target = [sources];
+      }
+      _.each(sources, function(source){
+        target.select(".sources").append(source);
+      })
+
+    }
+
     function add_section(target){
       /*
        * adds a 
@@ -136,6 +158,9 @@
         .append("div")
         .attr("class", "inner margin-top-large margin-left-large")
       el.append("div").attr("class",span +" graphic margin-bottom-none margin-left-none");
+      el.append("div").attr("class", span+ " source margin-bottom-none margin-left-none")
+        .style({"font-size":"12px"})
+        .html("Source: ");
       el.append("div").attr("class","clear").style("margin-bottom","15px");
 
     }

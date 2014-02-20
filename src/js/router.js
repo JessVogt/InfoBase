@@ -184,7 +184,7 @@ $.parseParams = function(query) {
       config = $.parseParams(config);
      } 
      this.add_title($('<h1>').html("Horizontal Analysis"));
-      this.app.analysis =   ns().D3.horizontal_gov(this.app,container,config);
+      this.app.analysis =   ns().D3.HORIZONTAL.horizontal_gov(this.app,container,config);
     }
   });
 

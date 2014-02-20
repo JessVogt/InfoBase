@@ -79,38 +79,38 @@ badd +122 les/src/js/app.js
 badd +12 les/src/js/tables.js
 badd +12 les/src/js/od/tables.js
 badd +17 les/src/js/queries.js
-badd +621 les/src/js/base_table_view.js
-badd +57 les/src/js/d3/core.js
-badd +17 les/src/js/d3/bar.js
+badd +427 les/src/js/base_table_view.js
+badd +22 les/src/js/d3/core.js
+badd +11 les/src/js/d3/bar.js
 badd +26 les/src/js/d3/tooltip.js
 badd +83 les/test/test-data.js
-badd +32 les/test/test.html
+badd +8 les/test/test.html
 badd +9 les/src/js/od/od.js
 badd +13 les/src/js/mappers.js
-badd +80 les/Gruntfile.js
-badd +166 les/src/js/d3/dept_explore.js
-badd +122 les/src/js/d3/pack.js
+badd +67 les/Gruntfile.js
+badd +1 les/src/js/d3/dept_explore.js
+badd +245 les/src/js/d3/pack.js
 badd +328 les/test/test-d3.js
-badd +397 les/src/mako/od_handlebars_templates.html
+badd +395 les/src/mako/od_handlebars_templates.html
 badd +50 les/src/js/waiting.js
-badd +20 les/src/mako/extracss.html
+badd +234 les/src/mako/extracss.html
 badd +3 les/src/js/ExDB-start.js
-badd +110 les/src/js/d3/hbar.js
-badd +44 les/src/js/d3/horizontal.js
-badd +14 les/src/mako/od_script_includes.html
+badd +53 les/src/js/d3/hbar.js
+badd +70 les/src/js/d3/horizontal.js
+badd +19 les/src/mako/od_script_includes.html
 badd +140 les/src/js/d3/chapter.js
-badd +609 les/src/js/d3/story.js
+badd +2 les/src/js/d3/story.js
 badd +212 les/src/js/d3/circle_chart.js
 badd +128 les/src/js/d3/arrow.js
 badd +6 les/src/mako/od.html
-badd +104 les/src/js/router.js
+badd +183 les/src/js/router.js
 badd +104 les/src/js/loader.js
 badd +21 les/src/js/sandbox.js
 badd +28 les/src/js/handlebars_helpers.js
 badd +11 les/src/mako/od_fr.html
-badd +9 les/todo
+badd +7 les/todo
 silent! argdel *
-edit les/todo
+edit les/src/js/d3/chapter.js
 set splitbelow splitright
 wincmd _ | wincmd |
 vsplit
@@ -123,120 +123,6 @@ set winheight=1 winwidth=1
 exe 'vert 1resize ' . ((&columns * 88 + 88) / 177)
 exe 'vert 2resize ' . ((&columns * 88 + 88) / 177)
 argglobal
-setlocal keymap=
-setlocal noarabic
-setlocal noautoindent
-setlocal balloonexpr=
-setlocal nobinary
-setlocal bufhidden=
-setlocal buflisted
-setlocal buftype=
-setlocal nocindent
-setlocal cinkeys=0{,0},0),:,0#,!^F,o,O,e
-setlocal cinoptions=
-setlocal cinwords=if,else,while,do,for,switch
-setlocal colorcolumn=
-setlocal comments=s1:/*,mb:*,ex:*/,://,b:#,:%,:XCOMM,n:>,fb:-
-setlocal commentstring=/*%s*/
-setlocal complete=.,w,b,u,t,i
-setlocal concealcursor=
-setlocal conceallevel=0
-setlocal completefunc=
-setlocal nocopyindent
-setlocal cryptmethod=
-setlocal nocursorbind
-setlocal nocursorcolumn
-set cursorline
-setlocal cursorline
-setlocal define=
-setlocal dictionary=
-setlocal nodiff
-setlocal equalprg=
-setlocal errorformat=
-setlocal expandtab
-if &filetype != ''
-setlocal filetype=
-endif
-setlocal foldcolumn=0
-setlocal foldenable
-setlocal foldexpr=0
-setlocal foldignore=#
-setlocal foldlevel=0
-setlocal foldmarker={{{,}}}
-setlocal foldmethod=manual
-setlocal foldminlines=1
-setlocal foldnestmax=20
-setlocal foldtext=foldtext()
-setlocal formatexpr=
-setlocal formatoptions=tcq
-setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*
-setlocal grepprg=
-setlocal iminsert=0
-setlocal imsearch=0
-setlocal include=
-setlocal includeexpr=
-setlocal indentexpr=
-setlocal indentkeys=0{,0},:,0#,!^F,o,O,e
-setlocal noinfercase
-setlocal iskeyword=@,48-57,_,192-255
-setlocal keywordprg=
-setlocal nolinebreak
-setlocal nolisp
-setlocal nolist
-setlocal makeprg=
-setlocal matchpairs=(:),{:},[:]
-setlocal modeline
-setlocal modifiable
-setlocal nrformats=octal,hex
-set number
-setlocal number
-setlocal numberwidth=4
-setlocal omnifunc=
-setlocal path=
-setlocal nopreserveindent
-setlocal nopreviewwindow
-setlocal quoteescape=\\
-setlocal noreadonly
-setlocal norelativenumber
-setlocal norightleft
-setlocal rightleftcmd=search
-setlocal noscrollbind
-setlocal shiftwidth=2
-setlocal noshortname
-setlocal nosmartindent
-setlocal softtabstop=2
-set spell
-setlocal spell
-setlocal spellcapcheck=[.?!]\\_[\\])'\"\	\ ]\\+
-setlocal spellfile=
-setlocal spelllang=en
-setlocal statusline=
-setlocal suffixesadd=
-setlocal swapfile
-setlocal synmaxcol=3000
-if &syntax != ''
-setlocal syntax=
-endif
-setlocal tabstop=2
-setlocal tags=
-setlocal textwidth=0
-setlocal thesaurus=
-setlocal noundofile
-setlocal nowinfixheight
-setlocal nowinfixwidth
-set nowrap
-setlocal nowrap
-setlocal wrapmargin=0
-silent! normal! zE
-let s:l = 8 - ((7 * winheight(0) + 21) / 43)
-if s:l < 1 | let s:l = 1 | endif
-exe s:l
-normal! zt
-8
-normal! 057|
-wincmd w
-argglobal
-edit les/src/js/d3/dept_explore.js
 setlocal keymap=
 setlocal noarabic
 setlocal noautoindent
@@ -342,12 +228,126 @@ set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 242 - ((17 * winheight(0) + 21) / 43)
+let s:l = 35 - ((18 * winheight(0) + 21) / 43)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-242
-normal! 020|
+35
+normal! 019|
+wincmd w
+argglobal
+edit les/src/js/d3/story.js
+setlocal keymap=
+setlocal noarabic
+setlocal noautoindent
+setlocal balloonexpr=
+setlocal nobinary
+setlocal bufhidden=
+setlocal buflisted
+setlocal buftype=
+setlocal cindent
+setlocal cinkeys=0{,0},0),:,0#,!^F,o,O,e
+setlocal cinoptions=j1,J1
+setlocal cinwords=if,else,while,do,for,switch
+setlocal colorcolumn=
+setlocal comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,://
+setlocal commentstring=//%s
+setlocal complete=.,w,b,u,t,i
+setlocal concealcursor=
+setlocal conceallevel=0
+setlocal completefunc=
+setlocal nocopyindent
+setlocal cryptmethod=
+setlocal nocursorbind
+setlocal nocursorcolumn
+set cursorline
+setlocal cursorline
+setlocal define=
+setlocal dictionary=
+setlocal nodiff
+setlocal equalprg=
+setlocal errorformat=
+setlocal expandtab
+if &filetype != 'javascript'
+setlocal filetype=javascript
+endif
+setlocal foldcolumn=0
+setlocal foldenable
+setlocal foldexpr=0
+setlocal foldignore=#
+setlocal foldlevel=0
+setlocal foldmarker={{{,}}}
+setlocal foldmethod=manual
+setlocal foldminlines=1
+setlocal foldnestmax=20
+setlocal foldtext=foldtext()
+setlocal formatexpr=
+setlocal formatoptions=croql
+setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*
+setlocal grepprg=
+setlocal iminsert=0
+setlocal imsearch=0
+setlocal include=
+setlocal includeexpr=
+setlocal indentexpr=
+setlocal indentkeys=0{,0},:,0#,!^F,o,O,e
+setlocal noinfercase
+setlocal iskeyword=@,48-57,_,192-255
+setlocal keywordprg=
+setlocal nolinebreak
+setlocal nolisp
+setlocal nolist
+setlocal makeprg=
+setlocal matchpairs=(:),{:},[:]
+setlocal modeline
+setlocal modifiable
+setlocal nrformats=octal,hex
+set number
+setlocal number
+setlocal numberwidth=4
+setlocal omnifunc=javascriptcomplete#CompleteJS
+setlocal path=
+setlocal nopreserveindent
+setlocal nopreviewwindow
+setlocal quoteescape=\\
+setlocal noreadonly
+setlocal norelativenumber
+setlocal norightleft
+setlocal rightleftcmd=search
+setlocal noscrollbind
+setlocal shiftwidth=2
+setlocal noshortname
+setlocal nosmartindent
+setlocal softtabstop=2
+set spell
+setlocal spell
+setlocal spellcapcheck=[.?!]\\_[\\])'\"\	\ ]\\+
+setlocal spellfile=
+setlocal spelllang=en
+setlocal statusline=
+setlocal suffixesadd=
+setlocal swapfile
+setlocal synmaxcol=3000
+if &syntax != 'javascript'
+setlocal syntax=javascript
+endif
+setlocal tabstop=2
+setlocal tags=
+setlocal textwidth=0
+setlocal thesaurus=
+setlocal noundofile
+setlocal nowinfixheight
+setlocal nowinfixwidth
+set nowrap
+setlocal nowrap
+setlocal wrapmargin=0
+silent! normal! zE
+let s:l = 2 - ((1 * winheight(0) + 21) / 43)
+if s:l < 1 | let s:l = 1 | endif
+exe s:l
+normal! zt
+2
+normal! 0
 wincmd w
 exe 'vert 1resize ' . ((&columns * 88 + 88) / 177)
 exe 'vert 2resize ' . ((&columns * 88 + 88) / 177)
