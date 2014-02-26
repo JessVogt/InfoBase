@@ -150,6 +150,7 @@
 
     APP.dispatcher.trigger("new_table",
     {"id": 'table1',
+     "data_type" : "financial_data",
      "coverage": "in_year",
      "add_cols": function(){
       this.add_col("")
@@ -421,6 +422,7 @@
   APP.dispatcher.trigger("new_table",
   {
    id: "table2",
+   "data_type" : "financial_data",
    coverage: "in_year",
    add_cols : function(){
      this.add_col("")
@@ -741,6 +743,7 @@
   APP.dispatcher.trigger("new_table",
   {
   id: "table4",
+   "data_type" : "financial_data",
   "coverage": "historical",
   "add_cols": function(){
      this.add_col("")
@@ -1031,6 +1034,7 @@
   APP.dispatcher.trigger("new_table",
     {
      "id": "table5",
+     "data_type" : "financial_data",
      "coverage": "historical",
      add_cols : function(){
        this.add_col(
@@ -1230,6 +1234,7 @@
   APP.dispatcher.trigger("new_table",
   {
    id: "table6",
+   "data_type" : "financial_data",
    "coverage": "historical",
    add_cols : function(){
        this.add_col(
@@ -1419,6 +1424,7 @@
   APP.dispatcher.trigger("new_table",
   {
    id: "table7",
+   "data_type" : "financial_data",
    "coverage": "historical",
    add_cols : function(){
      this.add_col("")
@@ -1686,7 +1692,8 @@
   });
   APP.dispatcher.trigger("new_table",
   {
-   id: "table8",
+   "id": "table8",
+   "data_type" : "financial_data",
    "coverage": "in_year",
    add_cols : function(){
       this.add_col("")

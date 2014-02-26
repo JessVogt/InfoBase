@@ -29,7 +29,6 @@ iabbr pdb import pdbpdb.set_trace():w
 iabbr im import 
 let &cpo=s:cpo_save
 unlet s:cpo_save
-set background=dark
 set backspace=indent,eol,start
 set expandtab
 set fileencodings=ucs-bom,utf-8,default,latin1
@@ -96,21 +95,21 @@ badd +50 les/src/js/waiting.js
 badd +234 les/src/mako/extracss.html
 badd +3 les/src/js/ExDB-start.js
 badd +53 les/src/js/d3/hbar.js
-badd +70 les/src/js/d3/horizontal.js
+badd +495 les/src/js/d3/horizontal.js
 badd +19 les/src/mako/od_script_includes.html
-badd +140 les/src/js/d3/chapter.js
-badd +2 les/src/js/d3/story.js
+badd +55 les/src/js/d3/chapter.js
+badd +251 les/src/js/d3/story.js
 badd +212 les/src/js/d3/circle_chart.js
 badd +128 les/src/js/d3/arrow.js
 badd +6 les/src/mako/od.html
-badd +183 les/src/js/router.js
+badd +188 les/src/js/router.js
 badd +104 les/src/js/loader.js
 badd +21 les/src/js/sandbox.js
 badd +28 les/src/js/handlebars_helpers.js
 badd +11 les/src/mako/od_fr.html
-badd +7 les/todo
+badd +10 les/todo
 silent! argdel *
-edit les/src/js/d3/chapter.js
+edit les/src/js/d3/story.js
 set splitbelow splitright
 wincmd _ | wincmd |
 vsplit
@@ -228,15 +227,15 @@ set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 35 - ((18 * winheight(0) + 21) / 43)
+let s:l = 111 - ((19 * winheight(0) + 21) / 43)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-35
-normal! 019|
+111
+normal! 039|
 wincmd w
 argglobal
-edit les/src/js/d3/story.js
+edit les/src/js/queries.js
 setlocal keymap=
 setlocal noarabic
 setlocal noautoindent
@@ -342,12 +341,12 @@ set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 2 - ((1 * winheight(0) + 21) / 43)
+let s:l = 61 - ((29 * winheight(0) + 21) / 43)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-2
-normal! 0
+61
+normal! 026|
 wincmd w
 exe 'vert 1resize ' . ((&columns * 88 + 88) / 177)
 exe 'vert 2resize ' . ((&columns * 88 + 88) / 177)

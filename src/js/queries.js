@@ -47,15 +47,27 @@
         }
         rollup =   rollup == false ? false : true;
         if (_.isFunction(func)){
-          nest = nest.key(func({app:app,table:table,col:col}));
+          nest = nest.key(func({
+            app:app,
+            table:table,
+            col:_.isArray(col) ? col[0] : col
+          }));
         }
         if (include_dept) {
           nest.key(function(d){return d.dept;});
         }
         if (rollup) {
             nest.rollup(function(leaves){
-                            return d3.sum(leaves, function(leaf){
-                              return leaf[col];});
+               if (_.isArray(col)){
+                  return _.map(col, function(_col){
+                    return d3.sum(leaves,function(leaf){
+                      return leaf[_col]
+                    })
+                  });
+               } else {
+                  return d3.sum(leaves, function(leaf){
+                    return leaf[col];});
+               }
             });
         }
         return nest.map(data);

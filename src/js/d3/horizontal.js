@@ -7,7 +7,7 @@
  *     `horizontal_gov
  *     dd_section
  *     start_build
- *     make_list
+ *     make_select
  *     -- handle various selections --
  *     on_pres_level_click
        on_period_click
@@ -31,10 +31,9 @@
 
 (function() {
     var D3 = ns('D3'),
-    HORIZONTAL = ns("HORIZONTAL"),
+    HORIZONTAL = ns("D3.HORIZONTAL"),
     TABLES = ns('TABLES');
     
-
     var Config = HORIZONTAL.Config = function(currently_selected){
       this._config = {};
       this.currently_selected = currently_selected;
@@ -87,7 +86,7 @@
       _.bindAll(this, _.functions(this));
       // this will eventually fill up with all the functions
       this.app = app;
-      this.no_wrap = ['org'];
+      this.no_wrap = ['org',"column_choice"];
       this.gt = app.get_text;
       var lang = this.lang = app.state.get("lang");
       this.formater = app.formater;
@@ -109,16 +108,16 @@
 
       // setup each of the four sections for the time period covers, the relevant tale names
       // then the columns of a particular table and then the groups
-      var events = ["period", "table", "column", "display_as", "shown", 'org', "pres_level"];
+      var events = ["data_type","period", "table", "column", "column_choice","display_as", "shown", 'org', "pres_level","sort_by"];
       this.select = d3.dispatch.apply(this,events);
       // listen to all events to update the config object 
 
       // add the default option sections
+      this.add_section("data_type",2);
       this.add_section('pres_level',2);
       this.add_section('period',2);
       this.add_section('display_as',2);
       this.add_section('table',2);
-      this.add_section('column',2);
 
       this.pres_level.attr("tabindex",0);
 
@@ -192,7 +191,7 @@
 
    };
 
-   p.make_list = function(name,data,options){
+   p.make_select = function(name,data,options){
      //
      //
      options = options || {};
@@ -221,7 +220,7 @@
      return sel;
    };
 
-   p.make_dept_list = function(name,data,options){
+   p.make_ul = function(name,data,options){
      options = options || {};
      data_key = options.data_key || function(d,i){return i;};
      html = options.html || _.identity;
@@ -239,21 +238,33 @@
        .append("a")
        .attr("href","#")
        .html(html)
-       .on("click",this.on_org_click);
+       .on("click",this["on_"+name+"_click"]);
 
      return sel;
    }
 
    p.start_build = function(_class, span){
+      var data_types = _.chain(TABLES.tables)
+        .map( function(t){
+           return t.data_type;
+        })
+        .uniq()
+        .map(function(type){
+          return {name : this.gt(type), val : type};
+        },this)
+        .value();
+      this.config.set_options("data_type",data_types);
+      this.make_select("data_type",data_types,{html : function(d){return d.name;}});
+
       // setup the presentation level choice
       // the data
-       var pres_levels = [
-         {name : this.gt("government_stats"), func: this.fetch_gov_data ,val : 'gov'},
-         {name : this.gt("org"), func : this.fetch_dept_data, val : 'depts'}
-       ];
-       this.config.set_options("pres_level",pres_levels);
-       // create the list
-       this.make_list("pres_level",pres_levels,{html : function(d){return d.name;}});
+      var pres_levels = [
+        {name : this.gt("government_stats"), func: this.fetch_gov_data ,val : 'gov'},
+        {name : this.gt("org"), func : this.fetch_dept_data, val : 'depts'}
+      ];
+      this.config.set_options("pres_level",pres_levels);
+      // create the list
+      this.make_select("pres_level",pres_levels,{html : function(d){return d.name;}});
 
       // setup the period choice
       // the data
@@ -261,7 +272,7 @@
                    {val: "historical",name: "Historical"}];
       this.config.set_options("period",period_data);
        // create the list
-      this.make_list("period",period_data,{html : function(d){return d.name;}});
+      this.make_select("period",period_data,{html : function(d){return d.name;}});
 
       // setup the display as choice
       // the data
@@ -276,321 +287,373 @@
           val : "table"} ]; 
        this.config.set_options("display_as",display_as_data);
        // create the list
-       this.make_list("display_as",display_as_data,{html : function(d){return d.name;}});
+       this.make_select("display_as",display_as_data,{html : function(d){return d.name;}});
 
-       // for each of the elements fire off a selection of the first choice
-      this.on_pres_level_click();
 
-      this.period.node().focus();
+     this.on_data_type_click();
+     this.data_type.node().focus();
+   };
+
+   p.on_data_type_click = function(){
+     // for each of the elements fire off a selection of the first choice
+     this.on_pres_level_click();
+   }
+
+   p.on_pres_level_click = function(d){
+
+     if (d.val === 'gov'){
+       // remove the shown groups and organizations section
+       if (_.has(this, 'shown')){ this.shown.remove();}
+       if (_.has(this, 'org')){ this.org.remove();}
+     } else {
+       // add the shown groups and organizations section
+       this.add_section('shown',2);
+       this.add_section('org',2,"ul");
+     }
+     // these on bindings will over-write what was there previously
+     this.select.on("shown.get_data",d.func);
+     this.select.on("column.get_data",d.func);
+     this.select.on("org.get_data",d.func);
+     this.select.on("display_as.get_data",d.func);
+
+     this.on_period_click();
 
    };
 
-    p.on_pres_level_click = function(d){
+   p.on_period_click = function(period){
 
-      if (d.val === 'gov'){
-        // remove the shown groups and organizations section
-        if (_.has(this, 'shown')){ this.shown.remove();}
-        if (_.has(this, 'org')){ this.org.remove();}
-      } else {
-        // add the shown groups and organizations section
-        this.add_section('shown',2);
-        this.add_section('org',2,"ul");
-      }
-      // these on bindings will over-write what was there previously
-      this.select.on("shown.get_data",d.func);
-      this.select.on("column.get_data",d.func);
-      this.select.on("org.get_data",d.func);
-      this.select.on("display_as.get_data",d.func);
+     var lang = this.lang;
+     // setup the tables choice
+     // the data
+     var tables = _.chain(TABLES.tables)
+       .filter(function(table){
+           return table.coverage === period.val;
+       })
+       .map(function(table){
+          return _.extend({val: table.id},table);
+       })
+       .value();
 
-      this.on_display_as_click();
-      this.on_period_click();
+     this.config.set_options("table",tables);
+     // make the list
+     this.make_select("table",tables,{
+       html : function(d){return d.name[lang];} ,
+       data_key : function(d){return d.id;}
+     });
 
-      if (d3.event){
-        d.func();
-      }
+     this.on_display_as_click();
+   };
 
-    };
+   p.on_display_as_click = function(d){
+     // always remove the org section
+     // it will be recreated later if needed
+     if (_.has(this, 'org')){ this.org.remove();}
+     if (d.val === 'table') {
+       // remove the shown groups and organizations section
+       if (_.has(this, 'column')){ this.column.remove();}
+       if (_.has(this, 'shown')){ this.shown.remove();}
+       // add the shown groups and organizations section
+       this.add_section('column_choice',2,"ul");
+       this.add_section('sort_by',2);
+     } else {
+       if (_.has(this, 'column_choice')){ this.column_choice.remove();}
+       if (_.has(this, 'sort_by')){ this.sort_by.remove();}
+       // add the shown groups and organizations section
+       this.add_section('column',2);
+     }
 
-    p.on_period_click = function(period){
+     this.on_table_click();
+   };
 
-      var lang = this.lang;
-      // setup the tables choice
-      // the data
-      var tables = _.chain(TABLES.tables)
-        .filter(function(table){
-            return table.coverage === period.val;
-        })
-        .map(function(table){
-           return _.extend({val: table.id},table);
-        })
-        .value();
+   p.on_table_click = function(table){
 
-      this.config.set_options("table",tables);
-      // make the list
-      this.make_list("table",tables,{
-        html : function(d){return d.name[lang];} ,
-        data_key : function(d){return d.id;}
-      });
-      this.on_table_click();
-    };
-
-    p.on_display_as_click = function(d){};
-
-    p.on_table_click = function(table){
-
-       var lang = this.lang,
-           // retrieve the columns of the current table
-           cols = _.chain(table.flat_headers)
-             .filter(function(col){
-                return col.fully_qualified_name;
-              })
-              .map(function(col){
-                return _.extend({val: col.fully_qualified_name},col);
-              })
-              .value();
-
-       this.config.set_options("column",cols);
-       this.make_list("column",cols,{
-         html: function(d){return d.fully_qualified_name;},
-         data_key : function(d){ return d.wcag;}
-       });
-
-      this.on_column_click();
-    };
-
-    p.on_column_click = function(){
-       if (this.config.get_active("pres_level").val !== 'gov'){
-         this.build_shown_and_orgs();
-       }
-    };
-
-    p.build_shown_and_orgs  = function(){
-      var col = this.config.get_active("column"),
-          table = col.table,
-          shown = _.chain(table.horizontal(col.nick || col.wcag,true))
-                   .keys()
-                   .sortBy(table.horizontal_group_sort)
-                   .map(function(x){
-                     return {val :x};
-                   })
-                   .value();
-      // add the All option
-      shown.unshift({val : this.gt("all")});
-
-      this.config.set_options("shown",shown);
-
-      this.make_list("shown",shown, {html: function(d,i){return d.val;}});
-      this.make_dept_list("org",this.orgs,{html: function(d){ return d.name;}});
-
-      this.on_shown_click();
-      this.on_org_click();
-    };
-
-    p.on_shown_click = function(shown){ };
-
-    p.active_depts = function(){
-      return _.chain(this.orgs)
-              .filter(function(d){return d.active;})
-              .pluck("acronym")
-              .value();         
-    };
-
-    p.on_org_click = function(d){
-      if (_.isUndefined(d)){
-         this.config.get_active("org", function(orgs, currently_selected){
-           _.each(orgs, function(org){
-             currently_selected = currently_selected || [];
-             if (currently_selected.indexOf(org.acronym) !== -1){
-               org.active = true;
-             } else {
-               org.active = false;
-             }
-           })
-         });
-      } else {
-        d.active = !d.active;
-        if (d === this.orgs[0]){
-          _.each(this.orgs,function(d){d.active = false;});
-          d.active = true;
-        } else {
-          this.orgs[0].active = false;
-        }
-      }
-      this.config.update_selection("org",null,this.active_depts);
-
-      // highlight the active departments
-      this.org.selectAll("li")
-        .classed("background-medium",function(d){ return d.active;})
-        .classed("not-selected",function(d){ return !d.active;});
-      if (d3.event) {
-        d3.event.target.focus(); 
-      }
-      this.select["org"](d,null);
-    };
-
-    p.fetch_gov_data  = function(d){
-      var that = this,
-          config = this.config,
-          col = this.config.get_active("column"),
-          display_as = this.config.get_active("display_as");
-
-      setTimeout(function(){
-        that.rendered = false;
-      })
-
-      if (col && display_as && !this.rendered){
-        this.rendered = true;
-        var col_name = col.nick || col.wcag,
-            data = col.table.horizontal(col_name, false,true);
-
-        data = _.chain(data)
-          .map(function(val,key){
-            return {
-              name : key,
-              value : val
-            };
-          })
-          .sortBy(function(d){return -d.value;});
-
-        this.data = data.value();
-
-        this.href = function(d,i){
-          // create URL to redirect to the per-org view of this data slice
-          d3.select(this).classed("router",true);
-          return Config.create_link(_.extend(_.clone(config.currently_selected),{
-            "pres_level" : "depts",
-            "shown" : d.name
-          }));
-        }
-        display_as.func();
-      }
-    };
-
-    p.fetch_dept_data = function(){
-      var that = this,
-          col = this.config.get_active("column"),
+      var lang = this.lang,
+          // retrieve the columns of the current table
           display_as = this.config.get_active("display_as"),
-          shown = this.config.get_active("shown");
+          cols = _.chain(table.flat_headers)
+            .filter(function(col){
+               return col.fully_qualified_name;
+             })
+             .map(function(col){
+               return _.extend({val: col.fully_qualified_name},col);
+             })
+             .value();
+      if (display_as.val === 'table'){
+         cols.unshift({val :"__all__", fully_qualified_name : lang == 'en'? "All" : "Tout"});
+         this.config.set_options("column_choice",cols);
+         this.make_ul("column_choice",cols,{
+           html: function(d){return d.fully_qualified_name;},
+           data_key : function(d){ return d.wcag;}
+         });
 
-      setTimeout(function(){
-        that.rendered = false;
-      })
+         this.config.set_options("sort_by",_.tail(cols));
+         this.make_select("sort_by",cols,{
+           html: function(d){return d.fully_qualified_name;},
+           data_key : function(d){ return d.wcag;}
+         });
 
-      if (col && shown && display_as && this.active_depts().length > 0 && !this.rendered){
-        this.rendered = true;
-        var table = col.table,
-            col_name = col.nick || col.wcag,
-            data;
+         this.on_column_choice_click();
+      } else if (display_as.val === 'graph'){
+         this.config.set_options("column",cols);
+         this.make_select("column",cols,{
+           html: function(d){return d.fully_qualified_name;},
+           data_key : function(d){ return d.wcag;}
+         });
 
-        if (_.isFunction(table.horizontal_data_prep)){
-          data = table.horizontal_data_prep(col_name,shown.val);
-        } else {
-
-          if (shown.val === this.gt("all")){
-            data = table.dept_rollup(col_name,display_as);
-          } else {
-            data = table.horizontal(col_name,true,true,display_as.data_style)[shown.val];
-          }
-
-          data =  _.chain(data)
-            .map(function(val,key){
-              return {name : window.depts[key].dept[this.lang],
-                      dept : window.depts[key],
-                      value : val
-                };
-            },this)
-          .filter(function(d){
-            return d.value !== 0;
-          })
-          .sortBy(function(d){return -d.value;});
-          // check for the "All"  department not being active
-          if (!this.orgs[0].active){
-            var active_depts =  this.active_depts();
-            data = data.filter(function(d){
-              return _.contains(active_depts,d.dept.accronym);
-            });
-          }
-        }
-       
-        this.data = data.value();
-        this.href = function(d,i){
-          // return href which will direct to the relevant data page
-          return "#t-"+d.dept.accronym+"-"+table.id.replace('table',"");
-        }
-        display_as.func();
+         this.on_column_click();
       }
-    };
+   };
 
-    p.table_data = function(){
-       delete this.chart;
-       this.chart_area.selectAll("*").remove();
+   p.on_column_click = function(){
+     if (this.config.get_active("pres_level").val !== 'gov'){
+       this.build_shown_and_orgs();
+     }
+   };
 
-       var type = this.config.get_active("column").type;
-           _formater = this.formater,
-           formater = function(d){ return _formater(type,d)},
-           pres_level = this.config.get_active("pres_level"),
-           left_col_header  = pres_level.val === 'gov' ? this.gt("exp_category") : this.gt("org"),
-           right_col_header = this.gt("amount") + " $(000)",
-           headers = [ [left_col_header, right_col_header , "%"] ],
-           rows = _.map(this.data, function(d){
-             return [d.name,d.value];
-           }),
-           sum = d3.sum(rows,function(d){return d[1];}),
-           extent = d3.extent(rows,function(d){return d[1];});
-       rows.push( ["Total", sum] );
-       if (sum!==0){
-        rows = _.map(rows, function(row){
-          var val = row[1];
-          if (val >= 0  || extent[1] < 0 ){
-            return row.concat([val / sum]);
-          } 
-          return row.concat([0]);
+   p.on_column_choice_click = function(d){
+     if (_.isUndefined(d)){
+       debugger
+     };
+     if (this.config.get_active("pres_level").val !== 'gov'){
+       this.build_shown_and_orgs();
+     }
+   };
+
+   p.build_shown_and_orgs  = function(){
+     var col = this.config.get_active("column"),
+         table = col.table,
+         shown = _.chain(table.horizontal(col.nick || col.wcag,true))
+                  .keys()
+                  .sortBy(table.horizontal_group_sort)
+                  .map(function(x){
+                    return {val :x};
+                  })
+                  .value();
+     // add the All option
+     shown.unshift({val : this.gt("all")});
+
+     this.config.set_options("shown",shown);
+
+     this.make_select("shown",shown, {html: function(d,i){return d.val;}});
+     this.make_ul("org",this.orgs,{html: function(d){ return d.name;}});
+
+     this.on_shown_click();
+     this.on_org_click();
+   };
+
+   p.on_shown_click = function(shown){ };
+
+   p.on_sort_by_click = function(){
+
+
+   }
+
+   p.active_depts = function(){
+     return _.chain(this.orgs)
+             .filter(function(d){return d.active;})
+             .pluck("acronym")
+             .value();         
+   };
+
+
+   p.on_org_click = function(d){
+     if (_.isUndefined(d)){
+        this.config.get_active("org", function(orgs, currently_selected){
+          _.each(orgs, function(org){
+            currently_selected = currently_selected || [];
+            if (currently_selected.indexOf(org.acronym) !== -1){
+              org.active = true;
+            } else {
+              org.active = false;
+            }
+          })
         });
+     } else {
+       d.active = !d.active;
+       if (d === this.orgs[0]){
+         _.each(this.orgs,function(d){d.active = false;});
+         d.active = true;
+       } else {
+         this.orgs[0].active = false;
        }
-       TABLES.prepare_data({
-         headers : headers,
-         rows : rows,
-         row_class : ["left_text","right_number","right_number"]
-       });
-       TABLES.d3_build_table({
-         headers : headers,
-         rows : rows,
-         //data_key_func : 
-         rowseach : function(d){
-           if (d === _.last(rows)){
-             d3.select(this).classed("background-medium",true);
-           }
-         },
-         tdseach : function(d,i){
-           if (i===1){
-             d3.select(this).html(function(d){ return formater(d.val); });
-           }
-           else if (i===2){
-             d3.select(this).html(function(d){ return _formater("percentage",d.val); });
-           }
-         },
-         node : this.chart_area.node()
-       });
-      this.update_url();
-    };
+     }
+     this.config.update_selection("org",null,this.active_depts);
 
-    p.graph_data = function(){
-      //this.chart_area.selectAll("svg").remove();
-      var formater = this.formater;
-      var type = this.config.get_active("column").type;
+     // highlight the active departments
+     this.org.selectAll("li")
+       .classed("background-medium",function(d){ return d.active;})
+       .classed("not-selected",function(d){ return !d.active;});
+     if (d3.event) {
+       d3.event.target.focus(); 
+     }
+     this.select["org"](d,null);
+   };
+
+   p.fetch_gov_data  = function(d){
+     var that = this,
+         config = this.config,
+         col = this.config.get_active("column"),
+         display_as = this.config.get_active("display_as");
+
+     setTimeout(function(){
+       that.rendered = false;
+     })
+
+     if (col && display_as && !this.rendered){
+       this.rendered = true;
+       var col_name = col.nick || col.wcag,
+           data = col.table.horizontal(col_name, false,true);
+
+       data = _.chain(data)
+         .map(function(val,key){
+           return {
+             name : key,
+             value : val
+           };
+         })
+         .sortBy(function(d){return -d.value;});
+
+       this.data = data.value();
+
+       this.href = function(d,i){
+         // create URL to redirect to the per-org view of this data slice
+         d3.select(this).classed("router",true);
+         return Config.create_link(_.extend(_.clone(config.currently_selected),{
+           "pres_level" : "depts",
+           "shown" : d.name
+         }));
+       }
+       display_as.func();
+     }
+   };
+
+   p.fetch_dept_data = function(){
+     var that = this,
+         col = this.config.get_active("column"),
+         display_as = this.config.get_active("display_as"),
+         shown = this.config.get_active("shown");
+
+     setTimeout(function(){
+       that.rendered = false;
+     })
+
+     if (col && shown && display_as && this.active_depts().length > 0 && !this.rendered){
+       this.rendered = true;
+       var table = col.table,
+           col_name = col.nick || col.wcag,
+           data;
+
+       if (_.isFunction(table.horizontal_data_prep)){
+         data = table.horizontal_data_prep(col_name,shown.val);
+       } else {
+
+         if (shown.val === this.gt("all")){
+           data = table.dept_rollup(col_name,display_as);
+         } else {
+           data = table.horizontal(col_name,true,true,display_as.data_style)[shown.val];
+         }
+
+         data =  _.chain(data)
+           .map(function(val,key){
+             return {name : window.depts[key].dept[this.lang],
+                     dept : window.depts[key],
+                     value : val
+               };
+           },this)
+         .filter(function(d){
+           return d.value !== 0;
+         })
+         .sortBy(function(d){return -d.value;});
+         // check for the "All"  department not being active
+         if (!this.orgs[0].active){
+           var active_depts =  this.active_depts();
+           data = data.filter(function(d){
+             return _.contains(active_depts,d.dept.accronym);
+           });
+         }
+       }
+      
+       this.data = data.value();
+       this.href = function(d,i){
+         // return href which will direct to the relevant data page
+         return "#t-"+d.dept.accronym+"-"+table.id.replace('table',"");
+       }
+       display_as.func();
+     }
+   };
+
+   p.table_data = function(){
+      delete this.chart;
       this.chart_area.selectAll("*").remove();
-      var chart = D3.BAR.hbar({ 
-        x_scale : d3.scale.pow().exponent(0.5),
-        axisFormater : function(d){ return formater("compact",d);},
-        href : this.href
-      })(this.chart_area);
-      // create the chart
-      chart.update({
-        data : this.data,
-        formater : function(x){ return formater(type,x);}
+
+      var type = this.config.get_active("column").type;
+          _formater = this.formater,
+          formater = function(d){ return _formater(type,d)},
+          pres_level = this.config.get_active("pres_level"),
+          left_col_header  = pres_level.val === 'gov' ? this.gt("exp_category") : this.gt("org"),
+          right_col_header = this.gt("amount") + " $(000)",
+          headers = [ [left_col_header, right_col_header , "%"] ],
+          rows = _.map(this.data, function(d){
+            return [d.name,d.value];
+          }),
+          sum = d3.sum(rows,function(d){return d[1];}),
+          extent = d3.extent(rows,function(d){return d[1];});
+      rows.push( ["Total", sum] );
+      if (sum!==0){
+       rows = _.map(rows, function(row){
+         var val = row[1];
+         if (val >= 0  || extent[1] < 0 ){
+           return row.concat([val / sum]);
+         } 
+         return row.concat([0]);
+       });
+      }
+      TABLES.prepare_data({
+        headers : headers,
+        rows : rows,
+        row_class : ["left_text","right_number","right_number"]
       });
-      this.update_url();
-    } ;
+      TABLES.d3_build_table({
+        headers : headers,
+        rows : rows,
+        //data_key_func : 
+        rowseach : function(d){
+          if (d === _.last(rows)){
+            d3.select(this).classed("background-medium",true);
+          }
+        },
+        tdseach : function(d,i){
+          if (i===1){
+            d3.select(this).html(function(d){ return formater(d.val); });
+          }
+          else if (i===2){
+            d3.select(this).html(function(d){ return _formater("percentage",d.val); });
+          }
+        },
+        node : this.chart_area.node()
+      });
+     this.update_url();
+   };
+
+   p.graph_data = function(){
+     //this.chart_area.selectAll("svg").remove();
+     var formater = this.formater;
+     var type = this.config.get_active("column").type;
+     if (!this.chart) {
+      this.chart_area.selectAll("*").remove();
+      this.chart = D3.BAR.hbar({ 
+        x_scale : d3.scale.pow().exponent(0.5),
+        axisFormater : function(d){ return formater("compact",d);}
+      })(this.chart_area);
+     }
+     // create the chart
+     this.chart.update({
+       data : this.data,
+       href : this.href,
+       formater : function(x){ return formater(type,x);}
+     });
+     this.update_url();
+   } ;
       
 
 })();

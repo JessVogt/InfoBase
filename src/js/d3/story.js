@@ -3,7 +3,7 @@
     var APP = ns('APP');
     var T = ns('TABLES');
     var D3 = ns('D3');
-    var HORIZONTAL = ns("HORIZONTAL");
+    var HORIZONTAL = ns("D3.HORIZONTAL");
     var STORY = ns('D3.STORY');
     var PACK = ns('D3.PACK');
     var BAR = ns('D3.BAR');
