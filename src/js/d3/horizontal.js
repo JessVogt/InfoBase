@@ -91,10 +91,6 @@
             .attr("class","span-6 chart border-all margin-none")
             .style({"margin-left":"10px","overflow-x":"auto"});
 
-      // setup each of the four sections for the time period covers, the relevant tale names
-      // then the columns of a particular table and then the groups
-      var events = ["data_type","period", "table", "column", "column_choice","display_as", "shown", 'org', "pres_level","sort_by"];
-      this.select = d3.dispatch.apply(this,events);
       // listen to all events to update the config object 
 
       // add the default option sections
@@ -152,8 +148,6 @@
          that.config.update_selection(_class,d.val);
          // call the original function
          old_func(d);
-         // 
-         that.select[_class](d);
        };
      }
    };
@@ -328,6 +322,9 @@
      if (_.has(this, 'column')){ this.column.remove();}
      if (_.has(this, 'column_choice')){ this.column_choice.remove();}
      if (_.has(this, 'sort_by')){ this.sort_by.remove();}
+     if (_.has(this, 'dimension')){ this.dimension.remove();}
+
+     this.add_section("dimension",2);
 
      if (d.val === 'table') {
        // remove the shown groups and organizations section
@@ -348,9 +345,30 @@
    };
 
    p.on_table_click = function(table){
+    var dimensions = _.map(table.dimensions, function(d){
+           return {val: d, name : d};
+         });
+    
+     if (table.dimensions.length > 1){
+       this.dimension.classed("ui-screen-hidden",false);
+       this.config.set_options("dimension",dimensions);
+       this.make_select("dimension",dimensions,{
+         html: function(d){return d.name;}
+       });
+     } else {
+       this.dimension.classed("ui-screen-hidden",true);
+       this.config.set_options("dimension",dimensions);
+       this.config.currently_selected.dimension = dimensions[0].val;
+     }
+
+     this.on_dimension_click();
+   };
+
+   p.on_dimension_click = function(dimension){
 
       var lang = this.lang,
           // retrieve the columns of the current table
+          table = this.config.get_active("table"),
           display_as = this.config.get_active("display_as"),
           cols = _.chain(table.flat_headers)
             .filter(function(col){
@@ -379,6 +397,7 @@
 
          this.on_column_click();
       }
+
    };
 
    p.on_column_click = function(){
@@ -452,11 +471,9 @@
          active_col = col || sort_by,
          active_col_name = active_col.nick || active_col.wcag,
          table = this.config.get_active("table"),
-         shown = _.chain(table.dimensions)
-                  .map(function(dimension){
-                     return _.keys(table[dimension](active_col_name,true));
-                  })
-                  .flatten()
+         dimension = this.config.get_active("dimension"),
+         shown =  _.chain(table[dimension.val](active_col_name,true))
+                  .keys()
                   .sortBy(table.horizontal_group_sort)
                   .map(function(x){
                     return {val :x};
@@ -527,6 +544,7 @@
          col = this.config.get_active("column"),
          cols = this.config.get_active("column_choice"),
          table = this.config.get_active("table"),
+         dimension = this.config.get_active("dimension"),
          sort_by = this.config.get_active("sort_by"),
          display_as = this.config.get_active("display_as"),
          col_name, col_names, to_get, data,shown_param;
@@ -542,7 +560,7 @@
        }
 
        to_get = col_name || col_names;
-       data = table.horizontal(to_get, false,true);
+       data = table[dimension.val](to_get, false,true);
 
        data = _.chain(data)
         .map(function(val,key){
@@ -580,6 +598,7 @@
          cols = this.config.get_active("column_choice"),
          table = this.config.get_active("table"),
          sort_by = this.config.get_active("sort_by"),
+         dimension = this.config.get_active("dimension"),
          display_as = this.config.get_active("display_as"),
          shown = this.config.get_active("shown"),
          col_name, col_names, to_get, data;
@@ -595,34 +614,29 @@
        }
        to_get = col_name || col_names;
 
-       if (_.isFunction(table.horizontal_data_prep)){
-         data = table.horizontal_data_prep(to_get,shown.val);
+       if (shown.val === this.gt("all")){
+         data = table.dept_rollup(to_get,display_as);
        } else {
+         data = table[dimension.val](to_get,true,true,display_as.data_style)[shown.val];
+       }
 
-         if (shown.val === this.gt("all")){
-           data = table.dept_rollup(to_get,display_as);
-         } else {
-           data = table.horizontal(to_get,true,true,display_as.data_style)[shown.val];
-         }
-
-         data =  _.chain(data)
-           .map(function(val,key){
-             return {name : window.depts[key].dept[this.lang],
-                     dept : window.depts[key],
-                     value : val
-               };
-           },this)
-         .filter(function(d){
-           return d.value !== 0;
-         })
-         .sortBy(function(d){return -d.value;});
-         // check for the "All"  department not being active
-         if (!this.orgs[0].active){
-           var active_depts =  this.active_depts();
-           data = data.filter(function(d){
-             return _.contains(active_depts,d.dept.accronym);
-           });
-         }
+       data =  _.chain(data)
+         .map(function(val,key){
+           return {name : window.depts[key].dept[this.lang],
+                   dept : window.depts[key],
+                   value : val
+             };
+         },this)
+       .filter(function(d){
+         return d.value !== 0;
+       })
+       .sortBy(function(d){return -d.value;});
+       // check for the "All"  department not being active
+       if (!this.orgs[0].active){
+         var active_depts =  this.active_depts();
+         data = data.filter(function(d){
+           return _.contains(active_depts,d.dept.accronym);
+         });
        }
       
        this.data = data.value();
