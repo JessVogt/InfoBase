@@ -11,53 +11,54 @@
     var Config = HORIZONTAL.Config = function(currently_selected){
       this._config = {};
       this.currently_selected = currently_selected;
-    }
+    };
 
     Config.create_link = function(to_be_selected){
       var temp_config = new Config(to_be_selected);
       return "#analysis-"+temp_config.to_url();
-    }
+    };
 
     Config.prototype.del = function(key){
       delete this._config[key];
       delete this.currently_selected[key];
-    }
+    };
 
     Config.prototype.set_options = function(key,options,getter) {
       this._config[key] = options;
-    }
+    };
 
     Config.prototype.update_selection = function(key,val, updater){
-      updater = updater || function(vals,val){ return val; }
+      updater = updater || function(vals,val){ return val; };
       this.currently_selected[key] = updater(this._config[key],val);
-    }
+    };
 
     Config.prototype.get_active = function(key,getter){
       // create a standard getter function which will be passed
       // vals => all possible values for the key
       // currently_selected => the current selection, this could be undefined
       getter = getter || function(vals,currently_selected){
+        var found;
         if (vals){
           if (_.isArray(currently_selected)){
-            var found = _.filter(vals, function(val){ return _.contains(currently_selected,val.val);});
+            found = _.filter(vals, function(val){ return _.contains(currently_selected,val.val);});
           } else if (currently_selected){
-            var found =  _.find(vals, function(val){return val.val === currently_selected});
+            found =  _.find(vals, function(val){return val.val === currently_selected;});
           }
           return found || _.first(vals) ;
         }
-      }
+      };
       return getter(this._config[key],this.currently_selected[key]);
-    }
+    };
 
     Config.prototype.active_index = function(key,getter) {
       if (_.isArray(this._config[key])) {
         return this._config[key].indexOf(this.get_active(key,getter));
       }
-    }
+    };
 
     Config.prototype.to_url = function(){
       return $.param(this.currently_selected);
-    }
+    };
 
     HORIZONTAL.horizontal_gov =  function(app,container,config){
       return new _horizontal_gov(app,container,config);
@@ -124,7 +125,7 @@
    p.update_url = function(){
      var config = this.config.to_url();
      this.app.router.navigate("analysis-"+config);
-   }
+   };
 
    p.wrap_on_click = function(_class){
      var that = this;
@@ -141,12 +142,12 @@
        this[standard_func_name] = function(){
          // if d is indefined it's because it's from an event being fired from
          // a change event on a select element
-         var selected_option
+         var selected_option,d;
          if ( this !== that){
            var i = this.selectedIndex;
-           var d = that.config._config[_class][i];
+           d = that.config._config[_class][i];
          } else {
-          var d = that.config.get_active(_class);
+           d = that.config.get_active(_class);
          }
          that.config.update_selection(_class,d.val);
          // call the original function
@@ -155,7 +156,7 @@
          that.select[_class](d);
        };
      }
-   }
+   };
 
    p.add_section = function(_class, span,element){
       this.wrap_on_click(_class);
@@ -199,7 +200,7 @@
          }
         });
 
-     this[name].select("select").on("change",this["on_"+name+"_click"])
+     this[name].select("select").on("change",this["on_"+name+"_click"]);
      
      return sel;
    };
@@ -225,7 +226,7 @@
        .on("click",this["on_"+name+"_click"]);
 
      return sel;
-   }
+   };
 
    p.start_build = function(_class, span){
       var data_types = _.chain(TABLES.tables)
@@ -281,7 +282,7 @@
    p.on_data_type_click = function(){
      // for each of the elements fire off a selection of the first choice
      this.on_pres_level_click();
-   }
+   };
 
    p.on_pres_level_click = function(d){
 
@@ -405,13 +406,13 @@
        if ( contains && currently_active.length > 1){
          currently_active = _.filter(currently_active,function(v){
            return v !== d.val;
-         })
+         });
        // d isn't active
        } else if (!contains){
          currently_active.push(d.val);
        }
        this.config.currently_selected.column_choice = currently_active;
-      };
+      }
 
      this.config.set_options("sort_by",this.config.get_active("column_choice"));
      this.make_select("sort_by",this.config.get_active("column_choice"),{
@@ -438,7 +439,7 @@
      } else {
        pres_level.func();
      }
-   }
+   };
    
    p.build_shown_and_orgs  = function(){
      if (_.has(this, 'shown')){ this.shown.remove();}
@@ -451,13 +452,17 @@
          active_col = col || sort_by,
          active_col_name = active_col.nick || active_col.wcag,
          table = this.config.get_active("table"),
-         shown = _.chain(table.horizontal(active_col_name,true))
-                  .keys()
+         shown = _.chain(table.dimensions)
+                  .map(function(dimension){
+                     return _.keys(table[dimension](active_col_name,true));
+                  })
+                  .flatten()
                   .sortBy(table.horizontal_group_sort)
                   .map(function(x){
                     return {val :x};
                   })
                   .value();
+         
      // add the All option
      shown.unshift({val : this.gt("all")});
 
@@ -492,7 +497,7 @@
             } else {
               org.active = false;
             }
-          })
+          });
         });
      } else {
        d.active = !d.active;
@@ -524,7 +529,7 @@
          table = this.config.get_active("table"),
          sort_by = this.config.get_active("sort_by"),
          display_as = this.config.get_active("display_as"),
-         col_name, col_names, to_get, data;
+         col_name, col_names, to_get, data,shown_param;
 
      if ((col || cols) && display_as){
 
@@ -551,9 +556,9 @@
        this.data = data.value();
 
        if (_.isArray(to_get)){
-         var shown_param = "val";
+         shown_param = "val";
        } else {
-         var shown_param = "name";
+         shown_param = "name";
        }
 
        this.href = function(d,i){
@@ -563,7 +568,7 @@
            "pres_level" : "depts",
            "shown" : d[shown_param]
          }));
-       }
+       };
 
        display_as.func();
      }
@@ -588,7 +593,7 @@
        } else {
          col_name = col.nick || col.wcag;
        }
-       var to_get = col_name || col_names;
+       to_get = col_name || col_names;
 
        if (_.isFunction(table.horizontal_data_prep)){
          data = table.horizontal_data_prep(to_get,shown.val);
@@ -627,13 +632,13 @@
            // return href which will direct to the relevant data page
            var dept = window.dept_name_map[d.val];
            return "#t-"+ dept.accronym+"-"+table.id.replace('table',"");
-         }
+         };
 
        } else {
          this.href = function(d,i){
            // return href which will direct to the relevant data page
            return "#t-"+d.dept.accronym+"-"+table.id.replace('table',"");
-         }
+         };
        }
        display_as.func();
      }
@@ -654,7 +659,7 @@
           href = this.href,
           formater = this.formater,
           formaters = _.map(types, function(type){ 
-            return function(d){ return formater(type,d);}
+            return function(d){ return formater(type,d);};
           }),
           pres_level = this.config.get_active("pres_level"),
           left_col_header  = [pres_level.val === 'gov' ? this.gt("exp_category") : this.gt("org")],
@@ -666,7 +671,7 @@
               return [d.name].concat(d.value);
             }
           }),
-          row_classes = ['left_left'].concat(_.map(cols, function(){return "right_number"}));
+          row_classes = ['left_left'].concat(_.map(cols, function(){return "right_number";}));
           sum = _.map(cols, function(col,i){
              return d3.sum(rows,function(d){return d[i+1];});
           });

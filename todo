@@ -9,6 +9,9 @@ transition to-do:
       refactor the width calculation
 
   analytics
+    me
+     add in total amount at the top of graphs
+     add in multiple horizontal functions
     team
       construct automatic table/gaphic description
 
@@ -37,6 +40,8 @@ transition to-do:
       jshint all the files
       add more documentation for docco	
       create diagram of how site works
+      add testing
+        ensure multiple horizontal funtions don't return the same keys
     team
       create definition for every column
       start work on FAQs

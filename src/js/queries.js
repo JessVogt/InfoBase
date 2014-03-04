@@ -14,9 +14,16 @@
     // create the departments mapping 
     table.depts = _dept_rollup(undefined,true,false);
     // create additional, more specialized horizontal dimensions
-    _.each(table.dimensions, function(func,d){
-      table[d] =  make_horizontal_func(app,func,table);
+    var include_in_analytics = table.dimensions.include_in_analytics || [];
+    include_in_analytics.unshift("horizontal");
+
+    _.each(table.dimensions, function(attr,d){
+      if (_.isFunction(attr)) {
+        table[d] =  make_horizontal_func(app,attr,table);
+      }
     });
+
+    table.dimensions = include_in_analytics;
     // add in query object for each table
     table.q = function(dept){
       if (!_.isUndefined(dept))

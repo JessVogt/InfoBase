@@ -52,6 +52,7 @@
       // add the main section
       add_section(this.el);
       // add in the source 
+      
       if (options.sources) {
         add_source(this.el,options.sources);
       }
@@ -102,8 +103,8 @@
           .attr("class","ui-link")
           .on("click", this.onToggle); 
       var div = target.append("div").attr("class", "span-8 toggle ");
-     toggler.datum(div);
-     return div
+      toggler.datum(div);
+      return div
     }
 
     // respond to the click on the div element, this implemented for touch screens
@@ -134,13 +135,12 @@
     }
 
     function add_source(target,sources){
-      if (!_.isArray(sources)){
-        target = [sources];
-      }
-      _.each(sources, function(source){
-        target.select(".sources").append(source);
-      })
-
+      target.select(".source")
+             .data(sources)
+             .append("a")
+             .attr("class","router")
+             .attr("href",function(d){return d.href;})
+             .html(function(d){return d.html});
     }
 
     function add_section(target){

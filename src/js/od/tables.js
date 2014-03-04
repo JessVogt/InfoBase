@@ -76,7 +76,16 @@
       //  .append($('#'+ dv.def.id+'_horizontal_instructions_' + dv.lang).html());
   });
 
-  TABLES.vote_stat_dimension = function(options){
+  TABLES.vote_stat_dimension = function(options) {
+      return function(d){
+        if (d.votestattype != 999) {
+          return "voted";
+        }
+        return 'stat';
+      }    
+    }
+
+  TABLES.major_vote_stat = function(options){
     var app = options.app,
     by_type_and_desc = d3.nest()
       .key(function(d){return d.votestattype})
@@ -271,15 +280,9 @@
         }
      },
      "dimensions" : {
-       "horizontal" :  TABLES.vote_stat_dimension,
-        "voted_stat"  : function(options) {
-          return function(d){
-            if (d.votestattype != 999) {
-              return "voted";
-            }
-            return 'stat';
-          }    
-        }
+       "include_in_analytics" : ["voted_stat"],
+       "horizontal" : TABLES.major_vote_stat,
+       "voted_stat" : TABLES.vote_stat_dimension
      },
      "link": {
          "en": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-eng.asp",
@@ -822,15 +825,9 @@
      }
   },
   "dimensions" : {
-    "horizontal" : TABLES.vote_stat_dimension,
-    "voted_stat"  : function(options) {
-      return function(d){
-        if (d.votestattype != 999) {
-          return "voted";
-        }
-        return 'stat';
-      }    
-    }
+     "include_in_analytics" : ["voted_stat"],
+     "horizontal" : TABLES.major_vote_stat,
+     "voted_stat" : TABLES.vote_stat_dimension
   },
   "sort": function (mapped_rows, lang) {
       var grps = _.groupBy(mapped_rows, function (row) { return _.isNumber(row[0]) });
@@ -1875,15 +1872,9 @@
       }
    },
    "dimensions" : {
-     "horizontal" : TABLES.vote_stat_dimension,
-     "voted_stat"  : function(options) {
-       return function(d){
-         if (d.votestattype != 999) {
-           return "voted";
-         }
-         return 'stat';
-       }    
-     }
+     "include_in_analytics" : ["voted_stat"],
+     "horizontal" : TABLES.major_vote_stat,
+     "voted_stat" : TABLES.vote_stat_dimension
    },
    "link": {
     "en": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-eng.asp",

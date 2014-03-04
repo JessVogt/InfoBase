@@ -10,17 +10,27 @@
 
     var height = 250;
 
-    var create_table_link = function(table,col,lang){
-      var a = d3.select(document.createElement("a"));
-      var href =  HORIZONTAL.Config.create_link({
-        table : table.id,
-        col : table.col_from_nick(col).fully_qualified_name,
-        period : table.coverage
-      });
-      return a.attr("href",href).html(table.name[lang]);
+    var create_analytics_link = function(table,cols,lang){
+      if (_.isArray(cols)){
+        var href =  HORIZONTAL.Config.create_link({
+          table : table.id,
+          column_choice : _.map(cols, function(col){
+            return table.col_from_nick(col).fully_qualified_name;
+          }),
+          period : table.coverage
+        });
+      } else {
+        var href =  HORIZONTAL.Config.create_link({
+          table : table.id,
+          column : table.col_from_nick(cols).fully_qualified_name,
+          period : table.coverage
+        });
+      }
+      return {
+        html : table.name[lang],
+        href : href
+      };
     }
-
-    window.ctl = create_table_link;
 
     STORY.story =  function(container,app,dept){
       return new _story(container,app,dept);
@@ -33,6 +43,9 @@
       this.gt = app.get_text;
       this.calculated_values = {};
       this.lang = app.lang;
+      this.create_link = function(table,cols){
+        return create_analytics_link(this.t[table],cols,app.lang);
+      }
       // set the formaters
       this.percent = function(x){return app.formater("percentage",x);},
       this.compact = function(x){return app.formater("compact1",x);},
@@ -248,7 +261,7 @@
           toggle_text : this.app.get_text("previous_year_fisc")
         }],
         target : this.container,
-        sources : create_table_link(this.t.table8,"total_net_auth",this.lang)
+        sources : [this.create_link("table8","total_net_auth")]
       });
 
       PACK.simple_circle_chart({
