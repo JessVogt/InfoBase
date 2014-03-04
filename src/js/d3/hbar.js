@@ -121,7 +121,6 @@
           "font-size" : "10px"
         })
         .append("a")
-        .attr("href",href)
         .style("color","black");
 
       text.exit().remove();
@@ -139,7 +138,8 @@
               "top" : margins.top +4+ y(d.name) + "px"
            });
          single.selectAll("a")
-           .html(d.name + " - "+ formater(d.value));
+           .html(d.name + " - "+ formater(d.value))
+           .attr("href",href);
        });
 
        g.each(function(d,i){

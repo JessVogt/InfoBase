@@ -73,6 +73,12 @@
     window.mins = d3.nest()
       .key(function(d){ return d.min.en})
       .map(_.values(window.depts));
+    window.dept_name_map = _.chain(window.depts)
+      .map(function(dept){
+        return [dept.dept[app.state.get("lang")],dept];
+      })
+      .object()
+      .value();
     APP.dispatcher.trigger_a("app_ready",app);
   });
 
