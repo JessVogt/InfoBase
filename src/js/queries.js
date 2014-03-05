@@ -81,6 +81,11 @@
      };
 
      f.resolver = function (col,include_dept,rollup){ 
+       /// distinction for col is needed because [col].toString() === col
+       // and if col is an array, a different response is returned
+       if (_.isArray(col)){
+        return "col_array"+[col,include_dept,rollup].join("");
+       }
        return [col,include_dept,rollup].join("");
      }
      return _.memoize(f,f.resolver);

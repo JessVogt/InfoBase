@@ -691,13 +691,17 @@
           });
       rows.push( ["Total"].concat( sum) );
 
-      TABLES.prepare_and_build_table({
+      var table = TABLES.prepare_and_build_table({
         headers : [headers],
         rows : rows,
         row_class : row_classes,
-        rowseach : function(d){
+        table_class : "wet-boew-zebra table-condensed ",
+        rowseach : function(d,i){
           if (d === _.last(rows)){
             d3.select(this).classed("background-medium",true);
+          }
+          if (i % 2 === 1 ){
+            d3.select(this).classed("odd",true);
           }
         },
         tdseach : function(d,i){
@@ -713,10 +717,16 @@
         },
         node : this.chart_area
                     .append("div")
-                    .style({"width": 300 + cols.length*100+"px"})
+                    .style({
+                      "width": 300 + cols.length*100+"px",
+                      "margin" : "auto"
+                    })
                     .attr("class","table-container")
                     .node()
       });
+
+     d3.select(table).style({"margin-top":"0px"});
+
      this.update_url();
    };
 
