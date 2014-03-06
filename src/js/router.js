@@ -28,16 +28,22 @@
 
   APP.AppRouter = Backbone.Router.extend({
     initialize : function(options){
+      this.app = options.app;
+      this.gt = this.app.get_text;
       var that = this;
+
+      this.bread_crumb = $('#gcwu-bc-in ol');
+      this.bread_crumb.find("li:last").addClass("infobase-links");
+
+      this.start_crumb = {html : this.app.get_text("title"), href : "#start"};
+      this.choose_crumb = {html : this.app.get_text("choose_adventure"), href : "#adv"};
+
       $(document).on("click", "a.router",function(e){
         that.navigate($(e.target).attr("href"),{trigger:true});
       });
+
       // when this number is larger than 0, a back button can be clicked
       // to return to the previous location in the app
-      this.nav_counter = -1;
-      this.on("route",function(){ that.nav_counter++; });
-
-      this.app = options.app;
       this.containers = {};
       // for each of the defined routes
       //  1 - create a container and apply an id equal to the function name
@@ -74,14 +80,11 @@
         });
       });
     },
-    can_go_back : function(){
-      return this.nav_counter >0;
-    },
     routes : {
       "*splat"  : "default"
     },
     default : function(){
-     this.containers["start"].html("");
+     this.containers.start.html("");
      this.navigate("start",{trigger:true});
     },
     _routes: {
@@ -109,9 +112,37 @@
       }
       $(".nav_area .left").append(title);
     },
+    add_crumbs : function(crumbs){
+      crumbs = crumbs || [];
+      crumbs.unshift(this.start_crumb);
+      this.reset_crumbs();
+      var last = crumbs.pop();
+      _.each(crumbs, function(crumb){
+         this.bread_crumb.append(
+          $('<li>')
+          .addClass("infobase-links")
+          .append(
+            $("<a>")
+              .addClass("router")
+              .attr("href",crumb.href)
+              .html(crumb.html)
+            )
+         );
+      },this);
+      this.bread_crumb.append(
+        $('<li>')
+        .addClass("infobase-links")
+        .html(last.html)
+      );
+    },
+    reset_crumbs : function(title){
+       this.bread_crumb.find(".infobase-links").remove();
+    },
     start : function(container){
       var inside = APP.t('#greeting_'+this.app.lang)();
       var outside = APP.t("#greeting")({greeting : inside});
+
+      this.add_crumbs();
       this.app.reset();
 
       APP.dispatcher.trigger("reset",this.app);
@@ -120,6 +151,7 @@
       APP.dispatcher.trigger_a("home",this.app);
     },
     search : function(container){
+      this.add_crumbs([this.choose_crumb,{html: this.gt("search")}]);
       this.add_title("search");
       if (!this.app.full_dept_list){
         this.app.full_dept_list = new APP.fullDeptList({ app: this.app, container : container });
@@ -127,11 +159,12 @@
       }
     },
     choose_your_adventure : function(container){
+      this.add_crumbs([this.choose_crumb]);
       this.add_title("choose_adventure");
       container.html(APP.t('#choose_adventure')());
     },
     basic_dept_view: function(container, dept) {
-      var dept = depts[dept];
+      dept = depts[dept];
       if (dept){
         this.app.state.set("dept",dept);
       }
@@ -141,35 +174,40 @@
       APP.dispatcher.trigger("dept_ready",container,this.app, dept);
     },
 
-    basic_dept_table_view : function(container,dept,table){
+    basic_dept_table_view : function(container,dept_table){
       var dept,table,args = dept_table.split("_");
       dept = args[0];
       table = "table" + args[1];
-      var table = _.find(TABLES.tables,function(t){ return t.id === table;});
+      table = _.find(TABLES.tables,function(t){ return t.id === table;});
       if (table){
         this.app.state.set({table:table},{silent:true});
       }
-      var dept = depts[dept];
+      dept = depts[dept];
       if (dept){
         this.app.state.set("dept",dept);
       }
 
     },
     infographic : function(container){
+      this.add_crumbs([this.choose_crumb,{html: "Infographic"}]);
+      
      this.add_title($('<h1>').html("Infographic"));
      this.app.explore =  D3.STORY.story(container, this.app);
     },
     infographic_dept : function(container,dept){
-      var dept = depts[dept];
+      dept = depts[dept];
       if (dept){
         this.app.state.set("dept",dept);
       }
       var title =  dept.dept[this.app.lang] + " Infographic";
+      this.add_crumbs([this.choose_crumb,{html: title}]);
       this.add_title($('<h1>').html(title));
       container.children().remove();
       D3.STORY.story(container, this.app, dept.accronym);
     },
     explore : function(container, method){
+      this.add_crumbs([this.choose_crumb,
+          {html: "Explore"}]);
       this.add_title($('<h1>').html("Explore"));
       if (!this.app.explorer){
         this.app.explorer = D3.bubbleDeptList(this.app, container, method);
@@ -178,10 +216,11 @@
       }
     },
     analysis: function(container,config){
-     if (config!== 'start') {
-      config = $.parseParams(config);
-     } 
-     this.add_title($('<h1>').html("Horizontal Analysis"));
+      if (config!== 'start') {
+       config = $.parseParams(config);
+      } 
+      this.add_crumbs([this.choose_crumb,{html: "Horizontal Analysis"}]);
+      this.add_title($('<h1>').html("Horizontal Analysis"));
       this.app.analysis =   D3.HORIZONTAL.horizontal_gov(this.app,container,config);
     }
   });

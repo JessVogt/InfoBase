@@ -93,8 +93,8 @@
   PARSER.parse_lang = function(lang){
     function each_line(line){
       return [line[0], {
-        'en': line[1],
-        'fr': line[2]
+        'en': line[2],
+        'fr': line[3]
       }];
     }
     return _.object(_.map(lang,each_line));

@@ -442,12 +442,24 @@
       T.prepare_and_build_table({
         rows : data,
         headers : headers,
+        table_class : "table-condensed ",
+        rowseach : function(d,i){
+          if (i % 2 === 1 ){
+            d3.select(this).classed("odd",true);
+          }
+        },
         row_class : ['left_text','right_number'],
         node : chapter.text_area().node()
       });
 
       // add the personnel table
       T.prepare_and_build_table({
+        table_class : "table-condensed ",
+        rowseach : function(d,i){
+          if (i % 2 === 1 ){
+            d3.select(this).classed("odd",true);
+          }
+        },
         rows : personnel_data,
         headers : [['','']],
         row_class : ['left_text','right_number'],
@@ -457,6 +469,12 @@
 
       // add the personnel table
       T.prepare_and_build_table({
+        table_class : "table-condensed ",
+        rowseach : function(d,i){
+          if (i % 2 === 1 ){
+            d3.select(this).classed("odd",true);
+          }
+        },
         rows : internal_services_data,
         headers : [['','']],
         row_class : ['left_text','right_number'],
@@ -544,6 +562,12 @@
               },this).value();
          chapter.toggle_area(i+1).select(".text .inner").html(text)
          T.prepare_and_build_table({
+          table_class : "table-condensed ",
+          rowseach : function(d,i){
+            if (i % 2 === 1 ){
+              d3.select(this).classed("odd",true);
+            }
+          },
            rows :  top_writen,
            headers : [["","",""]] ,
            row_class : ["left_text",'left_text','right_number'],
@@ -732,6 +756,12 @@
               },this).value();
          chapter.toggle_area(i+1).select(".text .inner").html(text)
          T.prepare_and_build_table({
+          table_class : "table-condensed ",
+          rowseach : function(d,i){
+            if (i % 2 === 1 ){
+              d3.select(this).classed("odd",true);
+            }
+          },
            rows :  top_writen,
            headers : [["",""]] ,
            row_class : ['left_text','right_number'],
@@ -808,6 +838,12 @@
 
       chapter.text_area().html(T.m(text, this.written_data));
       T.prepare_and_build_table({
+          table_class : "table-condensed ",
+          rowseach : function(d,i){
+            if (i % 2 === 1 ){
+              d3.select(this).classed("odd",true);
+            }
+          },
         rows :  table_data,
         headers : [["","Expenditures"]] ,
         row_class : ['left_text','right_number'],

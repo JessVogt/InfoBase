@@ -11,7 +11,6 @@ transition to-do:
   analytics
     me
      add in total amount at the top of graphs
-     add in multiple horizontal functions
     team
       construct automatic table/gaphic description
 
@@ -36,7 +35,6 @@ transition to-do:
   general
     me
       fix loading screen
-      add in breadcrumb trails
       jshint all the files
       add more documentation for docco	
       create diagram of how site works
