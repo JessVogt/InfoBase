@@ -3,6 +3,17 @@
   var TABLES = ns('TABLES');
   var APP = ns('APP');
 
+
+  APP.OrgWidgetView = function(app, container){
+    var org = app.state.get("dept");
+    APP.OrgHeader(app,org,container);
+    var template = APP.t( '#widgets_layout_t');
+    $(template()).appendTo($('.panels',container));
+    _.each(TABLES.tables, function(){
+      
+    })
+  };
+
   var make_select = function (app,options) {
       var m = TABLES.m;
       var rand = APP.make_unique();
@@ -144,7 +155,7 @@
     }
     ,post_render : function(){}
     ,resize_my_row : function(){
-       this.$el.parents('.widget-row').each(APP.size_row);
+       this.$el.parents('.widget-row').each(APP.size_widget_row);
     }
     ,make_signal : function(){
       return 'table_' + this.def.id +"_rendered";
@@ -158,12 +169,12 @@
     var signals = _.map(TABLES.tables,function(table){
       return 'table_' + table.id +"_rendered";
     });
-    APP.size_panels(container, app,signals);
+    APP.size_widgets(container, app,signals);
   };
 
   APP.dispatcher.on("dept_selected", APP.listen_for_tables);
 
-  APP.size_row = function(container, i,row)   {
+  APP.size_widget_row = function(container, i,row)   {
      var panels =  $('.mini_t',row);
      var width = $(window).width();
      if ( width >= 1400){
@@ -183,7 +194,7 @@
      })
   };
 
-  APP.size_panels = function(container, app,signals){
+  APP.size_widgets = function(container, app,signals){
     // once all the mini table signals have been sent
     // do some prettying up on the page
     APP.dispatcher.on_these(signals, function(){

@@ -25,7 +25,6 @@
   var STORY = ns("STORY");
   var D3 = ns("D3");
 
-
   APP.AppRouter = Backbone.Router.extend({
     initialize : function(options){
       this.app = options.app;
@@ -56,7 +55,6 @@
                           .attr("id",func_name)
                           .addClass("grid-8"),
             func = that[func_name];
-        $('#app').append(container);
         that.containers[func_name]=container;
         that.route(key,func_name, function(){
           that.last_container = that.current_container;
@@ -80,32 +78,37 @@
         });
       });
     },
+
     routes : {
       "*splat"  : "default"
     },
+
     default : function(){
      this.containers.start.html("");
      this.navigate("start",{trigger:true});
     },
+
     _routes: {
       "start"  : "start",  //#start
       "search" :  "search", // #search
-      "d-:dept": "basic_dept_view", // #d-AGR
-      "t-:dept-:table": "basic_dept_table_view", // #d-AGR-table1
+      "d-:org": "org_widget_view", // #d-AGR      
+      "t-:org-:table": "org_table_details_view", // #t-AGR-table1
       "infograph" : "infographic",  //#inforgraph
-      "infograph-:dept"  : "infographic_dept",  //#inforgraph/AGR
+      "infograph-:org"  : "infographic_org",  //#inforgraph/AGR
       "explore-:method"  : "explore",  //#explore
       "adv"  : "home", //#analysis
       "analysis-:config"  : "analysis"  //#analysis
     },
+
     back : function(){
      this.show(this.last_container);
     },
+
     show : function(container){
-      _.each(_.values(this.containers), function(x){ x.hide();});
-      container.show();
-      this.current_container = container;
+      _.each(_.values(this.containers), function(x){ x.detach();});
+      $('#app').append(container);
     },
+
     add_title : function(title){
       if (_.isString(title)){
         title = $('<h1>').html(this.app.get_text(title));
@@ -135,9 +138,11 @@
         .html(last.html)
       );
     },
+
     reset_crumbs : function(title){
        this.bread_crumb.find(".infobase-links").remove();
     },
+
     start : function(container){
       var inside = APP.t('#greeting_'+this.app.lang)();
       var outside = APP.t("#greeting")({greeting : inside});
@@ -150,74 +155,81 @@
       this.add_title("welcome");
       APP.dispatcher.trigger_a("home",this.app);
     },
+
     search : function(container){
       this.add_crumbs([this.home_crumb,{html: this.gt("search")}]);
       this.add_title("search");
-      if (!this.app.full_dept_list){
-        this.app.full_dept_list = new APP.fullDeptList({ app: this.app, container : container });
-        this.app.full_dept_list.render();
+      if (!this.app.full_org_list){
+        this.app.full_org_list = new APP.searchOrg({ app: this.app, container : container });
+        this.app.full_org_list.render();
       }
     },
+
     home : function(container){
       this.add_crumbs([this.home_crumb]);
       this.add_title("home");
       container.html(APP.t('#home_t')());
     },
-    basic_dept_view: function(container, dept) {
-      dept = depts[dept];
-      if (dept){
-        this.app.state.set("dept",dept);
+
+    org_widget_view: function(container, org) {
+      container.children().remove();
+      org = window.depts[org];
+      if (org){
+        this.app.state.set("dept",org);
       }
-      var title = this.app.get_text("fin_data")+ " "+ dept.dept[this.app.lang];
+      var title = this.app.get_text("fin_data")+ " "+ org.dept[this.app.lang];
       this.add_title($('<h1>').html(title));
-      APP.dispatcher.trigger("dept_selected",container,this.app, dept);
-      APP.dispatcher.trigger("dept_ready",container,this.app, dept);
+      APP.OrgWidgetView(this.app, container);
     },
 
-    basic_dept_table_view : function(container,dept,table){
-      dept = depts[dept];
-      if (dept){
-        this.app.state.set("dept",dept);
+    org_table_details_view : function(container,org,table){
+      org = window.depts[org];
+      if (org){
+        this.app.state.set("dept",org);
       }
       table = "table" + table;
       table = _.find(TABLES.tables,function(t){ return t.id === table;});
       if (table){
         this.app.state.set({table:table},{silent:true});
       }
-      this.app.dept_table = new APP.DetailsView({
+      this.app.org_table = new APP.DetailsView({
         app : this.app,
         table : table
-      })
 
-
+      });
+      
     },
+
     infographic : function(container){
       this.add_crumbs([this.home_crumb,{html: "Infographic"}]);
       
      this.add_title($('<h1>').html("Infographic"));
      this.app.explore =  D3.STORY.story(container, this.app);
     },
-    infographic_dept : function(container,dept){
-      dept = depts[dept];
-      if (dept){
-        this.app.state.set("dept",dept);
+
+    infographic_org : function(container,org){
+      org = orgs[org];
+      if (org){
+        this.app.state.set("dept",org);
       }
-      var title =  dept.dept[this.app.lang] + " Infographic";
+      var title =  org.dept[this.app.lang] + " Infographic";
       this.add_crumbs([this.home_crumb,{html: title}]);
       this.add_title($('<h1>').html(title));
       container.children().remove();
-      D3.STORY.story(container, this.app, dept.accronym);
+      D3.STORY.story(container, this.app, org.accronym);
     },
+
     explore : function(container, method){
       this.add_crumbs([this.home_crumb,
           {html: "Explore"}]);
       this.add_title($('<h1>').html("Explore"));
       if (!this.app.explorer){
-        this.app.explorer = D3.bubbleDeptList(this.app, container, method);
+        this.app.explorer = D3.bubbleOrgList(this.app, container, method);
       } else {
         this.app.explorer.setup(method);
       }
     },
+
     analysis: function(container,config){
       if (config!== 'start') {
        config = $.parseParams(config);

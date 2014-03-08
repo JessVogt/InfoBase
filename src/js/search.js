@@ -3,7 +3,7 @@
     var LANG = ns('LANG');
     var TABLES = ns('TABLES');
 
-    APP.fullDeptList = Backbone.View.extend({
+    APP.searchOrg = Backbone.View.extend({
       events : {
         "click a.dept_sel_cancel" : "cancel",
         "click .org_list .sort_buttons a" : "sort"
