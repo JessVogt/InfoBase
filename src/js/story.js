@@ -17,13 +17,15 @@
           column_choice : _.map(cols, function(col){
             return table.col_from_nick(col).fully_qualified_name;
           }),
-          period : table.coverage
+          period : table.coverage,
+          nu : true
         });
       } else {
         var href =  HORIZONTAL.Config.create_link({
           table : table.id,
           column : table.col_from_nick(cols).fully_qualified_name,
-          period : table.coverage
+          period : table.coveraget,
+          nu : true
         });
       }
       return {
@@ -271,7 +273,7 @@
           {value: d.gov_this_year_auth}
         ]
       })(chapter.graph_area());
-      PACK.simple_circle_chart({
+      var chart = PACK.simple_circle_chart({
         height : height,
         formater : this.compact,
         data : [

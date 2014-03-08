@@ -36,7 +36,7 @@
       this.bread_crumb.find("li:last").addClass("infobase-links");
 
       this.start_crumb = {html : this.app.get_text("title"), href : "#start"};
-      this.choose_crumb = {html : this.app.get_text("choose_adventure"), href : "#adv"};
+      this.home_crumb = {html : this.app.get_text("home"), href : "#adv"};
 
       $(document).on("click", "a.router",function(e){
         that.navigate($(e.target).attr("href"),{trigger:true});
@@ -91,11 +91,11 @@
       "start"  : "start",  //#start
       "search" :  "search", // #search
       "d-:dept": "basic_dept_view", // #d-AGR
-      "t-:dept-:table": "basic_dept_table_view", // #d-AGR-1
+      "t-:dept-:table": "basic_dept_table_view", // #d-AGR-table1
       "infograph" : "infographic",  //#inforgraph
       "infograph-:dept"  : "infographic_dept",  //#inforgraph/AGR
       "explore-:method"  : "explore",  //#explore
-      "adv"  : "choose_your_adventure", //#analysis
+      "adv"  : "home", //#analysis
       "analysis-:config"  : "analysis"  //#analysis
     },
     back : function(){
@@ -151,17 +151,17 @@
       APP.dispatcher.trigger_a("home",this.app);
     },
     search : function(container){
-      this.add_crumbs([this.choose_crumb,{html: this.gt("search")}]);
+      this.add_crumbs([this.home_crumb,{html: this.gt("search")}]);
       this.add_title("search");
       if (!this.app.full_dept_list){
         this.app.full_dept_list = new APP.fullDeptList({ app: this.app, container : container });
         this.app.full_dept_list.render();
       }
     },
-    choose_your_adventure : function(container){
-      this.add_crumbs([this.choose_crumb]);
-      this.add_title("choose_adventure");
-      container.html(APP.t('#choose_adventure')());
+    home : function(container){
+      this.add_crumbs([this.home_crumb]);
+      this.add_title("home");
+      container.html(APP.t('#home_t')());
     },
     basic_dept_view: function(container, dept) {
       dept = depts[dept];
@@ -174,22 +174,25 @@
       APP.dispatcher.trigger("dept_ready",container,this.app, dept);
     },
 
-    basic_dept_table_view : function(container,dept_table){
-      var dept,table,args = dept_table.split("_");
-      dept = args[0];
-      table = "table" + args[1];
-      table = _.find(TABLES.tables,function(t){ return t.id === table;});
-      if (table){
-        this.app.state.set({table:table},{silent:true});
-      }
+    basic_dept_table_view : function(container,dept,table){
       dept = depts[dept];
       if (dept){
         this.app.state.set("dept",dept);
       }
+      table = "table" + table;
+      table = _.find(TABLES.tables,function(t){ return t.id === table;});
+      if (table){
+        this.app.state.set({table:table},{silent:true});
+      }
+      this.app.dept_table = new APP.DetailsView({
+        app : this.app,
+        table : table
+      })
+
 
     },
     infographic : function(container){
-      this.add_crumbs([this.choose_crumb,{html: "Infographic"}]);
+      this.add_crumbs([this.home_crumb,{html: "Infographic"}]);
       
      this.add_title($('<h1>').html("Infographic"));
      this.app.explore =  D3.STORY.story(container, this.app);
@@ -200,13 +203,13 @@
         this.app.state.set("dept",dept);
       }
       var title =  dept.dept[this.app.lang] + " Infographic";
-      this.add_crumbs([this.choose_crumb,{html: title}]);
+      this.add_crumbs([this.home_crumb,{html: title}]);
       this.add_title($('<h1>').html(title));
       container.children().remove();
       D3.STORY.story(container, this.app, dept.accronym);
     },
     explore : function(container, method){
-      this.add_crumbs([this.choose_crumb,
+      this.add_crumbs([this.home_crumb,
           {html: "Explore"}]);
       this.add_title($('<h1>').html("Explore"));
       if (!this.app.explorer){
@@ -219,7 +222,7 @@
       if (config!== 'start') {
        config = $.parseParams(config);
       } 
-      this.add_crumbs([this.choose_crumb,{html: "Horizontal Analysis"}]);
+      this.add_crumbs([this.home_crumb,{html: "Horizontal Analysis"}]);
       this.add_title($('<h1>').html("Horizontal Analysis"));
       this.app.analysis =   D3.HORIZONTAL.horizontal_gov(this.app,container,config);
     }

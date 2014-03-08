@@ -332,13 +332,9 @@
        this.add_section('column_choice',2,"ul");
        this.add_section('sort_by',2);
 
-       this.config.del("column");
      } else {
        // add the shown groups and organizations section
        this.add_section('column',2);
-       this.config.del("column_choice");
-
-       this.config.del("sort_by");
      }
 
      this.on_table_click();
@@ -379,9 +375,13 @@
              })
              .value();
       if (display_as.val === 'table'){
-         
          this.config.set_options("column_choice",cols);
-         this.config.update_selection("column_choice",[cols[0].val]);
+          if (this.config.currently_selected.column){
+              this.config.update_selection("column_choice",[this.config.currently_selected.column]);
+          } else {
+              this.config.update_selection("column_choice",[cols[0].val]);
+          }
+          this.config.del("column");
          this.make_ul("column_choice",cols,{
            html: function(d){return d.fully_qualified_name;},
            data_key : function(d){ return d.wcag;}
@@ -390,11 +390,16 @@
          this.on_column_choice_click();
       } else if (display_as.val === 'graph'){
          this.config.set_options("column",cols);
+          if (this.config.currently_selected.sort_by){
+              this.config.update_selection("column",this.config.currently_selected.sort_by);
+          } 
+
          this.make_select("column",cols,{
            html: function(d){return d.fully_qualified_name;},
            data_key : function(d){ return d.wcag;}
          });
-
+         this.config.del("column_choice");
+         this.config.del("sort_by");
          this.on_column_click();
       }
 
@@ -727,7 +732,11 @@
 
      d3.select(table).style({"margin-top":"0px"});
 
-     this.update_url();
+     if (this.config.currently_selected.nu){
+      delete this.config.currently_selected.nu;
+     } else {
+      this.update_url();
+     } 
    };
 
    p.graph_data = function(){
@@ -748,7 +757,11 @@
        href : this.href,
        formater : function(x){ return formater(type,x);}
      });
-     this.update_url();
+     if (this.config.currently_selected.nu){
+      delete this.config.currently_selected.nu;
+     } else {
+      this.update_url();
+     } 
    } ;
       
 

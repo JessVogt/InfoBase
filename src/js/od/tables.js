@@ -900,9 +900,8 @@
        "en": "Total budgetary voted and statutory authorities and expendiures.",
        "fr": "Montant total des autorisations et dépenses budgétaires votées et législatives."
    },
-   classes : [ 'left_text', 
-              'right_number', 
-              'right_number'],
+   headers_classes : ['left_text','right_text','right_text'],
+   row_classes : [ 'left_text', 'right_number', 'right_number'],
    prep_data: function () {
      this.rows = [
       this.da.exp_auth_by_year("{{last_year}}",true),
@@ -1928,9 +1927,14 @@
         "en": "Current-year budgetary authorities granted by Parliament by appropriation act as of {{month_name}}, 2013, by value ($000) and proportion of total authorities (%).",
         "fr": "Les autorisations budgétaires délivrées par le Parlement pour l’exercice courant au moyen de la Loi de crédits à compter de {{month_name}} 2013 selon la valeur ($000) et la proportion des autorisations totales (%)."
       },
+      headers_classes : ['left_text','right_text','right_text'],
       classes : ['left_text','right_number','right_number'],
       prep_data: function () {
-        this.rows = this.da.estimates_split({add_percentage: true},true);
+        this.rows = this.da.estimates_split({
+          add_percentage: true,
+          filter_zeros : true,
+          as_tuple:true},
+          true);
         this.headers= [[this.gt("Estimates"),
                        this.gt("amount") + ' ($000)', 
                        '(%)']];

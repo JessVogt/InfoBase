@@ -492,7 +492,7 @@
       if (this.$el.children().length ===0 ){
         this.$el.append(this.template({
           details_title : this.gt("more_details") + " " + this.def.name[this.lang],
-          href : "t" + this.org.accronym +"-"+this.def.id
+          href : "t" + this.org.accronym +"-"+this.def.id.replace(/[a-zA-Z_-]+/,"")
         }));
       }
       this.make_title();
@@ -544,27 +544,6 @@
     }
   });
 
-  TABLES.excel_format = function(table,strip_footer){
-    strip_footer = strip_footer | false;
-    var clone = $(table).clone();
-    if (strip_footer){
-      clone.find('tfoot').remove();
-    }
-    clone.find('th').css({"vertical-align" : "bottom"});
-    clone.find('table,td,th').css({'border' : '1px solid black'});
-    clone.find('table,td,th').css({'border-width' : 'thin'});
-    clone.find('td,th').css({"width" : '200px'});
-    clone.find('tr:even').css({'background-color' : 'rgb(245,245,245)'})
-    clone.find('tr.info').css({'background-color' : '#d9edf7'});
-    clone.find('tr.warning').css({'background-color' : '#fcf8e3'});
-    clone.find('tr.success').css({'background-color' : '#dff0d8'});
-    var table_text =  clone .wrap('<p></p>') .parent() .html();
-    // this will only work with IE7/8/9
-    try {
-      window.clipboardData.setData("Text",table_text );
-    }
-    catch(err){}
-  }
 
     TABLES.prepare_data = function(options){
       var x = dup_header_options = options.dup_header_options,

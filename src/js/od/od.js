@@ -213,21 +213,5 @@
     });
   });
 
-  // when a table is selected, hide the panels and show the 
-  // requested table
-  APP.dispatcher.on("table_selected", function(app, dept,table){
-    var dept = app.state.get("dept").accronym;
-    app.router.select_dept(dept,table);
-    setTimeout(function(){scrollTo(0,0)});
-    app.state.set({'table':table});
-
-    var dv = new APP.DetailsView({
-      app : app,
-      def: table.attributes
-    });
-    dv.render();
-    $('.panels').hide();
-  });
-
 
 })();

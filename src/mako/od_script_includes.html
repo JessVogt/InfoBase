@@ -6,9 +6,11 @@
 <script src="dist/js/dependencies/excanvas-min.js"></script>
 <![endif]-->
 <!--[if gt IE 8]><!-->
+<script src="dist/js/jquery.min.js"></script>
 <script src="dist/theme-gcwu-fegc/js/theme-min.js"></script>
 <script src="dist/js/pe-ap-min.js"></script>
 <script src="dist/js/jquerymobile/jquery.mobile.min.js"></script>
+<script type="text/javascript" src="http://www.tbs-sct.gc.ca/cioscripts/js/ga/gaAddons-2.1.2.min.js"></script>
 <!--<![endif]-->
 <!-- CustomScriptsStart -->
 <script src="extra-js/accounting.min.js"></script>
@@ -17,6 +19,21 @@
 <script src="extra-js/handlebars.min.js"></script>
 <script src="extra-js/d3.v3.min.js"></script>
 
-<script src="ExDB.js"></script>        
+<script src="app.js"></script>        
+
+<script type="text/javascript">
+	var _gaq = _gaq || [];
+	_gaq.push(
+	    ['_setAccount', 'UA-19331166-1'],
+	    ['_trackDownload'],
+	    ['_gat._anonymizeIp']
+	); 
+	_gaq.push(['_trackPageview']);
+	(function() {
+		var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+		ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+	})();
+</script>
 
 <!-- CustomScriptsEnd -->

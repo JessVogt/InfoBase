@@ -29,11 +29,11 @@ transition to-do:
 
   basic
     me 
-      reflow table widgets for tablets
       rebuild details sections
 
   general
     me
+      split tables file into multiple
       fix loading screen
       jshint all the files
       add more documentation for docco	
