@@ -188,30 +188,6 @@
       org_view.render();
    });
 
-  // when a new org view has been fully created, add additional 
-  // stuff to the screen such as all the mini widgets and the list of 
-  // all other departments in the same ministry
-  APP.dispatcher.on("new_org_view",function(app, view){
-    // scroll to hte top of the window
-    // create the drop down menu for ministries
-    (new APP.otherDeptsDropDown({ app : app })).render();
-
-    // render each of the tables
-    _.each(TABLES.tables,function(table){
-      var mtv = new TABLES.miniTableVew({
-        app : app,
-        table : table
-      });
-
-      mtv.render();
-      
-      mtv.$el.find('a.details').on("click", function(event){
-        // move the mini views out of the way and replace with larger 
-        // table
-        APP.dispatcher.trigger("table_selected",table);
-      });
-    });
-  });
 
 
 })();

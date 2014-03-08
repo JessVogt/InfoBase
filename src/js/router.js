@@ -21,6 +21,7 @@
 
 (function() {
   var APP = ns('APP');
+  var WIDGET = ns("WIDGET");
   var TABLES = ns('TABLES');
   var STORY = ns("STORY");
   var D3 = ns("D3");
@@ -179,7 +180,7 @@
       }
       var title = this.app.get_text("fin_data")+ " "+ org.dept[this.app.lang];
       this.add_title($('<h1>').html(title));
-      APP.OrgWidgetView(this.app, container);
+      WIDGET.OrgWidgetView(this.app, container);
     },
 
     org_table_details_view : function(container,org,table){
