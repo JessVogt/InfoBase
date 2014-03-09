@@ -10,7 +10,7 @@
     APP.other_mins = function(app,org,container){
       // container is jQuery obj
       var el = d3.select(container.find(".other_in_min")[0]);
-      var table = app.state.get("current_table");
+      var table = app.state.get("table");
       var lang = app.state.get("lang");
       el.append("h2")
         .html(app.get_text("other_in_min"));
@@ -25,7 +25,7 @@
         .attr("class","router")
         .attr("href",function(d){
           if (table){
-            href +=  "#t-"+ d.accronym +"-"+def.id.replace(/[a-zA-Z_-]+/,"");
+            return  "#t-"+ d.accronym +"-"+table.id.replace(/[a-zA-Z_-]+/,"");
           } else {
             return  "#d-"+ d.accronym;
           }

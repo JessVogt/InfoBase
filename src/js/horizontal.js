@@ -8,6 +8,35 @@
     HORIZONTAL = ns("D3.HORIZONTAL"),
     TABLES = ns('TABLES');
     
+    HORIZONTAL.create_analytics_link = function(table,cols,lang,more_options){
+      var options,href;
+      more_options = more_options || {};
+
+      if (_.isArray(cols)){
+        options =  {
+          table : table.id,
+          column_choice : _.map(cols, function(col){
+            return table.col_from_nick(col).fully_qualified_name;
+          }),
+          period : table.coverage,
+          nu : true
+        };
+      } else {
+        options =  {
+          table : table.id,
+          column : table.col_from_nick(cols).fully_qualified_name,
+          period : table.coverage,
+          nu : true
+        };
+      }
+      href = HORIZONTAL.Config.create_link(_.extend(more_options,options));
+      return {
+        html : table.name[lang],
+        href : href
+      };
+    }
+
+
     var Config = HORIZONTAL.Config = function(currently_selected){
       this._config = {};
       this.currently_selected = currently_selected;

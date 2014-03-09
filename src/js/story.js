@@ -10,28 +10,15 @@
 
     var height = 250;
 
-    var create_analytics_link = function(table,cols,lang){
-      if (_.isArray(cols)){
-        var href =  HORIZONTAL.Config.create_link({
-          table : table.id,
-          column_choice : _.map(cols, function(col){
-            return table.col_from_nick(col).fully_qualified_name;
-          }),
-          period : table.coverage,
-          nu : true
-        });
-      } else {
-        var href =  HORIZONTAL.Config.create_link({
-          table : table.id,
-          column : table.col_from_nick(cols).fully_qualified_name,
-          period : table.coveraget,
-          nu : true
-        });
-      }
+    var table_query_link = function(table, func, args){
       return {
-        html : table.name[lang],
-        href : href
-      };
+        link : HORIZONTAL.create_analytics_link(table, args[0]),
+        data : table.q[func].apply(this,args)
+      }
+    }
+
+    var table_dim_link = function(table, func, args){
+
     }
 
     STORY.story =  function(container,app,dept){
@@ -46,7 +33,7 @@
       this.calculated_values = {};
       this.lang = app.lang;
       this.create_link = function(table,cols){
-        return create_analytics_link(this.t[table],cols,app.lang);
+        return HORIZONTAL.create_analytics_link(this.t[table],cols,app.lang);
       }
       // set the formaters
       this.percent = function(x){return app.formater("percentage",x);},

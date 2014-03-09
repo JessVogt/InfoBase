@@ -22,6 +22,7 @@
 (function() {
   var APP = ns('APP');
   var WIDGET = ns("WIDGET");
+  var DETAILS = ns("DETAILS");
   var TABLES = ns('TABLES');
   var STORY = ns("STORY");
   var D3 = ns("D3");
@@ -184,6 +185,7 @@
     },
 
     org_table_details_view : function(container,org,table){
+      container.children().remove();
       org = window.depts[org];
       if (org){
         this.app.state.set("dept",org);
@@ -193,11 +195,7 @@
       if (table){
         this.app.state.set({table:table},{silent:true});
       }
-      this.app.org_table = new APP.DetailsView({
-        app : this.app,
-        table : table
-
-      });
+      new DETAILS.OrgTabletView( this.app,table, container);
       
     },
 

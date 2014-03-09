@@ -47,6 +47,8 @@
 
         // create the fully qualified names
         table.add_fully_qualified_col_name(lang);
+        table.presentation_ready_headers =  presentation_ready_headers(table.flat_headers,lang);
+
         TABLES.setup_table_for_queries(app,table,data);
         // send signal to indicate the table loading is finished
         WAIT.w.update_item(key,"finished");
@@ -83,6 +85,7 @@
        col.wcag =  APP.make_unique();
        col.level = col.parent.level +1;
        col.table = col.parent.table;
+       
     },this);
     this.children = (this.children || []).concat(x);
     return this;
@@ -137,6 +140,51 @@
      });
   };
 
+  var calc_col_span = function(header){
+    if (header.children){
+      return _.chain(header.children)
+        .map(calc_col_span)
+        .reduce(function(x,y){
+          return x+y;
+        });
+    }
+    if (header.hidden){
+      return 0;
+    } else {
+      return 1;
+    }
+  }
+
+  var presentation_ready_headers = function(flat_heders,lang){
+    var headers = [];
+    _.each(flat_heders, function(header){
+      if (header.hidden){
+        return;
+      }
+      var presentation_copy = {
+        val : TABLES.m(header.header[lang]),
+        id : header.wcag
+      };
+      if (_.isUndefined(headers[header.level])){
+        headers[header.level] = [];
+      }
+      if (header.parent){
+        var wcag_headers = '';
+        var pointer = header ;
+        while (pointer.parent){
+          pointer = pointer.parent;
+          wcag_headers += pointer.wcag + " ";
+        }
+        presentation_copy.headers = wcag_headers;
+      }
+      if (header.children){
+        presentation_copy.col_span = calc_col_span(header);
+      }
+      headers[header.level].push( presentation_copy );
+    });
+    return headers;
+  }
+
   APP.dispatcher.on("new_table", function(table){
     TABLES.tables.push(table);
     // setup the mappers
@@ -158,7 +206,6 @@
     });
 
     table.add_cols();
-
 
     // add useful attributes to each table
     // for all the nick names, how many levels of headers

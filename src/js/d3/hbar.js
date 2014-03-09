@@ -139,15 +139,13 @@
            });
          single.selectAll("a")
            .html(d.name + " - "+ formater(d.value))
+           .attr("class","router")
            .attr("href",href);
        });
 
        g.each(function(d,i){
          var x_val = y(d.name);
          var width =  Math.abs(x_scale(d.value) - x_scale(0));
-         if (width > 900){
-           debugger
-         }
          single = d3.select(this);
          single
           .transition()
