@@ -13,6 +13,7 @@
       more_options = more_options || {};
 
       if (_.isArray(cols)){
+        
         options =  {
           table : table.id,
           column_choice : _.map(cols, function(col){
@@ -407,6 +408,10 @@
          this.config.set_options("column_choice",cols);
           if (this.config.currently_selected.column){
               this.config.update_selection("column_choice",[this.config.currently_selected.column]);
+          } else if (this.config.currently_selected.column_choice &&
+                     _.all(this.config.currently_selected.column_choice,
+                           function(x){ return _.contains(_.pluck(cols, "val"),x)})){
+              // do nothing
           } else {
               this.config.update_selection("column_choice",[cols[0].val]);
           }

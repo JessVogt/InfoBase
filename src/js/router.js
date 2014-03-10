@@ -178,10 +178,15 @@
       org = window.depts[org];
       if (org){
         this.app.state.set("dept",org);
+        this.app.state.unset("table");
+        var title = this.app.get_text("fin_data")+ " "+ org.dept[this.app.lang];
+        this.add_crumbs([this.home_crumb,{html: title}]);
+        this.add_title($('<h1>').html(title));
+        WIDGET.OrgWidgetView(this.app, container);
+      // if the wrong department code is sent, redirect to the home page
+      } else {
+        this.navigate("#adv",{trigger: true});
       }
-      var title = this.app.get_text("fin_data")+ " "+ org.dept[this.app.lang];
-      this.add_title($('<h1>').html(title));
-      WIDGET.OrgWidgetView(this.app, container);
     },
 
     org_table_details_view : function(container,org,table){
@@ -194,9 +199,19 @@
       table = _.find(TABLES.tables,function(t){ return t.id === table;});
       if (table){
         this.app.state.set({table:table},{silent:true});
+      } else {
+        this.navigate("#d-"+org.accronym,{trigger: true});
       }
-      new DETAILS.OrgTabletView( this.app,table, container);
-      
+      // check to see if the selected table has data for the department
+      if (table.depts[org.accronym]) {
+        var title =  org.dept[this.app.lang] + " Details";
+        this.add_title($('<h1>').html(title));
+        this.add_crumbs([this.home_crumb,{html: title}]);
+        new DETAILS.OrgTabletView( this.app,table, container);
+      // if there aren't any data, redirect to the widget view 
+      } else {
+        this.navigate("#d-"+org.accronym,{trigger: true});
+      }
     },
 
     infographic : function(container){

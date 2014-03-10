@@ -251,9 +251,6 @@
       ]);
      },
      "queries" : {
-       "missing_depts" : function(){
-
-       },
         "auth_change" : function(format) {
           // returns last year, this year, and change
           var this_year = "thisyearauthorities", 
@@ -321,34 +318,6 @@
           row.splice(5, 1);
         }
         return _.tail(row,2);
-     },
-     "table_view": {
-       hide_col_ids: [],
-       sum_cols: [2, 3, 4, 5, 6, 7],
-       min_func: TABLES.add_ministry_sum,
-       init_row_data: function () {
-         var total = GROUP.fnc_on_group(
-           this.row_data,
-           { txt_cols: { 0: this.gt("total") },
-               func_cols: this.sum_cols,
-               func: GROUP.sum_rows
-           });
-         var self = this;
-         this.merge_group_results(
-         GROUP.group_rows(
-           this.row_data,
-           function (row) { return _.isString(row[0]);},
-           { txt_cols: { 0: this.gt("sub_total"),
-               1: function (g) {
-                   var row = _.first(g);
-                   return _.isString(row[0]) ? self.gt("stat") : self.gt('voted');
-               }
-           },
-               func_cols: this.sum_cols,
-               func: GROUP.sum_rows
-           }));
-         this.merge_group_results([[this.row_data, total]]);
-       }
      },
      mini_view: {
        description: {
@@ -533,20 +502,6 @@
       }
       return row;
    },
-   table_view: {
-     min_func: TABLES.add_ministry_sum,
-     init_row_data: function () {
-        var txt = this.gt("total");
-        this.merge_group_results(
-        [[this.row_data,
-        GROUP.fnc_on_group(
-          this.row_data,
-          { txt_cols: { 0: txt },
-              func_cols: this.sum_cols,
-              func: GROUP.sum_rows
-          })]]);
-      }
-    },
     mini_view: {
       description: {
          "en": "Top three net expenditure categories as of Q{{q}} {{in_year}} by value ($000) and proportion of total expenditures (%).",
@@ -620,133 +575,10 @@
       }
     }
   });
-      //{
-      // id: "table3",
-      //  "col_defs" : ["wide-str",
-      //    "big-int",
-      //    "big-int",
-      //    "big-int",
-      //    "big-int"],
-      //  "coverage" : "in_year",
-      //  "headers" : { "en" :[[
-      //    { "colspan" : 1,
-      //      "header" : ""
-      //    },
-      //    { "colspan" : 2,
-      //      "header" : "{{year}}"
-      //    },
-      //    { "colspan" : 2,
-      //      "header" : "{{last_year}}"
-      //    }],
-      //    [
-      //    "Program",
-      //    "Expended during the quarter ended {{month}}-{{year}}",
-      //    "Year to date used at quarter-end",
-      //    "Expended during the quarter ended {{month}}-{{last_year}}",
-      //    "Year to date used at quarter-end"
-      //    ]],
-      //    "fr": [[
-      //    { "colspan" : 1,
-      //      "header" : ""
-      //    },
-      //    { "colspan" : 2,
-      //      "header" : "{{year}}"
-      //    },
-      //    { "colspan" : 2,
-      //      "header" : "{{last_year}}"
-      //    }],
-      //    [
-      //      "Program",
-      //    "Dépensées durant le trimestre terminé le {{month}}-{{year}}",
-      //    "Cumul des crédits utilisés à la fin du trimestre",
-      //    "Dépensées durant le trimestre terminé le {{month}}-{{last_year}}",
-      //    "Cumul des crédits utilisés à la fin du trimestre"
-      //    ]]
-      //  },
-      //  "link" : {
-      //    "en" : "",
-      //    "fr" : ""
-      //  },
-      //  "name" : { "en" : "Budgetary expenditures by Program",
-      //    "fr" : "Dépenses ministérielles budgétaires par program"
-      //  },
-      //  "title" : { "en" : "Budgetary expenditures by Program ($000)",
-      //    "fr" : "Dépenses ministérielles budgétaires par program ($000)"
-      //  }
-      //  ,"key" : [0] 
-      //  ,mapper : {
-      //    to : function(row){
-      //      if (this.lang == 'en'){
-      //        row.splice(2,1);
-      //      } else {
-      //        row.splice(1,1);
-      //      }
-      //      return _.tail(row);
-      //    }
-      //    ,make_filter : function(source_row){
-      //      if (source_row[1] === 'Internal Services'){
-      //        return function(candidate_row){ 
-      //          return candidate_row[1] == 'Internal Services'
-      //        }
-      //      }else {
-      //        return function(candidate_row){
-      //          return (candidate_row[1] != 'Internal Services' &&
-      //                  candidate_row[0] != 'ZGOC');
-      //        }
-      //      }
-      //    }
-      //  }
-      //  ,table_view : { 
-      //    sum_cols : []
-      //    ,min_func : TABLES.add_ministry_sum
-      //    ,init_row_data : function(){
-      //    }
-      //  }
-      //  ,mini_view : {
-      //    prep_data : function(){
-      //      var ttf = this.app.formater
-      //      var col = "Expended during the quarter ended {{month}}-{{year}}";
-      //      var data = _.sortBy(this.data, function(d){
-      //        return -d[col]
-      //      });    
-      //      var first = data.shift();
-      //      var second = data.shift();
-      //      var rest = _.reduce(data, function(x,y){
-      //         return x + y[col];
-      //      },0);
-      //      this.rows = [
-      //        ['Top Programs','($000)'],
-      //        [first["Program"],first[col]],
-      //        [second["Program"],second[col]],
-      //        [this.gt("remainder"),rest]
-      //      ];
-      //      this.rows = _.map(this.rows, function(row){
-      //        if (_.isNumber(row[1])){
-      //          return [row[0], ttf("big-int",row[1])];
-      //        } else {
-      //          return [row[0], row[1]];
-      //        }
-      //      });
-      //    }
-      //    ,render_data : function(){
-      //      this.content = TABLES.build_table({
-      //        headers : [[this.gt("program"),' ($000)']],
-      //        body : this.rows,
-      //        css : [{'font-weight' : 'bold'}, {'text-align' : 'right'}]
-      //      });
-      //    }
-      //  },
-      //  graph_view : {
-      //    prep_data : function(){
-      //    }
-      //    ,render : function(){
-      //    }
-      //  }
-      //},
   APP.dispatcher.trigger("new_table",
   {
-  id: "table4",
-   "data_type" : "financial_data",
+  "id": "table4",
+  "data_type" : "financial_data",
   "coverage": "historical",
   "add_cols": function(){
      this.add_col("")
@@ -868,40 +700,13 @@
     // remove acronym and vote type
     return row;
   },
-  table_view: {
-        sum_cols: [2, 3, 4, 5, 6, 7]
-      , min_func: TABLES.add_ministry_sum
-      , init_row_data: function () {
-          var total = GROUP.fnc_on_group(
-            this.row_data,
-            { txt_cols: { 0: this.gt("total") },
-                func_cols: this.sum_cols,
-                func: GROUP.sum_rows
-            });
-          var self = this;
-          this.merge_group_results(
-          GROUP.group_rows(
-            this.row_data,
-            function (row) { return _.isString(row[0]) },
-            { txt_cols: { 0: this.gt("sub_total"),
-                1: function (g) {
-                    var row = _.first(g);
-                    return _.isString(row[0]) ? self.gt("stat") : self.gt('voted')
-                }
-            },
-                func_cols: this.sum_cols,
-                func: GROUP.sum_rows
-            }));
-          this.merge_group_results([[this.row_data, total]]);
-      }
-  },
   mini_view: {
    description: {
        "en": "Total budgetary voted and statutory authorities and expendiures.",
        "fr": "Montant total des autorisations et dépenses budgétaires votées et législatives."
    },
    headers_classes : ['left_text','right_text','right_text'],
-   row_classes : [ 'left_text', 'right_number', 'right_number'],
+   row_classes : [ 'left_text wrap-none', 'right_number', 'right_number'],
    prep_data: function () {
      this.rows = [
       this.da.exp_auth_by_year("{{last_year}}",true),
@@ -1098,8 +903,6 @@
           }
           return row;
      },
-     table_view: {
-    },
     mini_view: {
       description: {
         "en": "Organization’s top three standard objects with the greatest expenditures by value ($000) and proportion of total expenditures (%). Select the fiscal year in the drop-down menu to display the expenditures.",
@@ -1313,22 +1116,7 @@
           row.splice(1, 1);
       }
       return row;
-   }
-    , table_view: {
-        sum_cols: [1, 2, 3]
-      , min_func: TABLES.add_ministry_sum
-      , init_row_data: function () {
-          var txt = this.gt("total");
-          this.merge_group_results(
-          [[this.row_data,
-          GROUP.fnc_on_group(
-            this.row_data,
-            { txt_cols: { 0: txt },
-                func_cols: this.sum_cols,
-                func: GROUP.sum_rows
-            })]]);
-      }
-    },
+   },
     mini_view: {
       description: {
         "en": "Organization’s programs with the greatest expenditures by value ($000) and proportion of total expenditures (%).Select the fiscal year in the drop-down menu to display the expenditures. ",
@@ -1509,35 +1297,8 @@
        }
        // remove acronym and vote type
        return row;
-    }
-    , table_view: {
-        sum_cols: [2, 3, 4, 5, 6, 7]
-      , min_func: TABLES.add_ministry_sum
-      , init_row_data: function () {
-          var total = GROUP.fnc_on_group(
-            this.row_data,
-            { txt_cols: { 0: this.gt("total") },
-                func_cols: this.sum_cols,
-                func: GROUP.sum_rows
-            });
-          var self = this;
-          this.merge_group_results(
-          GROUP.group_rows(
-            this.row_data,
-            function (row) { return row[0] },
-            { txt_cols: { 0: this.gt("sub_total"),
-                1: function (g) {
-                    var row = _.first(g);
-                    return row[0]
-                }
-            },
-                func_cols: this.sum_cols,
-                func: GROUP.sum_rows
-            }));
-          this.merge_group_results([[this.row_data, total]]);
-      }
-    }
-    , mini_view: {
+    },
+    mini_view: {
         description: {
             "en": "Organization’s transfer payments with the greatest expenditures by value ($000) and proportion of total expenditures (%). Select the fiscal year in the drop-down menu to display the expenditures.",
             "fr": "Les paiements de transfert représentant les plus importantes dépenses en fonction de leur valeur (en milliers de dollars) et en tant que pourcentage des dépenses totales (%). Sélectionnez l'exercice financier figurant dans le menu déroulant pour afficher les dépenses."
@@ -1893,35 +1654,7 @@
         }
         // remove acronym and vote type
         return row;
-     }
-    , table_view: {
-        hide_col_ids: []
-      , sum_cols: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
-      , min_func: TABLES.add_ministry_sum
-      , init_row_data: function () {
-          var total = GROUP.fnc_on_group(
-            this.row_data,
-            { txt_cols: { 0: this.gt("total") },
-                func_cols: this.sum_cols,
-                func: GROUP.sum_rows
-            });
-          var self = this;
-          this.merge_group_results(
-          GROUP.group_rows(
-            this.row_data,
-            function (row) { return _.isString(row[0]) },
-            { txt_cols: { 0: this.gt("sub_total"),
-                1: function (g) {
-                    var row = _.first(g);
-                    return _.isString(row[0]) ? self.gt("stat") : self.gt('voted')
-                }
-            },
-                func_cols: this.sum_cols,
-                func: GROUP.sum_rows
-            }));
-          this.merge_group_results([[this.row_data, total]]);
-      }
-    },
+     },
     mini_view: {
       description: {
         "en": "Current-year budgetary authorities granted by Parliament by appropriation act as of {{month_name}}, 2013, by value ($000) and proportion of total authorities (%).",

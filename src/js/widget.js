@@ -15,7 +15,7 @@
     listen_for_tables(container,app, org);
 
     _.each(TABLES.tables,function(table){
-      (new miniTableView({
+      (new widgetView({
         app : app,
         table : table
       })).render();
@@ -69,7 +69,7 @@
   };
 
 
-  var miniTableView = Backbone.View.extend({
+  var widgetView = Backbone.View.extend({
     template : '#mini_t'
     ,initialize : function(){
       this.template = APP.t(this.template);
@@ -125,7 +125,7 @@
       }
       this.make_title();
       this.add_description();
-      if (this.da.data){
+      if (this.da.data.length > 0){
         this.prep_data();
         if (this.rows && this.headers) {
           TABLES.prepare_data({
@@ -203,23 +203,6 @@
     // once all the mini table signals have been sent
     // do some prettying up on the page
     APP.dispatcher.on_these(signals, function(){
-      var current_view;
-      var dept = app.state.get("dept");
-      var views = _.toArray(arguments);
-      var current_table = app.state.get("table");
-      // figure out the currently selected table, if any
-      if (current_table){
-        current_view = _.first(_.filter(views,function(v){
-          // compare the views table deifnition with the current
-          // table AND make sure the currently selected
-          // department has data for that kind of table
-          return (v.def.id === current_table.get('id') &&
-                  _.has(dept.tables,v.def.id));
-        }));
-      } else {
-        current_view = undefined;
-      }
-
       $('.widget-row').each(function(i,row){ size_widget_row(container, i,row)});
     });
   };

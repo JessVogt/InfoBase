@@ -3,11 +3,11 @@
     PACK = ns('D3.PACK'),
     TABLES = ns('TABLES');
 
-    D3.bubbleDeptList =  function(app,container,method){
-      return new _bubbleDeptList(app,container,method);
+    D3.bubbleOrgList =  function(app,container,method){
+      return new _bubbleOrgList(app,container,method);
     }
 
-    _bubbleDeptList = function(app,container,method){
+    _bubbleOrgList = function(app,container,method){
       this.app = app;
       this.container = container;
       this.gt = this.app.get_text;
@@ -15,7 +15,7 @@
       this.setup(method);
     }
 
-    var p = _bubbleDeptList.prototype;
+    var p = _bubbleOrgList.prototype;
 
     p.setup = function(method) {
       if ( this.current_method === method){
