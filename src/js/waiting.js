@@ -16,12 +16,11 @@
           "z-index":100,         
           "background-color": "#FFF"
         })
-        .attr("class","span-4")
+        .attr("class","span-4 loader")
         .append("svg")
         .attr({
           "width" : "800px",
-          "height" : "800px",
-          "class" : "loader"
+          "height" : "800px"
         });
       this.height = 40;
       this.width = 600;
@@ -79,7 +78,7 @@
     };
 
     waitscreen.prototype.teardown = function(){
-      d3.select("svg.loader").remove();
+      d3.select("div.loader").remove();
     };
 
 })();

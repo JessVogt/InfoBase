@@ -6,8 +6,10 @@
   var DETAILS = ns('DETAILS');
 
   DETAILS.OrgTabletView = function(app,table, container){
+    var template = APP.t("#details_t");
     var org = app.state.get("dept");
     APP.OrgHeader(app,org,container);
+    container.append($(template({org:org})));
     add_text(app,org,table, d3.select(container[0]))
     add_graph(app,org,table, d3.select(container[0]))
     add_table(app,org,table, d3.select(container[0]))
@@ -33,7 +35,7 @@
   }
 
   var add_table = function(app, org, table, container){
-    container = container.append("div").style("overflow-x","auto");
+    container = container.select(".table_payload");
     var lang = app.state.get("lang"),
         // get list of all visible column names
         // unique_headers is a list of all the lowest level headers
@@ -96,6 +98,7 @@
       });
 
     TABLES.d3_build_table({
+      table_class : "table-condensed table-medium",
       node : container.node(),
       theach : function(d,i){
         d3.select(this)

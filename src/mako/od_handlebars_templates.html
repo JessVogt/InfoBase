@@ -97,15 +97,17 @@
 </script>
 
 <script type='text/plain' id='org_header'>
-<div class='span-5 margin-bottom-none '>
-  <div class='margin-top-none margin-bottom-none' 
-    style='padding: 0px;outline: 1px solid #ccc'>
-    <p class='well section-header' style='margin: 0px'>
+<div class='span-6 margin-bottom-none '>
+
+  <div class='module-menu-section border-top border-left border-right' style='width: 100%'>
+    <h2>
         {{gt "supplementary_data"}} {{lang org.dept}} 
-      <a href='{{{gt "IGOC_site"}}}'  target='_new'>
-        {{gt "igoc_from"}}
-      </a>
-    </p>
+        <a href='{{{gt "IGOC_site"}}}'  class='ui-link' target='_new' style='color: white'>
+          {{gt "igoc_from"}}
+        </a>
+    </h2>
+  </div>
+  <div class='border-all'>
     <table class='well-table table-medium margin-top-none margin-bottom-none'>
       <tbody>
         <tr class='well'>
@@ -120,7 +122,7 @@
           <th id='website__'> {{gt "website"}} </th>
           <td headers='website__'> 
             {{#org.website}}
-            <p class='margin-top-none'><a href="http://{{lang .}}" target='_blank'>{{lang .}}</a></p>
+            <div class='margin-top-none'><a href="http://{{lang .}}" target='_blank'>{{lang .}}</a></div>
             {{/org.website}}
           </td>
         </tr>
@@ -132,7 +134,7 @@
           <th id='mandate__'> {{gt "mandate"}} </th>
           <td headers='mandate__'> 
             {{#org.mandate}}
-            <p class='margin-top-none'>{{{lang .}}}</p>  
+            <div class='margin-top-none'>{{{lang .}}}</div>  
             {{/org.mandate}}
           </td>
         </tr>
@@ -140,11 +142,11 @@
           <th id='legislation__'> {{{gt "legislation"}}} </th>
           <td headers='legislation__'>
             {{#org.legislation}}
-            <p class='margin-top-none'>
+            <div class='margin-top-none'>
               <a href='http://google.com/search?q={{encodeURI .}}' target="_blank">
                 {{{lang .}}}
               </a>
-            </p>
+            </div>
             {{/org.legislation}}
           </td>
         </tr>
@@ -152,7 +154,7 @@
     </table>
   </div>
 </div>
-<div class='span-3 margin-bottom-none'> 
+<div class='span-2 margin-bottom-none'> 
   <div class='module-menu-section border-all other_in_min'>
   </div>
 </div>
@@ -230,34 +232,20 @@
 <li><a href='#d{{accronym}}' class='ui-link router'>{{text}}</a></li>
 </script>
 
-<script type='text/plain' id='dataview_t'>
+<script type='text/plain' id='details_t'>
 <div class='tables margin-top-large'>
-  <div class='border-bottom span-8' style='position:relative'>
-    <div class='span-6' style='margin:0px'>
-      <h2>{{title}}</h2>
-    </div>
-    <div style='margin:0px;position:absolute;bottom:15px;right:0px'>
-      <ul class='button-group' style='margin:0px'>
-        <li>
-        <a href='#' class='back button button-dark'>{{{gt "back"}}}</a>
-        </li>
-        <li> <a href='#' class='button od_link' target='_new'> {{gt "open_data_link"}} </a> </li>
-      </ul>
-    </div>
+
+  <div id='desc__' class='table_description span-8 margin-right-none'>
+    <h3 class='border-bottom margin-bottom-none' style='width:100%'> Description </h3>
   </div>
   <div class='clear'></div>
 
-  <div id='desc__' class='table_description span-6 margin-right-none'>
+  <div id='graph__' class='span-8 '>
+    <h3 class='border-bottom margin-bottom-none' style='width:100%'> {{gt "graphs"}} </h3>
   </div>
-  <div class='clear'></div>
 
-  <div id='graph__' class='span-8 border-bottom'>
-    <h3 class='float-left margin-top-none margin-bottom-none'> {{gt "graphs"}} </h3>
-  </div>
-  <div class='graph_payload span-8'>
-  </div>
-  <div id='data__' class='span-8 border-bottom'>
-    <h3  class='float-left margin-top-none margin-bottom-none'> {{gt "data" }} </h3>
+  <div id='data__' class='span-8 '>
+    <h3  class='border-bottom margin-bottom-none' style='width:100%'> {{gt "data" }} </h3>
   </div>
   <div class='clear'></div>
   <div class='span-8 '>

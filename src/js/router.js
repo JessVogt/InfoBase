@@ -59,23 +59,10 @@
             func = that[func_name];
         that.containers[func_name]=container;
         that.route(key,func_name, function(){
-          that.last_container = that.current_container;
           that.show(container);
           window.scrollTo(0, $('.nav_area').position().top);
           $(".nav_area .right").html("");
           $(".nav_area .left").html("");
-          if (func_name != 'start') {
-             $('<a>')
-               .prop("href","#start")
-               .addClass("restart_button router") 
-               .html(that.app.get_text("restart"))
-               .css({
-                 "position" : "absolute",
-                 "bottom" : "10px",
-                 "right"  : "0px"
-               })
-               .appendTo(".nav_area .right");
-          }
           func.apply(that, [container].concat(_.map(arguments,_.identity)));
         });
       });
@@ -100,10 +87,6 @@
       "explore-:method"  : "explore",  //#explore
       "adv"  : "home", //#analysis
       "analysis-:config"  : "analysis"  //#analysis
-    },
-
-    back : function(){
-     this.show(this.last_container);
     },
 
     show : function(container){
@@ -179,7 +162,7 @@
       if (org){
         this.app.state.set("dept",org);
         this.app.state.unset("table");
-        var title = this.app.get_text("fin_data")+ " "+ org.dept[this.app.lang];
+        var title = org.dept[this.app.lang];
         this.add_crumbs([this.home_crumb,{html: title}]);
         this.add_title($('<h1>').html(title));
         WIDGET.OrgWidgetView(this.app, container);
@@ -204,9 +187,11 @@
       }
       // check to see if the selected table has data for the department
       if (table.depts[org.accronym]) {
-        var title =  org.dept[this.app.lang] + " Details";
+        var title =  table.name[this.app.lang];
         this.add_title($('<h1>').html(title));
-        this.add_crumbs([this.home_crumb,{html: title}]);
+        this.add_crumbs([this.home_crumb,
+            {html : org.dept[this.app.lang],href : "#d-"+org.accronym},
+            {html: title}]);
         new DETAILS.OrgTabletView( this.app,table, container);
       // if there aren't any data, redirect to the widget view 
       } else {

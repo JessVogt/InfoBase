@@ -69,6 +69,7 @@
     headers
       .enter()
       .append("tr")
+      .attr("class","table-header")
       .order();
 
     var ths = headers
