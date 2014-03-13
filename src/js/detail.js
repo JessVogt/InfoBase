@@ -31,7 +31,60 @@
   }
 
   var add_graph = function(app, org, table, container){
+    container = container.select(".graph_payload");
+    container.selectAll("div.graph-select")
+      .data(table.graph_view.dimensions)
+      .enter()
+        .append("div")
+        .attr("class",function(d){
+          return "well graph-select margin-top-large border-all span-"+d.span;
+        })
+        .style({ "height" : "200px", "overflow-y":"auto" })
+        .each(function(d){
+          var el = d3.select(this);
+          el.append("p")
+            .html(d.header(app,table) )
+            .attr("class","nav-header");
+          el.append("ul")
+            .attr("class", "list-bullet-none")
+            .style({"width" : "95%", "margin-left" : "5px","margin-right" : "5px"})
+            .selectAll("li")
+            .data(d.values(app,table)) 
+            .enter()
+              .append("li")
+              .style({ "margin-top" : "5px" })
+              .attr("class",function(d){
+                if (d.active){
+                  return "background-medium";
+                }
+              })
+              .append("a")
+              .attr("href","#")
+              .html(function(d){return APP.abbrev(app,d.html);})
+              .attr("title",function(d){return d.html;})
+              .on("click",on_graph_click);
+        });
+  }
 
+  var  on_graph_click  = function(d){
+    var list = d3.select(this.parentNode.parentNode);
+    var data_list = _.map(list.selectAll("li")[0],function(ul){
+      return d3.select(ul).datum();
+    });
+    var currently_active = _.filter(data_list, function(d){
+      return d.active;
+    });
+    if (currently_active.length === 1 && currently_active[0] === d){
+      return;
+    }
+    d.active = !d.active;
+    list.selectAll("li")
+       .classed("background-medium",function(d){ 
+         return d.active;
+       })
+       .classed("not-selected",function(d){ 
+         return !d.active;
+       });
   }
 
   var add_table = function(app, org, table, container){

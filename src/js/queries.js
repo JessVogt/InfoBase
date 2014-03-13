@@ -256,6 +256,25 @@
     return _.find(this.data, each_mapped_obj);
   };
 
+  p.get_rows = function (criteria, options) {
+    /*
+     * col = either a string or an array of strings for several columns
+     * val =
+     * options =
+     */
+    var each_mapped_obj = function(obj){
+        return _.all(_.map(criteria, function(val,key){
+          if (_.isArray(criteria[key])){
+            return _.contains(criteria[key],obj[key]);
+          } else {
+            return obj[key] === criteria[key];
+          }
+        }));
+    };
+    return _.filter(this.data, each_mapped_obj);
+  };
+
+
   p.get_row_by_key = function(key){
     var key_rows = this.key_rows();
     var i = _.findIndex(key_rows,function(row){

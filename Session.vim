@@ -6,41 +6,41 @@ map! <S-Insert> <MiddleMouse>
 nnoremap  o
 map   viw
 nmap ; :
-omap ]t :PBoB
-nmap ]t :PBoB
-vmap ]t :PBOBm'gv``
-omap ]e :PEoB
-nmap ]e :PEoB
-vmap ]e :PEoBm'gv``
-map ]v ]tV]e
-omap ]< ]tV]e<
-nmap ]< ]tV]e<
-vmap ]< <
-omap ]> ]tV]e>
-nmap ]> ]tV]e>
-vmap ]> >
-omap ]# :call PythonCommentSelection()
-nmap ]# :call PythonCommentSelection()
-vmap ]# :call PythonCommentSelection()
-omap ]u :call PythonUncommentSelection()
-nmap ]u :call PythonUncommentSelection()
-vmap ]u :call PythonUncommentSelection()
-map ]c :call PythonSelectObject("class")
-map ]d :call PythonSelectObject("function")
-map ]<Up> :call PythonNextLine(-1)
-map ]<Down> :call PythonNextLine(1)
-omap ]J :call PythonDec("class", -1)
-nmap ]J :call PythonDec("class", -1)
-vmap ]J :call PythonDec("class", -1)
-omap ]j :call PythonDec("class", 1)
-nmap ]j :call PythonDec("class", 1)
-vmap ]j :call PythonDec("class", 1)
-omap ]F :call PythonDec("function", -1)
-nmap ]F :call PythonDec("function", -1)
-vmap ]F :call PythonDec("function", -1)
-omap ]f :call PythonDec("function", 1)
-nmap ]f :call PythonDec("function", 1)
 vmap ]f :call PythonDec("function", 1)
+nmap ]f :call PythonDec("function", 1)
+omap ]f :call PythonDec("function", 1)
+vmap ]F :call PythonDec("function", -1)
+nmap ]F :call PythonDec("function", -1)
+omap ]F :call PythonDec("function", -1)
+vmap ]j :call PythonDec("class", 1)
+nmap ]j :call PythonDec("class", 1)
+omap ]j :call PythonDec("class", 1)
+vmap ]J :call PythonDec("class", -1)
+nmap ]J :call PythonDec("class", -1)
+omap ]J :call PythonDec("class", -1)
+map ]<Down> :call PythonNextLine(1)
+map ]<Up> :call PythonNextLine(-1)
+map ]d :call PythonSelectObject("function")
+map ]c :call PythonSelectObject("class")
+vmap ]u :call PythonUncommentSelection()
+nmap ]u :call PythonUncommentSelection()
+omap ]u :call PythonUncommentSelection()
+vmap ]# :call PythonCommentSelection()
+nmap ]# :call PythonCommentSelection()
+omap ]# :call PythonCommentSelection()
+vmap ]> >
+nmap ]> ]tV]e>
+omap ]> ]tV]e>
+vmap ]< <
+nmap ]< ]tV]e<
+omap ]< ]tV]e<
+map ]v ]tV]e
+vmap ]e :PEoBm'gv``
+nmap ]e :PEoB
+omap ]e :PEoB
+vmap ]t :PBOBm'gv``
+nmap ]t :PBoB
+omap ]t :PBoB
 nmap _c :%s/\s\+$//gc
 nmap gx <Plug>NetrwBrowseX
 nnoremap <silent> <Plug>NetrwBrowseX :call netrw#NetrwBrowseX(expand("<cWORD>"),0)
@@ -50,6 +50,7 @@ inoremap  A
 imap  d$i
 inoremap " ""<Left>
 inoremap ' ''<Left>
+inoremap (( (
 inoremap ( ()<Left>
 inoremap < <><Left>
 inoremap [ []<Left>
@@ -132,7 +133,6 @@ badd +50 les/src/js/waiting.js
 badd +97 les/src/mako/extracss.html
 badd +3 les/src/js/ExDB-start.js
 badd +149 les/src/js/d3/hbar.js
-badd +762 les/src/js/d3/horizontal.js
 badd +7 les/src/mako/od_script_includes.html
 badd +116 les/src/js/d3/chapter.js
 badd +212 les/src/js/d3/circle_chart.js
@@ -148,13 +148,14 @@ badd +37 scatterplot/scatter.py
 badd +46 les/src/mako/od_base.html
 badd +120 les/src/js/search.js
 badd +12 les/src/js/panel.js
-badd +101 les/src/js/detail.js
+badd +81 les/src/js/detail.js
 badd +102 les/src/js/format.js
 badd +113 les/src/js/widget.js
 badd +54 les/src/js/table_builder.js
-badd +0 les/src/js/story.js
+badd +19 les/src/js/story.js
+badd +0 les/src/js/horizontal.js
 silent! argdel *
-edit les/src/js/story.js
+edit les/src/js/horizontal.js
 set splitbelow splitright
 wincmd _ | wincmd |
 vsplit
@@ -272,11 +273,11 @@ set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 1 - ((0 * winheight(0) + 21) / 43)
+let s:l = 482 - ((25 * winheight(0) + 21) / 43)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-1
+482
 normal! 0
 wincmd w
 argglobal
@@ -386,13 +387,14 @@ set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 101 - ((3 * winheight(0) + 21) / 43)
+let s:l = 72 - ((17 * winheight(0) + 21) / 43)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-101
-normal! 0
+72
+normal! 048|
 wincmd w
+2wincmd w
 exe 'vert 1resize ' . ((&columns * 88 + 88) / 177)
 exe 'vert 2resize ' . ((&columns * 88 + 88) / 177)
 tabnext 1

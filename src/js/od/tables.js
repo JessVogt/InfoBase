@@ -38,6 +38,10 @@
           'last_year_3': '2009‒2010'
       }
   };
+  
+  var years =[ "{{last_year}}",
+                '{{last_year_2}}',
+               '{{last_year_3}}' ] ;
 
   APP.dispatcher.on("new_details_view", function (dv) {
       // add event listener to the back button
@@ -147,6 +151,9 @@
 
   APP.dispatcher.on("load_tables", function (app) {
     var m = TABLES.m = function(s,extra_args){
+      if (_.isArray(s)){
+        return _.map(s,function(__){ return TABLES.m(__,extra_args);});
+      }
       extra_args = extra_args || {};
       var lang = app.state.get('lang');
       var args = TABLES.template_args['common'];
@@ -721,115 +728,37 @@
    }
   },
   graph_view: {
-      titles: {
-          1: {
-              "en": "Total Organization Voted and Statutory Net Expenditures($000)",
-              "fr": "Le total des dépenses votées et des dépenses législatives nettes (en milliers de dollars)"
-          },
-          2: {
-              "en": "Detailed Net Expenditures by Voted/Statutory Item ($000)",
-              "fr": "Détail des dépenses nettes par crédit voté/poste législatif (en milliers de dollars)"
-          }
-      }
-      , descriptions: {
-          1: {
-              "en": "Graph 1 presents total organization voted and statutory net expenditures in each fiscal year from 2009‒10 to 2011‒12. Voted expenditures reflect spending that received parliamentary approval through an appropriation bill, while statutory expenditures reflect spending whose authority was granted through other legislation. Select the fiscal year in the left side-bar to plot the expenditures on the graph.",
-              "fr": "Le graphique 1 montre le total des dépenses votées et des dépenses législatives nettes pour chaque exercice de 2009‒2010 à 2011‒2012. Les dépenses votées sont les dépenses qui ont été approuvées par le Parlement au moyen d’un projet de loi de crédits tandis que les dépenses législatives sont des dépenses qui ont été autorisées par une autre loi. Choisissez l’exercice dans le menu de gauche pour en représenter les dépenses."
-          },
-          2: {
-              "en": "Graph 2 presents the net expenditure trend for individual voted and statutory items from fiscal year 2009‒10 to 2011‒12. Select an individual item in the left side-bar to plot an expenditure on the graph.",
-              "fr": "Le graphique 2 présente le profil des dépenses nettes de chaque poste voté et législatif des exercices 2009‒2010 à 2011‒2012. Choisissez un poste dans le menu de gauche pour en représenter les dépenses."
-          }
-      }
-      , prep_data: function () {
-          var exp = "-Expenditures";
-          this.years = ['{{last_year_3}}',
-                      '{{last_year_2}}',
-                      "{{last_year}}"];
-          this.to_years = _.object(_.map(this.years, m), this.years);
-          var v_s = _.groupBy(this.mapped_objs,
-            function (x) {
-                return _.isNumber(x['Vote {{last_year}} / Statutory']);
-            });
-          v_s[true] = v_s[true] || [_.object(_.zip(this.years),_.map(this.years,function(){return 0;}))];
-          v_s[false]= v_s[false] || [_.object(_.zip(this.years),_.map(this.years,function(){return 0;}))];
-          this.map_reduce_v_s = function (col) {
-              return _.map([true,false], function (v) {
-                  return _.reduce(v_s[v], function (x, y) {
-                      return x + y[col + exp];
-                  }, 0);
-              });
-          };
-          this.get_year_vals = function (description) {
-              var line = _.first(_.filter(this.mapped_objs,
-                function (obj) {
-                    return obj['Description'] == description;
-                }));
-              return [line['{{last_year_3}}' + exp],
-                  line['{{last_year_2}}' + exp],
-                line['{{last_year}}' + exp]];
-          };
-      }
-      , render: function () {
-          var by_year_graph = $(
-            this.template({
-                id: this.make_id(1)
-              , header: this.gt("year")
-              , description: this.descriptions[1][this.lang]
-              , items: [m("{{last_year}}"),
-                        m("{{last_year_2}}"),
-                        m("{{last_year_3}}")]
-            })
-          );
-          var by_item_graph = $(
-            this.template({
-                id: this.make_id(2)
-              , description: this.descriptions[2][this.lang]
-              , header: this.gt("votestat")
-              , items: _.pluck(this.data, 1)
-              , filter: true
-            })
-          );
-          this.$el.append(by_year_graph);
-          this.$el.append(by_item_graph);
-          this.$el.on("click", "#" + this.make_id(1) + "_sidebar a", this.year_click);
-          this.$el.on("click", "#" + this.make_id(2) + "_sidebar a", this.item_click);
-          this.$el.on("click", ".sidebar a", this.set_side_bar_highlight);
-
-          var self = this;
-          setTimeout(function () {
-              self.$el.find("#" + self.make_id(1) + "_sidebar a:first").trigger("click");
-              self.$el.find("#" + self.make_id(2) + "_sidebar a:first").trigger("click");
-          });
-
-          return this;
-      }
-      , year_click: function (event) {
-          var ticks = [this.gt("voted"), this.gt("stat")];
-          var data = this.map_reduce_v_s(this.to_years[$(event.target).html()]);
-          var plot = GRAPHS.bar(this.make_id(1),
-            [data],
-            { title: m(this.titles[1][this.lang])
-            , legend: { show: false }
-            , barWidth: 100
-            , ticks: ticks
-            });
-          GRAPHS.fix_bar_highlight(plot, [data], ticks, this.app);
-      }
-      , item_click: function (event) {
-          var years = this.get_year_vals($(event.target).html());
-          var data = _.map(years, function (x) { return x });
-          var ticks = _.map(this.years, m)
-          var plot = GRAPHS.bar(this.make_id(2),
-            [data],
-            { title: this.titles[2][this.lang]
-            , legend: { show: false }
-            , barWidth: 100
-            , ticks: ticks
-            });
-          GRAPHS.fix_bar_highlight(plot, [data], ticks, this.app);
-      }
+    "dimensions": [
+       { key : "year",
+         span : "1",
+         header : function(app,table){
+           return app.get_text("year");
+         },
+         values : function(app,table){
+           return _.map(years,function(x){
+             return { html : TABLES.m(x), active : true };
+           });
+         }
+       },
+       { key : "desc",
+         span : "2",
+         header : function(app,table){
+           return table.col_from_nick('desc').header[app.lang];
+         },
+         values : function(app,table){
+           var org = app.state.get("dept");
+           var values = table.q(org.accronym).get_cols("desc").desc;
+           return _.map(values, function(x,i){
+             return { html : TABLES.m(x), active : i === 0 };
+           });
+         }
+       }
+    ],
+    get_data: function (table,selected) {
+      var rows = table.get_rows({desc : selected.desc});
+      debugger;
     }
+  }
   });
 
   APP.dispatcher.trigger("new_table",

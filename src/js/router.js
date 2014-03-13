@@ -207,7 +207,7 @@
     },
 
     infographic_org : function(container,org){
-      org = orgs[org];
+      org = window.depts[org];
       if (org){
         this.app.state.set("dept",org);
       }

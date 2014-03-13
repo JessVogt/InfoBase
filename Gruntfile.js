@@ -60,7 +60,7 @@ module.exports = function(grunt) {
           "src/js/sandbox.js",
           "src/js/mappers.js" ,
           "src/js/router.js",
-          "src/js/app.js",
+          "src/js/utils.js",
           "src/js/format.js",
           "src/js/detail.js",
           "src/js/waiting.js",
@@ -83,7 +83,7 @@ module.exports = function(grunt) {
           "src/js/widget.js",
           "src/js/story.js",
           "src/js/horizontal.js",
-          "src/js/dept_explore.js",
+          "src/js/d3/dept_explore.js",
 
           "src/js/tables.js",
           "src/js/od/text.js",

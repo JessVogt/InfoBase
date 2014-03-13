@@ -9,6 +9,27 @@
     window.is_mobile = false;
   }
 
+  APP.abbrev = function(app,name,length){
+    length = length || 60
+    var outerspan = $("<span>")
+    if (name.length > length){
+      var full_text = name ;
+      if (app.lang === "en") {
+        full_text += " abbreviated here as:";
+      } else {
+        full_text += " abrégé ici:";
+      }
+      $("<span>")
+          .addClass("ui-screen-hidden")
+          .html(full_text)
+          .appendTo(outerspan)
+          .after(name.substring(0,47)+"...");
+      return outerspan.html();
+    } else {
+      return name;
+    }
+  }
+
   APP.t = function(id){
     var el =  $(id);
     if (el.length === 0 && !_.isUndefined(console)){
