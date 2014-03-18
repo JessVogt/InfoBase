@@ -329,14 +329,14 @@ def od(dev=True):
   #IPython.embed()
 
   t = lookup.get_template('od.html')
-  with open("../../ExDB/index-eng.html",'w') as leshtml:
+  with open("../../InfoBase/index-eng.html",'w') as leshtml:
     leshtml.write(t.render(full_js = full_js,
                            #js_root = './',
                            full_css = full_css,
                            no_auto_js = True,
                            no_auto_css = True))
   t = lookup.get_template('od_fr.html')
-  with open("../../ExDB/index-fra.html",'w') as leshtml:
+  with open("../../InfoBase/index-fra.html",'w') as leshtml:
     leshtml.write(t.render(full_js = full_js,
                            #js_root = './',
                            full_css = full_css,

@@ -7,43 +7,42 @@
       events : {
         "click a.dept_sel_cancel" : "cancel",
         "click .org_list .sort_buttons a" : "sort"
-      }
-      ,initialize: function(){
-        this.template = APP.t('#org_list_t')
+      },
+      initialize: function(){
+        this.template = APP.t('#org_list_t');
         _.bindAll(this,"render","sort","cancel");
         this.app = this.options.app;
         this.container = this.options.container;
         this.state = this.app.state;
         this.lookup = depts;
         this.sort_func = 'min_sort';
-      }
-      ,add_search_button : function(){
+      },
+      add_search_button : function(){
         this.controller_button  = $('<a>')
           .addClass("clickable")
           .attr("href","#search");
         $('.nav_area').children().remove();
         $('.nav_area').append(this.controller_button);
          this.show();
-      }
-      ,cancel : function(){
+      },
+      cancel : function(){
         this.controller_button
          .html(this.app.get_text("to_select"))
          .addClass("dept_sel")
-         .removeClass("dept_sel_cancel")
-        //this.router.back();
-      }
-      , show : function(){
+         .removeClass("dept_sel_cancel");
+      },
+      show : function(){
         this.controller_button =  $('a.dept_sel')
           .html(this.app.get_text("cancel"))
           .removeClass("dept_sel")
           .addClass("dept_sel_cancel");
-      }
-      ,render : function(){
+      },
+      render : function(){
         var lang = this.state.get('lang');
        
         // render the template and append to the container
         var el = $($.trim(this.template({
-          depts : this[this.sort_func]['group_by'](lang,this)
+          depts : this[this.sort_func].group_by(lang,this)
         })));
         this.container.append(el);
 
@@ -51,7 +50,7 @@
         el.find('ul.orgs').listview({
           autodividers:true,
           filter:true,
-          autodividersSelector : this[this.sort_func]['dividers_func'](this),
+          autodividersSelector : this[this.sort_func].dividers_func(this),
           filterPlaceholder : this.app.get_text("search")
         });
 
@@ -70,44 +69,44 @@
 
         // focus the cursor on the cancel button
         //this.controller_button.focus();
-      }
-      ,min_sort : {
+      },
+      min_sort : {
         group_by : function(lang,view){
           return _.sortBy(_.filter(_.values(depts),function(dept){
-            return dept.accronym != 'ZGOC';
+            return dept.accronym !== 'ZGOC';
           }),function(dept){
             return   [dept.min[lang],dept.dept[lang]];
           }); 
-        }
-       , dividers_func : function(app){
+        },
+        dividers_func : function(app){
          return function(li){ 
             return $(li).attr("min");
-          }
+          };
        }
-      }                       
-      ,alpha_sort : {
+      },                      
+      alpha_sort : {
         group_by : function(lang,view){
           return _.sortBy(_.filter(_.values(depts),function(dept){
-            return dept.accronym != 'ZGOC';
+            return dept.accronym !== 'ZGOC';
           }),function(dept){
              return   dept.dept[lang];
           });
-        }
-        ,dividers_func : function(view){
+        },
+        dividers_func : function(view){
           return function(li){ 
             return $(li).text()[0];
-          }
+          };
         }
-      }                       
-      ,fin_size_sort : {
+      },                      
+      fin_size_sort : {
         group_by  : function(lang,view){
           return _.sortBy(_.filter(_.values(depts),function(dept){
-            return dept.accronym != 'ZGOC';
+            return dept.accronym !== 'ZGOC';
           }),function(dept){
-             return  dept.fin_size
+             return  dept.fin_size;
           }).reverse();
-        }
-        ,dividers_func : function(view){
+        },
+        dividers_func : function(view){
           var app = view.app;
           return function(li){ 
             var fin_size =  parseFloat($(li).attr("fin-size"));
@@ -126,10 +125,10 @@
               }
             }
             return  app.get_text("less_than") + app.formater("big-int",_.last(sizes));
-          }
+          };
         }
-      }                       
-      ,sort : function(event){
+      },                      
+      sort : function(event){
         var btn = $(event.target);
         this.sort_func =  btn.attr("sort-func-name");
         this.render();

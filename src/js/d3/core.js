@@ -18,11 +18,11 @@
          x*Math.cos(theta) - y*Math.sin(theta),
          x*Math.sin(theta) + y*Math.cos(theta)
         ];
-    }
+    };
 
     D3.get_offset = function(elem){
        return $(D3.get_html_parent(elem)).offset();
-    }
+    };
 
     D3.get_html_parent = function(elem){
       var node = $(elem.node());
@@ -31,7 +31,7 @@
       } else {
         return node.parents("svg").parent()[0];
       }
-    }
+    };
 
     D3.extend_base = function(chart){
       return function(options){
@@ -44,7 +44,7 @@
         function my(selection){
           selection.each(function(i){
             var svg = d3.select(this)
-                .append("svg")
+                .append("svg");
             options.width = $(this).width();
             chart.call(options,svg,i);
           });
@@ -80,8 +80,7 @@
         };
 
         return my;
-      }
+      };
     };
-
 
 })();

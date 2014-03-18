@@ -26,7 +26,7 @@
       this.width = 600;
       this.colors = d3.scale.ordinal()
         .domain(["download","loading","finished"])
-        .range(["#d62728","#1f77b4","#2ca02c"])
+        .range(["#d62728","#1f77b4","#2ca02c"]);
       this.widths = d3.scale.ordinal()
         .domain(["download","loading","finished"])
         .range([this.width/3,2/3*this.width,this.width]);
@@ -39,7 +39,7 @@
       var items = _.values(this.items);
       
       var rects = this.vis.selectAll("rect")
-          .data(items,function(d){return d._key});
+          .data(items,function(d){return d._key;});
 
       rects.enter().append("rect");
 
@@ -55,7 +55,7 @@
         });
 
       var text = this.vis.selectAll("text")
-          .data(items,function(d){return d._key});
+          .data(items,function(d){return d._key;});
 
       text.enter().append("svg:text");
 

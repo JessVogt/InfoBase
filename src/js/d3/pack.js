@@ -5,10 +5,10 @@
 
     PACK.count_nodes = function(d,test){
       if (d.children){
-        return d3.sum(d.children, function(child){return PACK.count_nodes(child,test)});
+        return d3.sum(d.children, function(child){return PACK.count_nodes(child,test);});
       } 
       return test(d) ? 1 : 0;
-    }
+    };
 
     PACK.create_data_nodes = function(data,labels){
       if (_.isUndefined(labels)){
@@ -49,7 +49,7 @@
           groups = d3.nest()
            .key(function(d){ return scale(accessor(d));})
            .entries(data),
-          sorted = _.sortBy(groups,function(g){ return parseInt(g.key);}),
+          sorted = _.sortBy(groups,function(g){ return parseInt(g.key,10);}),
           // the value of pointer will be reassigned to new lower levels
           rtn; 
       
@@ -114,7 +114,7 @@
 
       _.each(nodes, function(n){
         n.rid = APP.make_unique();
-      })
+      });
       this.nodes = nodes;
       if (!zoomable){
         nodes = _.filter(nodes,function(d){ return d.depth <= 1;});
@@ -249,7 +249,7 @@
             .each(function(d){
               var t = d.zoom_pos.y - $(this).height()/2;
               $(this).css("top",t);
-            })
+            });
 
         } else {
           text.each(function(d){

@@ -14,12 +14,12 @@
       return {
         link : HORIZONTAL.create_analytics_link(table, args[0]),
         data : table.q[func].apply(this,args)
-      }
-    }
+      };
+    };
 
     var table_dim_link = function(table, func, args){
 
-    }
+    };
 
     STORY.story =  function(container,app,dept){
       return new _story(container,app,dept);
@@ -34,11 +34,11 @@
       this.lang = app.lang;
       this.create_link = function(table,cols){
         return HORIZONTAL.create_analytics_link(this.t[table],cols,app.lang);
-      }
+      };
       // set the formaters
-      this.percent = function(x){return app.formater("percentage",x);},
-      this.compact = function(x){return app.formater("compact1",x);},
-      this.compact0 = function(x){return app.formater("compact0",x);},
+      this.percent = function(x){return app.formater("percentage",x);};
+      this.compact = function(x){return app.formater("compact1",x);};
+      this.compact0 = function(x){return app.formater("compact0",x);};
 
       // quick access to all tables
       this.t = _.chain(T.tables)
@@ -108,14 +108,14 @@
         gov_last_2_year_stat_voted :  t.table4.voted_stat('{{last_year_2}}auth',false), 
         gov_last_3_year_stat_voted : t.table4.voted_stat('{{last_year_2}}auth',false), 
 
-        this_year_voted_num : t.table8.voted_stat("total_net_auth",false,false)['voted'].length,
-        this_year_stat_num : t.table8.voted_stat("total_net_auth",false,false)['stat'].length,
-        gov_this_year_top_voted : _.chain(t.table8.voted_stat("total_net_auth",false,false)['voted']) 
-                              .sortBy(function(x){ return -x['total_net_auth']}) 
+        this_year_voted_num : t.table8.voted_stat("total_net_auth",false,false).voted.length,
+        this_year_stat_num : t.table8.voted_stat("total_net_auth",false,false).stat.length,
+        gov_this_year_top_voted : _.chain(t.table8.voted_stat("total_net_auth",false,false).voted) 
+                              .sortBy(function(x){ return -x.total_net_auth;}) 
                               .first(3)
                               .value(),
-        gov_this_year_top_stat : _.chain(t.table8.voted_stat("total_net_auth",false,false)['stat']) 
-                              .sortBy(function(x){ return -x['total_net_auth']}) 
+        gov_this_year_top_stat : _.chain(t.table8.voted_stat("total_net_auth",false,false).stat) 
+                              .sortBy(function(x){ return -x.total_net_auth;}) 
                               .first(3)
                               .value(),
 
@@ -144,8 +144,8 @@
 
       };
 
-      this.data.gov_this_year_type_spend['crown'] = qfr_difference['crown'];
-      this.data.gov_this_year_type_spend['op'] += qfr_difference['op'];
+      this.data.gov_this_year_type_spend.crown = qfr_difference.crown;
+      this.data.gov_this_year_type_spend.op += qfr_difference.op;
 
       // the QFR data needs to be enhanced to account for the missing 
       // these two function calls assume that all numbers are in dollars, 
@@ -166,7 +166,7 @@
         this.written_data.estimates_split[i][0] = this.compact_data.estimates_split[i][0] = name_val[0];
       },this);
 
-    }
+    };
 
     p.dept_data_prep = function(dept){
       var t = this.t,
@@ -175,7 +175,7 @@
           is = this.gt("internal_services"),
           compact = this.compact,
           written = function(x){return app.formater("compact_writen",x);},
-          qfr_difference = q.table8.qfr_difference();
+          qfr_difference = q.table8.qfr_difference(),
           dept_data = {
           dept_name : window.depts[dept].dept[this.lang],
           dept_this_year_auth : q.table8.sum("total_net_auth"),
@@ -191,15 +191,15 @@
 
           dept_this_year_type_spend : q.table2.get_cols(["plannedexp","so"],{sorted:true}),
                                       
-          dept_this_year_voted_num : t.table8.voted_stat("total_net_auth",dept,false)['voted'].length,
-          dept_this_year_stat_num : t.table8.voted_stat("total_net_auth",dept,false)['stat'].length,
+          dept_this_year_voted_num : t.table8.voted_stat("total_net_auth",dept,false).voted.length,
+          dept_this_year_stat_num : t.table8.voted_stat("total_net_auth",dept,false).stat.length,
 
-          dept_this_year_top_voted : _.chain(t.table8.voted_stat("total_net_auth",dept,false)['voted']) 
-                                .sortBy(function(x){ return -x['total_net_auth']}) 
+          dept_this_year_top_voted : _.chain(t.table8.voted_stat("total_net_auth",dept,false).voted) 
+                                .sortBy(function(x){ return -x.total_net_auth;}) 
                                 .first(3)
                                 .value(),
-          dept_this_year_top_stat : _.chain(t.table8.voted_stat("total_net_auth",dept,false)['stat']) 
-                                .sortBy(function(x){ return -x['total_net_auth']}) 
+          dept_this_year_top_stat : _.chain(t.table8.voted_stat("total_net_auth",dept,false).stat) 
+                                .sortBy(function(x){ return -x.total_net_auth;}) 
                                 .first(3)
                                 .value(),
 
@@ -217,7 +217,6 @@
           dept_last_year_qfr_spend : q.table1.sum("lastyearexpenditures")
           
           },
-
           // the QFR data needs to be enhanced to account for the missing 
           // these two function calls assume that all numbers are in dollars, 
           // however, some are percentages and will have to fixed mannually
@@ -239,7 +238,7 @@
       _.extend(this.data, dept_data);
       _.extend(this.compact_data, compact_data);
       _.extend(this.written_data, written_data);
-    }
+    };
 
     p.gov_auth = function(){
       var d = this.data,
@@ -314,7 +313,7 @@
           compact = this.compact,
 
           internal_services_text = this.gt("internal_service_spend"),
-          internal_services_data = _.zip( d.last_years, wd.gov_is  );
+          internal_services_data = _.zip( d.last_years, wd.gov_is  ),
           internal_services_bar = BAR.bar({
             series :  {'':  _.clone(d.gov_is)},
             ticks : d.last_years,
@@ -361,7 +360,7 @@
               },this)
               .value()
           },
-          data = _.chain(data)
+          table_data = _.chain(data)
               .sortBy(function(label_value){
                 return -label_value[1];
               })
@@ -369,7 +368,7 @@
                 label_value[1] = this.compact(label_value[1]).replace("B","");
                 return label_value;
               },this)
-             .value();
+             .value(),
           // create the chapter
           chapter = new STORY.chapter({
              toggles :[{
@@ -397,7 +396,8 @@
           on_label_click = function(label){
             // highlight the current link
             list_div.selectAll("li").classed("background-medium",false);
-            list_div.selectAll("li").filter(function(d){return d === label})
+            list_div.selectAll("li")
+              .filter(function(d){return d === label;})
               .classed("background-medium",true);
             // remove the previous graph
             graph_div.selectAll("*").remove();
@@ -429,7 +429,7 @@
 
       // add the table
       T.prepare_and_build_table({
-        rows : data,
+        rows : table_data,
         headers : headers,
         table_class : "table-condensed ",
         rowseach : function(d,i){
@@ -485,11 +485,11 @@
         .append("a")
         .attr("class","ui-link")
         .html(function(d){return d;})
-        .on("click", function(d){on_label_click(d)});
+        .on("click", function(d){on_label_click(d);});
 
       // select the first item in the list
       on_label_click(d3.keys(label_mapping)[0]);
-    }
+    };
 
     p.vote_stat_spend = function(){
       var text = this.gt("gov_vote_stat_spending"),
@@ -549,7 +549,7 @@
                   x.total_net_auth
                 ];
               },this).value();
-         chapter.toggle_area(i+1).select(".text .inner").html(text)
+         chapter.toggle_area(i+1).select(".text .inner").html(text);
          T.prepare_and_build_table({
           table_class : "table-condensed ",
           rowseach : function(d,i){
@@ -570,7 +570,7 @@
 
       },this);
       
-    }
+    };
 
     p.gov_spend = function(){
       var text = this.gt("gov_this_year_qfr_spend"),
@@ -601,9 +601,9 @@
         ],
         formater : this.compact,
         height : height,
-      })(chapter.toggle_area());
+      })(chapter.toggle_area().select(".graphic"));
 
-    }
+    };
 
     p.gov_spend_change = function(){
       var text = this.gt("gov_this_year_qfr_spend_change"),
@@ -624,7 +624,7 @@
        height : height,
      })(chapter.graph_area());
 
-    }
+    };
 
     p.dept_auth = function(){
       var d = this.data,
@@ -743,7 +743,7 @@
                         x.total_net_auth
                 ];
               },this).value();
-         chapter.toggle_area(i+1).select(".text .inner").html(text)
+         chapter.toggle_area(i+1).select(".text .inner").html(text);
          T.prepare_and_build_table({
           table_class : "table-condensed ",
           rowseach : function(d,i){
@@ -851,7 +851,7 @@
         .append("a")
         .attr("class","ui-link")
         .html(function(d){return d;})
-        .on("click", function(d){on_so_click(d)});
+        .on("click", function(d){on_so_click(d);});
 
       on_so_click(standard_objects[0]);
       

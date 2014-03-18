@@ -14,7 +14,7 @@
         .attr({
           "d" :  "M 29.653912,-0.10968436 0.36255227,38.029976 l 12.51457473,0 0,61.44578 33.074233,0 0,-61.41987 12.929135,0 -29.226583,-38.16557036 z",
           "class" : "arrow"
-        })
+        });
   }
 
   D3.arrows = D3.extend_base(function(svg,index){
@@ -60,7 +60,7 @@
           .data(this.data,function(d){ return d.name;});
 
       _.each(this.data, function(d,i,col){
-        d.scale = scale(Math.abs(d.value))
+        d.scale = scale(Math.abs(d.value));
         d.width = d.scale * arrow_width;
         d.height = d.scale * arrow_height;
         d.y = height -  d.height ;
@@ -81,7 +81,7 @@
         })
         .each(function(d,i){
           add_arrow(d3.select(this));
-        })
+        });
 
       arrow
         .selectAll("path.arrow")
@@ -113,12 +113,12 @@
           })
           .text(function(d){
             return formater(d.value);
-          })
+          });
 
       bottomtext.exit().remove();
       bottomtext.enter().append("div");
       bottomtext
-        .html(function(d){ return d.name})
+        .html(function(d){ return d.name;})
          .attr("class", "font-serif bottomtext")
          .style({
           "top"  : this.height+margin.bottom+"px",

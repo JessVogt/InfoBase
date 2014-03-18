@@ -44,7 +44,7 @@ module.exports = function(grunt) {
         browser: true,
       },
       full : {
-            src: ['Gruntfile.js', 'src/**/*.js'] 
+            src: ['Gruntfile.js', 'src/js/*.js','src/js/InfoBase/*.js','src/js/d3'] 
       }
     },
     concat: {
@@ -53,10 +53,6 @@ module.exports = function(grunt) {
         },
         dist: {
           src: [
-//        "src/js/datatables.js",
-//        "src/js/group_funcs.js" ,
-//        "src/js/base_table_view.js",
-
           "src/js/sandbox.js",
           "src/js/mappers.js" ,
           "src/js/router.js",
@@ -66,7 +62,6 @@ module.exports = function(grunt) {
           "src/js/waiting.js",
           "src/js/loader.js",
           "src/js/handlebars_helpers.js",
-          "src/js/table_builder.js",
           "src/js/queries.js",
 
           "src/js/d3/core.js",
@@ -76,6 +71,7 @@ module.exports = function(grunt) {
           "src/js/d3/arrow.js",
           "src/js/d3/pack.js",
           "src/js/d3/circle_chart.js",
+          "src/js/d3/table_builder.js",
 
           "src/js/org_header.js",
           "src/js/other_ministries.js",
@@ -85,14 +81,25 @@ module.exports = function(grunt) {
           "src/js/horizontal.js",
           "src/js/d3/dept_explore.js",
 
-          "src/js/tables.js",
-          "src/js/od/text.js",
-          "src/js/od/tables.js",
-          "src/js/od/od.js",
-          "src/js/ExDB-start.js"
+          "src/js/base_tables.js",
+          "src/js/InfoBase/text.js",
+          "src/js/InfoBase/tables.js",
+          "src/js/InfoBase/table1.js",
+          "src/js/InfoBase/table2.js",
+          "src/js/InfoBase/table4.js",
+          "src/js/InfoBase/table5.js",
+          "src/js/InfoBase/table6.js",
+          "src/js/InfoBase/table7.js",
+          "src/js/InfoBase/table8.js",
+          "src/js/InfoBase/table9.js",
+          "src/js/InfoBase/table10.js",
+          "src/js/InfoBase/table11.js",
+
+          "src/js/InfoBase/InfoBase.js",
+          "src/js/start.js"
 
           ],
-          dest: '../ExDB/app.js',
+          dest: '../InfoBase/app.js',
         }
       }
   });

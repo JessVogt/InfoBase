@@ -10,8 +10,8 @@
   }
 
   APP.abbrev = function(app,name,length){
-    length = length || 60
-    var outerspan = $("<span>")
+    length = length || 60;
+    var outerspan = $("<span>");
     if (name.length > length){
       var full_text = name ;
       if (app.lang === "en") {
@@ -28,7 +28,7 @@
     } else {
       return name;
     }
-  }
+  };
 
   APP.t = function(id){
     var el =  $(id);
@@ -37,19 +37,19 @@
       return Handlebars.compile(" ");
     }
     return Handlebars.compile($.trim(el.html()));
-  }
+  };
 
   var _given = {};
 
   APP.make_unique = function(){
     var val, given=true;
     while (given ) {
-      var val = _.random(0,10000000)+"";
+      val = _.random(0,10000000)+"";
       given = !_.isUndefined(_given[val]);
     }
     _given[val] = true;
     return val;
-  }
+  };
   APP._given = _given;
 
 
@@ -59,8 +59,8 @@
       setTimeout(_.bind(function(){
         APP.dispatcher.trigger.apply(APP.dispatcher,args);
       }));
-    }
-    ,deferred_signal : function(signal){
+    },
+    deferred_signal : function(signal){
       var d = $.Deferred();
       var that = this;
       var f = function(arg){
@@ -73,8 +73,8 @@
       // this is a precaution since f removes itself
       this.once(signal,f);
       return d;
-    }
-    ,on_these : function (signals,func,repeat) {
+    },
+    on_these : function (signals,func,repeat) {
       var that = this;
       repeat = repeat || false;
       // wait for all the signals to have fired
@@ -89,9 +89,9 @@
             that.on_these(signals,func,repeat);
           });
         }
-      })
+      });
     }
-  },Backbone.Events)
+  },Backbone.Events);
   /************STATE MODEL********/
   APP.stateModel = Backbone.Model.extend({ });
 

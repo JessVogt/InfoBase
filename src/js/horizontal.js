@@ -35,7 +35,7 @@
         html : table.name[lang],
         href : href
       };
-    }
+    };
 
 
     var Config = HORIZONTAL.Config = function(currently_selected){
@@ -410,7 +410,7 @@
               this.config.update_selection("column_choice",[this.config.currently_selected.column]);
           } else if (this.config.currently_selected.column_choice &&
                      _.all(this.config.currently_selected.column_choice,
-                           function(x){ return _.contains(_.pluck(cols, "val"),x)})){
+                           function(x){ return _.contains(_.pluck(cols, "val"),x);})){
               // do nothing
           } else {
               this.config.update_selection("column_choice",[cols[0].val]);

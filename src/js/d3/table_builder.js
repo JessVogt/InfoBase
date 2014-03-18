@@ -4,7 +4,8 @@
   var APP = ns('APP');
 
   TABLES.prepare_data = function(options){
-    var x = dup_header_options = options.dup_header_options,
+    var dup_header_options = options.dup_header_options,
+    x = dup_header_options,
     rows = options.rows,
     headers = options.headers,
 
@@ -18,12 +19,12 @@
 
     _.each(headers, function(header_row,i){
       _.each(header_row, function(header,j){
-        var id =  APP.make_unique();
+        var wcag_header, id =  APP.make_unique();
         header_links[j] += ' ' + id;
          if (i > 0){
-           var wcag_headers = _.chain(headers)
+           wcag_headers = _.chain(headers)
              .first(i).pluck(j)
-             .map(function(d){ return d.id})
+             .map(function(d){ return d.id;})
              .value().join(" ");
          } else {
            wcag_headers = '';
@@ -52,7 +53,7 @@
 
   TABLES.d3_build_table = function(options){
     var table = d3.select(options.node).append("table");
-    var data_key_func = options.key_func || function(d,i){return i};
+    var data_key_func = options.key_func || function(d,i){return i;};
 
     if (options.table_class){
       table.attr("class",options.table_class);
@@ -80,7 +81,7 @@
       .enter()
       .append("th")
       .html(function(d){return d.val;})
-      .style(function(){ return d.css})
+      .style(function(){ return d.css;})
       .attr("id",function(d){return d.id;})
       .attr("headers",function(d){return d.headers;})
       .attr("class",function(d){return d.class;});
@@ -94,7 +95,7 @@
 
     var rows = table.append("tbody")
         .selectAll("tr")
-        .data(options.rows,data_key_func)
+        .data(options.rows,data_key_func);
 
     rows.exit().remove();
     rows
@@ -103,7 +104,7 @@
       .order();
     var tds = rows
         .selectAll("td")
-          .data(Object)
+          .data(Object);
     tds.exit().remove();
 
     tds
@@ -112,7 +113,7 @@
       .html(function(d){return d.val;})
       .attr("headers",function(d){return d.headers;})
       .attr("class",function(d){return d.class;})
-      .style(function(){ return d.css});
+      .style(function(){ return d.css;});
 
     if (options.rowseach){
        rows.each(options.rowseach);

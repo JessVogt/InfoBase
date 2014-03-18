@@ -70,25 +70,24 @@
 
     chapterp.add_title = function(title){
       this.el.append("h2").html(title);
-    }
-
+    };
 
     chapterp.text_area = function(){
       return this.el.select(".text .inner");
-    }
+    };
 
     chapterp.graph_area = function(){
       return this.el.select(".graphic");
-    }
+    };
 
     chapterp.toggle_area = function(index){
       index = index || 0;
       return this.toggle_sections[index];
-    }
+    };
 
     chapterp.source_area = function(){
       return this.el.select("source");
-    }
+    };
 
     chapterp.add_toggle_section = function(target,text){
       var toggler = target.append("div").attr("class","span-8 toggler border-top")
@@ -101,25 +100,26 @@
         .append("a")
           .html(text)
           .attr("class","ui-link")
+          .attr("href","#")
           .on("click", this.onToggle); 
       var div = target.append("div").attr("class", "span-8 toggle ");
       toggler.datum(div);
-      return div
-    }
+      return div;
+    };
 
     // respond to the click on the div element, this implemented for touch screens
     chapterp.onToggleParent = function (e){
       var parent = d3.select(d3.event.target),
           target = parent.select("a").node();
       this._Toggle(target,parent);
-    }
+    };
 
     // respond to the click on the a element
     chapterp.onToggle = function (e){
       var target = d3.event.target,
           parent = d3.select(target.parentNode);
       this._Toggle(target,parent);
-    }
+    };
 
     chapterp._Toggle = function(target,parent){
       var el = d3.select(target).datum(),
@@ -132,7 +132,7 @@
          parent.style({"background-color":"#FFF"});
       }
       _.delay( this.dispatch.toggle,0,el,closed ? "closed" : "open");
-    }
+    };
 
     function add_source(target,sources){
       target.select(".source")
@@ -140,7 +140,7 @@
              .append("a")
              .attr("class","router")
              .attr("href",function(d){return d.href;})
-             .html(function(d){return d.html});
+             .html(function(d){return d.html;});
     }
 
     function add_section(target){
@@ -152,11 +152,11 @@
        *   div.span-4.graphic
        */
       var el =  target,
-          span = is_mobile ? "span-8" : "span-4"
+          span = is_mobile ? "span-8" : "span-4";
       el.append("div").attr("class",span +" text margin-bottom-none margin-left-none");
       el.select(".text")
         .append("div")
-        .attr("class", "inner margin-top-large margin-left-large")
+        .attr("class", "inner margin-top-large margin-left-large");
       el.append("div").attr("class",span +" graphic margin-bottom-none margin-left-none");
       el.append("div").attr("class", span+ " source margin-bottom-none margin-left-none")
         .style({"font-size":"12px"})

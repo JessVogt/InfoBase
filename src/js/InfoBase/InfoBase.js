@@ -9,24 +9,24 @@
 
   function lang_load(promises,data){
    LANG.lookups = PARSER.parse_lang(d3.csv.parseRows(data));
-  };
+  }
   function table_text_load(promises,data){
     $('html').append(data);
-  };
+  }
   function template_load(promises,data){
     $('html').append(data);
-  };
+  }
   function org_load(promises,data){
     window.depts = PARSER.parse_orgs(d3.csv.parseRows(data));
-  };
+  }
   function sos_load(promises,data){
     window.sos = PARSER.parse_sos(d3.csv.parseRows(data));
-  };
+  }
   function qfr_links_load(promises,data){
-    promises['Organizations'].done(function(){
+    promises.Organizations.done(function(){
       PARSER.parse_qfrlinks(window.depts, d3.csv.parseRows(data));
     });
-  };
+  }
 
   APP.start = function(){
     // download initialization data files and when that's done,
@@ -44,17 +44,16 @@
     var promises = _.object(_.map(setup_material,function(obj,key){
       var promise1 = $.Deferred(),promise2 = $.Deferred();
       WAIT.w.update_item(key,"download");
-      var req = $.ajax(obj.url)
+      var req = $.ajax(obj.url);
       req.done(function(data){
         WAIT.w.update_item(key,"loading");
         _.delay(promise1.resolve,0,data);
-
       });
       promise1.done(function(data){
         obj.onload(promises,data);
         WAIT.w.update_item(key,"finished");
         _.delay(promise2.resolve,0);
-      })
+      });
       return [key,promise2];
     }));
     $.when.apply(null,_.values(promises)).done(function(){
@@ -66,12 +65,12 @@
           "goc_tot":true
        }});
     });
-  }
+  };
 
   APP.dispatcher.on("data_loaded",function(app){
     WAIT.w.teardown();
     window.mins = d3.nest()
-      .key(function(d){ return d.min.en})
+      .key(function(d){ return d.min.en;})
       .map(_.values(window.depts));
     window.dept_name_map = _.chain(window.depts)
       .map(function(dept){
@@ -88,12 +87,12 @@
 
   /************APP VIEW***********/
   APP.appView = Backbone.View.extend({
-    el : $('body')
-    ,events : {
+    el : $('body'),
+    events : {
       "click #lang_change" : "toggle_lang",
       "hover .horizontal" : "highlighter"
-    }
-    ,initialize: function(){
+    },
+    initialize: function(){
       _.bindAll.apply(this,[this].concat(_.functions(this)));
 
       this.state = new APP.stateModel(_.extend({app:this},this.options.state));
@@ -106,7 +105,7 @@
       this.state
         .on("change:lang", this.render)
         .on("change:lang", this.reset_dept)
-        .on("change:lang", this.lang_change)
+        .on("change:lang", this.lang_change);
 
       this.render();
 
@@ -116,10 +115,10 @@
     formater : function(format,val){
       if (_.has(APP.types_to_format,format)){
         if (_.isArray(val)){
-          return _.map(val, function(v){ return this.formater(format,v)},this);
+          return _.map(val, function(v){ return this.formater(format,v);},this);
         } else if (_.isObject(val)){
           return _.chain(val)
-            .map(function(v,k){ return [k,this.formater(format,v)]},this)
+            .map(function(v,k){ return [k,this.formater(format,v)];},this)
             .object()
             .value();
         } else  if (_.isString(val)){
@@ -134,7 +133,7 @@
       // formats can be either an array of values or one single one
       // which will be duplicated for each item in vals
       if (!_.isArray(formats)){
-        formats = _.map(vals, function(){ return formats});
+        formats = _.map(vals, function(){ return formats;});
       }
       return _.map(formats, function(format,i){
         return this.formater(format,vals[i]);
@@ -150,30 +149,30 @@
       this.state.set({
         lang:this.state.get("lang") == "en" ? "fr" : "en" 
       });
-    }
-    ,reset_dept : function(model, dept){
-      var dept = this.state.get('dept');
-      if (!dept){ return }
+    },
+    reset_dept : function(model, dept){
+      dept = this.state.get('dept');
+      if (!dept){ return;}
       this.state.unset("dept",{silent:true});
-      this.state.set('dept',dept)
-    }
-    ,reset : function() {
+      this.state.set('dept',dept);
+    },
+    reset : function() {
       var min_tot = this.state.get("min_tot");
       var goc_tot = this.state.get("goc_tot");
       this.state.clear({silent:true});
       this.state.set({
-        lang : this.lang
-        ,min_tot : min_tot
-        ,goc_tot : goc_tot
+        lang : this.lang,
+        min_tot : min_tot,
+        goc_tot : goc_tot
       });
-    }
-    ,highlighter : function(e){
+    },
+    highlighter : function(e){
        $(e.currentTarget).toggleClass('alert-info');
-    }
-    ,render: function(){
+    },
+    render: function(){
       this.remove();
-    }
-    ,remove : function(){
+    },
+    remove : function(){
       if (this.app){
         this.app.find('*').off();
         this.app.children().remove();

@@ -32,7 +32,7 @@
         .append("option")
         .html(function(d){ return m(d.val);})
         .attr("val",function(d){return d.val;})
-        .filter(function(d){return d.selected == true;})
+        .filter(function(d){return d.selected === true;})
         .attr("selected","selected");
       return $('<span>')
         .append($("<label>")
@@ -54,7 +54,7 @@
         .addClass("minisel");
       desc.append(select);
       desc.find("select")
-        .on("change", this.on_select)
+        .on("change", this.on_select);
     },
     on_select: function (e) {
       this.option = $(":selected",e.target)[0].__data__;
@@ -70,8 +70,8 @@
 
 
   var widgetView = Backbone.View.extend({
-    template : '#mini_t'
-    ,initialize : function(){
+    template : '#mini_t',
+    initialize : function(){
       this.template = APP.t(this.template);
       this.def = this.options.table;
       this.app = this.options.app;
@@ -95,13 +95,13 @@
     },
     header_lookup : function(nick){
        return this.def.col_from_nick(nick).header[this.lang];
-    }
-    ,make_title : function(){
+    },
+    make_title : function(){
       this.$el.find('.title')
         .html("")
-        .append(this.def['name'][this.lang]);
-    }
-    ,add_description: function(){
+        .append(this.def.name[this.lang]);
+    },
+    add_description: function(){
       if (this.description){
         this.$el.find('.description')
           .html("")
@@ -109,13 +109,13 @@
             TABLES.m(this.description[this.lang])
         );
       }
-    }
-    ,set_no_content : function(){
+    },
+    set_no_content : function(){
       this.content = $("<p >").html(this.gt("no_data"));
       this.$el.find('div.details_button').remove();
       this.$el.find('p.description').remove();
-    }
-    ,render : function(){
+    },
+    render : function(){
       // why this if?
       if (this.$el.children().length ===0 ){
         this.$el.append(this.template({
@@ -149,7 +149,7 @@
       }
       this.$el.find('.mini_payload')
         .children()
-        .remove()
+        .remove();
       this.$el.find('.mini_payload')
         .append(this.content);
 
@@ -159,15 +159,16 @@
 
       APP.dispatcher.trigger_a(this.make_signal(),this);
       return this;
-    }
-    ,post_render : function(){}
-    ,resize_my_row : function(){
+    },
+    post_render : function(){
+    },
+    resize_my_row : function(){
        this.$el.parents('.widget-row').each(size_widget_row);
-    }
-    ,make_signal : function(){
+    },
+    make_signal : function(){
       return 'table_' + this.def.id +"_rendered";
-    }
-    ,trigger_click : function(){
+    },
+    trigger_click : function(){
       this.$el.find('a.details').trigger("click");
     }
   });
@@ -196,14 +197,14 @@
             .height(_.max($(selector,row).map(function(x,y){
               return $(y).height();
             })));
-     })
+     });
   };
 
   var size_widgets = function(container, app,signals){
     // once all the mini table signals have been sent
     // do some prettying up on the page
     APP.dispatcher.on_these(signals, function(){
-      $('.widget-row').each(function(i,row){ size_widget_row(container, i,row)});
+      $('.widget-row').each(function(i,row){ size_widget_row(container, i,row);});
     });
   };
 

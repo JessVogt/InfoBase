@@ -7,40 +7,40 @@ nnoremap  o
 map   viw
 nmap ; :
 vmap ]f :call PythonDec("function", 1)
+vmap ]F :call PythonDec("function", -1)
+vmap ]j :call PythonDec("class", 1)
+vmap ]J :call PythonDec("class", -1)
+vmap ]u :call PythonUncommentSelection()
+vmap ]# :call PythonCommentSelection()
+vmap ]> >
+vmap ]< <
+vmap ]e :PEoBm'gv``
+vmap ]t :PBOBm'gv``
 nmap ]f :call PythonDec("function", 1)
 omap ]f :call PythonDec("function", 1)
-vmap ]F :call PythonDec("function", -1)
 nmap ]F :call PythonDec("function", -1)
 omap ]F :call PythonDec("function", -1)
-vmap ]j :call PythonDec("class", 1)
 nmap ]j :call PythonDec("class", 1)
 omap ]j :call PythonDec("class", 1)
-vmap ]J :call PythonDec("class", -1)
 nmap ]J :call PythonDec("class", -1)
 omap ]J :call PythonDec("class", -1)
-map ]<Down> :call PythonNextLine(1)
-map ]<Up> :call PythonNextLine(-1)
-map ]d :call PythonSelectObject("function")
-map ]c :call PythonSelectObject("class")
-vmap ]u :call PythonUncommentSelection()
 nmap ]u :call PythonUncommentSelection()
 omap ]u :call PythonUncommentSelection()
-vmap ]# :call PythonCommentSelection()
 nmap ]# :call PythonCommentSelection()
 omap ]# :call PythonCommentSelection()
-vmap ]> >
 nmap ]> ]tV]e>
 omap ]> ]tV]e>
-vmap ]< <
 nmap ]< ]tV]e<
 omap ]< ]tV]e<
-map ]v ]tV]e
-vmap ]e :PEoBm'gv``
 nmap ]e :PEoB
 omap ]e :PEoB
-vmap ]t :PBOBm'gv``
 nmap ]t :PBoB
 omap ]t :PBoB
+map ]v ]tV]e
+map ]c :call PythonSelectObject("class")
+map ]d :call PythonSelectObject("function")
+map ]<Up> :call PythonNextLine(-1)
+map ]<Down> :call PythonNextLine(1)
 nmap _c :%s/\s\+$//gc
 nmap gx <Plug>NetrwBrowseX
 nnoremap <silent> <Plug>NetrwBrowseX :call netrw#NetrwBrowseX(expand("<cWORD>"),0)
@@ -113,49 +113,60 @@ if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
 endif
 set shortmess=aoO
 badd +5 les/src/js/app.js
-badd +12 les/src/js/tables.js
-badd +1938 les/src/js/od/tables.js
-badd +83 les/src/js/queries.js
+badd +290 les/src/js/queries.js
 badd +82 les/src/js/base_table_view.js
-badd +47 les/src/js/d3/core.js
+badd +83 les/src/js/d3/core.js
 badd +167 les/src/js/d3/bar.js
 badd +26 les/src/js/d3/tooltip.js
 badd +83 les/test/test-data.js
 badd +8 les/test/test.html
-badd +214 les/src/js/od/od.js
 badd +13 les/src/js/mappers.js
-badd +88 les/Gruntfile.js
-badd +1 les/src/js/d3/dept_explore.js
-badd +245 les/src/js/d3/pack.js
+badd +47 les/Gruntfile.js
+badd +287 les/src/js/d3/dept_explore.js
+badd +124 les/src/js/d3/pack.js
 badd +328 les/test/test-d3.js
 badd +249 les/src/mako/od_handlebars_templates.html
-badd +50 les/src/js/waiting.js
+badd +57 les/src/js/waiting.js
 badd +97 les/src/mako/extracss.html
-badd +3 les/src/js/ExDB-start.js
-badd +149 les/src/js/d3/hbar.js
+badd +52 les/src/js/d3/hbar.js
 badd +7 les/src/mako/od_script_includes.html
-badd +116 les/src/js/d3/chapter.js
-badd +212 les/src/js/d3/circle_chart.js
-badd +128 les/src/js/d3/arrow.js
+badd +166 les/src/js/d3/chapter.js
+badd +219 les/src/js/d3/circle_chart.js
+badd +121 les/src/js/d3/arrow.js
 badd +6 les/src/mako/od.html
 badd +59 les/src/js/router.js
 badd +99 les/src/js/loader.js
 badd +21 les/src/js/sandbox.js
 badd +28 les/src/js/handlebars_helpers.js
 badd +11 les/src/mako/od_fr.html
-badd +34 les/todo
-badd +37 scatterplot/scatter.py
+badd +66 les/todo
 badd +46 les/src/mako/od_base.html
-badd +120 les/src/js/search.js
+badd +103 les/src/js/search.js
 badd +12 les/src/js/panel.js
-badd +81 les/src/js/detail.js
+badd +83 les/src/js/detail.js
 badd +102 les/src/js/format.js
-badd +113 les/src/js/widget.js
+badd +207 les/src/js/widget.js
 badd +54 les/src/js/table_builder.js
-badd +19 les/src/js/story.js
-badd +0 les/src/js/horizontal.js
+badd +854 les/src/js/story.js
+badd +413 les/src/js/horizontal.js
+badd +106 les/src/js/InfoBase/tables.js
+badd +7 les/src/js/InfoBase/table1.js
+badd +44 les/src/js/base_tables.js
+badd +130 les/src/js/InfoBase/table2.js
+badd +96 les/src/js/InfoBase/table4.js
+badd +70 les/src/js/InfoBase/table5.js
+badd +84 les/src/js/InfoBase/table6.js
+badd +118 les/src/js/InfoBase/table7.js
+badd +182 les/src/js/InfoBase/table8.js
+badd +6 les/src/js/start.js
+badd +6 les/src/js/InfoBase/table9.js
+badd +4 les/src/js/InfoBase/table10.js
+badd +4 les/src/js/InfoBase/table11.js
+badd +186 les/src/js/InfoBase/InfoBase.js
+badd +92 les/src/js/utils.js
+badd +9 les/src/js/d3/table_builder.js
 silent! argdel *
-edit les/src/js/horizontal.js
+edit les/todo
 set splitbelow splitright
 wincmd _ | wincmd |
 vsplit
@@ -176,13 +187,13 @@ setlocal nobinary
 setlocal bufhidden=
 setlocal buflisted
 setlocal buftype=
-setlocal cindent
+setlocal nocindent
 setlocal cinkeys=0{,0},0),:,0#,!^F,o,O,e
-setlocal cinoptions=j1,J1
+setlocal cinoptions=
 setlocal cinwords=if,else,while,do,for,switch
 setlocal colorcolumn=
-setlocal comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,://
-setlocal commentstring=//%s
+setlocal comments=s1:/*,mb:*,ex:*/,://,b:#,:%,:XCOMM,n:>,fb:-
+setlocal commentstring=/*%s*/
 setlocal complete=.,w,b,u,t,i
 setlocal concealcursor=
 setlocal conceallevel=0
@@ -199,8 +210,8 @@ setlocal nodiff
 setlocal equalprg=
 setlocal errorformat=
 setlocal expandtab
-if &filetype != 'javascript'
-setlocal filetype=javascript
+if &filetype != ''
+setlocal filetype=
 endif
 setlocal foldcolumn=0
 setlocal foldenable
@@ -213,7 +224,7 @@ setlocal foldminlines=1
 setlocal foldnestmax=20
 setlocal foldtext=foldtext()
 setlocal formatexpr=
-setlocal formatoptions=croql
+setlocal formatoptions=tcq
 setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*
 setlocal grepprg=
 setlocal iminsert=0
@@ -236,7 +247,7 @@ setlocal nrformats=octal,hex
 set number
 setlocal number
 setlocal numberwidth=4
-setlocal omnifunc=javascriptcomplete#CompleteJS
+setlocal omnifunc=
 setlocal path=
 setlocal nopreserveindent
 setlocal nopreviewwindow
@@ -259,8 +270,8 @@ setlocal statusline=
 setlocal suffixesadd=
 setlocal swapfile
 setlocal synmaxcol=3000
-if &syntax != 'javascript'
-setlocal syntax=javascript
+if &syntax != ''
+setlocal syntax=
 endif
 setlocal tabstop=2
 setlocal tags=
@@ -273,15 +284,15 @@ set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 482 - ((25 * winheight(0) + 21) / 43)
+let s:l = 38 - ((15 * winheight(0) + 21) / 43)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-482
-normal! 0
+38
+normal! 020|
 wincmd w
 argglobal
-edit les/src/js/detail.js
+edit les/src/js/d3/table_builder.js
 setlocal keymap=
 setlocal noarabic
 setlocal noautoindent
@@ -387,14 +398,13 @@ set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 72 - ((17 * winheight(0) + 21) / 43)
+let s:l = 8 - ((7 * winheight(0) + 21) / 43)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-72
-normal! 048|
+8
+normal! 027|
 wincmd w
-2wincmd w
 exe 'vert 1resize ' . ((&columns * 88 + 88) / 177)
 exe 'vert 2resize ' . ((&columns * 88 + 88) / 177)
 tabnext 1

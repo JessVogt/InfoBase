@@ -33,8 +33,8 @@
           return new queries(app, table, []);
         }
       return new queries(app, table,data[false]);
-    }
-  }
+    };
+  };
 
   var make_horizontal_func = function(app,func,table){
     /*
@@ -50,9 +50,9 @@
           include_dept = false;
         } else {
           data = table.data;
-          include_dept =  include_dept == false ? false : true;
+          include_dept =  include_dept === false ? false : true;
         }
-        rollup =   rollup == false ? false : true;
+        rollup =   rollup === false ? false : true;
         if (_.isFunction(func)){
           nest = nest.key(func({
             app:app,
@@ -68,8 +68,8 @@
                if (_.isArray(col)){
                   return _.map(col, function(_col){
                     return d3.sum(leaves,function(leaf){
-                      return leaf[_col]
-                    })
+                      return leaf[_col];
+                    });
                   });
                } else {
                   return d3.sum(leaves, function(leaf){
@@ -87,7 +87,7 @@
         return "col_array"+[col,include_dept,rollup].join("");
        }
        return [col,include_dept,rollup].join("");
-     }
+     };
      return _.memoize(f,f.resolver);
   };
 
@@ -114,10 +114,6 @@
     return sorted;
   };
 
-  p.sum_col = function(col){
-     this.grouping()
-  }
-
   p.sum_cols = function(rows,cols){
     // ar will be an array of 
 
@@ -126,9 +122,9 @@
       return _.map(x, function(__,i){
         return x[i] + y[i];
       });
-    };
+    }
     var total = _(rows)
-      .map(function(row){ return _.map(cols,function(col){ return row[col];})})
+      .map(function(row){ return _.map(cols,function(col){ return row[col];});})
       .reduce(reducer, initial);
 
     // deal with percentage columns
@@ -165,7 +161,7 @@
       if (cols.length === 1){
         return vals[cols[0]];
       } else {
-        return _.map(cols,function(col){return vals[col]});
+        return _.map(cols,function(col){return vals[col];});
       }
     }
    if (cols.length === 1){
@@ -177,7 +173,7 @@
   };
 
   p.get_subtotals = function(cols,group_func, options){
-    var groups = _.groupBy(this.data, group_func)
+    var groups = _.groupBy(this.data, group_func);
     _.each(groups, function(group, key){
       groups[key] = this.sum_cols(group,cols);
     },this);
@@ -185,8 +181,8 @@
   };
 
   p.get_cols = function (cols, options){
-    var data, each_mapped_obj;
-    var options = options || {};
+    options = options || {};
+    var data, each_mapped_obj,gp_colname;
     var sorted = options.sorted || false;
     var reverse = options.reverse || false;
     var gross_percentage = options.gross_percentage;
@@ -198,9 +194,9 @@
     }
 
     if (sorted){
-      var data =  this.sort(cols[0],reverse);
+      data =  this.sort(cols[0],reverse);
     } else {
-      var data = this.data;
+      data = this.data;
     }
 
     var vals = _.object(_.map(cols, function(col){
@@ -208,11 +204,11 @@
     }));
 
     if (gross_percentage){
-      var gp_colname = col+'gross_percentage';
+      gp_colname = col+'gross_percentage';
       vals[gp_colname] = [];
       var sum = _.chain(vals[col])
-        .filter(function(val){return val >=0})
-        .reduce(function(x,y){return x+y}) + 1;
+        .filter(function(val){return val >=0;})
+        .reduce(function(x,y){return x+y;}) + 1;
       _.each(vals[col], function(val,i,list){
         vals[gp_colname][i] = val/sum;
       });
@@ -279,9 +275,9 @@
     var key_rows = this.key_rows();
     var i = _.findIndex(key_rows,function(row){
       return _.isEqual(row, key);
-    })
+    });
     return this.data[i];
-  }
+  };
 
   p.key_rows = function(){
     var key_vals = this.get_cols(this.table.keys);
@@ -291,7 +287,7 @@
     return _.zip.apply(this,_.map(key_vals,function(vals,key){ 
       return key_vals[key];
     }));
-  }
+  };
 
 
 })();

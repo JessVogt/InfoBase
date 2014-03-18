@@ -7,6 +7,20 @@
   TABLES.tables = [];
 
   function setup_tables(app){
+
+    TABLES.m = function(s,extra_args){
+      if (_.isArray(s)){
+        return _.map(s,function(__){ return TABLES.m(__,extra_args);});
+      }
+      extra_args = extra_args || {};
+      var lang = app.state.get('lang');
+      var args = TABLES.template_args['common'];
+      _.extend(args,TABLES.template_args[lang],extra_args);
+      if (s){
+        return Handlebars.compile(s)(args);
+      }
+      return '';
+    };
     // all tables should register themselves
     APP.dispatcher.trigger("load_tables",app);
     // all tables should download their respective datasets

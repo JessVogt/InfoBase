@@ -72,7 +72,7 @@
           .append("circle")
           .on("mouseenter", this.dispatch.dataMouseEnter)
           .on("mouseleave", this.dispatch.dataMouseLeave)
-          .on("click", this.dispatch.dataClick)
+          .on("click", this.dispatch.dataClick);
 
       circle
         .attr({
@@ -95,12 +95,12 @@
           "font-size" : "20px",
           "width" : function(d){ return d.r*2+"px";},
           "left"  : function(d){ return x_offset+d.x-d.r+"px";}
-        }
+        };
 
       toptext.exit().remove();
       toptext.enter().append("div");
       toptext
-        .html(function(d){ return d.top_text})
+        .html(function(d){ return d.top_text;})
          .attr("class", "font-serif")
         .style(_.extend({ "top"  : "0px"
                         },text_style)
@@ -109,7 +109,7 @@
       bottomtext.exit().remove();
       bottomtext.enter().append("div");
       bottomtext
-        .html(function(d){ return d.bottom_text})
+        .html(function(d){ return d.bottom_text;})
          .attr("class", "font-serif")
         .style(_.extend({ "top"  : this.height+margin.top+"px"
                         },text_style)
@@ -121,8 +121,8 @@
         .html(function(d){ return formater(d.value);})
          .attr("class", "font-serif")
         .style(_.extend(_.clone(text_style),{ 
-                          "top"  : function(d){ return d.y + margin.top - font_size(d.value)/2+"px"},
-                          "font-size" : function(d){ return font_size(d.value)+"px"}
+                          "top"  : function(d){ return d.y + margin.top - font_size(d.value)/2+"px";},
+                          "font-size" : function(d){ return font_size(d.value)+"px";}
                         })
         );
                    
@@ -172,7 +172,7 @@
           .append("circle")
           .on("mouseenter", this.dispatch.dataMouseEnter)
           .on("mouseleave", this.dispatch.dataMouseLeave)
-          .on("click", this.dispatch.dataClick)
+          .on("click", this.dispatch.dataClick);
 
       circle
         .attr({
@@ -217,5 +217,5 @@
           "left"  : "0px"
         });
 
-    })
+    });
 })();

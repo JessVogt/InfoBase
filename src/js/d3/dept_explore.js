@@ -5,7 +5,7 @@
 
     D3.bubbleOrgList =  function(app,container,method){
       return new _bubbleOrgList(app,container,method);
-    }
+    };
 
     _bubbleOrgList = function(app,container,method){
       this.app = app;
@@ -13,7 +13,7 @@
       this.gt = this.app.get_text;
       this.lang = app.state.get("lang");
       this.setup(method);
-    }
+    };
 
     var p = _bubbleOrgList.prototype;
 
@@ -31,7 +31,7 @@
           this.by_type();
         }
       }
-    }
+    };
   
     p.by_min_dept = function(){
       // this function regroups departments into their respective ministries 
@@ -47,7 +47,7 @@
       //      in addition, the relative value of each department's total not auth
       //      is softened for display purposes'
       var lang = this.lang;
-      var table = _.find(TABLES.tables, function(t){ return t.id === 'table8'});
+      var table = _.find(TABLES.tables, function(t){ return t.id === 'table8';});
       // group the departments by
       // minisries and then do a reduce sum to extract the fin size
       // of each ministry
@@ -65,7 +65,7 @@
             };
         })
         .filter(function(d){
-          return d.value != 0;
+          return d.value !== 0;
         })
         .groupBy(function(d){
           return d.min;
@@ -77,7 +77,7 @@
             children : depts,
             value : d3.sum(depts, function(d){ return d.value;}),
             _value : d3.sum(depts, function(d){ return d._value;})
-          }
+          };
         })
         .value();
         // smooth out differences between smaller and larger ministries
@@ -85,12 +85,12 @@
         // nest the data for exploring
         var data = this.nest_data_for_exploring(min_objs,this.gt("goc_total") );
         this.build_graphic(data);
-    }
+    };
 
 
     p.by_vote_stat = function(){
       var lang = this.lang;
-      var table = _.find(TABLES.tables, function(t){ return t.id === 'table8'});
+      var table = _.find(TABLES.tables, function(t){ return t.id === 'table8';});
       var vote_stat = table.voted_stat("total_net_auth",true);
       var children = _.map(vote_stat, function(depts,key){
           // key == "voted"  or "stat"
@@ -112,28 +112,28 @@
            .value();
           var node = this.nest_data_for_exploring(dept_objs, key, [9,12]);
           node.name = this.gt(key);
-          return node
+          return node;
        },this);
       var data = {
         name : this.gt("goc_total"),
         value : d3.sum(children, function(d){ return d.value;}),
         _value : d3.sum(children, function(d){ return d._value;}),
         children : children.reverse()
-      }
+      };
       this.build_graphic(data);
-    }
+    };
 
     p.by_type = function(){
       var lang = this.lang;
       // reference to the tables
-      var table8 = _.find(TABLES.tables, function(t){ return t.id === 'table8'});
-      var table2 = _.find(TABLES.tables, function(t){ return t.id === 'table2'});
+      var table8 = _.find(TABLES.tables, function(t){ return t.id === 'table8';});
+      var table2 = _.find(TABLES.tables, function(t){ return t.id === 'table2';});
       // some additional data prep to merge in the extra authorities which aren't
       // covered in the 
       var qfr_difference = table8.q().qfr_difference();
       var spend_type =  table2.spending_type("plannedexp",true);
-      spend_type['crown'] = qfr_difference['crown'];
-      _.extend(spend_type['op'], qfr_difference['op']);
+      spend_type.crown = qfr_difference.crown;
+      _.extend(spend_type.op, qfr_difference.op);
 
       var children = _.map(spend_type, function(depts,key){
           // key == the various spending types
@@ -155,21 +155,21 @@
            .value();
           var node = this.nest_data_for_exploring(dept_objs, key, [9,12]);
           node.name = this.gt(key+"_spend_type");
-          return node
+          return node;
        },this);
       var data = {
         name : this.gt("goc_total"),
         value : d3.sum(children, function(d){ return d.value;}),
         _value : d3.sum(children, function(d){ return d._value;}),
         children : children.reverse()
-      }
+      };
       this.build_graphic(data);
-    }
+    };
 
     p.nest_data_for_exploring = function(to_be_nested, top_name, rangeRound){
       // pack the data using a specialised scale to create a two level
       // packing
-      var rangeRound = rangeRound || [10,12];
+      rangeRound = rangeRound || [10,12];
       var get_value = function(d){ return d.value;};
       var get__value = function(d){ return d._value;};
       var data = PACK.pack_data(to_be_nested,this.app.get_text("smaller_orgs"),{
@@ -183,13 +183,13 @@
         }
       });
       data.name = top_name;
-      return data
-    }
+      return data;
+    };
 
     p.build_graphic = function(data){
        var lang = this.lang,
            app = this.app,
-           formater = function(x){ return app.formater("compact",x)},
+           formater = function(x){ return app.formater("compact",x);},
            container = this.container;
 
       var chart = PACK.pack({
@@ -266,12 +266,12 @@
           //  return  "translate("+span_width/2-scale(d.r)/2+",0)"
           //})
           .append("circle")
-          .attr({ cx : span_width/2, cy : height/2, r : function(d){return scale(d.r)} })
+          .attr({ cx : span_width/2, cy : height/2, r : function(d){return scale(d.r);} });
 
         containers
           .append("div")
           .attr({ "class" : "align-center" }) 
-          .html(function(d){return d.name + ' - '+ app.formater("compact",d._value)});
+          .html(function(d){return d.name + ' - '+ app.formater("compact",d._value);});
 
         if (d.accronym){
           d3.select(".breadcrumb")
@@ -285,7 +285,7 @@
             .append("a")
             .attr("class","router")
             .attr("href","#infograph-"+d.accronym)
-            .html(app.get_text("org_infograph"))
+            .html(app.get_text("org_infograph"));
         }
 
         d3.select(".breadcrumb .clear").remove();

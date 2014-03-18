@@ -32,8 +32,11 @@
 
   var add_graph = function(app, org, table, container){
     container = container.select(".graph_payload");
+    var options = _.map(table.graph_view.dimensions, function(d){
+       return d.values();
+    });
     container.selectAll("div.graph-select")
-      .data(table.graph_view.dimensions)
+      .data()
       .enter()
         .append("div")
         .attr("class",function(d){
@@ -64,28 +67,31 @@
               .attr("title",function(d){return d.html;})
               .on("click",on_graph_click);
         });
+
+    var  on_graph_click  = function(d){
+      var list = d3.select(this.parentNode.parentNode);
+      var data_list = _.map(list.selectAll("li")[0],function(ul){
+        return d3.select(ul).datum();
+      });
+      var currently_active = _.filter(data_list, function(d){
+        return d.active;
+      });
+      if (currently_active.length === 1 && currently_active[0] === d){
+        return;
+      }
+      d.active = !d.active;
+      list.smkelectAll("li")
+        .classed("background-medium",function(d){ 
+          return d.active;
+        })
+        .classed("not-selected",function(d){ 
+          return !d.active;
+        });
+      table.update_graph(app,container,table,options);
+    }
+    table.update_graph(app,container,table,options);
   }
 
-  var  on_graph_click  = function(d){
-    var list = d3.select(this.parentNode.parentNode);
-    var data_list = _.map(list.selectAll("li")[0],function(ul){
-      return d3.select(ul).datum();
-    });
-    var currently_active = _.filter(data_list, function(d){
-      return d.active;
-    });
-    if (currently_active.length === 1 && currently_active[0] === d){
-      return;
-    }
-    d.active = !d.active;
-    list.selectAll("li")
-       .classed("background-medium",function(d){ 
-         return d.active;
-       })
-       .classed("not-selected",function(d){ 
-         return !d.active;
-       });
-  }
 
   var add_table = function(app, org, table, container){
     container = container.select(".table_payload");

@@ -4,6 +4,35 @@ transition to-do:
       migrate new tables definiitons
       add in infographic sections
 
+  details/infograhic
+    table8
+      compare to total planned spending
+      estimates split
+      vote stat split
+    table1
+      arrow,circles 
+    table2
+      drillable bubble
+          
+    table4
+      vote/stat circles
+      relaxed stacked
+    table5
+      historical bar
+    table6
+      relaxed stacked
+    table7
+      vote state bubbles
+      relaxed stacked
+
+    table9
+      stacked bar
+    table10
+      stacked bar
+    table11
+      map of canada
+
+
   d3
     me
       refactor the width calculation
@@ -25,7 +54,7 @@ transition to-do:
 
   bubbles
     me
-      departmental search screen for bubbles
+      add anchor elements to the bubble labels
 
   basic
     me 
@@ -33,9 +62,7 @@ transition to-do:
 
   general
     me
-      split tables file into multiple
       fix loading screen
-      jshint all the files
       add more documentation for docco	
       create diagram of how site works
       add testing
