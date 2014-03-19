@@ -5,7 +5,10 @@ module.exports = function(grunt) {
     pkg: grunt.file.readJSON('package.json'),
     watch: {
       files : ['./src/**/*.js'],
-      tasks: ['concat']
+      tasks: ["jshint",'concat'],
+      options: {
+        spawn: false,
+      },
     },
     rsync : {
         options : {
@@ -112,4 +115,10 @@ module.exports = function(grunt) {
   // Default task(s).
   grunt.registerTask('default', ['jshint:full']);
 
+  grunt.event.on("watch", function(action,filepath){
+    grunt.config("jshint.full.src",[filepath]);
+  });
+
 };
+
+
