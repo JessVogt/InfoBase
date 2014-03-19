@@ -87,7 +87,7 @@
           return _.sortBy(mapped_rows, function (row) { return row[0];});
       },
       "mapper": function (row) {
-         if (this.lang == 'en') {
+         if (this.lang === 'en') {
              row.splice(2, 1);
              row.splice(3, 1);
          } else {
@@ -124,7 +124,21 @@
                this.gt("expenditures") + ' ($000)',
                "(%)" ]];
         }
-      }
+      },
+      info : function(context){
+        var q,c= context,dept;
+        if (context.dept){
+          dept = context.dept;
+          q = this.q(context.dept);
+
+        }
+        q = this.q();
+      },
+      graphics : {
+        "vote_stat_split": function(options){
+
+        }
+      } 
     });
   });
 })();

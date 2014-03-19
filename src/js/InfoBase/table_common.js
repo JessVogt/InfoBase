@@ -37,10 +37,17 @@
                 '{{last_year_2}}',
                '{{last_year_3}}' ] ;
 
+  APP.dispatcher.once("app_ready",function(app){
+    APP.dispatcher.on("info_collection",function(info){
+      info.lang = app.lang;
+      info.last_years = _.map(TABLES.years, TABLES.m);
+    });
+  });
+
 
   TABLES.vote_stat_dimension = function(options) {
       return function(d){
-        if (d.votestattype != 999) {
+        if (d.votestattype !== 999) {
           return "voted";
         }
         return 'stat';

@@ -16,6 +16,7 @@
         
         options =  {
           table : table.id,
+          display_as : "table",
           column_choice : _.map(cols, function(col){
             return table.col_from_nick(col).fully_qualified_name;
           }),
@@ -140,7 +141,7 @@
         })
         .sortBy(function(d){ return d.name;})
         .value();
-      this.orgs.unshift({acronym :"__all__", name : lang == 'en'? "All" : "Tout"});
+      this.orgs.unshift({acronym :"__all__", name : lang === 'en'? "All" : "Tout"});
       
       this.config.set_options("org",this.orgs);
       this.start_build();
@@ -372,8 +373,8 @@
 
    p.on_table_click = function(table){
     var dimensions = _.map(table.dimensions, function(d){
-           return {val: d, name : d};
-         });
+           return {val: d, name : this.gt(d)};
+         },this);
     
      if (table.dimensions.length > 1){
        this.dimension.classed("ui-screen-hidden",false);

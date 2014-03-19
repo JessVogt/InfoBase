@@ -4,15 +4,16 @@
   var HORIZONTAL = ns("D3.HORIZONTAL");
   var TABLES = ns('TABLES');
   var DETAILS = ns('DETAILS');
+  var STORY = ns('D3.STORY');
 
   DETAILS.OrgTabletView = function(app,table, container){
     var template = APP.t("#details_t");
     var org = app.state.get("dept");
     APP.OrgHeader(app,org,container);
     container.append($(template({org:org})));
-    add_text(app,org,table, d3.select(container[0]))
-    add_graph(app,org,table, d3.select(container[0]))
-    add_table(app,org,table, d3.select(container[0]))
+    add_text(app,org,table, container);
+    add_graph(app,org,table, d3.select(container[0]));
+    add_table(app,org,table, d3.select(container[0]));
   };
 
   var get_key_to_horizontal = function(table,cols,org){
@@ -24,51 +25,19 @@
       })
       .flatten(true)
       .value();
-  }
+  };
 
   var add_text = function(app, org, table, container){
+    var lang = app.lang,
+        id = table.id,
+        selector = "#"+id +"_"+lang,
+        to_be_appended = $(selector).html();
 
-  }
+    container.find(".table_description").append(to_be_appended);
+  };
 
-  var add_graph = function(app, org, table, container){
-    container = container.select(".graph_payload");
-    var options = _.map(table.graph_view.dimensions, function(d){
-       return d.values();
-    });
-    container.selectAll("div.graph-select")
-      .data()
-      .enter()
-        .append("div")
-        .attr("class",function(d){
-          return "well graph-select margin-top-large border-all span-"+d.span;
-        })
-        .style({ "height" : "200px", "overflow-y":"auto" })
-        .each(function(d){
-          var el = d3.select(this);
-          el.append("p")
-            .html(d.header(app,table) )
-            .attr("class","nav-header");
-          el.append("ul")
-            .attr("class", "list-bullet-none")
-            .style({"width" : "95%", "margin-left" : "5px","margin-right" : "5px"})
-            .selectAll("li")
-            .data(d.values(app,table)) 
-            .enter()
-              .append("li")
-              .style({ "margin-top" : "5px" })
-              .attr("class",function(d){
-                if (d.active){
-                  return "background-medium";
-                }
-              })
-              .append("a")
-              .attr("href","#")
-              .html(function(d){return APP.abbrev(app,d.html);})
-              .attr("title",function(d){return d.html;})
-              .on("click",on_graph_click);
-        });
-
-    var  on_graph_click  = function(d){
+  DETAILS.make_on_item_click = function(app, container, table,options,func){
+    return function(d){
       var list = d3.select(this.parentNode.parentNode);
       var data_list = _.map(list.selectAll("li")[0],function(ul){
         return d3.select(ul).datum();
@@ -87,10 +56,45 @@
         .classed("not-selected",function(d){ 
           return !d.active;
         });
-      table.update_graph(app,container,table,options);
-    }
-    table.update_graph(app,container,table,options);
-  }
+      func(app,container,table,options);
+    };                      
+  };
+
+  make_graph_context = function(app,org){
+    var data = TABLES.Info({dept:org}),
+        written = function(x){return app.formater("compact_written",x);},
+        compact = function(x){return app.formater("compact",x);};
+    return {
+      dept : org,
+      lang : app.lang,
+      data : data,
+      height : 200,
+      written_data : TABLES.format_info(written, data),
+      compact_data : TABLES.format_info(compact, data),
+      percent : function(x){return app.formater("percentage",x);},
+      compact1 : function(x){return app.formater("compact1",x);},
+      compact : compact,
+      written : written
+    };
+  };
+
+  var add_graph = function(app, org, table, container){
+    var graph_context = make_graph_context(app,org.accronym);
+    container = container.select(".graph_payload");
+    _.each(table.graphics.details_display_order, function(func_name){
+
+       var chapter = STORY.chapter({
+         header : "h4",
+         target : container,
+         span : "span-8"
+       });
+
+       graph_context.graph_area = chapter.graph_area();
+       graph_context.text_area =  chapter.text_area();
+
+       table.graph(func_name,graph_context).render();
+    });
+  };
 
 
   var add_table = function(app, org, table, container){
@@ -112,8 +116,19 @@
         // create a list of equal length to the number of rows containing 
         // a row type as provided by the horizontal function
         map = _.map(raw_data, function(row ){
-          return _.find(_map, function(row_tag){ return row_tag[0]=== row})[1];
+          return _.find(_map, function(row_tag){ return row_tag[0]=== row;})[1];
         }),
+        total_rows= _.map(table.GOC, function(row){
+             return _.map(cols, function(c,i){
+               var col = col_objs[i];
+               return { 
+                 val : row[c],
+                 href : HORIZONTAL.create_analytics_link(table,
+                  col.nick || col.wcag, lang,
+                  { pres_level : "depts" }).href 
+               };
+           });
+        });
         // transform the data for presentation in the table
         data = _.chain(raw_data)
           // transform the row object into an array whose values 
@@ -153,7 +168,7 @@
                   { pres_level : "depts",display_as : "table" }).href;
       })
       .html(function(){
-        return "Compare totals with all other organizations"
+        return "Compare totals with all other organizations";
       });
 
     TABLES.d3_build_table({
@@ -167,7 +182,7 @@
       },
       headers : table.presentation_ready_headers,
       rowseach : function(d,i){
-        if (d === _.last(data)){
+        if (_.contains(total_rows, d)){
           d3.select(this).classed("background-medium",true);
         }
         if (i % 2 === 1 ){
@@ -192,7 +207,7 @@
         }
         el.html(app.formater(col_objs[i].type,d.val));
       },
-      rows : data
+      rows : data.concat(total_rows)
     });
   };
 

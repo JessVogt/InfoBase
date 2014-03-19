@@ -34,13 +34,15 @@
     var _chapter = function(options){
       _.bindAll(this, _.functions(this));
       var toggles = options.toggles || [];
+      var header = options.header || "h3";
+      var span = options.span || (is_mobile ? "span-8" : "span-4");
 
       this.el = options.target
         .append("div")
         .attr("class","span-8 border-all")
         .style({ "font-size" : "20px" });
 
-      this.el.append("h2").html("Title");
+      this.el.append(header).html("Title");
       
       //clear the div
       //this will align the chapters vertically
@@ -50,7 +52,7 @@
       this.dispatch = d3.dispatch("toggle","hover");
       this.toggle_sections = [];
       // add the main section
-      add_section(this.el);
+      add_section(this.el,false,span);
       // add in the source 
       
       if (options.sources) {
@@ -61,8 +63,14 @@
           var new_section= this.add_toggle_section(this.el,toggle_section.toggle_text);
           this.toggle_sections.push(new_section);
           if (toggle_section.add_divider){
-            add_section(new_section);
+            add_section(new_section,false,span);
+          } else {
+            add_section(new_section,true,span);
           }
+          if (options.sources) {
+            add_source(new_section,toggle_section.sources);
+          }
+
       },this);
     };
 
@@ -136,6 +144,7 @@
 
     function add_source(target,sources){
       target.select(".source")
+             .html("Source: ")
              .data(sources)
              .append("a")
              .attr("class","router")
@@ -143,7 +152,7 @@
              .html(function(d){return d.html;});
     }
 
-    function add_section(target){
+    function add_section(target,hidden_text,span){
       /*
        * adds a 
        * div.span-8
@@ -151,17 +160,20 @@
        *     div.inner
        *   div.span-4.graphic
        */
-      var el =  target,
-          span = is_mobile ? "span-8" : "span-4";
+      var el =  target;
       el.append("div").attr("class",span +" text margin-bottom-none margin-left-none");
       el.select(".text")
         .append("div")
         .attr("class", "inner margin-top-large margin-left-large");
       el.append("div").attr("class",span +" graphic margin-bottom-none margin-left-none");
       el.append("div").attr("class", span+ " source margin-bottom-none margin-left-none")
-        .style({"font-size":"12px"})
-        .html("Source: ");
+        .style({"font-size":"12px"});
       el.append("div").attr("class","clear").style("margin-bottom","15px");
+      if (hidden_text){
+        el.select(".text").classed("ui-screen-hidden",true);
+        el.select(".graphic").classed(span,false);
+        el.select(".graphic").classed("span-8",true);
+      }
 
     }
 

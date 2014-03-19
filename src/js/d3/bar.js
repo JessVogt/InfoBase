@@ -8,7 +8,6 @@
       *  { "series 1" : [y1,y2,y3],
       *     "series 2" : [y1,y2,y3]}
       */
-      this.width = $(svg.node().parentNode).width() ;
       var series = d3.keys(this.series),
           add_xaxis = this.add_xaxis,
           add_yaxis = this.add_yaxis,
@@ -78,7 +77,6 @@
               height : height+margin.top+margin.bottom})
             .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
 
       if (add_legend){
         make_legend(svg,series,width+margin.left);

@@ -2,7 +2,7 @@
   var APP = ns('APP');
 
   APP.types_to_format = {
-    "compact_writen" : function(val,lang){
+    "compact_written" : function(val,lang){
        return this._compact(val,lang, {
          1000000000 : {en : 'billion', fr: 'millards'},
          1000000 : {en : 'million', fr: 'millions'},

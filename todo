@@ -5,17 +5,10 @@ transition to-do:
       add in infographic sections
 
   details/infograhic
-    table8
-      compare to total planned spending
-      estimates split
-      vote stat split
-    table1
-      arrow,circles 
     table2
       drillable bubble
           
     table4
-      vote/stat circles
       relaxed stacked
     table5
       historical bar

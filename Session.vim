@@ -6,41 +6,41 @@ map! <S-Insert> <MiddleMouse>
 nnoremap  o
 map   viw
 nmap ; :
-vmap ]f :call PythonDec("function", 1)
-vmap ]F :call PythonDec("function", -1)
-vmap ]j :call PythonDec("class", 1)
-vmap ]J :call PythonDec("class", -1)
-vmap ]u :call PythonUncommentSelection()
-vmap ]# :call PythonCommentSelection()
-vmap ]> >
-vmap ]< <
-vmap ]e :PEoBm'gv``
-vmap ]t :PBOBm'gv``
-nmap ]f :call PythonDec("function", 1)
-omap ]f :call PythonDec("function", 1)
-nmap ]F :call PythonDec("function", -1)
-omap ]F :call PythonDec("function", -1)
-nmap ]j :call PythonDec("class", 1)
-omap ]j :call PythonDec("class", 1)
-nmap ]J :call PythonDec("class", -1)
-omap ]J :call PythonDec("class", -1)
-nmap ]u :call PythonUncommentSelection()
-omap ]u :call PythonUncommentSelection()
-nmap ]# :call PythonCommentSelection()
-omap ]# :call PythonCommentSelection()
-nmap ]> ]tV]e>
-omap ]> ]tV]e>
-nmap ]< ]tV]e<
-omap ]< ]tV]e<
-nmap ]e :PEoB
-omap ]e :PEoB
-nmap ]t :PBoB
-omap ]t :PBoB
-map ]v ]tV]e
-map ]c :call PythonSelectObject("class")
-map ]d :call PythonSelectObject("function")
-map ]<Up> :call PythonNextLine(-1)
 map ]<Down> :call PythonNextLine(1)
+map ]<Up> :call PythonNextLine(-1)
+map ]d :call PythonSelectObject("function")
+map ]c :call PythonSelectObject("class")
+map ]v ]tV]e
+omap ]t :PBoB
+nmap ]t :PBoB
+omap ]e :PEoB
+nmap ]e :PEoB
+omap ]< ]tV]e<
+nmap ]< ]tV]e<
+omap ]> ]tV]e>
+nmap ]> ]tV]e>
+omap ]# :call PythonCommentSelection()
+nmap ]# :call PythonCommentSelection()
+omap ]u :call PythonUncommentSelection()
+nmap ]u :call PythonUncommentSelection()
+omap ]J :call PythonDec("class", -1)
+nmap ]J :call PythonDec("class", -1)
+omap ]j :call PythonDec("class", 1)
+nmap ]j :call PythonDec("class", 1)
+omap ]F :call PythonDec("function", -1)
+nmap ]F :call PythonDec("function", -1)
+omap ]f :call PythonDec("function", 1)
+nmap ]f :call PythonDec("function", 1)
+vmap ]t :PBOBm'gv``
+vmap ]e :PEoBm'gv``
+vmap ]< <
+vmap ]> >
+vmap ]# :call PythonCommentSelection()
+vmap ]u :call PythonUncommentSelection()
+vmap ]J :call PythonDec("class", -1)
+vmap ]j :call PythonDec("class", 1)
+vmap ]F :call PythonDec("function", -1)
+vmap ]f :call PythonDec("function", 1)
 nmap _c :%s/\s\+$//gc
 nmap gx <Plug>NetrwBrowseX
 nnoremap <silent> <Plug>NetrwBrowseX :call netrw#NetrwBrowseX(expand("<cWORD>"),0)
@@ -114,7 +114,6 @@ endif
 set shortmess=aoO
 badd +5 les/src/js/app.js
 badd +290 les/src/js/queries.js
-badd +82 les/src/js/base_table_view.js
 badd +83 les/src/js/d3/core.js
 badd +167 les/src/js/d3/bar.js
 badd +26 les/src/js/d3/tooltip.js
@@ -130,7 +129,7 @@ badd +57 les/src/js/waiting.js
 badd +97 les/src/mako/extracss.html
 badd +52 les/src/js/d3/hbar.js
 badd +7 les/src/mako/od_script_includes.html
-badd +166 les/src/js/d3/chapter.js
+badd +104 les/src/js/d3/chapter.js
 badd +219 les/src/js/d3/circle_chart.js
 badd +121 les/src/js/d3/arrow.js
 badd +6 les/src/mako/od.html
@@ -139,7 +138,7 @@ badd +99 les/src/js/loader.js
 badd +21 les/src/js/sandbox.js
 badd +28 les/src/js/handlebars_helpers.js
 badd +11 les/src/mako/od_fr.html
-badd +66 les/todo
+badd +15 les/todo
 badd +46 les/src/mako/od_base.html
 badd +103 les/src/js/search.js
 badd +12 les/src/js/panel.js
@@ -147,26 +146,26 @@ badd +83 les/src/js/detail.js
 badd +102 les/src/js/format.js
 badd +207 les/src/js/widget.js
 badd +54 les/src/js/table_builder.js
-badd +854 les/src/js/story.js
+badd +91 les/src/js/story.js
 badd +413 les/src/js/horizontal.js
 badd +106 les/src/js/InfoBase/tables.js
-badd +7 les/src/js/InfoBase/table1.js
-badd +44 les/src/js/base_tables.js
-badd +130 les/src/js/InfoBase/table2.js
-badd +96 les/src/js/InfoBase/table4.js
-badd +70 les/src/js/InfoBase/table5.js
-badd +84 les/src/js/InfoBase/table6.js
-badd +118 les/src/js/InfoBase/table7.js
-badd +182 les/src/js/InfoBase/table8.js
+badd +200 les/src/js/InfoBase/table1.js
+badd +12 les/src/js/base_tables.js
+badd +144 les/src/js/InfoBase/table2.js
+badd +170 les/src/js/InfoBase/table4.js
+badd +115 les/src/js/InfoBase/table5.js
+badd +133 les/src/js/InfoBase/table6.js
+badd +134 les/src/js/InfoBase/table7.js
+badd +236 les/src/js/InfoBase/table8.js
 badd +6 les/src/js/start.js
 badd +6 les/src/js/InfoBase/table9.js
 badd +4 les/src/js/InfoBase/table10.js
 badd +4 les/src/js/InfoBase/table11.js
 badd +186 les/src/js/InfoBase/InfoBase.js
 badd +92 les/src/js/utils.js
-badd +9 les/src/js/d3/table_builder.js
+badd +8 les/src/js/d3/table_builder.js
 silent! argdel *
-edit les/todo
+edit les/Gruntfile.js
 set splitbelow splitright
 wincmd _ | wincmd |
 vsplit
@@ -179,120 +178,6 @@ set winheight=1 winwidth=1
 exe 'vert 1resize ' . ((&columns * 88 + 88) / 177)
 exe 'vert 2resize ' . ((&columns * 88 + 88) / 177)
 argglobal
-setlocal keymap=
-setlocal noarabic
-setlocal noautoindent
-setlocal balloonexpr=
-setlocal nobinary
-setlocal bufhidden=
-setlocal buflisted
-setlocal buftype=
-setlocal nocindent
-setlocal cinkeys=0{,0},0),:,0#,!^F,o,O,e
-setlocal cinoptions=
-setlocal cinwords=if,else,while,do,for,switch
-setlocal colorcolumn=
-setlocal comments=s1:/*,mb:*,ex:*/,://,b:#,:%,:XCOMM,n:>,fb:-
-setlocal commentstring=/*%s*/
-setlocal complete=.,w,b,u,t,i
-setlocal concealcursor=
-setlocal conceallevel=0
-setlocal completefunc=
-setlocal nocopyindent
-setlocal cryptmethod=
-setlocal nocursorbind
-setlocal nocursorcolumn
-set cursorline
-setlocal cursorline
-setlocal define=
-setlocal dictionary=
-setlocal nodiff
-setlocal equalprg=
-setlocal errorformat=
-setlocal expandtab
-if &filetype != ''
-setlocal filetype=
-endif
-setlocal foldcolumn=0
-setlocal foldenable
-setlocal foldexpr=0
-setlocal foldignore=#
-setlocal foldlevel=0
-setlocal foldmarker={{{,}}}
-setlocal foldmethod=manual
-setlocal foldminlines=1
-setlocal foldnestmax=20
-setlocal foldtext=foldtext()
-setlocal formatexpr=
-setlocal formatoptions=tcq
-setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*
-setlocal grepprg=
-setlocal iminsert=0
-setlocal imsearch=0
-setlocal include=
-setlocal includeexpr=
-setlocal indentexpr=
-setlocal indentkeys=0{,0},:,0#,!^F,o,O,e
-setlocal noinfercase
-setlocal iskeyword=@,48-57,_,192-255
-setlocal keywordprg=
-setlocal nolinebreak
-setlocal nolisp
-setlocal nolist
-setlocal makeprg=
-setlocal matchpairs=(:),{:},[:]
-setlocal modeline
-setlocal modifiable
-setlocal nrformats=octal,hex
-set number
-setlocal number
-setlocal numberwidth=4
-setlocal omnifunc=
-setlocal path=
-setlocal nopreserveindent
-setlocal nopreviewwindow
-setlocal quoteescape=\\
-setlocal noreadonly
-setlocal norelativenumber
-setlocal norightleft
-setlocal rightleftcmd=search
-setlocal noscrollbind
-setlocal shiftwidth=2
-setlocal noshortname
-setlocal nosmartindent
-setlocal softtabstop=2
-set spell
-setlocal spell
-setlocal spellcapcheck=[.?!]\\_[\\])'\"\	\ ]\\+
-setlocal spellfile=
-setlocal spelllang=en
-setlocal statusline=
-setlocal suffixesadd=
-setlocal swapfile
-setlocal synmaxcol=3000
-if &syntax != ''
-setlocal syntax=
-endif
-setlocal tabstop=2
-setlocal tags=
-setlocal textwidth=0
-setlocal thesaurus=
-setlocal noundofile
-setlocal nowinfixheight
-setlocal nowinfixwidth
-set nowrap
-setlocal nowrap
-setlocal wrapmargin=0
-silent! normal! zE
-let s:l = 38 - ((15 * winheight(0) + 21) / 43)
-if s:l < 1 | let s:l = 1 | endif
-exe s:l
-normal! zt
-38
-normal! 020|
-wincmd w
-argglobal
-edit les/src/js/d3/table_builder.js
 setlocal keymap=
 setlocal noarabic
 setlocal noautoindent
@@ -398,13 +283,128 @@ set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 8 - ((7 * winheight(0) + 21) / 43)
+let s:l = 50 - ((17 * winheight(0) + 21) / 43)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-8
-normal! 027|
+50
+normal! 022|
 wincmd w
+argglobal
+edit les/src/js/InfoBase/tables.js
+setlocal keymap=
+setlocal noarabic
+setlocal noautoindent
+setlocal balloonexpr=
+setlocal nobinary
+setlocal bufhidden=
+setlocal buflisted
+setlocal buftype=
+setlocal cindent
+setlocal cinkeys=0{,0},0),:,0#,!^F,o,O,e
+setlocal cinoptions=j1,J1
+setlocal cinwords=if,else,while,do,for,switch
+setlocal colorcolumn=
+setlocal comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,://
+setlocal commentstring=//%s
+setlocal complete=.,w,b,u,t,i
+setlocal concealcursor=
+setlocal conceallevel=0
+setlocal completefunc=
+setlocal nocopyindent
+setlocal cryptmethod=
+setlocal nocursorbind
+setlocal nocursorcolumn
+set cursorline
+setlocal cursorline
+setlocal define=
+setlocal dictionary=
+setlocal nodiff
+setlocal equalprg=
+setlocal errorformat=
+setlocal expandtab
+if &filetype != 'javascript'
+setlocal filetype=javascript
+endif
+setlocal foldcolumn=0
+setlocal foldenable
+setlocal foldexpr=0
+setlocal foldignore=#
+setlocal foldlevel=0
+setlocal foldmarker={{{,}}}
+setlocal foldmethod=manual
+setlocal foldminlines=1
+setlocal foldnestmax=20
+setlocal foldtext=foldtext()
+setlocal formatexpr=
+setlocal formatoptions=croql
+setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*
+setlocal grepprg=
+setlocal iminsert=0
+setlocal imsearch=0
+setlocal include=
+setlocal includeexpr=
+setlocal indentexpr=
+setlocal indentkeys=0{,0},:,0#,!^F,o,O,e
+setlocal noinfercase
+setlocal iskeyword=@,48-57,_,192-255
+setlocal keywordprg=
+setlocal nolinebreak
+setlocal nolisp
+setlocal nolist
+setlocal makeprg=
+setlocal matchpairs=(:),{:},[:]
+setlocal modeline
+setlocal modifiable
+setlocal nrformats=octal,hex
+set number
+setlocal number
+setlocal numberwidth=4
+setlocal omnifunc=javascriptcomplete#CompleteJS
+setlocal path=
+setlocal nopreserveindent
+setlocal nopreviewwindow
+setlocal quoteescape=\\
+setlocal noreadonly
+setlocal norelativenumber
+setlocal norightleft
+setlocal rightleftcmd=search
+setlocal noscrollbind
+setlocal shiftwidth=2
+setlocal noshortname
+setlocal nosmartindent
+setlocal softtabstop=2
+set spell
+setlocal spell
+setlocal spellcapcheck=[.?!]\\_[\\])'\"\	\ ]\\+
+setlocal spellfile=
+setlocal spelllang=en
+setlocal statusline=
+setlocal suffixesadd=
+setlocal swapfile
+setlocal synmaxcol=3000
+if &syntax != 'javascript'
+setlocal syntax=javascript
+endif
+setlocal tabstop=2
+setlocal tags=
+setlocal textwidth=0
+setlocal thesaurus=
+setlocal noundofile
+setlocal nowinfixheight
+setlocal nowinfixwidth
+set nowrap
+setlocal nowrap
+setlocal wrapmargin=0
+silent! normal! zE
+let s:l = 42 - ((41 * winheight(0) + 21) / 43)
+if s:l < 1 | let s:l = 1 | endif
+exe s:l
+normal! zt
+42
+normal! 029|
+wincmd w
+2wincmd w
 exe 'vert 1resize ' . ((&columns * 88 + 88) / 177)
 exe 'vert 2resize ' . ((&columns * 88 + 88) / 177)
 tabnext 1

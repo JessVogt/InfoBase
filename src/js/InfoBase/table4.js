@@ -1,7 +1,10 @@
 (function (root) {
   var TABLES = ns('TABLES');
   var APP = ns('APP');
-  APP.dispatcher.on("load_tables", function (app) {
+  var PACK = ns('D3.PACK');
+  var D3 = ns('D3');
+
+ APP.dispatcher.on("load_tables", function (app) {
     var m = TABLES.m;
     var years = TABLES.years;
     APP.dispatcher.trigger("new_table",
@@ -121,7 +124,7 @@
       }
     },
     mapper: function (row) {
-      if (this.lang == 'en') {
+      if (this.lang === 'en') {
           row.splice(3, 1);
       } else {
           row.splice(4, 1);
@@ -130,25 +133,118 @@
       return row;
     },
     mini_view: {
-     description: {
-         "en": "Total budgetary voted and statutory authorities and expendiures.",
-         "fr": "Montant total des autorisations et dépenses budgétaires votées et législatives."
-     },
-     headers_classes : ['left_text','right_text','right_text'],
-     row_classes : [ 'left_text wrap-none', 'right_number', 'right_number'],
-     prep_data: function () {
-       this.rows = [
-        this.da.exp_auth_by_year("{{last_year}}",true),
-        this.da.exp_auth_by_year("{{last_year_2}}",true),
-        this.da.exp_auth_by_year("{{last_year_3}}",true)
-      ];
-       this.headers = [
-         [this.gt("year"),
-         this.gt("authorities") + ' ($000)',
-         this.gt("expenditures") + ' ($000)']
+      description: {
+          "en": "Total budgetary voted and statutory authorities and expendiures.",
+          "fr": "Montant total des autorisations et dépenses budgétaires votées et législatives."
+      },
+      headers_classes : ['left_text','right_text','right_text'],
+      row_classes : [ 'left_text wrap-none', 'right_number', 'right_number'],
+      prep_data: function () {
+        this.rows = [
+         this.da.exp_auth_by_year("{{last_year}}",true),
+         this.da.exp_auth_by_year("{{last_year_2}}",true),
+         this.da.exp_auth_by_year("{{last_year_3}}",true)
        ];
-     }
-    }
+        this.headers = [
+          [this.gt("year"),
+          this.gt("authorities") + ' ($000)',
+          this.gt("expenditures") + ' ($000)']
+        ];
+      }
+    },
+    info : function(context){
+      var q,c= context,dept;
+      if (context.dept){
+        dept = context.dept;
+        q = this.q(context.dept);
+        c.dept_last_year_auth =  q.sum('{{last_year}}auth');
+        c.dept_last_year_2_auth = q.sum('{{last_year_2}}auth');
+        c.dept_last_year_3_auth = q.sum('{{last_year_3}}auth');
+        c.dept_last_year_stat_voted = this.voted_stat('{{last_year}}auth',dept,true);
+        c.dept_last_year_2_stat_voted =  this.voted_stat('{{last_year_2}}auth',dept,true); 
+        c.dept_last_year_3_stat_voted = this.voted_stat('{{last_year_2}}auth',dept,true); 
+      }
+      q = this.q();
+      c.gov_last_year_auth =  q.sum('{{last_year}}auth');
+      c.gov_last_year_2_auth = q.sum('{{last_year_2}}auth');
+      c.gov_last_year_3_auth = q.sum('{{last_year_3}}auth');
+      c.gov_last_year_stat_voted = this.voted_stat('{{last_year}}auth',false); 
+      c.gov_last_year_2_stat_voted =  this.voted_stat('{{last_year_2}}auth',false);
+      c.gov_last_year_3_stat_voted = this.voted_stat('{{last_year_2}}auth',false); 
+      
+    },
+    "graphics": {
+       "details_display_order" : [
+         "historical_auth",
+         "vote_stat_split"
+       ],
+       "vote_stat_split": function(options){
+          var graph = PACK.simple_circle_chart,
+              d=this.data,text,args={
+                height : this.height,
+                formater : this.compact1,
+                colors : function(x){ return D3.tbs_color(Math.floor(x/3));},
+              },gt=app.get_text;
+
+          if (!this.data.dept){
+            text = "gov_historical_auth";
+            args.data = [
+              {name : 'z',value: d.gov_last_year_3_stat_voted.stat, bottom_text : d.last_years[2]},
+              {name : 'y',value: d.gov_last_year_2_stat_voted.stat, bottom_text : d.last_years[1], top_text: gt("stat")},
+              {name : 'x',value: d.gov_last_year_stat_voted.stat, bottom_text : d.last_years[0]} ,
+              {name : 'a',value: d.gov_last_year_3_stat_voted.voted, bottom_text : d.last_years[2]},
+              {name : 'b',value: d.gov_last_year_2_stat_voted.voted, bottom_text : d.last_years[1] ,top_text: gt("voted")},
+              {name : 'c',value: d.gov_last_year_stat_voted.voted, bottom_text :  d.last_years[0]}
+            ];
+          } else {
+            text = "dept_historical_auth";
+            args.data = [
+              {name : 'z',value: d.dept_last_year_3_stat_voted.stat, bottom_text : d.last_years[2]},
+              {name : 'y',value: d.dept_last_year_2_stat_voted.stat, bottom_text : d.last_years[1], top_text: gt("stat")},
+              {name : 'x',value: d.dept_last_year_stat_voted.stat, bottom_text : d.last_years[0]} ,
+              {name : 'a',value: d.dept_last_year_3_stat_voted.voted, bottom_text : d.last_years[2]},
+              {name : 'b',value: d.dept_last_year_2_stat_voted.voted, bottom_text : d.last_years[1] ,top_text: gt("voted")},
+              {name : 'c',value: d.dept_last_year_stat_voted.voted, bottom_text :  d.last_years[0]}
+            ];
+          }
+
+          graph(args)(this.graph_area);
+          this.text_area.html(m(app.get_text(text), this.written_data));
+
+       },
+       "historical_auth" : function(container){
+          var graph = PACK.simple_circle_chart,
+              d=this.data,text,args={
+                height : this.height,
+                formater : this.compact1
+              };
+
+          if (!this.dept){
+            text = "gov_historical_auth";
+            args.data = [
+              {name : 'z',value: d.gov_last_year_3_auth, bottom_text : d.last_years[2]},
+              {name : 'y',value: d.gov_last_year_2_auth, bottom_text : d.last_years[1]},
+              {name : 'x',value: d.gov_last_year_auth, bottom_text : d.last_years[0]}
+            ];
+          } else {
+            text = "dept_historical_auth";
+            args.data = [
+              {name : 'z',value: d.dept_last_year_3_auth, bottom_text : d.last_years[2]},
+              {name : 'y',value: d.dept_last_year_2_auth, bottom_text : d.last_years[1]},
+              {name : 'x',value: d.dept_last_year_auth, bottom_text : d.last_years[0]}
+            ];
+          }
+
+          graph(args)(this.graph_area);
+          this.text_area.html(m(app.get_text(text), this.written_data));
+       },
+       "voted_spending" :   function(container){
+
+       },
+       "stat_spending" :  function(container){
+
+       }                     
+    } 
     });
 
   });

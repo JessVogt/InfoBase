@@ -1,3 +1,5 @@
+fs = require("fs");
+var infobase_file = "/home/andrew/Projects/InfoBase/app.js";
 module.exports = function(grunt) {
 
   // Project configuration.
@@ -5,7 +7,7 @@ module.exports = function(grunt) {
     pkg: grunt.file.readJSON('package.json'),
     watch: {
       files : ['./src/**/*.js'],
-      tasks: ["jshint",'concat'],
+      tasks: ["jshint",'concat','line_count'],
       options: {
         spawn: false,
       },
@@ -45,6 +47,8 @@ module.exports = function(grunt) {
         eqeqeq: true,
         eqnull: true,
         browser: true,
+        debug : true,
+        //strict : true
       },
       full : {
             src: ['Gruntfile.js', 'src/js/*.js','src/js/InfoBase/*.js','src/js/d3'] 
@@ -86,7 +90,7 @@ module.exports = function(grunt) {
 
           "src/js/base_tables.js",
           "src/js/InfoBase/text.js",
-          "src/js/InfoBase/tables.js",
+          "src/js/InfoBase/table_common.js",
           "src/js/InfoBase/table1.js",
           "src/js/InfoBase/table2.js",
           "src/js/InfoBase/table4.js",
@@ -102,7 +106,7 @@ module.exports = function(grunt) {
           "src/js/start.js"
 
           ],
-          dest: '../InfoBase/app.js',
+          dest: infobase_file,
         }
       }
   });
@@ -115,9 +119,21 @@ module.exports = function(grunt) {
   // Default task(s).
   grunt.registerTask('default', ['jshint:full']);
 
+  grunt.registerTask("line_count","print out the lines of the new file",function(){
+    
+  });
+
   grunt.event.on("watch", function(action,filepath){
+    fs.unlink(grunt.config("concat.dist.dest"), function (err) {
+      if (!err) 
+        console.log('successfully deleted '+ grunt.config("concat.dist.dest"));
+    });
     grunt.config("jshint.full.src",[filepath]);
   });
+
+  grunt.event.on("concat",function(){
+    console.log(arguments);
+  })
 
 };
 

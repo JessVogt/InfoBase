@@ -6,6 +6,49 @@
 
   TABLES.tables = [];
 
+
+  TABLES.Info = function(info){
+    info = info || {};
+    APP.dispatcher.trigger("info_collection",info);
+     _.each(TABLES.tables, function(table){
+       table.info(info);
+     });
+    APP.dispatcher.trigger("info_collection_cleanup",info);
+    return info;
+  };
+
+  TABLES.format_info = function(formater,info){
+    var formated_data = _.chain(info)
+       .map(function(v,k){return [k,formater(v)];})
+       .object()
+       .value();
+    APP.dispatcher.trigger("info_formating_cleanup",formated_data,info);
+    return formated_data;
+  };
+
+  TABLES.Graphs = function(app,dept){
+    var info = {dept:dept},
+        context = {
+          app : app,
+          gt : app.get_text,
+          lang : app.lang,
+          percent : function(x){return app.formater("percentage",x);},
+          compact : function(x){return app.formater("compact1",x);},
+          compact0 : function(x){return app.formater("compact0",x);}
+        };
+
+    TABLES.Info(iinfo);
+
+    _.extend(context, info);
+
+    return _.chain(TABLES.tables)
+      .map(function(table){
+        return [table.id, _.extend({table:table},table.graphics,context)];
+      })
+      .object()
+      .value();
+  };
+
   function setup_tables(app){
 
     TABLES.m = function(s,extra_args){
@@ -14,7 +57,7 @@
       }
       extra_args = extra_args || {};
       var lang = app.state.get('lang');
-      var args = TABLES.template_args['common'];
+      var args = TABLES.template_args.common;
       _.extend(args,TABLES.template_args[lang],extra_args);
       if (s){
         return Handlebars.compile(s)(args);
@@ -39,7 +82,7 @@
       var key = table.name[app.state.get("lang")];
       var promise1= $.Deferred(),promise2 =$.Deferred();
       // sent signal to indicate the files is being downloaded
-      WAIT.w.update_item(key,"download")
+      WAIT.w.update_item(key,"download");
        var req = $.ajax({
          url: "data/"+table.id+".csv",
          context : table
@@ -48,7 +91,7 @@
          // sent signal to indicate the loading is starting
           WAIT.w.update_item(key,"loading");
           _.delay(promise1.resolve,0,data) ;
-       })
+       });
        promise1.done(function(data){
          var lang =  app.state.get("lang"),
           // create the mapper
@@ -67,10 +110,10 @@
         // send signal to indicate the table loading is finished
         WAIT.w.update_item(key,"finished");
         _.delay(promise2.resolve,0) ;
-       })
+       });
       return promise2;
     });
-  }
+  };
 
   function map_objs(lang,table){
     var mapper = new MAPPERS.mapper(lang,table);
@@ -78,10 +121,10 @@
       var row_obj =  _.object(table.unique_headers,mapper.map(row));
       _.each(row_obj, function(val, key){
         var type =  table.col_from_nick(key).type ;
-        if ( type == 'big-int'){
+        if ( type === 'big-int'){
           row_obj[key]=accounting.unformat($.trim(val));
-        } else if (type == 'int' && !_.isNaN(parseInt(val))){
-          row_obj[key]=parseInt(val);
+        } else if (type === 'int' && !_.isNaN(parseInt(val,10))){
+          row_obj[key]=parseInt(val,10);
         }
       },this);
       return row_obj;
@@ -103,7 +146,7 @@
     },this);
     this.children = (this.children || []).concat(x);
     return this;
-  };
+  }
 
   function col_adder(x){
     // this === a table obj or null
@@ -118,21 +161,21 @@
        x.key = false;
     }
     if (!_.has(x,"parent")){
-      x.wcag =  APP.make_unique()
+      x.wcag =  APP.make_unique();
       this._cols.push(x);
       x.level = 0;
     }   
     this.flat_headers.push(x);
     x.add_child = add_child;
     return x;
-  };
+  }
 
   function col_from_nick(nick){
     // find a column obj from either the nick name or the wvag uniq ID
     return _.find(this.flat_headers, function(col){
       return col.nick === nick || col.wcag === nick;
     }) || false;
-  };
+  }
 
   function add_fully_qualified_col_name(lang){
     _.chain(this.flat_headers)
@@ -152,7 +195,7 @@
          // run this once and attach to the col obj
          col.fully_qualified_name = TABLES.m(name);
      });
-  };
+  }
 
   var calc_col_span = function(header){
     if (header.children){
@@ -167,7 +210,7 @@
     } else {
       return 1;
     }
-  }
+  };
 
   var presentation_ready_headers = function(flat_heders,lang){
     var headers = [];
@@ -197,7 +240,8 @@
       headers[header.level].push( presentation_copy );
     });
     return headers;
-  }
+  };
+
 
   APP.dispatcher.on("new_table", function(table){
     TABLES.tables.push(table);
@@ -221,21 +265,25 @@
 
     table.add_cols();
 
+    table.graph = function(key,context ){
+      return _.extend({render : this.graphics[key]},context);
+    };
+
     // add useful attributes to each table
     // for all the nick names, how many levels of headers
     // the key columns and the unique header names
     var to_chain = _.chain(table.flat_headers);
     table._nicks = to_chain
-      .map(function(x){ return x.nick})
+      .map(function(x){ return x.nick;})
       .compact()
       .value();
     table._levels = to_chain
-      .map(function(col){ return col.level})
+      .map(function(col){ return col.level;})
       .unique()
       .value();
     table.keys = to_chain
-      .filter(function(h){ return h.key})
-      .map(function(h){return h.nick || h.header.en})
+      .filter(function(h){ return h.key;})
+      .map(function(h){return h.nick || h.header.en;})
       .value();
     table.unique_headers = to_chain
       .filter(function(h){ return !h.children;})
