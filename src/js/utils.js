@@ -3,7 +3,8 @@
   var LANG = ns('LANG');
   var TABLES = ns('TABLES');
 
-  if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+  if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+      $(window).width() < 1200 ) {
     window.is_mobile = true;
   } else {
     window.is_mobile = false;

@@ -123,6 +123,73 @@
 
     };
 
+    p.vote_stat_spend = function(){
+      var d = this.data;
+      // create the chapter
+      var chapter = new STORY.chapter({
+        toggles : [ 
+          {toggle_text : this.app.get_text("previous_year_fisc")},
+          {toggle_text : "More details on mandatory spending", add_divider : true },
+          {toggle_text : "More details on discretionary spending" , add_divider : true }
+        ],
+        target : this.container
+      });
+
+      this.t.table8.graph("stat_voted_split",this.make_graph_context({
+        height : height,
+        graph_area : chapter.graph_area(),
+        text_area : chapter.text_area()
+      })).render();
+
+      this.t.table4.graph("vote_stat_split",this.make_graph_context({
+        height : height*1.10,
+        graph_area : chapter.toggle_area().select(".graphic"),
+        text_area : chapter.toggle_area().select(".text")
+      })).render();
+
+
+      // setup the top voted trend area
+      // they will each be treated exactly the same, so this can be generalized
+      _.each(["stat","voted"], function(type,i){
+         var text = T.m(this.gt("top_"+type), this.written_data),
+             data = _.chain(d['gov_this_year_top_'+type])
+                      .map(function(x){
+                        return {
+                          name : x.desc,
+                          value : x.total_net_auth
+                        };
+                      },this).value(),
+            top_written = _.chain(this.written_data['gov_this_year_top_'+type])
+              .map(function(x){
+                return [
+                  window.depts[x.dept].dept[this.lang],
+                  x.desc,
+                  x.total_net_auth
+                ];
+              },this).value();
+         chapter.toggle_area(i+1).select(".text .inner").html(text);
+         T.prepare_and_build_table({
+          table_class : "table-condensed ",
+          rowseach : function(d,i){
+            if (i % 2 === 1 ){
+              d3.select(this).classed("odd",true);
+            }
+          },
+           rows :  top_written,
+           headers : [["","",""]] ,
+           row_class : ["left_text",'left_text','right_number'],
+           node : chapter.toggle_area(1+i).select(".text .inner").node()
+         });
+         PACK.simple_circle_chart({
+           height : height,
+           formater : this.compact,
+           data : data,
+         })(chapter.toggle_area(1+i).select(".graphic"));
+
+      },this);
+      
+    };
+
     p.gov_type_spend = function(){
       var text = this.gt("gov_type_spending"),
           d = this.data,
@@ -322,72 +389,6 @@
       on_label_click(d3.keys(label_mapping)[0]);
     };
 
-    p.vote_stat_spend = function(){
-      var d = this.data;
-      // create the chapter
-      var chapter = new STORY.chapter({
-        toggles : [ 
-          {toggle_text : this.app.get_text("previous_year_fisc")},
-          {toggle_text : "More details on mandatory spending", add_divider : true },
-          {toggle_text : "More details on discretionary spending" , add_divider : true }
-        ],
-        target : this.container
-      });
-
-      this.t.table8.graph("stat_voted_split",this.make_graph_context({
-        height : height,
-        graph_area : chapter.graph_area(),
-        text_area : chapter.text_area()
-      })).render();
-
-      this.t.table4.graph("vote_stat_split",this.make_graph_context({
-        height : height*1.10,
-        graph_area : chapter.toggle_area().select(".graphic"),
-        text_area : chapter.toggle_area().select(".text")
-      })).render();
-
-
-      // setup the top voted trend area
-      // they will each be treated exactly the same, so this can be generalized
-      _.each(["stat","voted"], function(type,i){
-         var text = T.m(this.gt("top_"+type), this.written_data),
-             data = _.chain(d['gov_this_year_top_'+type])
-                      .map(function(x){
-                        return {
-                          name : x.desc,
-                          value : x.total_net_auth
-                        };
-                      },this).value(),
-            top_written = _.chain(this.written_data['gov_this_year_top_'+type])
-              .map(function(x){
-                return [
-                  window.depts[x.dept].dept[this.lang],
-                  x.desc,
-                  x.total_net_auth
-                ];
-              },this).value();
-         chapter.toggle_area(i+1).select(".text .inner").html(text);
-         T.prepare_and_build_table({
-          table_class : "table-condensed ",
-          rowseach : function(d,i){
-            if (i % 2 === 1 ){
-              d3.select(this).classed("odd",true);
-            }
-          },
-           rows :  top_written,
-           headers : [["","",""]] ,
-           row_class : ["left_text",'left_text','right_number'],
-           node : chapter.toggle_area(1+i).select(".text .inner").node()
-         });
-         PACK.simple_circle_chart({
-           height : height,
-           formater : this.compact,
-           data : data,
-         })(chapter.toggle_area(1+i).select(".graphic"));
-
-      },this);
-      
-    };
 
     p.gov_spend = function(){
       var text = this.gt("gov_this_year_qfr_spend"),
