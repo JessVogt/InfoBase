@@ -33,9 +33,9 @@
       }
   };
   
-  TABLES.years =[ "{{last_year}}",
+  TABLES.years =[ "{{last_year_3}}",
                 '{{last_year_2}}',
-               '{{last_year_3}}' ] ;
+               '{{last_year}}' ] ;
 
   APP.dispatcher.once("app_ready",function(app){
     APP.dispatcher.on("info_collection",function(info){

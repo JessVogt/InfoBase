@@ -36,29 +36,29 @@
     container.find(".table_description").append(to_be_appended);
   };
 
-  DETAILS.make_on_item_click = function(app, container, table,options,func){
-    return function(d){
-      var list = d3.select(this.parentNode.parentNode);
-      var data_list = _.map(list.selectAll("li")[0],function(ul){
-        return d3.select(ul).datum();
-      });
-      var currently_active = _.filter(data_list, function(d){
-        return d.active;
-      });
-      if (currently_active.length === 1 && currently_active[0] === d){
-        return;
-      }
-      d.active = !d.active;
-      list.smkelectAll("li")
-        .classed("background-medium",function(d){ 
-          return d.active;
-        })
-        .classed("not-selected",function(d){ 
-          return !d.active;
-        });
-      func(app,container,table,options);
-    };                      
-  };
+  //DETAILS.make_on_item_click = function(app, container, table,options,func){
+  //  return function(d){
+  //    var list = d3.select(this.parentNode.parentNode);
+  //    var data_list = _.map(list.selectAll("li")[0],function(ul){
+  //      return d3.select(ul).datum();
+  //    });
+  //    var currently_active = _.filter(data_list, function(d){
+  //      return d.active;
+  //    });
+  //    if (currently_active.length === 1 && currently_active[0] === d){
+  //      return;
+  //    }
+  //    d.active = !d.active;
+  //    list.smkelectAll("li")
+  //      .classed("background-medium",function(d){ 
+  //        return d.active;
+  //      })
+  //      .classed("not-selected",function(d){ 
+  //        return !d.active;
+  //      });
+  //    func(app,container,table,options);
+  //  };                      
+  //};
 
   make_graph_context = function(app,org){
     var data = TABLES.Info({dept:org}),
@@ -92,7 +92,11 @@
        graph_context.graph_area = chapter.graph_area();
        graph_context.text_area =  chapter.text_area();
 
-       table.graph(func_name,graph_context).render();
+       var result = table.graph(func_name,graph_context).render();
+       console.log(result);
+       if (result === false){
+         chapter.remove();
+       }
     });
   };
 

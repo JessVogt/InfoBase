@@ -28,7 +28,7 @@
     table.q = function(dept){
       if (!_.isUndefined(dept))
         if (table.depts[dept]){
-          return new queries(app, table,table.depts[dept]);
+          return new queries(app, table,table.depts[dept],dept);
         } else {
           return new queries(app, table, []);
         }
@@ -91,15 +91,14 @@
      return _.memoize(f,f.resolver);
   };
 
-  var queries = function(app,table,data){
+  var queries = function(app,table,data,dept){
     this.table = table;
     this.app = app;
-    this.dept = app.state.get("dept");
+    this.dept = dept;
     this.lang = app.state.get("lang");
 
     this.data = data;
     _.extend(this,table.queries);
-    return this;
   };
 
   var p = queries.prototype;

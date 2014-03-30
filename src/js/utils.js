@@ -24,7 +24,7 @@
           .addClass("ui-screen-hidden")
           .html(full_text)
           .appendTo(outerspan)
-          .after(name.substring(0,47)+"...");
+          .after(name.substring(0,length-5)+"...");
       return outerspan.html();
     } else {
       return name;

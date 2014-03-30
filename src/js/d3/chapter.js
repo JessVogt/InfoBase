@@ -76,6 +76,10 @@
 
     var chapterp = _chapter.prototype;
 
+    chapterp.remove = function(){
+       this.el.remove();
+    };
+
     chapterp.add_title = function(title){
       this.el.append("h2").html(title);
     };
