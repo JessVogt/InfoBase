@@ -102,6 +102,7 @@
       .enter()
       .append("tr")
       .order();
+
     var tds = rows
         .selectAll("td")
           .data(Object);

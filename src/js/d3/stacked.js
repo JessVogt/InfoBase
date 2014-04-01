@@ -193,7 +193,6 @@
             .on("click", html_toggle)
             .on("mouseenter", html_toggle)
             .on("mouseleave", html_toggle)
-            .on("focus", html_toggle)
             .append("a")
             .attr("href","#")
             .style({
@@ -203,6 +202,7 @@
             })
             .html(function(d){
                return d[text_key];
-            });
+            })
+            .on("focus", html_toggle);
     });
 })();

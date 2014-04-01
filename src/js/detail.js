@@ -93,7 +93,6 @@
        graph_context.text_area =  chapter.text_area();
 
        var result = table.graph(func_name,graph_context).render();
-       console.log(result);
        if (result === false){
          chapter.remove();
        }
