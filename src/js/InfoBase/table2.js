@@ -109,7 +109,6 @@
         "fr": "Dépenses par article courant (en milliers de dollars)"
       },
       "mapper": function (row) {
-        row = _.tail(row,2);
         if (row[0] !== 'ZGOC') {
           row.splice(1, 1, sos[row[1]][this.lang]);
         }

@@ -7,29 +7,29 @@
       'common': {
           'in_year_short': '2014',
           'qfr_last_year_short': '2013',
-          'last_year_short': '2012',
-          'last_year_2_short': '2011',
-          'last_year_3_short': '2010',
-          'month': 3,
-          'q': 1
+          'last_year_short': '2013',
+          'last_year_2_short': '2012',
+          'last_year_3_short': '2011',
+          'month': 9,
+          'q': 3
       },
       'en': {
-          'month_name': 'August',
-          'qfr_month_name': 'June 30th',
+          'month_name': 'February',
+          'qfr_month_name': 'Dec 31st',
           'in_year': '2013-14',
           'qfr_last_year': '2012-13',
-          'last_year': '2011-12',
-          'last_year_2': '2010-11',
-          'last_year_3': '2009-10'
+          'last_year': '2012-13',
+          'last_year_2': '2011-12',
+          'last_year_3': '2010-11'
       },
       'fr': {
-          'month_name': 'août',
-          'qfr_month_name': '30 juin',
+          'month_name': 'février',
+          'qfr_month_name': '31 décembre',
           'in_year': '2013‒2014',
           'qfr_last_year': '2012‒2013',
-          'last_year': '2011‒2012',
-          'last_year_2': '2010‒2011',
-          'last_year_3': '2009‒2010'
+          'last_year': '2012‒2013',
+          'last_year_2': '2011‒2012',
+          'last_year_3': '2010‒2011'
       }
   };
   

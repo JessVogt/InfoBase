@@ -161,11 +161,11 @@
       },
       "mapper": function (row) {
         if (this.lang === 'en') {
-          row.splice(6, 1);
+          row.splice(4, 1);
         } else {
-          row.splice(5, 1);
+          row.splice(3, 1);
         }
-        return _.tail(row,2);
+        return row;
       },
       mini_view: {
         description: {

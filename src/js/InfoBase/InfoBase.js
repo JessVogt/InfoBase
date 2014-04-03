@@ -20,7 +20,7 @@
     window.depts = PARSER.parse_orgs(d3.csv.parseRows(data));
   }
   function sos_load(promises,data){
-    window.sos = PARSER.parse_sos(d3.csv.parseRows(data));
+    PARSER.parse_lookups(d3.csv.parseRows(data));
   }
   function qfr_links_load(promises,data){
     promises.Organizations.done(function(){
@@ -31,14 +31,14 @@
   APP.start = function(){
     // download initialization data files and when that's done,
     // parse the data and create a new app
-    var lang = _.last(location.pathname.replace(".html",""),3).join("")=='eng' ? 'en' : 'fr';
+    var lang = _.last(location.pathname.replace(".html",""),3).join("")==='eng' ? 'en' : 'fr';
     WAIT.w = WAIT.waitscreen(lang);
     var setup_material = {
       "Language" :  {url:"data/lang.csv", onload:lang_load},
       "Table Text" :  {url:"templates/od_table_text.html", onload:table_text_load},
       "Templates" :  {url:"templates/od_handlebars_templates.html", onload:template_load},
       "Organizations" :  {url:"data/orgs.csv", onload:org_load},
-      "Standard Objects" :  {url:"data/sos.csv", onload:sos_load},
+      "Lookups" :  {url:"data/lookups.csv", onload:sos_load},
       "QFR Links" :  {url:"data/QFRLinks.csv", onload:qfr_links_load},
     };
     var promises = _.object(_.map(setup_material,function(obj,key){
@@ -139,6 +139,10 @@
         return this.formater(format,vals[i]);
       },this);
     },
+    make_formater : function(format){
+      var that = this;
+      return function(d){ return that.formater(format,d);};
+    },
     lang_change : function(state,lang){
       APP.dispatcher.trigger("lang_change",lang);
     },
@@ -147,7 +151,7 @@
     },
     toggle_lang : function(){
       this.state.set({
-        lang:this.state.get("lang") == "en" ? "fr" : "en" 
+        lang:this.state.get("lang") === "en" ? "fr" : "en" 
       });
     },
     reset_dept : function(model, dept){

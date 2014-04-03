@@ -95,8 +95,8 @@
         });
       }
     },
-    "big-int2" :  function(val,lang){
-      return this['big-int'](val*1000,lang);
+    "big-int-real" : function(val,lang){
+       return APP.types_to_format["big-int"](val*1000,lang);
     },
     "int" :  function(val,lang){return val;},
     "str" : function(val,lang){return val;},

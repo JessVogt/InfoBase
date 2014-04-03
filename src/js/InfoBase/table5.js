@@ -81,26 +81,26 @@
           "fr": "Les trois articles courants représentant les plus importantes dépenses en fonction de leur valeur (en milliers de dollars) et en tant que pourcentage des dépenses totales (%). Sélectionnez l'exercice financier figurant dans le menu déroulant pour afficher les dépenses."
         },
         drop_down_options : [
-        {val:"{{last_year}}",selected: true},
-        {val:"{{last_year_2}}"},
-        {val:"{{last_year_3}}"}
+          {val:"{{last_year}}",selected: true},
+          {val:"{{last_year_2}}"},
+          {val:"{{last_year_3}}"}
         ],
-          classes : [ 'left_text', 
-          'right_number', 
-          'right_number'],
-          prep_data: function () {
-            var year = this.option.val ;
-            var top3 = this.da.get_top_x([year,'so'],3,
-                {gross_percentage: true, format: true});
-            this.rows = _.zip(
-                top3.so,
-                top3[year],
-                top3[year+"gross_percentage"]);
-            this.headers = [[
-              this.header_lookup('so'),
-              this.gt("expenditures") + ' ($000)',
-              "(%)" ]];
-          }
+        classes : [ 'left_text', 
+        'right_number', 
+        'right_number'],
+        prep_data: function () {
+          var year = this.option.val ;
+          var top3 = this.da.get_top_x([year,'so'],3,
+              {gross_percentage: true, format: true});
+          this.rows = _.zip(
+              top3.so,
+              top3[year],
+              top3[year+"gross_percentage"]);
+          this.headers = [[
+            this.header_lookup('so'),
+            this.gt("expenditures") + ' ($000)',
+            "(%)" ]];
+        }
       },
       info : function(context){
         var q,c= context,dept;

@@ -65,14 +65,18 @@
     return _.object(_.map(_.tail(org_rows), each_line));
   };
 
-  PARSER.parse_sos = function(sos){
-    function each_line(line){
-      return [line[0], {
-        'en': line[1],
-        'fr': line[2]
-      }];
-    }
-    return _.object(_.map(sos,each_line));
+  PARSER.parse_lookups = function(rows){
+    _.chain(rows)
+     .groupBy(0)
+     .each(function(grp,grp_name){
+       window[grp_name] = _.object(_.map(grp, function(row){
+         return [row[1], {
+                'en': row[2],
+                'fr': row[3]
+              }];
+        }));
+     })
+    .value();
   };
 
   PARSER.parse_qfrlinks = function(depts,qfrlinks){
@@ -85,7 +89,7 @@
     var links =  _.object(_.map(_.tail(qfrlinks),each_line));
     _.each(links, function(links, key){
       if (key === 'ZGOC'){ return;}
-      if (!key){return}
+      if (!key){return;}
       depts[key].qfr_link = links;
     });
   };
@@ -99,7 +103,7 @@
     }
     return _.object(_.map(lang,each_line));
 
-  }
+  };
 
 })();
 

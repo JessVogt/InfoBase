@@ -225,6 +225,7 @@
   };
 
   p.get_top_x = function(cols,x,options){
+    // x is the number of rows requested
     // sorts by the first col 
     options = options || {};
     _.extend(options,{sorted:true,reverse:true} );

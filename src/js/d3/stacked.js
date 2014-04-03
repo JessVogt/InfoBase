@@ -67,7 +67,7 @@
             }).each(function(d){
               var row = d3.select(this);
               d.active = false;
-              row.selectAll("text").style("display","none");
+              row.selectAll("text").transition().style("fill-opacity",0);
               row.selectAll("circle").transition().style({"fill-opacity":0.5,"stroke-opacity":1});
             });
             if (d3.event.type === 'mouseenter'){
@@ -81,9 +81,9 @@
             }
             if (data.active){
               row.selectAll("circle").transition().style({"fill-opacity":0.1,"stroke-opacity":0.3});
-              row.selectAll("text").style("display","inline");
+              row.selectAll("text").transition().style("fill-opacity",1);
             } else {
-              row.selectAll("text").style("display","none");
+              row.selectAll("text").transition().style("fill-opacity",0);
               row.selectAll("circle").transition().style({"fill-opacity":0.5,"stroke-opacity":1});
             }
           },
@@ -170,7 +170,7 @@
               "font-size" : radius/3,
               "font-weight" : "bold",
             })
-            .style("display","none")
+            .style("fill-opacity",0)
             .text(function(d){return formater(d.val);});
 
 
