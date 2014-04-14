@@ -169,27 +169,22 @@
         ];
       }
     },
-    info : function(context){
-
-      var q,c= context,dept;
-      if (context.dept){
-        dept = context.dept;
-        q = this.q(context.dept);
-        c.dept_last_year_auth =  q.sum('{{last_year}}auth');
-        c.dept_last_year_2_auth = q.sum('{{last_year_2}}auth');
-        c.dept_last_year_3_auth = q.sum('{{last_year_3}}auth');
-        c.dept_last_year_stat_voted = this.voted_stat('{{last_year}}auth',dept,true);
-        c.dept_last_year_2_stat_voted =  this.voted_stat('{{last_year_2}}auth',dept,true); 
-        c.dept_last_year_3_stat_voted = this.voted_stat('{{last_year_3}}auth',dept,true); 
-        _.each(["","_2","_3"],function(x){
-          var key = "dept_last_year"+x+"_stat_voted";
-          c[key].voted = c[key].voted || 0;
-          c[key].stat = c[key].stat || 0;
-        });
-        c.dept_historical_voted = q.voted_items();
-        c.dept_historical_stat = q.stat_items();
-      }
-      q = this.q();
+    dept_info : function(c, q){
+      c.dept_last_year_auth =  q.sum('{{last_year}}auth');
+      c.dept_last_year_2_auth = q.sum('{{last_year_2}}auth');
+      c.dept_last_year_3_auth = q.sum('{{last_year_3}}auth');
+      c.dept_last_year_stat_voted = this.voted_stat('{{last_year}}auth',c.dept,true);
+      c.dept_last_year_2_stat_voted =  this.voted_stat('{{last_year_2}}auth',c.dept,true); 
+      c.dept_last_year_3_stat_voted = this.voted_stat('{{last_year_3}}auth',c.dept,true); 
+      _.each(["","_2","_3"],function(x){
+        var key = "dept_last_year"+x+"_stat_voted";
+        c[key].voted = c[key].voted || 0;
+        c[key].stat = c[key].stat || 0;
+      });
+      c.dept_historical_voted = q.voted_items();
+      c.dept_historical_stat = q.stat_items();
+    },
+    info : function(c,q){
       c.gov_last_year_auth =  q.sum('{{last_year}}auth');
       c.gov_last_year_2_auth = q.sum('{{last_year_2}}auth');
       c.gov_last_year_3_auth = q.sum('{{last_year_3}}auth');

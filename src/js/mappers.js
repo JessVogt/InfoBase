@@ -11,6 +11,7 @@
   }
 
   mapper.prototype.map = function(row){
+    // row.slice creates a copy of an array
     return this.mapper(row.slice());
   };
 

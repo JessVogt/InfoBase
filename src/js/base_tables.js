@@ -11,7 +11,10 @@
     info = info || {};
     APP.dispatcher.trigger("info_collection",info);
      _.each(TABLES.tables, function(table){
-       table.info(info);
+       if (info.dept){
+         table.dept_info(info,table.q(info.dept));
+       }
+       table.info(info,table.q());
      });
     APP.dispatcher.trigger("info_collection_cleanup",info);
     return info;
@@ -120,12 +123,12 @@
     return function(row){
       var row_obj =  _.object(table.unique_headers,mapper.map(row));
       _.each(row_obj, function(val, key){
-        var type =  table.col_from_nick(key).type ;
-        if ( type === 'big-int'){
-          row_obj[key]=accounting.unformat($.trim(val));
-        } else if (type === 'int' && !_.isNaN(parseInt(val,10))){
-          row_obj[key]=parseInt(val,10);
-        }
+         var type =  table.col_from_nick(key).type ;
+         if ( type === 'big-int' || type === "big-int-real"){
+           row_obj[key]=accounting.unformat($.trim(val));
+         } else if (type === 'int' && !_.isNaN(parseInt(val,10))){
+           row_obj[key]=parseInt(val,10);
+         }
       },this);
       return row_obj;
     };

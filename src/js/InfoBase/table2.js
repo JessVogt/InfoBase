@@ -132,15 +132,11 @@
           this.headers= [[this.gt("so"), ' ($000)', '(%)']];
         }
       },
-      info : function(context){
-        var q,c= context,dept;
-        if (context.dept){
-          dept = context.dept;
-          q = this.q(context.dept);
-          c.dept_this_year_type_spend = q.get_cols(["plannedexp","so"],{sorted:true});
-        }
+      dept_info : function(c,q){
+        c.dept_this_year_type_spend = q.get_cols(["plannedexp","so"],{sorted:true});
+      },
+      info : function(c,q){
         c.gov_this_year_type_spend =  this.spending_type("plannedexp",false);
-        
       },
       graphics : {
         "vote_stat_split": function(options){

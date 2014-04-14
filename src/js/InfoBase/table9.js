@@ -33,7 +33,7 @@
           function(header){
             this.add_col(
               {
-                "type":"big-int",
+                "type":"big-int-real",
             "nick":header,
             "header":header
               });
@@ -61,6 +61,12 @@
               return row.employee_type;
             };
          }
+      },
+      "dept_info" : function(c,q){
+
+      },
+      "info" : function(c,q){
+
       },
       "mini_view": {
         description: {
@@ -90,6 +96,10 @@
             this.gt("employee_type"),
             "(%)" ]];
         }
+      },
+      "graphics" : {
+        "display_order" :[
+        ]
       }
      });
   });

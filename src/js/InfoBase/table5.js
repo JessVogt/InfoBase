@@ -102,24 +102,19 @@
             "(%)" ]];
         }
       },
-      info : function(context){
-        var q,c= context,dept;
-        var personnel = sos[1][context.lang];
-        if (context.dept) {
-          dept = context.dept;
-          q = this.q(dept);
-          c.dept_last_year_so_spend =  this.horizontal("{{last_year}}",dept,true); 
-          c.dept_last_year_2_so_spend = this.horizontal("{{last_year_2}}",dept,true); 
-          c.dept_last_year_3_so_spend = this.horizontal("{{last_year_3}}",dept,true); 
-        }
-        q = this.q();
+      dept_info : function(c,q){
+          c.dept_last_year_so_spend =  this.horizontal("{{last_year}}",c.dept,true); 
+          c.dept_last_year_2_so_spend = this.horizontal("{{last_year_2}}",c.dept,true); 
+          c.dept_last_year_3_so_spend = this.horizontal("{{last_year_3}}",c.dept,true); 
+      },
+      info : function(c,q){
+        var personnel = sos[1][c.lang];
         c.gov_last_year_type_spend =  this.spending_type("{{last_year}}",false); 
         c.gov_last_year_2_type_spend = this.spending_type("{{last_year_2}}",false); 
         c.gov_last_year_3_type_spend = this.spending_type("{{last_year_3}}",false); 
         c.gov_personnel = [this.horizontal("{{last_year_3}}",false)[personnel],
                            this.horizontal("{{last_year_2}}",false)[personnel],
                            this.horizontal("{{last_year}}",false)[personnel]];
-        
       },
       graphics : {
         "vote_stat_split": function(options){

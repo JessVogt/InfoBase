@@ -118,17 +118,14 @@
               "(%)" ]];
           }
       },
-      info : function(context){
-        var q,c= context,dept;
+      dept_info : function(c,q){
         var is = app.get_text("internal_services");
-        if (context.dept){
-          dept = context.dept;
-          q = this.q(context.dept);
-          c.dept_is = [this.horizontal("{{last_year_3}}",dept,true)[is],
-                       this.horizontal("{{last_year_2}}",dept,true)[is],
-                       this.horizontal("{{last_year}}",dept,true)[is]];
-        }
-        q = this.q();
+        c.dept_is = [this.horizontal("{{last_year_3}}",c.dept,true)[is],
+                       this.horizontal("{{last_year_2}}",c.dept,true)[is],
+                       this.horizontal("{{last_year}}",c.dept,true)[is]];
+      },
+      info : function(c,q){
+        var is = app.get_text("internal_services");
         c.gov_is = [this.horizontal("{{last_year_3}}",false)[is],
                     this.horizontal("{{last_year_2}}",false)[is],
                     this.horizontal("{{last_year}}",false)[is]];

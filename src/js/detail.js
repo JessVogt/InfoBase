@@ -62,8 +62,8 @@
 
   make_graph_context = function(app,org){
     var data = TABLES.Info({dept:org}),
-        written = function(x){return app.formater("compact_written",x);},
-        compact = function(x){return app.formater("compact",x);};
+        written = app.make_formater("compact_written"),
+        compact = app.make_formater("compact");
     return {
       dept : org,
       lang : app.lang,
@@ -71,10 +71,11 @@
       height : 200,
       written_data : TABLES.format_info(written, data),
       compact_data : TABLES.format_info(compact, data),
-      percent : function(x){return app.formater("percentage",x);},
-      compact1 : function(x){return app.formater("compact1",x);},
+      percent : app.make_formater("percentage"),
+      compact1 : app.make_formater("compact1"),
+      written : written,
       compact : compact,
-      written : written
+      bigintreal : app.make_formater("big-int-real")
     };
   };
 

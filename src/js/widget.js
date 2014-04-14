@@ -59,8 +59,8 @@
     on_select: function (e) {
       this.option = $(":selected",e.target)[0].__data__;
       _.each(this.drop_down_options, function(o){o.selected = false;});
-
       this.option.selected = true;
+      this.render();
       APP.dispatcher.once(this.make_signal(),this.focus);
     },
     focus : function(){
@@ -83,6 +83,7 @@
       this.da = this.def.q(this.org.accronym);
       _.extend(this,this.def.mini_view);
 
+      // include the dropdown mixin
       if (_.has(this, "drop_down_options")){
         _.extend(this,miniTableSelectMixin);
         this.selectmixininit();

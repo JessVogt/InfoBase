@@ -62,19 +62,19 @@
         };
 
         my.series = function(value) {
-          if (!arguments.length) return series;
+          if (!arguments.length) {return series;}
           options.series = value;
           return my;
         };
 
         my.width = function(value) {
-          if (!arguments.length) return width;
+          if (!arguments.length) {return width;}
           options.width = value;
           return my;
         };
 
         my.height = function(value) {
-          if (!arguments.length) return height;
+          if (!arguments.length) {return height;}
           options.height = value;
           return my;
         };

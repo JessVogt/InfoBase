@@ -72,31 +72,30 @@
           }
     ]);
     this.add_col("{{qfr_last_year}}")
-      .add_child([
-          {
-            "type":"big-int",
+      .add_child([ {
+        "type":"big-int",
         "nick" : 'lastyearauthorities',
         "header":{
-          "en":"Total available for use for the year ending March 31, {{qfr_last_year_short}}",
-        "fr":"Crédits totaux disponibles pour l'exercice se terminant le 31 mars {{qfr_last_year_short}}"
-        }
-          },
-          {
-            "type":"big-int",
-        "header":{
-          "en":"Used during the quarter ended {{qfr_month_name}},{{last_year_short}} ",
-        "fr":"Crédits utilisés pour le trimestre terminé le {{qfr_month_name}} {{last_year_short}}"
-        }
-          },
-          {
-            "type":"big-int",
-        "nick" : 'lastyearexpenditures',
-        "header":{
-          "en":"Year to date used at quarter-end",
-          "fr":"Cumul des crédits utilisés à la fin du trimestre"
-        }
+            "en":"Total available for use for the year ending March 31, {{qfr_last_year_short}}",
+            "fr":"Crédits totaux disponibles pour l'exercice se terminant le 31 mars {{qfr_last_year_short}}"
           }
-    ]);
+        },
+        {
+         "type":"big-int",
+         "header":{
+            "en":"Used during the quarter ended {{qfr_month_name}},{{last_year_short}} ",
+            "fr":"Crédits utilisés pour le trimestre terminé le {{qfr_month_name}} {{last_year_short}}"
+         }
+        },
+        {
+          "type":"big-int",
+          "nick" : 'lastyearexpenditures',
+          "header":{
+            "en":"Year to date used at quarter-end",
+            "fr":"Cumul des crédits utilisés à la fin du trimestre"
+            }
+        }
+      ]);
       },
       "queries" : {
         "auth_change" : function(format) {
@@ -177,27 +176,23 @@
         prep_data: function () {
           this.rows = [
             ["Authorities"].concat(this.da.auth_change(true)),
-          ["Expenditures"].concat(this.da.exp_change(true))
-            ];
+            ["Expenditures"].concat(this.da.exp_change(true))
+          ];
           this.headers = [_.map(["Type",
               "{{in_year_short}} ($000)",
               "{{qfr_last_year_short}} ($000)",
               this.gt("change") + " (%)"], m)];
         }
       },
-      info : function(context){
-        var q,c= context,dept;
-        if (context.dept){
-          dept = context.dept;
-          q = this.q(context.dept);
-          c.dept_auth_change= q.auth_change(false)[2];
-          c.dept_spend_change = q.exp_change(false)[2];
-          c.dept_this_year_qfr_auth =  q.sum("thisyearauthorities");
-          c.dept_this_year_qfr_spend =  q.sum("thisyearexpenditures");
-          c.dept_last_year_qfr_auth =  q.sum("lastyearauthorities");
-          c.dept_last_year_qfr_spend = q.sum("lastyearexpenditures");
-        }
-        q = this.q();
+      dept_info : function(c,q){
+        c.dept_auth_change= q.auth_change(false)[2];
+        c.dept_spend_change = q.exp_change(false)[2];
+        c.dept_this_year_qfr_auth =  q.sum("thisyearauthorities");
+        c.dept_this_year_qfr_spend =  q.sum("thisyearexpenditures");
+        c.dept_last_year_qfr_auth =  q.sum("lastyearauthorities");
+        c.dept_last_year_qfr_spend = q.sum("lastyearexpenditures");
+      },
+      info : function(c,q){
         c.gov_auth_change = q.auth_change(false)[2];
         c.gov_spend_change = q.exp_change(false)[2];
         c.gov_this_year_qfr_auth =  q.sum("thisyearauthorities");
@@ -214,7 +209,6 @@
           }
           d.gov_auth_change = formater(info.gov_auth_change);
           d.gov_spend_change = formater(info.gov_spend_change);
-
         });
       },
       graphics : {

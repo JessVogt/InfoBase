@@ -154,9 +154,19 @@
               "r" : function(d){return scale(Math.abs(d.val));}
           })
           .style({
-            "fill" : function(d,i){ return colors(d.row_count);},
+            "fill" : function(d,i){ 
+              if (d.val < 0 ){
+                return "red";
+              }
+              return colors(d.row_count);
+            },
             "fill-opacity" : 0.5,
-            "stroke" : function(d,i){ return colors(d.row_count);},
+            "stroke" : function(d,i){ 
+              if (d.val < 0 ){
+                return "red";
+              }
+              return colors(d.row_count);
+            },
             "stroke-width" : "2px",
             "stroke-opacity" : 1
           });

@@ -233,31 +233,25 @@
             '(%)']];
         }
       },
-      info : function(context){
-        var q,qfr_difference,c= context,dept;
+      dept_info : function(c,q){
+        c.dept_this_year_auth = q.sum("total_net_auth");
+        c.dept_this_year_stat_voted =  this.voted_stat("total_net_auth",c.dept,true);
+        c.dept_this_year_voted_num = this.voted_stat("total_net_auth",c.dept,false).voted.length;
+        c.dept_this_year_stat_num = this.voted_stat("total_net_auth",c.dept,false).stat.length;
 
-        if (context.dept){
-          dept = context.dept;
-          q = this.q(context.dept);
-          c.dept_this_year_auth = q.sum("total_net_auth");
-          c.dept_this_year_stat_voted =  this.voted_stat("total_net_auth",dept,true);
-          c.dept_this_year_voted_num = this.voted_stat("total_net_auth",dept,false).voted.length;
-          c.dept_this_year_stat_num = this.voted_stat("total_net_auth",dept,false).stat.length;
+        c.dept_this_year_top_voted = _.chain(this.voted_stat("total_net_auth",c.dept,false).voted) 
+                              .sortBy(function(x){ return -x.total_net_auth;}) 
+                              .first(3)
+                              .value();
+        c.dept_this_year_top_stat = _.chain(this.voted_stat("total_net_auth",c.dept,false).stat) 
+                              .sortBy(function(x){ return -x.total_net_auth;}) 
+                              .first(3)
+                              .value();
 
-          c.dept_this_year_top_voted = _.chain(this.voted_stat("total_net_auth",dept,false).voted) 
-                                .sortBy(function(x){ return -x.total_net_auth;}) 
-                                .first(3)
-                                .value();
-          c.dept_this_year_top_stat = _.chain(this.voted_stat("total_net_auth",dept,false).stat) 
-                                .sortBy(function(x){ return -x.total_net_auth;}) 
-                                .first(3)
-                                .value();
-
-          c.dept_estimates_split = q.estimates_split({filter_zeros : true, as_tuple : true});
-
-        }
-        q = this.q();
-        qfr_difference  = q.qfr_difference(true);
+        c.dept_estimates_split = q.estimates_split({filter_zeros : true, as_tuple : true});
+      },
+      info : function(c,q){
+        var qfr_difference= q.qfr_difference(true);
         c.gov_dept_number = _.keys(this.depts).length;
         c.gov_this_year_auth = q.sum("total_net_auth");
         c.gov_this_year_stat_voted =  this.voted_stat("total_net_auth",false);
@@ -272,7 +266,6 @@
           .first(3)
           .value();
         c.gov_estimates_split = q.estimates_split({filter_zeros : true, as_tuple : true});
-
 
         APP.dispatcher.once("info_collection_cleanup",function(info){
           info.gov_this_year_type_spend.crown = qfr_difference.crown;

@@ -15,6 +15,7 @@
           add_legend = this.add_legend,
           add_labels = this.add_labels,
           html_ticks = this.html_ticks,
+          colors = this.colors || D3.tbs_color,
           label_formater = add_labels ? this.label_formater : undefined,
           top_margin = add_legend ? series.length * 20 + 15 : 20,
           margin = this.margin || {top: top_margin, 
@@ -182,7 +183,7 @@
           .attr( "width", bar_width)
           .attr( "x", function(d) { return x1(d.name) + (x1.rangeBand()-bar_width)/2 + "px"; })
           .style({
-           "fill": function(d) { return D3.tbs_color(d.name); },
+           "fill": function(d) { return colors(d.name); },
            "fill-opacity" : 0.8
           })
           .attr("height",0)
@@ -218,7 +219,7 @@
          .attr("x", width - 18)
          .attr("width", 18)
          .attr("height", 18)
-         .style("fill", D3.tbs_color);
+         .style("fill", colors);
 
      el.append("text")
          .attr("x", width - 24)

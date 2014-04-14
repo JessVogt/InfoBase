@@ -125,14 +125,11 @@
                "(%)" ]];
         }
       },
-      info : function(context){
-        var q,c= context,dept;
-        if (context.dept){
-          dept = context.dept;
-          q = this.q(context.dept);
+      dept_info : function(c,q){
 
-        }
-        q = this.q();
+      },
+      info : function(c,q){
+
       },
       graphics : {
         "vote_stat_split": function(options){

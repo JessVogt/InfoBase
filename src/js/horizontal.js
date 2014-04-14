@@ -278,8 +278,20 @@
 
       // setup the period choice
       // the data
-      var period_data = [ {val: "in_year",name: "In Year"},
-                   {val: "historical",name: "Historical"}];
+      var period_data = _.chain(TABLES.tables)
+        .map(function(d){
+          return d.coverage;
+        })
+        .uniq()
+        .map(function(coverage){
+          return {
+            val : coverage,
+            name : this.gt(coverage)
+          };
+        },this)
+        .value();
+
+
       this.config.set_options("period",period_data);
        // create the list
       this.make_select("period",period_data,{html : function(d){return d.name;}});
@@ -298,7 +310,6 @@
        this.config.set_options("display_as",display_as_data);
        // create the list
        this.make_select("display_as",display_as_data,{html : function(d){return d.name;}});
-
 
      this.on_data_type_click();
      this.data_type.node().focus();
@@ -323,14 +334,16 @@
 
    };
 
-   p.on_period_click = function(period){
+   p.on_period_click = function(){
 
      var lang = this.lang;
+     var period = this.config.get_active("period");
+     var data_type = this.config.get_active("data_type");
      // setup the tables choice
      // the data
      var tables = _.chain(TABLES.tables)
        .filter(function(table){
-           return table.coverage === period.val;
+           return table.coverage === period.val && table.data_type === data_type.val;
        })
        .map(function(table){
           return _.extend({val: table.id},table);
