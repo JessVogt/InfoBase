@@ -92,7 +92,7 @@
          var dept = this.dept || true;
          return _.chain(this.table.voted_stat(undefined,dept, false).voted)
            .sortBy(function(d){
-             return d["{{last_year_3}}exp"]+d["{{last_year_2}}exp"]+d["{{last_year}}exp"];
+             return d["{{last_year_3}}auth"]+d["{{last_year_2}}auth"]+d["{{last_year}}auth"];
            })
            .value().reverse();
        },
@@ -100,7 +100,7 @@
          var dept = this.dept || true;
          return _.chain(this.table.voted_stat(undefined,dept, false).stat)
            .sortBy(function(d){
-             return d["{{last_year_3}}exp"]+d["{{last_year_2}}exp"]+d["{{last_year}}exp"];
+             return d["{{last_year_3}}auth"]+d["{{last_year_2}}auth"]+d["{{last_year}}auth"];
            })
            .value().reverse();
        }
@@ -277,13 +277,8 @@
       var data_type = "dept_historical_" + this.data_type;
       var data = _.map(this.data[data_type] ,_.identity);
       var col_attrs = _.map(years, function(year){
-                        return year+"exp";
+                        return year+"auth";
                       });
-      data = _.filter(data, function(d){
-        return _.all(col_attrs, function(attr){
-          return d[attr] !== 0;
-        });
-      });
 
       if (data.length <= 1){
         return false;
@@ -294,18 +289,15 @@
       });
 
       STACKED.relaxed_stacked({
+        colors : d3.scale.category20(),
         radius : 35,
         rows : data,
         formater : this.compact,
+        total_formater : this.compact1,
         display_cols : this.data.last_years,
         col_attrs : col_attrs,
         text_key : "desc"
       })(this.graph_area);
-
-      //this.graph_area
-      //  .style("max-height","600px")
-      //  .style("overflow-x","hidden")
-      //  .style("overflow-y","auto");
 
     };
 

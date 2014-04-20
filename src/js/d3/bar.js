@@ -5,8 +5,9 @@
 
     BAR.bar = D3.extend_base(function(svg,index){
       /* data in the format of 
-      *  { "series 1" : [y1,y2,y3],
-      *     "series 2" : [y1,y2,y3]}
+      *  data = { "series 1" : [y1,y2,y3],
+          *     "series 2" : [y1,y2,y3]}
+      *  ticks = ["tick1","tick2"."tick3"]
       */
       var series = d3.keys(this.series),
           add_xaxis = this.add_xaxis,

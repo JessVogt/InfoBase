@@ -12,8 +12,9 @@
           if (k.substring(k.length - 2) === '[]') {
               k = k.substring(0, k.length - 2);
               (params[k] || (params[k] = [])).push(v);
+          } else {
+            params[k] = v;
           }
-          else params[k] = v;
       }
       return params;
   };
@@ -61,9 +62,10 @@
         that.route(key,func_name, function(){
           that.show(container);
           window.scrollTo(0, $('.nav_area').position().top);
+
           $(".nav_area .right").html("");
           $(".nav_area .left").html("");
-          func.apply(that, [container].concat(_.map(arguments,_.identity)));
+          var rtn = func.apply(that, [container].concat(_.map(arguments,_.identity)));
         });
       });
     },
@@ -72,7 +74,10 @@
       "*splat"  : "default"
     },
 
-    default : function(){
+    default : function(route){
+     if (_.isNull(route)) { 
+       return false;
+     }
      this.containers.start.html("");
      this.navigate("start",{trigger:true});
     },

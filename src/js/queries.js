@@ -26,12 +26,13 @@
     table.dimensions = include_in_analytics;
     // add in query object for each table
     table.q = function(dept){
-      if (!_.isUndefined(dept))
+      if (!_.isUndefined(dept)) {
         if (table.depts[dept]){
           return new queries(app, table,table.depts[dept],dept);
         } else {
           return new queries(app, table, []);
         }
+      }
       return new queries(app, table,data[false]);
     };
   };
@@ -179,6 +180,12 @@
     return groups;
   };
 
+  p.get_col = function(col, options){
+    options = options || {};
+    options.pop_single = true;
+    return this.get_cols(col, options);
+  };
+
   p.get_cols = function (cols, options){
     options = options || {};
     var data, each_mapped_obj,gp_colname;
@@ -220,6 +227,9 @@
       if (gross_percentage){
          vals[gp_colname]=  this.app.formater("percentage",vals[gp_colname]);
       }
+    }
+    if (options.pop_single && cols.length === 1){
+      return vals[cols[0]];
     }
     return vals;
   };

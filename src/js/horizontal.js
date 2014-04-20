@@ -276,21 +276,29 @@
       // create the list
       this.make_select("pres_level",pres_levels,{html : function(d){return d.name;}});
 
-      // setup the period choice
-      // the data
-      var period_data = _.chain(TABLES.tables)
-        .map(function(d){
-          return d.coverage;
-        })
-        .uniq()
-        .map(function(coverage){
+
+     this.on_data_type_click();
+     this.data_type.node().focus();
+   };
+
+   p.on_data_type_click = function(){
+     // for each of the elements fire off a selection of the first choice
+     var data_type = this.config.get_active("data_type");
+     var period_data  = _.chain(TABLES.tables)
+       .filter(function(table){
+          return table.data_type === data_type.val;
+       })
+       .map(function(table){
+         return table.coverage;
+       })
+       .uniq()
+       .map(function(coverage){
           return {
             val : coverage,
             name : this.gt(coverage)
           };
-        },this)
-        .value();
-
+       },this)
+       .value();
 
       this.config.set_options("period",period_data);
        // create the list
@@ -311,12 +319,6 @@
        // create the list
        this.make_select("display_as",display_as_data,{html : function(d){return d.name;}});
 
-     this.on_data_type_click();
-     this.data_type.node().focus();
-   };
-
-   p.on_data_type_click = function(){
-     // for each of the elements fire off a selection of the first choice
      this.on_pres_level_click();
    };
 

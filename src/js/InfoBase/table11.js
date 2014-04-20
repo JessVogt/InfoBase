@@ -1,6 +1,9 @@
 (function (root) {
   var TABLES = ns('TABLES');
+  var D3 = ns('D3');
+  var STACKED = ns('D3.STACKED');
   var APP = ns('APP');
+
   APP.dispatcher.on("load_tables", function (app) {
     var m = TABLES.m;
     var years = TABLES.years;
@@ -46,10 +49,15 @@
          "fr": "Effectif par groupe d’âge"
     },
     "dept_info" : function(c,q){
-
+       c.dept_last_year_emp_ages = q.high_level_age_split2("{{last_year}}",c.dept);
+       c.dept_last_year_2_emp_ages = q.high_level_age_split2("{{last_year_2}}",c.dept);
+       c.dept_last_year_3_emp_ages = q.high_level_age_split2("{{last_year_3}}",c.dept);
     },
     "info" : function(c,q){
-
+       c.emp_ages = ['< 30','30-44','45-59','> 60'];
+       c.last_year_emp_ages = q.high_level_age_split2("{{last_year}}",true);
+       c.last_year_2_emp_ages = q.high_level_age_split2("{{last_year_2}}",true);
+       c.last_year_3_emp_ages = q.high_level_age_split2("{{last_year_3}}",true);
     },
     "queries" : {
        "high_level_age_split" : function(year,options){
@@ -83,6 +91,10 @@
                }
              };
          return _.map(['< 30','30-44','45-59','> 60'], mapfunc);
+       },
+       "high_level_age_split2" : function(year){
+          var split = this.high_level_age_split(year);
+          return _.object( _.pluck(split, 0), _.pluck(split, 1));
        }
     },
     "dimensions" : {
@@ -115,8 +127,35 @@
       }
     },
     "graphics" : {
-      "display_order" :[
-      ]
+      "details_display_order" :[
+        "employee_age_stacked"
+      ],
+      "employee_age_stacked": function(){
+        var data = this.data;
+         if (this.data.dept) {
+          STACKED.stacked_series({
+            labels : data.emp_ages,
+            height : this.height,
+            colors : D3.tbs_color,
+            data : [
+              {tick :data.last_years[0], vals : data.dept_last_year_2_emp_ages  },
+              {tick :data.last_years[1], vals : data.dept_last_year_2_emp_ages  },
+              {tick :data.last_years[2], vals : data.dept_last_year_emp_ages  },
+            ]
+          })(this.graph_area);
+         } else {
+          STACKED.stacked_series({
+            labels : data.emp_ages,
+            height : this.height,
+            colors : D3.tbs_color,
+            data : [
+              {tick :data.last_years[0], vals : data.last_year_3_emp_ages  },
+              {tick :data.last_years[1], vals : data.last_year_2_emp_ages  },
+              {tick :data.last_years[2], vals : data.last_year_emp_ages  },
+            ]
+          })(this.graph_area);
+         }
+      }
     } 
   });
   });

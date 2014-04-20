@@ -60,17 +60,52 @@
         })
         .select("g.container")
         .attr("transform","translate("+padding+",0),scale("+scale+")");
+     
+     var legend = svg.select("g.container").selectAll(".legend")
+       .data(color_scale.ticks(5).reverse())
+       .enter()
+       .append("g")
+       .attr({
+         "class" :"legend",
+         "transform":function(d,i){
+            return "translate("+scale*50+","+ 1/scale*14*i + ")";
+         }
+       });
+
+     legend.append("rect")
+       .attr({
+         'x' : 0,
+         "y" : 0,
+         "width" : 12/scale,
+         "height" : 12/scale
+       })
+       .style({
+         "fill" :  "#1f77b4",
+         "fill-opacity" : color_scale
+       });
+
+     legend.append("text")
+       .attr({
+         "x" : 15/scale,
+         "y" : 12/scale 
+       })
+       .style({
+         "font-size" : 12/scale + "px"
+       })
+       .text(function(d,i){
+         return formater(d) +"+";
+       });
 
      svg.selectAll(".province")
         .style({
-          "fill" : "#2ca02c",
+          "fill" : "#1f77b4",
           "fill-opacity" : function(d,i){
              var prov = d3.select(this).attr("id").replace("CA-","");
              var val = last_year_data[prov];
              return color_scale(val);
           },
           "stroke-width" : "2px",
-          "stroke" : "#2ca02c",
+          "stroke" : "#1f77b4",
           "stroke-opacity" : function(d,i){
              var prov = d3.select(this).attr("id").replace("CA-","");
              var val = last_year_data[prov];
@@ -108,7 +143,7 @@
          add_labels : true,
          add_xaxis : true,
          html_ticks : true,
-         colors : function(){return "#2ca02c";},
+         colors : function(){return "#1f77b4";},
          label_formater : formater,
          series : {"":prov_data},
          width : scaled_three_year_size[0],
@@ -170,6 +205,9 @@
            })
            .append("a")
            .attr('href','#')
+           .style({
+             "color" : "black","text-decoration" : "none"
+           })
            .html(formater(d[1]))
            .on("click", html_toggle)
            .on("mouseenter", html_toggle)

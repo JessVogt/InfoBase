@@ -156,6 +156,7 @@
                   lang,
                   {
                     pres_level : "depts",
+                    data_type : table.data_type,
                     shown : row_type
                   }).href
               };

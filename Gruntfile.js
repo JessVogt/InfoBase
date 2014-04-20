@@ -96,13 +96,13 @@ module.exports = function(grunt) {
           //"src/js/InfoBase/table1.js",
           //"src/js/InfoBase/table2.js",
           //"src/js/InfoBase/table4.js",
-          //"src/js/InfoBase/table5.js",
+          "src/js/InfoBase/table5.js",
           //"src/js/InfoBase/table6.js",
           //"src/js/InfoBase/table7.js",
           //"src/js/InfoBase/table8.js",
-          //"src/js/InfoBase/table9.js",
-          "src/js/InfoBase/table10.js",
-          //"src/js/InfoBase/table11.js",
+          "src/js/InfoBase/table9.js",
+          //"src/js/InfoBase/table10.js",
+          "src/js/InfoBase/table11.js",
 
           "src/js/InfoBase/InfoBase.js",
           "src/js/start.js"

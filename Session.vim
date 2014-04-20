@@ -6,41 +6,41 @@ map! <S-Insert> <MiddleMouse>
 nnoremap  o
 map   viw
 nmap ; :
-map ]<Down> :call PythonNextLine(1)
-map ]<Up> :call PythonNextLine(-1)
-map ]d :call PythonSelectObject("function")
-map ]c :call PythonSelectObject("class")
-map ]v ]tV]e
-omap ]t :PBoB
-nmap ]t :PBoB
-omap ]e :PEoB
-nmap ]e :PEoB
-omap ]< ]tV]e<
-nmap ]< ]tV]e<
-omap ]> ]tV]e>
-nmap ]> ]tV]e>
-omap ]# :call PythonCommentSelection()
-nmap ]# :call PythonCommentSelection()
-omap ]u :call PythonUncommentSelection()
-nmap ]u :call PythonUncommentSelection()
-omap ]J :call PythonDec("class", -1)
-nmap ]J :call PythonDec("class", -1)
-omap ]j :call PythonDec("class", 1)
-nmap ]j :call PythonDec("class", 1)
-omap ]F :call PythonDec("function", -1)
-nmap ]F :call PythonDec("function", -1)
-omap ]f :call PythonDec("function", 1)
-nmap ]f :call PythonDec("function", 1)
-vmap ]t :PBOBm'gv``
-vmap ]e :PEoBm'gv``
-vmap ]< <
-vmap ]> >
-vmap ]# :call PythonCommentSelection()
-vmap ]u :call PythonUncommentSelection()
-vmap ]J :call PythonDec("class", -1)
-vmap ]j :call PythonDec("class", 1)
-vmap ]F :call PythonDec("function", -1)
 vmap ]f :call PythonDec("function", 1)
+vmap ]F :call PythonDec("function", -1)
+vmap ]j :call PythonDec("class", 1)
+vmap ]J :call PythonDec("class", -1)
+vmap ]u :call PythonUncommentSelection()
+vmap ]# :call PythonCommentSelection()
+vmap ]> >
+vmap ]< <
+vmap ]e :PEoBm'gv``
+vmap ]t :PBOBm'gv``
+nmap ]f :call PythonDec("function", 1)
+omap ]f :call PythonDec("function", 1)
+nmap ]F :call PythonDec("function", -1)
+omap ]F :call PythonDec("function", -1)
+nmap ]j :call PythonDec("class", 1)
+omap ]j :call PythonDec("class", 1)
+nmap ]J :call PythonDec("class", -1)
+omap ]J :call PythonDec("class", -1)
+nmap ]u :call PythonUncommentSelection()
+omap ]u :call PythonUncommentSelection()
+nmap ]# :call PythonCommentSelection()
+omap ]# :call PythonCommentSelection()
+nmap ]> ]tV]e>
+omap ]> ]tV]e>
+nmap ]< ]tV]e<
+omap ]< ]tV]e<
+nmap ]e :PEoB
+omap ]e :PEoB
+nmap ]t :PBoB
+omap ]t :PBoB
+map ]v ]tV]e
+map ]c :call PythonSelectObject("class")
+map ]d :call PythonSelectObject("function")
+map ]<Up> :call PythonNextLine(-1)
+map ]<Down> :call PythonNextLine(1)
 nmap _c :%s/\s\+$//gc
 nmap gx <Plug>NetrwBrowseX
 nnoremap <silent> <Plug>NetrwBrowseX :call netrw#NetrwBrowseX(expand("<cWORD>"),0)
@@ -142,7 +142,7 @@ badd +15 les/todo
 badd +46 les/src/mako/od_base.html
 badd +103 les/src/js/search.js
 badd +83 les/src/js/detail.js
-badd +97 les/src/js/format.js
+badd +64 les/src/js/format.js
 badd +81 les/src/js/widget.js
 badd +54 les/src/js/table_builder.js
 badd +174 les/src/js/story.js
@@ -163,9 +163,9 @@ badd +144 les/src/js/InfoBase/InfoBase.js
 badd +15 les/src/js/utils.js
 badd +8 les/src/js/d3/table_builder.js
 badd +58 les/src/js/InfoBase/table_common.js
-badd +48 les/src/js/d3/stacked.js
+badd +51 les/src/js/d3/stacked.js
 silent! argdel *
-edit les/src/js/format.js
+edit les/src/js/InfoBase/table10.js
 set splitbelow splitright
 wincmd _ | wincmd |
 vsplit
@@ -175,8 +175,8 @@ set nosplitbelow
 set nosplitright
 wincmd t
 set winheight=1 winwidth=1
-exe 'vert 1resize ' . ((&columns * 88 + 88) / 177)
-exe 'vert 2resize ' . ((&columns * 88 + 88) / 177)
+exe 'vert 1resize ' . ((&columns * 79 + 79) / 159)
+exe 'vert 2resize ' . ((&columns * 79 + 79) / 159)
 argglobal
 setlocal keymap=
 setlocal noarabic
@@ -283,12 +283,12 @@ set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 61 - ((36 * winheight(0) + 21) / 43)
+let s:l = 141 - ((6 * winheight(0) + 21) / 43)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-61
-normal! 07|
+141
+normal! 034|
 wincmd w
 argglobal
 edit les/src/js/InfoBase/table9.js
@@ -397,15 +397,15 @@ set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 87 - ((35 * winheight(0) + 21) / 43)
+let s:l = 105 - ((37 * winheight(0) + 21) / 43)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-87
-normal! 057|
+105
+normal! 0
 wincmd w
-exe 'vert 1resize ' . ((&columns * 88 + 88) / 177)
-exe 'vert 2resize ' . ((&columns * 88 + 88) / 177)
+exe 'vert 1resize ' . ((&columns * 79 + 79) / 159)
+exe 'vert 2resize ' . ((&columns * 79 + 79) / 159)
 tabnext 1
 if exists('s:wipebuf')
   silent exe 'bwipe ' . s:wipebuf

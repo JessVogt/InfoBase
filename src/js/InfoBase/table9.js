@@ -1,6 +1,9 @@
 (function (root) {
   var TABLES = ns('TABLES');
+  var D3 = ns('D3');
+  var STACKED = ns('D3.STACKED');
   var APP = ns('APP');
+
   APP.dispatcher.on("load_tables", function (app) {
     var m = TABLES.m;
     var years = TABLES.years;
@@ -62,11 +65,18 @@
             };
          }
       },
+      "queries" : {
+      },
       "dept_info" : function(c,q){
-
+        c.dept_last_year_emp_types = this.horizontal("{{last_year}}",c.dept);
+        c.dept_last_year_2_emp_types = this.horizontal("{{last_year_2}}",c.dept);
+        c.dept_last_year_3_emp_types = this.horizontal("{{last_year_3}}",c.dept);
       },
       "info" : function(c,q){
-
+        c.emp_types = _.uniq(q.get_col("employee_type"));
+        c.last_year_emp_types = this.horizontal("{{last_year}}",true);
+        c.last_year_2_emp_types = this.horizontal("{{last_year_2}}",true);
+        c.last_year_3_emp_types = this.horizontal("{{last_year_3}}",true);
       },
       "mini_view": {
         description: {
@@ -85,12 +95,12 @@
           var fm1  = app.make_formater("big-int-real");
           var fm2 = app.make_formater("percentage");
           var year = this.option.val ;
-          var top3 = this.da.get_top_x([year,'employee_type'],Infinity,
+          var ordered = this.da.get_top_x([year,'employee_type'],Infinity,
               {gross_percentage: true, format: false});
           this.rows = _.zip(
-              top3.employee_type,
-              _.map(top3[year], fm1),
-              _.map(top3[year+"gross_percentage"], fm2));
+              ordered.employee_type,
+              _.map(ordered[year], fm1),
+              _.map(ordered[year+"gross_percentage"], fm2));
           this.headers = [[
             this.header_lookup('employee_type'),
             this.gt("employee_type"),
@@ -98,8 +108,35 @@
         }
       },
       "graphics" : {
-        "display_order" :[
-        ]
+        "details_display_order" :[
+          "employee_type_stacked"
+        ],
+        "employee_type_stacked": function(){
+          var data = this.data;
+           if (this.data.dept) {
+            STACKED.stacked_series({
+              labels : data.emp_types,
+              height : this.height,
+              colors : D3.tbs_color,
+              data : [
+                {tick :data.last_years[0], vals : data.dept_last_year_2_emp_types  },
+                {tick :data.last_years[1], vals : data.dept_last_year_2_emp_types  },
+                {tick :data.last_years[2], vals : data.dept_last_year_emp_types  },
+              ]
+            })(this.graph_area);
+           } else {
+            STACKED.stacked_series({
+              labels : data.emp_types,
+              height : this.height,
+              colors : D3.tbs_color,
+              data : [
+                {tick :data.last_years[0], vals : data.last_year_3_emp_types  },
+                {tick :data.last_years[1], vals : data.last_year_2_emp_types  },
+                {tick :data.last_years[2], vals : data.last_year_emp_types  },
+              ]
+            })(this.graph_area);
+           }
+        }
       }
      });
   });
