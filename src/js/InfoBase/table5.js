@@ -6,7 +6,8 @@
     var years = TABLES.years;
     APP.dispatcher.trigger("new_table",
       {
-        "id": "table5",
+      "id": "table5",
+      "attaches_to" : "hist_exp",
       "data_type" : "financial_data",
       "coverage": "historical",
       add_cols : function(){

@@ -10,9 +10,16 @@
 
     var center_text = function(container){
       // this function will vertically center all the inner text
+      // based on the calculated height of the accompanying graphic
       if (!is_mobile){
         _.delay(function(){
-           container.find(".text").each(function(){
+           container.find(".text")
+             .filter(function(){
+               // filter the story panels to only the ones with
+               // span-4 classes, span-8 will not need to be centered
+               return $(this).hasClass("span-4");
+             })
+            .each(function(){
              var that = $(this);
              var my_height = that.height();
              var sibling_height = that.siblings(".graphic").height();

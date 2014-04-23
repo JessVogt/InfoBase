@@ -7,6 +7,7 @@
     APP.dispatcher.trigger("new_table",
     {
      id: "table7",
+      "attaches_to" : "table5",
      "data_type" : "financial_data",
      "coverage": "historical",
      add_cols : function(){

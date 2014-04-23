@@ -11,6 +11,7 @@
     APP.dispatcher.trigger("new_table",
     {
     "id": "table4",
+    "attaches_to" : "hist_auth",
     "data_type" : "financial_data",
     "coverage": "historical",
     "add_cols": function(){

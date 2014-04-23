@@ -27,6 +27,9 @@
       PARSER.parse_qfrlinks(window.depts, d3.csv.parseRows(data));
     });
   }
+  function kgraph_load(promisses,data){
+    window.kg = PARSER.parse_kg(d3.csv.parse(data));
+  }
 
   APP.start = function(){
     // download initialization data files and when that's done,
@@ -40,6 +43,7 @@
       "Organizations" :  {url:"data/orgs.csv", onload:org_load},
       "Lookups" :  {url:"data/lookups.csv", onload:sos_load},
       "QFR Links" :  {url:"data/QFRLinks.csv", onload:qfr_links_load},
+      "Knowledge Graph" : {url: "data/knowledge_graph.csv", onload:kgraph_load}
     };
     var promises = _.object(_.map(setup_material,function(obj,key){
       var promise1 = $.Deferred(),promise2 = $.Deferred();

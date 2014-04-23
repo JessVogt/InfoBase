@@ -75,9 +75,6 @@
     },
 
     default : function(route){
-     if (_.isNull(route)) { 
-       return false;
-     }
      this.containers.start.html("");
      this.navigate("start",{trigger:true});
     },
@@ -159,6 +156,7 @@
       this.add_crumbs([this.home_crumb]);
       this.add_title("home");
       container.html(APP.t('#home_t')());
+
     },
 
     org_widget_view: function(container, org) {

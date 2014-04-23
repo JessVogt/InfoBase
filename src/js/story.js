@@ -7,6 +7,7 @@
     var STORY = ns('D3.STORY');
     var PACK = ns('D3.PACK');
     var BAR = ns('D3.BAR');
+    var INFO = ns("INFO");
 
     var height = 250;
 
@@ -43,13 +44,14 @@
 
       this.data_prep(dept);
       if (_.isUndefined(dept)){
-        this.gov_auth();
-        this.estimates_split();
-        this.vote_stat_spend();
+        this.knowledge_graph();
+        //this.gov_auth();
+        //this.estimates_split();
+        //this.vote_stat_spend();
 
-        this.gov_type_spend();
-        this.gov_spend();
-        this.gov_spend_change();
+        //this.gov_type_spend();
+        //this.gov_spend();
+        //this.gov_spend_change();
       } else {
         this.dept_auth();
         this.dept_estimates_split();
@@ -81,6 +83,29 @@
        this.data = T.Info({dept:dept});
        this.written_data = T.format_info(this.written, this.data);
        this.compact_data = T.format_info(this.compact, this.data);
+    };
+
+
+    p.knowledge_graph = function(){
+
+      var chapter = new STORY.chapter({
+        span : "span-8",
+        target : this.container,
+        sources : []
+      });
+
+      var graph = INFO.info_graph(chapter.graph_area(),this.app);
+      graph.dispatch.on("dataClick",function(node,nodes){
+        var walk_to_top = function(x){
+          return x.parent ? [x].concat(walk_to_top(x.parent)) : [x];
+        };
+        var node_plus_parents = walk_to_top(node);
+        var tags = _.map(node_plus_parents, function(n){
+          return n.name_en;
+        });
+        console.log(tags);
+      });
+
     };
 
     p.gov_auth = function(){

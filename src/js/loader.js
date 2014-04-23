@@ -105,5 +105,10 @@
 
   };
 
+  PARSER.parse_kg = function(nodes){
+    window.knowledge_nodes =  nodes;
+  };
+
+
 })();
 

@@ -9,6 +9,7 @@
     var years = TABLES.years;
     APP.dispatcher.trigger("new_table",
     {"id": "table11",
+     "attaches_to" : "hist_pm",
      "data_type" : "people_data",
      "coverage": "historical",
      "add_cols" : function(){
