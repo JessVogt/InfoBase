@@ -28,7 +28,7 @@
     });
   }
   function kgraph_load(promisses,data){
-    window.kg = PARSER.parse_kg(d3.csv.parse(data));
+    PARSER.parse_kg(d3.csv.parse(data));
   }
 
   APP.start = function(){

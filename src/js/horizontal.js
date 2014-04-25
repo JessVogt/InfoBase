@@ -256,11 +256,11 @@
    p.start_build = function(_class, span){
       var data_types = _.chain(TABLES.tables)
         .map( function(t){
-           return t.data_type;
-        })
+           return t.data_type[this.lang];
+        },this)
         .uniq()
         .map(function(type){
-          return {name : this.gt(type), val : type};
+          return {name : type, val : type};
         },this)
         .value();
       this.config.set_options("data_type",data_types);
@@ -286,16 +286,16 @@
      var data_type = this.config.get_active("data_type");
      var period_data  = _.chain(TABLES.tables)
        .filter(function(table){
-          return table.data_type === data_type.val;
-       })
+          return table.data_type[this.lang] === data_type.val;
+       },this)
        .map(function(table){
-         return table.coverage;
-       })
+         return table.coverage[this.lang];
+       },this)
        .uniq()
        .map(function(coverage){
           return {
             val : coverage,
-            name : this.gt(coverage)
+            name :coverage 
           };
        },this)
        .value();
@@ -345,7 +345,7 @@
      // the data
      var tables = _.chain(TABLES.tables)
        .filter(function(table){
-           return table.coverage === period.val && table.data_type === data_type.val;
+           return table.coverage[lang] === period.val && table.data_type[lang] === data_type.val;
        })
        .map(function(table){
           return _.extend({val: table.id},table);

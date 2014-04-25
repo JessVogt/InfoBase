@@ -12,8 +12,6 @@
     {
     "id": "table4",
     "attaches_to" : "hist_auth",
-    "data_type" : "financial_data",
-    "coverage": "historical",
     "add_cols": function(){
        this.add_col("")
        .add_child([

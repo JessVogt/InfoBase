@@ -11,6 +11,11 @@
 
     var height = 250;
 
+
+    var name_to_class = function(name){
+      return name.replace(/[\s| |']/g,"").toLowerCase();
+    };
+
     var table_query_link = function(table, func, args){
       return {
         link : HORIZONTAL.create_analytics_link(table, args[0]),
@@ -96,12 +101,9 @@
 
       var graph = INFO.info_graph(chapter.graph_area(),this.app);
       graph.dispatch.on("dataClick",function(node,nodes){
-        var walk_to_top = function(x){
-          return x.parent ? [x].concat(walk_to_top(x.parent)) : [x];
-        };
-        var node_plus_parents = walk_to_top(node);
+        var node_plus_parents = INFO.get_node_parents(node);
         var tags = _.map(node_plus_parents, function(n){
-          return n.name_en;
+          return  name_to_class(n.name_en);
         });
         console.log(tags);
       });

@@ -9,7 +9,6 @@
       {"id": 'table1',
         "data_type" : "financial_data",
         "attaches_to" : "in_year_auth",
-
       "coverage": "in_year",
       "add_cols": function(){
         this.add_col("")

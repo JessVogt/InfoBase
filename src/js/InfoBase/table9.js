@@ -12,8 +12,6 @@
      {
       "id": "table9",
       "attaches_to" : "hist_pm",
-      "data_type" : "people_data",
-      "coverage": "historical",
       "add_cols" : function(){
         this.add_col(
         {

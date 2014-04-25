@@ -8,8 +8,6 @@
       {
         id: "table6",
       "attaches_to": "hist_exp",
-      "data_type" : "financial_data",
-      "coverage": "historical",
       add_cols : function(){
         this.add_col(
           {

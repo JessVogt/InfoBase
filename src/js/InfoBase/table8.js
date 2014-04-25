@@ -11,8 +11,6 @@
       {
       "id": "table8",
       "attaches_to" : "in_year_auth",
-      "data_type" : "financial_data",
-      "coverage": "in_year",
       "add_cols" : function(){
         this.add_col("")
       .add_child([

@@ -6,41 +6,41 @@ map! <S-Insert> <MiddleMouse>
 nnoremap  o
 map   viw
 nmap ; :
-vmap ]f :call PythonDec("function", 1)
-vmap ]F :call PythonDec("function", -1)
-vmap ]j :call PythonDec("class", 1)
-vmap ]J :call PythonDec("class", -1)
-vmap ]u :call PythonUncommentSelection()
-vmap ]# :call PythonCommentSelection()
-vmap ]> >
-vmap ]< <
-vmap ]e :PEoBm'gv``
-vmap ]t :PBOBm'gv``
-nmap ]f :call PythonDec("function", 1)
-omap ]f :call PythonDec("function", 1)
-nmap ]F :call PythonDec("function", -1)
-omap ]F :call PythonDec("function", -1)
-nmap ]j :call PythonDec("class", 1)
-omap ]j :call PythonDec("class", 1)
-nmap ]J :call PythonDec("class", -1)
-omap ]J :call PythonDec("class", -1)
-nmap ]u :call PythonUncommentSelection()
-omap ]u :call PythonUncommentSelection()
-nmap ]# :call PythonCommentSelection()
-omap ]# :call PythonCommentSelection()
-nmap ]> ]tV]e>
-omap ]> ]tV]e>
-nmap ]< ]tV]e<
-omap ]< ]tV]e<
-nmap ]e :PEoB
-omap ]e :PEoB
-nmap ]t :PBoB
-omap ]t :PBoB
-map ]v ]tV]e
-map ]c :call PythonSelectObject("class")
-map ]d :call PythonSelectObject("function")
-map ]<Up> :call PythonNextLine(-1)
 map ]<Down> :call PythonNextLine(1)
+map ]<Up> :call PythonNextLine(-1)
+map ]d :call PythonSelectObject("function")
+map ]c :call PythonSelectObject("class")
+map ]v ]tV]e
+omap ]t :PBoB
+nmap ]t :PBoB
+omap ]e :PEoB
+nmap ]e :PEoB
+omap ]< ]tV]e<
+nmap ]< ]tV]e<
+omap ]> ]tV]e>
+nmap ]> ]tV]e>
+omap ]# :call PythonCommentSelection()
+nmap ]# :call PythonCommentSelection()
+omap ]u :call PythonUncommentSelection()
+nmap ]u :call PythonUncommentSelection()
+omap ]J :call PythonDec("class", -1)
+nmap ]J :call PythonDec("class", -1)
+omap ]j :call PythonDec("class", 1)
+nmap ]j :call PythonDec("class", 1)
+omap ]F :call PythonDec("function", -1)
+nmap ]F :call PythonDec("function", -1)
+omap ]f :call PythonDec("function", 1)
+nmap ]f :call PythonDec("function", 1)
+vmap ]t :PBOBm'gv``
+vmap ]e :PEoBm'gv``
+vmap ]< <
+vmap ]> >
+vmap ]# :call PythonCommentSelection()
+vmap ]u :call PythonUncommentSelection()
+vmap ]J :call PythonDec("class", -1)
+vmap ]j :call PythonDec("class", 1)
+vmap ]F :call PythonDec("function", -1)
+vmap ]f :call PythonDec("function", 1)
 nmap _c :%s/\s\+$//gc
 nmap gx <Plug>NetrwBrowseX
 nnoremap <silent> <Plug>NetrwBrowseX :call netrw#NetrwBrowseX(expand("<cWORD>"),0)
@@ -114,58 +114,62 @@ endif
 set shortmess=aoO
 badd +5 les/src/js/app.js
 badd +213 les/src/js/queries.js
-badd +83 les/src/js/d3/core.js
+badd +53 les/src/js/d3/core.js
 badd +58 les/src/js/d3/bar.js
 badd +26 les/src/js/d3/tooltip.js
 badd +83 les/test/test-data.js
 badd +8 les/test/test.html
 badd +20 les/src/js/mappers.js
-badd +104 les/Gruntfile.js
+badd +106 les/Gruntfile.js
 badd +287 les/src/js/d3/dept_explore.js
-badd +124 les/src/js/d3/pack.js
+badd +106 les/src/js/d3/pack.js
 badd +328 les/test/test-d3.js
 badd +190 les/src/mako/od_handlebars_templates.html
 badd +57 les/src/js/waiting.js
 badd +97 les/src/mako/extracss.html
-badd +52 les/src/js/d3/hbar.js
+badd +119 les/src/js/d3/hbar.js
 badd +7 les/src/mako/od_script_includes.html
-badd +104 les/src/js/d3/chapter.js
+badd +30 les/src/js/d3/chapter.js
 badd +22 les/src/js/d3/circle_chart.js
 badd +121 les/src/js/d3/arrow.js
 badd +6 les/src/mako/od.html
-badd +59 les/src/js/router.js
-badd +74 les/src/js/loader.js
+badd +78 les/src/js/router.js
+badd +109 les/src/js/loader.js
 badd +21 les/src/js/sandbox.js
 badd +28 les/src/js/handlebars_helpers.js
 badd +11 les/src/mako/od_fr.html
 badd +15 les/todo
 badd +46 les/src/mako/od_base.html
 badd +103 les/src/js/search.js
-badd +83 les/src/js/detail.js
+badd +90 les/src/js/detail.js
 badd +64 les/src/js/format.js
 badd +81 les/src/js/widget.js
 badd +54 les/src/js/table_builder.js
-badd +174 les/src/js/story.js
+badd +103 les/src/js/story.js
 badd +413 les/src/js/horizontal.js
-badd +169 les/src/js/InfoBase/table1.js
+badd +22 les/src/js/InfoBase/table1.js
 badd +12 les/src/js/base_tables.js
-badd +112 les/src/js/InfoBase/table2.js
-badd +247 les/src/js/InfoBase/table4.js
-badd +98 les/src/js/InfoBase/table5.js
-badd +133 les/src/js/InfoBase/table6.js
-badd +134 les/src/js/InfoBase/table7.js
-badd +236 les/src/js/InfoBase/table8.js
+badd +10 les/src/js/InfoBase/table2.js
+badd +14 les/src/js/InfoBase/table4.js
+badd +12 les/src/js/InfoBase/table5.js
+badd +12 les/src/js/InfoBase/table6.js
+badd +9 les/src/js/InfoBase/table7.js
+badd +13 les/src/js/InfoBase/table8.js
 badd +6 les/src/js/start.js
-badd +84 les/src/js/InfoBase/table9.js
-badd +4 les/src/js/InfoBase/table10.js
-badd +4 les/src/js/InfoBase/table11.js
-badd +144 les/src/js/InfoBase/InfoBase.js
+badd +14 les/src/js/InfoBase/table9.js
+badd +12 les/src/js/InfoBase/table10.js
+badd +15 les/src/js/InfoBase/table11.js
+badd +32 les/src/js/InfoBase/InfoBase.js
 badd +15 les/src/js/utils.js
 badd +8 les/src/js/d3/table_builder.js
 badd +58 les/src/js/InfoBase/table_common.js
-badd +51 les/src/js/d3/stacked.js
+badd +25 les/src/js/d3/stacked.js
+badd +166 les/src/js/d3/tree.js
+badd +37 les/src/js/info_graph.js
+badd +17 les/src/mako/od_table_text.html
+badd +211 les/src/js/d3/canada.js
 silent! argdel *
-edit les/src/js/InfoBase/table10.js
+edit les/src/js/d3/core.js
 set splitbelow splitright
 wincmd _ | wincmd |
 vsplit
@@ -283,15 +287,15 @@ set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 141 - ((6 * winheight(0) + 21) / 43)
+let s:l = 69 - ((25 * winheight(0) + 21) / 43)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-141
-normal! 034|
+69
+normal! 0
 wincmd w
 argglobal
-edit les/src/js/InfoBase/table9.js
+edit les/src/js/info_graph.js
 setlocal keymap=
 setlocal noarabic
 setlocal noautoindent
@@ -397,12 +401,12 @@ set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 105 - ((37 * winheight(0) + 21) / 43)
+let s:l = 8 - ((7 * winheight(0) + 21) / 43)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-105
-normal! 0
+8
+normal! 06|
 wincmd w
 exe 'vert 1resize ' . ((&columns * 79 + 79) / 159)
 exe 'vert 2resize ' . ((&columns * 79 + 79) / 159)
