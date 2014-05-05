@@ -6,18 +6,15 @@ table caption {
 .margin-none {
  margin : 0px
 }
-.choose_adventure .span-4 {
-  margin-left : 0px;
-}
-.choose_adventure .span-3.well {
-  height : 200px;
-}
-.choose_adventure .well a{
-  width : 100%;
-  position : absolute;
-  top: 90px;
-  font-size : 20px;
-  text-align : center;
+.choose_adventure .span-4.well {
+  padding: 10px;
+  padding-top: 15px;
+  border : 2px solid #CCC;
+  border-bottom-right-radius: 10px;
+  border-bottom-left-radius: 10px;
+  height : 40px;
+  border-top : 10px solid ;
+  font-size: 16px;
 }
 .sidescroll { overflow-x: auto;}
 .vertical_scroll { overflow-y: auto;}
@@ -176,27 +173,26 @@ text.parent {
   fill: #1f77b4;
 }
 
-circle {
+circle.gray {
   fill: #ccc;
   stroke: #999;
   pointer-events: all;
 }
-
 circle.parent {
   fill: #1f77b4;
   fill-opacity: .1;
   stroke: steelblue;
   stroke-width: 2;
 }
-circle.widget {
+circle.grand-parent {
+  stroke : #000;
+  fill-opacity: 0;
+}
+/*circle.widget {
   fill-opacity: .2;
   stroke: grey;
   stroke-width: 2;
-}
-circle.grand-parent {
-  stroke : #00;
-  fill-opacity: 0;
-}
+}*/
 circle.parent:hover {
   stroke: #ff7f0e;
   stroke-width: .5px;
@@ -223,4 +219,3 @@ circle.hidden {
 .bar {
   fill: steelblue;
 }
-

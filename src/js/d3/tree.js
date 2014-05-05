@@ -10,11 +10,13 @@ $(function(){
     var width = this.width;
     var maxLabelLength  = 100;
     var translate=[width/3,0], scale=1;
-    var font_size = 14;
+    var font_size = 12;
     var nodeRadius = 10;
+    var horizontal_position_scale = d3.scale.linear()
+      .range([1/4*width,4/5*width]);
     var html = d3.select(D3.get_html_parent(svg));
     // create the zoom/pan listener, one zoomy/pany events like using the click
-    // wheel or pinching on a touch browser, the zoomlistener will 
+    // wheel or pinching on a touch browser, the zoomListener will 
     // perform some funky math and then call the on_zoom function 
     // with scale(zoom) and translation(pan) coordinates
     var zoomListener = d3.behavior.zoom()
@@ -54,9 +56,8 @@ $(function(){
     // 1 - set up the diagonal function which
     // sweaps the x,y coordinates
     var diagonal = d3.svg.diagonal()
-        .projection(function(d) { return [d.y, d.x]; }
-    );
-
+        .projection(function(d) { return [d.y, d.x]; });
+                     
     var  straighten_analytical_path = function(nodes,d){
       // this function tried two strategies for aligning the 
       // nodes, first it aligns all children of a given nodes,
@@ -87,6 +88,9 @@ $(function(){
       var parents =  _.tail(all_parents);
       var root = _.head(all_parents);
 
+      //reset the alignment flag
+      _.each(nodes, function(x){x.aligned=false;});
+
       _.each(parents,function(node,i){
         var height_from_middle = root.x-node.x;  
         _.chain(nodes)
@@ -106,31 +110,30 @@ $(function(){
     // based on the value of scale and translate, this function will
     // position the 
     var position = function(d){
-      if (d3.event && d3.event.type === "focus"){
+      if (d && d !== root){
         // switch the coordinates here so subsequent calculations aren't confusing'
         var x = d.y,y=d.x;
-        if (d.child_count === 0){
-          translate[0] = width-200 - x;
-        } else {
-          translate[0] = (width/2) - x;
-        }
-        translate[1] = (height/2) - y;
+        translate[0] = 1/scale*horizontal_position_scale(d.depth) - x;
+        translate[1] = 1/scale*(height/2) - y;
+        zoomListener.translate(translate);
       }
+      // apply the zoom-pan scaling
       vis  
         .attr("transform", "scale(" + scale + ")translate(" + translate + ")");
-        setTimeout(function(){
-          html.selectAll("div.label")
-            .style({
-              "font-size" : scale * font_size+"px",
-              "top" : function(d){ 
-                var offset = d.depth === 0 ? 5*nodeRadius : nodeRadius;
-                return scale*(d.x+translate[1]+offset)+"px"; },
-              "left" : function(d){ 
-                var width = this.offsetWidth || 0;
-                return scale*(d.y+translate[0]-width/2)+"px"; 
-              }
-            });
-        });
+      //  position the html tags using the translate and scale
+      setTimeout(function(){
+        html.selectAll("div.label")
+          .style({
+            "font-size" : scale * font_size+"px",
+            "top" : function(d){ 
+              var offset = d.depth === 0 ? 5*nodeRadius : nodeRadius;
+              return scale*(d.x+translate[1]+offset)+"px"; },
+            "left" : function(d){ 
+              var width = this.offsetWidth || 0;
+              return scale*(d.y+translate[0]-width/2)+"px"; 
+            }
+          });
+      });
     };
 
     // function for handling zoom event
@@ -142,7 +145,18 @@ $(function(){
 
     // Toggle children.
     var toggle = function (d) {
-      if (d.children) {
+      if (d === root){
+        var collapse_all = function(node){
+          if (node.children){
+            _.each(node.children,collapse_all);
+            node._children = node.children;
+            node.children = null;
+          }
+        };
+        collapse_all(d);
+        translate=[width/3,0]; scale=1;
+      }
+      if (d.children ) {
         d._children = d.children;
         d.children = null;
       } else {
@@ -154,13 +168,14 @@ $(function(){
     
     // this will create a green path from the currently clicked node
     // back to the source
-    var walk_back_up_tree = function(d){
-      if (d === undefined){
+    var walk_back_up_tree = function(d,child){
+      if (d.parent === undefined){
         return;
       }
       var filter_func = function(_d){
          return _d === d;
       };
+
       link = svg.selectAll(".link")
         .sort(function(x,y){{
           return y.target === d  || y.active_link  ? -1 : 1;
@@ -172,30 +187,45 @@ $(function(){
           d.active_link = true;
         })
         .style({ 
-          "stroke" : "#7FBF7F",
+          //"stroke" : "#7FBF7F",
+          "stroke-opacity" : 1,
           "stroke-width" : nodeRadius+"px" 
         });
 
       svg.selectAll("g.node circle.node")
         .filter(filter_func)
-        .style("fill",  "#7FBF7F" );
+        .style({
+          "fill-opacity":  1,
+          "fill": function(_d){
+             if (_d === root && child){
+               return child.color;
+             } else if (_d.color){
+              return _d.color;
+             } else {
+               return "#CCC";
+             }
+          }
+        });
+        
+        //.style("fill",  "#7FBF7F" );
 
       html.selectAll("div.label a")
         .filter(filter_func)
         .style("font-weight","bold");
 
       setTimeout(function(){
-        walk_back_up_tree(d.parent);
+        walk_back_up_tree(d.parent,d);
       },200);
     };
 
-    var update = function(updated) {
-
+    var update = function(updated,straighten) {
       //get a list of all the active nodes from the now 
       // out of date tree
       var nodes = tree.nodes(root);
       // organize the nodes by depth
       var nodes_by_depth = _.groupBy(nodes,"depth");
+      horizontal_position_scale
+        .domain(d3.extent(d3.keys(nodes_by_depth)));
       // find the tree level with the most number of open nodes
       var max_height = _.max(_.values(nodes_by_depth),"length").length;
       // now create a new tree layout to compensate for squashing
@@ -216,18 +246,27 @@ $(function(){
       // tree.links will create all the necessary objects with 
       // the source and end points for each link
       var links = paths_layer.selectAll("path.link")
-          .data(tree.links(nodes));
+          .data(tree.links(nodes),function(d){
+            return d.target.name+d.source.name;
+          });
       // for each of the links, which is provided by
      // tree.links, create a path
       var new_links = links.enter()
           .append("path")
           .attr("class", "link")
           .style({
+            "stroke-linecap" : "round",
              "fill" : "none"
           });
 
       // remove links for nodes which have been collapsed
-      links.exit().remove();
+      links.exit()
+        .transition()
+        .duration(500)
+        .attr("d", function(d){
+          return diagonal({target:d.source, source:d.source});
+        })
+        .remove();
       // re-draw and reset the link styling
       // do the restyling before the transition
       links
@@ -235,10 +274,24 @@ $(function(){
           d.active_link = false;
         })
         .style({
-           "stroke": "#ccc",
-           "stroke-width": "1.5px"
+          "stroke-opacity" :0.5,
+           "stroke" :  function(d){
+                if (d.target.color) {
+                  return d.target.color;
+                } else if (d.source.color) {
+                  d.target.color = d.source.color;
+                  return d.target.color;
+                }       
+           },              
+           "stroke-width": nodeRadius/2+"px"
+        })
+        .attr("d", function(d){
+          if (!d3.select(this).attr("d")) {
+            return diagonal({target:d.source, source:d.source});
+          }
         })
         .transition()
+        .duration(500)
         .attr("d", diagonal);
 
       // create the svg:g which will hold the circle
@@ -249,6 +302,7 @@ $(function(){
       g_nodes
         .exit()
         .transition()
+        .duration(500)
         .attr({
             "transform" :  function(d) { return "translate(" + d.parent.y + "," + d.parent.x + ")"; }
         })
@@ -261,10 +315,17 @@ $(function(){
             "transform" :  function(d) { return "translate(" + updated.y + "," + updated.x + ")"; }
           });
 
+      new_nodes
+          .transition()
+          .duration(1000)
+          .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; }); 
+
       g_nodes
         .transition()
+        .duration(500)
         .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
 
+      // create the actual nodes
       new_nodes.append("circle")
           .attr("class","node")
           .attr({ "r": function(d){
@@ -273,22 +334,37 @@ $(function(){
             }
             return nodeRadius ;
           }
-          });
+      });
           
+      // for all nodes currently drawn
       svg.selectAll("circle.node")
           .style({
             "stroke" : "none",
+            "fill-opacity" : 0.7,
             "fill" : function(d){
-              if (d.child_count === 0) {
+              if (d.color) {
+                return d.color;
+              } else if (d.parent && d.parent.color) {
+                d.color = d.parent.color;
+                return d.color;
+              }
+              else if (d.child_count === 0) {
                 return "#808080";  // grey
               }
-              return "#8080FF";  // blue
+              return "#CCC";//"#8080FF";  // blue
             }
-          });
+      });
 
-      new_nodes.append("circle")
+      // the invisible circles which  provide the hover effect
+      // and act as a larger target area for accepting clicks
+      var new_circles = new_nodes.append("circle")
         .attr({
-          "r" : 2.5*nodeRadius
+          "r" : function(d){
+            if (d.depth === 0){
+              return  5.1*nodeRadius;
+            }
+            return  2.5*nodeRadius;
+          }
         })
         .style({
           "pointer-events": "all",
@@ -296,19 +372,25 @@ $(function(){
           "fill" : "#CCC",
           "fill-opacity" : "0"
         })
-        .on("click",toggle)
-        .filter(function(d){return d.depth !== 0;})
-        .on("mouseenter", function(){
-          d3.select(this).style("fill-opacity",0.5);
-        })
-        .on("mouseleave", function(){
-          d3.select(this).style("fill-opacity",0);
-        });
+        .on("click",toggle);
 
-      html.selectAll("div.label").remove();
+      if (!is_mobile){
+        new_circles
+          .on("mouseenter", function(){
+            d3.select(this).style("fill-opacity",0.5);
+          })
+          .on("mouseleave", function(){
+            d3.select(this).style("fill-opacity",0);
+          });
+      }
 
       var labels = html.selectAll("div.label")
           .data(nodes,function(d){return d.id;});
+      // this slectAll will copy any changed data down from the div.label
+      // to the anchor elements
+      d3.selectAll("div.label").selectAll("a");
+
+      labels.exit().remove();
 
       var new_labels = labels
         .enter()
@@ -348,6 +430,8 @@ $(function(){
           position : "absolute"
       });
 
+      html.selectAll("div.label a")
+        .style("font-weight","normal");
 
       position(updated);
 
@@ -358,16 +442,32 @@ $(function(){
     };
 
     html.style({
-      "border" : "1px gray solid",
+      "margin" : "20px",
+      "border" : "1px #CCC solid",
       "height" : height+"px",
       overflow : "hidden"
     });
 
+    html.append("div")
+      .attr("class","reset")
+      .style({
+        "position" : "absolute",
+        "top" : "5px",
+        "left" : "5px",
+        "font-size" : "10px"
+      })
+      .append("a")
+      .attr("href","#")
+      .html("Reset Zoom and Pan");
+      //.on("click",function(){
+      //  zoomListener.translate([scale*8*nodeRadius,0]).scale(1).event(vis.transition().duration(500));
+      //});
+
+    // attach the zoomListener to the root svg object
     zoomListener(svg);
-    if (root._children){
-      toggle(root);
-    } else {
-      update(root);
-    }
+
+    root.children = root._children;
+    root._children = null;
+    update(root);
   });
 });

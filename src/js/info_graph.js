@@ -1,6 +1,7 @@
 (function(root) {
   
     var APP = ns('APP');
+    var D3 = ns('D3');
     var T = ns('TABLES');
     var TREE = ns("D3.TREE");
     var INFO = ns('INFO');
@@ -15,7 +16,7 @@
         node.parent = root;
         root.tables += recursive_walk(node, nodes);
       });
-      return root.tables || (root.table? 1 : 0);
+      return  (root.table? 1 : 0) + root.tables;
     };
 
     // as each table is added, add it as an info node
@@ -88,10 +89,26 @@
       };
     });
 
-
-    INFO.info_graph = function(container, app){
+    INFO.info_graph = function(container, app, dept){
       var root = INFO.create_info_tree();
-      return TREE.make_horizontal_tree({
+
+      if (!_.isUndefined(dept)){
+        // filter out the tables where there is no data for this
+        // department
+        var filter_func = function(node){
+           node._children = _.filter(node._children, filter_func);
+           return !(node.table && _.isUndefined(node.table.depts,dept.accronym));
+        };
+        root.children = _.filter(root._children, filter_func);
+      }
+
+      var colors = D3.tbs_color;
+      root.color = colors(0);
+      _.map(root._children, function(child,i){
+         child.color = colors(i+1);
+      });
+
+      return TREE.make_horizontal_tree2({
         root : root,
         text_func : function(d){
           if (d.table){
@@ -100,7 +117,6 @@
           return d.name + " (" +d.tables +")";
         }
       })(container);
-
     };
 
 })();

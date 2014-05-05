@@ -33,6 +33,21 @@
       }
     };
 
+    D3.toggle_abbrev = function(collection, show){
+        // reset all the labels
+
+        collection.selectAll(".label .original, .label .abbrev")
+          .classed("ui-screen-hidden",true);
+        collection.selectAll(".shortened")
+          .classed("ui-screen-hidden",false);
+        if (show){
+          show.selectAll(".original")
+            .classed("ui-screen-hidden",false)
+            .style({"font-weight": "bold"});
+          show.selectAll(".abbrev, .shortened").classed("ui-screen-hidden",true);
+        }
+    };
+
     D3.extend_base = function(chart){
       return function(options){
         options = options || {};
@@ -52,9 +67,10 @@
         }
 
         my.dispatch = options.dispatch = d3.dispatch(
-            'dataMouseOver',
-            'datahFocus',
-            'dataMouseOut',
+            'dataMouseEnter',
+            'dataFocusIn',
+            "dataFocusOut",
+            'dataMouseLeave',
             "dataClick");
 
         my.options =  function(){

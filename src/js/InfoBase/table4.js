@@ -87,21 +87,13 @@
           var vals = this.sum([year+'auth',year+'exp'],{format: format});
           return [m(year),vals[year+'auth'],vals[year+'exp']];
        },
-       "voted_items" : function(){
-         var dept = this.dept || true;
-         return _.chain(this.table.voted_stat(undefined,dept, false).voted)
-           .sortBy(function(d){
-             return d["{{last_year_3}}auth"]+d["{{last_year_2}}auth"]+d["{{last_year}}auth"];
-           })
-           .value().reverse();
+       "voted_items" : function(cut_off){
+         this.vote_stat_query =  vote_stat_query;
+         return this.vote_stat_query("voted",cut_off);
        },
-       "stat_items" : function(){
-         var dept = this.dept || true;
-         return _.chain(this.table.voted_stat(undefined,dept, false).stat)
-           .sortBy(function(d){
-             return d["{{last_year_3}}auth"]+d["{{last_year_2}}auth"]+d["{{last_year}}auth"];
-           })
-           .value().reverse();
+       "stat_items" : function(cut_off){
+         this.vote_stat_query =  vote_stat_query;
+         return this.vote_stat_query("stat",cut_off);
        }
     },
     "dimensions" : {
@@ -259,37 +251,65 @@
           this.text_area.html(m(app.get_text(text), this.written_data));
        },
        "voted_spending" :   function(){
-         var func = _.bind(create_graph,this);
+         var func = _.bind(create_stacked_graph,this);
          this.data_type = 'voted';
          return func();
        },
        "stat_spending" :  function(){
-         var func = _.bind(create_graph,this);
+         var func = _.bind(create_stacked_graph,this);
          this.data_type = 'stat';
          return func();
-       }                     
+       },                    
+       "top_vote_items" : function(){
+
+       },
+       "top_stat_items" : function(){
+
+       }
     } 
     });
 
+    var vote_stat_query = function(vote_or_stat, cut_off){
+       var total=0,cut_off_counter=0;
+       var dept = this.dept || true;
+       return _.chain(this.table.voted_stat(undefined,dept, false)[vote_or_stat])
+         .map(_.clone)
+         .flatten()
+         .sortBy(function(d){
+           d.total = d["{{last_year_3}}auth"]+d["{{last_year_2}}auth"]+d["{{last_year}}auth"];
+           total += d.total;
+           return -d.total;
+         })
+         .each(function(d){
+           d.percent = d.total / total;
+         }) 
+         .each(function(d){
+           if (!cut_off){return;}
+           cut_off_counter += d.percent;
+           d.cut_off = cut_off_counter >= cut_off ? true : false;
+         })
+         .value();
+    };
 
-    var create_graph = function(){
+    var create_stacked_graph = function(){
+      var radius = 35;
       var data_type = "dept_historical_" + this.data_type;
       var data = _.map(this.data[data_type] ,_.identity);
       var col_attrs = _.map(years, function(year){
                         return year+"auth";
                       });
-
+      var text_length = (this.graph_area.node().offsetWidth -  col_attrs.length * radius)/4;
       if (data.length <= 1){
         return false;
       }
 
       _.each(data, function(d){
-        d.desc = APP.abbrev(app,d.desc, 100);
+        d.desc = APP.abbrev(app,d.desc, Math.floor(text_length));
       });
 
       STACKED.relaxed_stacked({
         colors : d3.scale.category20(),
-        radius : 35,
+        radius : radius,
         rows : data,
         formater : this.compact,
         total_formater : this.compact1,
@@ -299,9 +319,5 @@
       })(this.graph_area);
 
     };
-
-
   });
-  
-
 })();

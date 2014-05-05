@@ -13,6 +13,9 @@
 
 
     var name_to_class = function(name){
+      if (_.isArray(name)){
+        return _.map(name, name_to_class).join(" ");
+      }
       return name.replace(/[\s| |']/g,"").toLowerCase();
     };
 
@@ -48,15 +51,15 @@
       this.written = function(x){return app.formater("compact_written",x);};
 
       this.data_prep(dept);
+      this.info_graph(dept);
       if (_.isUndefined(dept)){
-        this.knowledge_graph();
-        //this.gov_auth();
-        //this.estimates_split();
-        //this.vote_stat_spend();
+        this.gov_auth();
+        this.estimates_split();
+        this.vote_stat_spend();
 
-        //this.gov_type_spend();
-        //this.gov_spend();
-        //this.gov_spend_change();
+        this.gov_type_spend();
+        this.gov_spend();
+        this.gov_spend_change();
       } else {
         this.dept_auth();
         this.dept_estimates_split();
@@ -71,6 +74,14 @@
     };
 
     var p = _story.prototype;
+
+    p.get_table_classes = function(table){
+      return  name_to_class([
+        this.t[table].coverage.en,
+        this.t[table].data_type.en,
+        this.t[table].name.en
+      ]);
+    };
 
     p.make_graph_context = function(extra){
       return _.extend({
@@ -91,33 +102,63 @@
     };
 
 
-    p.knowledge_graph = function(){
+    p.info_graph = function(){
+      var container = this.container;
 
       var chapter = new STORY.chapter({
         span : "span-8",
         target : this.container,
-        sources : []
+        title : this.gt("info_tree_title"),
+        classes : "info_graph"
       });
 
-      var graph = INFO.info_graph(chapter.graph_area(),this.app);
+      var graph = INFO.info_graph(
+          chapter.graph_area().append("div").style({"position":"relative"}),
+          this.app);
+
       graph.dispatch.on("dataClick",function(node,nodes){
         var node_plus_parents = INFO.get_node_parents(node);
+
         var tags = _.map(node_plus_parents, function(n){
           return  name_to_class(n.name_en);
         });
-        console.log(tags);
+
+        var panels = container.selectAll(".chapter")
+          .filter(function(){
+            return !d3.select(this).classed("info_graph");
+          });
+
+        panels
+          .filter(function(){
+            var node = d3.select(this);
+            return _.all(tags, function(tag){
+              return node.classed(tag);
+            });
+          })
+          .style("display","block");
+
+        panels
+          .filter(function(){
+            var node = d3.select(this);
+            return !_.all(tags, function(tag){
+              return node.classed(tag);
+            });
+          })
+          .style("display","none");
       });
+
+      chapter.text_area().html(this.gt("info_tree_text"));
 
     };
 
     p.gov_auth = function(){
-
       var chapter = new STORY.chapter({
-        toggles :[ {
+        toggles :[{
           toggle_text : this.app.get_text("previous_year_fisc"),
           add_divider : true,
-          sources : [this.create_link("table4",["{{last_year}}auth","{{last_year_2}}auth","{{last_year_3}}auth"])]
+          sources : [this.create_link("table4",["{{last_year}}auth","{{last_year_2}}auth","{{last_year_3}}auth"])],
         }],
+        classes :  this.get_table_classes("table4") + " authorities",
         target : this.container,
         sources : [this.create_link("table8","total_net_auth")]
       });
@@ -173,7 +214,6 @@
         graph_area : chapter.toggle_area().select(".graphic"),
         text_area : chapter.toggle_area().select(".text")
       })).render();
-
 
       // setup the top voted trend area
       // they will each be treated exactly the same, so this can be generalized
@@ -302,7 +342,6 @@
             formater : formater,
             top_font_size : 14,
             data : packing_data,
-            html_tags : true,
             cycle_colours : true,
             text_func : function(d){
               var val = formater(d.value);
@@ -500,7 +539,8 @@
           {name : 'y',value: d.dept_last_year_2_auth, bottom_text : T.m('{{last_year_2}}')},
           {name : 'x',value:  d.dept_last_year_auth, bottom_text : T.m('{{last_year}}')}
         ]
-      })(chapter.toggle_area());
+
+      })(chapter.toggle_area().select(".graphic"));
 
       chapter.text_area().html(T.m(text, this.written_data));
     };
@@ -633,10 +673,10 @@
            }],
            target : this.container
           }),
+
           graph = PACK.pack({
             height : 2 * height,
             formater : compact,
-            html_tags : true,
             top_font_size : 12,
             data : packed_data,
             zoomable : true,
@@ -650,7 +690,6 @@
                 return val;
               }
             }
-
           }),
           text = this.gt("dept_type_spending"),
           on_so_click = function(so){
@@ -701,8 +740,8 @@
 
       list_div
         .append("ul")
-        .attr("class","list-bullet-none")
-        .selectAll("li")
+        .attr("class","list-bullet-none")                                                                                                                                                                                                                                                           
+        .selectAll("li")                                                                                                                                                                                                                                                                            
         .data(standard_objects)
         .enter()
         .append("li")
@@ -714,7 +753,6 @@
       on_so_click(standard_objects[0]);
       
     };
-
 
     p.dept_spend = function(){
       var chapter = new STORY.chapter({

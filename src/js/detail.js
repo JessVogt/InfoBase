@@ -36,35 +36,12 @@
     container.find(".table_description").append(to_be_appended);
   };
 
-  //DETAILS.make_on_item_click = function(app, container, table,options,func){
-  //  return function(d){
-  //    var list = d3.select(this.parentNode.parentNode);
-  //    var data_list = _.map(list.selectAll("li")[0],function(ul){
-  //      return d3.select(ul).datum();
-  //    });
-  //    var currently_active = _.filter(data_list, function(d){
-  //      return d.active;
-  //    });
-  //    if (currently_active.length === 1 && currently_active[0] === d){
-  //      return;
-  //    }
-  //    d.active = !d.active;
-  //    list.smkelectAll("li")
-  //      .classed("background-medium",function(d){ 
-  //        return d.active;
-  //      })
-  //      .classed("not-selected",function(d){ 
-  //        return !d.active;
-  //      });
-  //    func(app,container,table,options);
-  //  };                      
-  //};
-
   make_graph_context = function(app,org){
     var data = TABLES.Info({dept:org}),
         written = app.make_formater("compact_written"),
         compact = app.make_formater("compact");
     return {
+      app : app,
       dept : org,
       lang : app.lang,
       data : data,
@@ -122,17 +99,6 @@
         map = _.map(raw_data, function(row ){
           return _.find(_map, function(row_tag){ return row_tag[0]=== row;})[1];
         }),
-        total_rows= _.map(table.GOC, function(row){
-             return _.map(cols, function(c,i){
-               var col = col_objs[i];
-               return { 
-                 val : row[c],
-                 href : HORIZONTAL.create_analytics_link(table,
-                  col.nick || col.wcag, lang,
-                  { pres_level : "depts" }).href 
-               };
-           });
-        });
         // transform the data for presentation in the table
         data = _.chain(raw_data)
           // transform the row object into an array whose values 
@@ -156,13 +122,51 @@
                   lang,
                   {
                     pres_level : "depts",
-                    data_type : table.data_type,
+                    data_type : table.data_type[app.lang],
                     shown : row_type
                   }).href
               };
             });
           })
-          .value();
+          .value(),
+        total_data = _.map(col_objs, function(col_obj,i){
+          var val, href='';
+          if (i === 0){
+            val = app.get_text("total");
+          } else if (col_obj.type === 'big-int' || col_obj.type === 'big-int-real'){
+            val = d3.sum(_.map(data, function(row){
+              return row[i].val;
+            }));
+            href = HORIZONTAL.create_analytics_link(table,
+                  col.nick || col.wcag,
+                  lang,
+                  {
+                    pres_level : "depts",
+                    data_type : table.data_type[app.lang],
+                  }).href;
+          } else {
+            val = '';
+          }            
+          return { val : val, href : href };
+        }),
+        goc_rows = _.map(table.GOC, function(row){
+             return _.map(cols, function(c,i){
+               var col = col_objs[i];
+               if (i === 0){
+                 val = app.get_text("goc_total");
+                 href = '';
+               } else {
+                 val =  row[c];
+                 href =  HORIZONTAL.create_analytics_link(table,
+                  col.nick || col.wcag, lang,
+                  {  data_type : table.data_type[app.lang],
+                    pres_level : "depts" }).href;
+               }
+               return { val : val, href : href };
+           });
+        }),
+        total_rows = [total_data].concat(goc_rows);
+
     container.append("a")
       .attr("class","router")
       .attr("href", function(){
@@ -170,7 +174,9 @@
                   table,
                   _.difference(cols, table.keys),
                   lang,
-                  { pres_level : "depts",display_as : "table" }).href;
+                  { pres_level : "depts",
+                    data_type : table.data_type[app.lang],
+                    display_as : "table" }).href;
       })
       .html(function(){
         return "Compare totals with all other organizations";
@@ -195,8 +201,8 @@
         }
       },
       tdseach : function(d,i){
-        var el;
-        if (!col_objs[i].key){
+        var el, col = col_objs[i];
+        if (!col.key && d.href.length > 0){
           el = d3.select(this)
             .html("")
             .append("div")
@@ -210,7 +216,7 @@
             .append("div")
             .attr("class",col_objs[i].type);
         }
-        el.html(app.formater(col_objs[i].type,d.val));
+        el.html(app.formater(col.type,d.val));
       },
       rows : data.concat(total_rows)
     });

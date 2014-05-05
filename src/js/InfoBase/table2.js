@@ -1,5 +1,6 @@
 (function (root) {
   var TABLES = ns('TABLES');
+  var D3 = ns('D3');
   var APP = ns('APP');
   APP.dispatcher.on("load_tables", function (app) {
     var m = TABLES.m;
@@ -58,6 +59,7 @@
       .add_child([
           {
             "type":"big-int",
+            "nick" :  "last_year_plannedexp",
         "header":{
           "en":"Planned expenditures for the year ending March 31, {{qfr_last_year_short}}",
         "fr":"Dépenses prévues pour l'exercice se terminant le 31 mars {{qfr_last_year_short}}"
@@ -132,26 +134,49 @@
         }
       },
       dept_info : function(c,q){
-        c.dept_this_year_type_spend = q.get_cols(["plannedexp","so"],{sorted:true});
+        c.dept_in_year_qfr_so_spend = this.horizontal("plannedexp",c.dept,true);
+        c.dept_last_year_qfr_so_spend = this.horizontal("last_year_plannedexp",c.dept,true);
+        c.dept_this_year_type_spend = q.get_cols(["plannedexp","so"],{"sorted": true});
       },
       info : function(c,q){
         c.gov_this_year_type_spend =  this.spending_type("plannedexp",false);
       },
       graphics : {
-        "vote_stat_split": function(options){
-
-        },
-        "historical_auth" : function(container){
-
-        },
-        "voted_spending" :   function(container){
-
-        },
-        "stat_spending" :  function(container){
-
-        }                     
+       "details_display_order" : [
+         "so_spending",
+       ],
+        "so_spending": function(options){
+          var last_year_data =  this.data.dept_last_year_qfr_so_spend;
+          D3.pack_and_bar({
+            "height" : 400,
+            "formater" : this.compact1,
+            "app" : this.app,
+            "graph_area": this.graph_area,
+            "pack_data" :  _.chain(this.data.dept_in_year_qfr_so_spend)
+                          .pairs()
+                          .map(function(x){ return {value:x[1],name:x[0]};})
+                          .value(),
+            "post_bar_render": function(bar_container,d){
+              bar_container.selectAll(".x.axis .tick text")
+                .style({ 'font-size' : "10px" });
+              bar_container.selectAll(".title")
+                .style({ 'font-size' : "14px","font-weight":"bold" });
+            },
+            "packed_data_to_bar" : function(d){
+               return [
+                 last_year_data[d.name] || 0,
+                 d.__value__
+                ];
+            },
+            "ticks" : function(d){
+              return [
+                  m("{{qfr_last_year}}"),
+                  m("{{in_year}}")
+                ];
+            }
+          });
+        }
       }
-      });
-
+    });
   });
 })();

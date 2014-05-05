@@ -16,11 +16,12 @@
 
      var map_svg = d3.select("#canada").html(),
          data = this.data,
+         text_fragments = this.text_fragments,
          last_year_data = _.last(data),
          ticks = this.ticks,
          formater = this.formater,
          max = d3.max(d3.values(last_year_data)),
-         color_scale = d3.scale.linear().domain([0,max]).range([0.1,1]),
+         color_scale = d3.scale.linear().domain([0,max]).range([0.2,1]),
          max_height = 700,
          x_scale = this.width/1396,
          y_scale = max_height / 1346,
@@ -35,6 +36,7 @@
 
      //remove the default svg node, it will be replaced from the template
      html.select("svg").remove();
+
      //set the html of the svg
      html.html(map_svg);
      html.append("div")
@@ -44,11 +46,14 @@
           "left" : padding + scaled_three_year_coord[0]+"px"
        })
        .append("div")
-       .attr("class","three-year-container")
+       .attr("class","three-year-container border-all")
        .style({
          "position":"relative",
+         "margin" : "5px",
          "height" : scaled_three_year_size[1]+'px',
-         "width" : scaled_three_year_size[0]+'px'
+         "width" : scaled_three_year_size[0]+'px',
+         "background-color" : "#F4F4F4"
+         
        });
 
      svg = html.select("svg");
@@ -61,6 +66,24 @@
         .select("g.container")
         .attr("transform","translate("+padding+",0),scale("+scale+")");
      
+     svg.select("g.container")
+       .append("g")
+       .attr({
+         "class" : "legend-background",
+         "transform":"translate("+[scale*50,scale*20]+")"
+       })
+       .append("rect")
+       .attr({
+         "x" : 0, "y" : 0,
+         "width" : 100/scale,
+         "height" : (color_scale.ticks(5).length * 14 + 20)/scale
+       })
+       .style({
+         "fill" : "#F4F4F4",
+         "stroke-width" : "1px",
+         "stroke" : "#CCC"
+       });
+
      var legend = svg.select("g.container").selectAll(".legend")
        .data(color_scale.ticks(5).reverse())
        .enter()
@@ -68,7 +91,7 @@
        .attr({
          "class" :"legend",
          "transform":function(d,i){
-            return "translate("+scale*50+","+ 1/scale*14*i + ")";
+            return "translate("+scale*100+","+ 1/scale*(14*i + 20) + ")";
          }
        });
 
@@ -113,23 +136,16 @@
           }
         });
 
-    svg.selectAll("g.label")
-     .append("rect")
-     .attr({
-       "width" : 94,
-       "height" : 80,
-       "rx" : 10,
-       "ry" : 10
-     })
-    .style({
-      "opacity":0.65822784,
-      "fill": "grey",
-      "fill-opacity": 0.2,
-      "stroke":"none"
-    });
 
     add_graph = function(prov){
-      var prov_data = _.pluck(data, prov);
+      var prov_data;
+      if (prov !== "Canada") {
+        prov_data = _.pluck(data, prov);
+      } else {
+        prov_data = _.map(data,function(year_data){
+           return d3.sum(_.values(year_data));
+        });
+      }
       var container = html.selectAll(".three-year-container");
       if (container.datum() === prov){
         return;
@@ -140,9 +156,9 @@
       container.selectAll("*").remove();
       // create a bar graph
       BAR.bar({
+         title : "Three Year trend for: " + prov,
          add_labels : true,
          add_xaxis : true,
-         html_ticks : true,
          colors : function(){return "#1f77b4";},
          label_formater : formater,
          series : {"":prov_data},
@@ -154,37 +170,23 @@
       container.selectAll("rect").style({
         "opacity" :  color_scale(_.last(prov_data))
       });
+
+      // rotate the x-axis ticks
+      container.selectAll(".x.axis .tick text")
+        .style({ 'font-size' : "10px" });
     };
 
     html_toggle = function(d){
       add_graph(d[0]);
     };
 
-    svg_toggle = function(d){
-      add_graph(d);
-    };
-
-    svg.selectAll("g.label")
-      .each(function(){
-         // set the data attribute to the province code
-         var prov = d3.select(this).attr("id").replace("label-","");
-         d3.select(this).datum(prov);
-      })
-      .on("click", svg_toggle)
-      .on("mouseenter", svg_toggle)
-      .append("text")
-      .attr("transform","translate(47,30)")
-      .style("text-anchor","middle")
-      .text(function(d,i){
-        return d;
-      })
-      .on("mouseenter", svg_toggle);
-
     html.selectAll("div.label")
       .data(_.pairs(last_year_data))
       .enter()
       .append("div")
       .attr("class","label")
+      .on("mouseenter", html_toggle)
+      .on("mouseleave", function(){add_graph("Canada");})
       .each(function(d,i){
         var prov = d[0];
         var label = svg.selectAll("g.label").filter(function(){
@@ -196,24 +198,35 @@
                           .split(",");
         d3.select(this)
            .style({
+             "border-radius" : "5px",
              "position" : "absolute",
              "left" : padding+scale*coords[0]+"px",
-             "top" : 20+scale*coords[1]+"px",
+             "top" : scale*coords[1]+"px",
              "text-align": "center",
              "font-size" : "10px",
-             "width" : scale*94+"px"
-           })
+             "width" : scale*94+"px",
+             "height" : scale*80+"px",
+             "background-color" : "#CCC"
+           }) ;
+        d3.select(this)
+          .append("div")
+          .html(prov);
+
+        d3.select(this)
            .append("a")
            .attr('href','#')
            .style({
-             "color" : "black","text-decoration" : "none"
+             "color" : "black",
+             "text-decoration" : "none"
            })
            .html(formater(d[1]))
            .on("click", html_toggle)
-           .on("mouseenter", html_toggle)
            .on("focus", html_toggle);
       });
+
+    add_graph("Canada");
   });
+
 
 })();
 

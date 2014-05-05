@@ -131,6 +131,7 @@
       ],
       "employee_age_stacked": function(){
         var data = this.data;
+        this.graph_area.style("max-width","700px");
          if (this.data.dept) {
           STACKED.stacked_series({
             labels : data.emp_ages,

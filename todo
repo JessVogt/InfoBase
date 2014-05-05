@@ -1,30 +1,20 @@
 transition to-do:
   ochro
-    team
-      migrate new tables definiitons
+    me
       add in infographic sections
 
   details/infograhic
+    table1
+      stackable summaries
     table2
       drillable bubble
-          
-    table4
-      relaxed stacked
     table5
-      historical bar
+      drillable bubble
     table6
       relaxed stacked
     table7
       vote state bubbles
       relaxed stacked
-
-    table9
-      stacked bar
-    table10
-      stacked bar
-    table11
-      map of canada
-
 
   d3
     me
@@ -45,13 +35,9 @@ transition to-do:
       hidden text
       wordsmithing
 
-  bubbles
-    me
-      add anchor elements to the bubble labels
-
   basic
     me 
-      rebuild details sections
+      add details totals
 
   general
     me

@@ -145,12 +145,20 @@
           "prov_split"
         ],
         "prov_split" : function(){
+          var data;
+          if (this.dept){
+          data = [this.data.dept_last_year_3_prov_split,
+                  this.data.dept_last_year_2_prov_split,
+                  this.data.dept_last_year_prov_split ];
+
+          } else {
+          data = [this.data.last_year_3_prov_split,
+                  this.data.last_year_2_prov_split,
+                  this.data.last_year_prov_split ];
+          }
 
           // reformat the data for display
-          var data = _.map([this.data.dept_last_year_3_prov_split,
-                           this.data.dept_last_year_2_prov_split,
-                           this.data.dept_last_year_prov_split
-                         ],
+          data = _.map(data,
               function(obj){
                 var d = _.extend({},obj);
                 d.QC = d['QC (minus NCR)'];
@@ -165,6 +173,9 @@
           });
 
           CANADA.canada({
+            text_fragments : {
+              "three_year" : this.app.get_text("three_year_history")
+            },
             data : data,
             ticks : this.data.last_years,
             formater : this.bigintreal

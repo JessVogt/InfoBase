@@ -124,7 +124,7 @@
           return d3.nest()
             .key(function(d){
               var type = window.depts[d].type.en;
-              if (type === 'Crown Corporations'){
+              if (type === 'Crown Corporation'){
                 return "crown";
               }
               return "op"; 

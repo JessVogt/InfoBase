@@ -195,8 +195,10 @@
       var chart = PACK.pack({
         height: 680,
         zoomable : true,
-        html_tags : true,
         data: data,
+        hover_text_func : function(d){
+          return d.name;
+        },
         text_func : function(d) {  
           var val = formater(d.value);
           if (d.zoom_r > 60) {
@@ -231,7 +233,7 @@
              // assuming a container setup of span-8
             span_width = container.width()/4;
         // walk up the parent chain and collect them
-        while (typeof pointer.parent != "undefined"){
+        while (typeof pointer.parent !== "undefined"){
           parents.push(pointer.parent);
           pointer = pointer.parent;
         }
@@ -262,10 +264,8 @@
           .append("svg")
           .attr("width","100%")
           .append("g")
-          //.attr("transform", function(){
-          //  return  "translate("+span_width/2-scale(d.r)/2+",0)"
-          //})
           .append("circle")
+          .attr("class","gray")
           .attr({ cx : span_width/2, cy : height/2, r : function(d){return scale(d.r);} });
 
         containers

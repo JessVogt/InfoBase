@@ -1,6 +1,8 @@
 (function (root) {
   var TABLES = ns('TABLES');
   var APP = ns('APP');
+  var STACKED = ns('D3.STACKED');
+
   APP.dispatcher.on("load_tables", function (app) {
     var m = TABLES.m;
     var years = TABLES.years;
@@ -117,7 +119,15 @@
               "(%)" ]];
           }
       },
+      "queries" : {
+         "sorted_programs" : function(){
+           return _.sortBy(this.data, function(x){
+             return -x[_.last(years)];
+           });
+         }
+      },
       dept_info : function(c,q){
+        c.dept_historical_program_spending = q.sorted_programs();
         var is = app.get_text("internal_services");
         c.dept_is = [this.horizontal("{{last_year_3}}",c.dept,true)[is],
                        this.horizontal("{{last_year_2}}",c.dept,true)[is],
@@ -130,7 +140,31 @@
                     this.horizontal("{{last_year}}",false)[is]];
       },
       graphics : {
-        "vote_stat_split": function(options){
+       "details_display_order" : [
+         "program_spending"
+       ],
+       "program_spending": function(){
+          var data = _.map(this.data.dept_historical_program_spending ,_.identity);
+          var col_attrs = years;
+
+          if (data.length <= 1){
+            return false;
+          }
+
+          _.each(data, function(d){
+            d.prgm = APP.abbrev(app,d.prgm, 100);
+          });
+
+          STACKED.relaxed_stacked({
+            colors : d3.scale.category20(),
+            radius : 35,
+            rows : data,
+            formater : this.compact,
+            total_formater : this.compact1,
+            display_cols : this.data.last_years,
+            col_attrs : col_attrs,
+            text_key : "prgm"
+          })(this.graph_area);
 
         }
       }

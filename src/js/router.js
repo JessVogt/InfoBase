@@ -156,7 +156,8 @@
       this.add_crumbs([this.home_crumb]);
       this.add_title("home");
       container.html(APP.t('#home_t')());
-
+      d3.selectAll(".choose_adventure .well")
+        .style("border-top-color",function(d,i){return D3.tbs_color(i);} )
     },
 
     org_widget_view: function(container, org) {

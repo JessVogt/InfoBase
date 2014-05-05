@@ -83,6 +83,8 @@ module.exports = function(grunt) {
           "src/js/d3/stacked.js",
           "src/js/d3/canada.js",
           "src/js/d3/tree.js",
+          "src/js/d3/tree2.js",
+          "src/js/d3/pack_and_bar.js",
 
           "src/js/org_header.js",
           "src/js/other_ministries.js",

@@ -7,9 +7,7 @@
 
     APP.dispatcher.trigger("new_table",
       {"id": 'table1',
-        "data_type" : "financial_data",
         "attaches_to" : "in_year_auth",
-      "coverage": "in_year",
       "add_cols": function(){
         this.add_col("")
       .add_child([
@@ -213,19 +211,16 @@
         });
       },
       graphics : {
-        "vote_stat_split": function(options){
+        "total_planned_spend": function(options){
 
         },
-        "historical_auth" : function(container){
+        "voted_spending" : function(){
 
         },
-        "voted_spending" :   function(container){
+        "stat_spending" : function(){
 
-        },
-        "stat_spending" :  function(container){
-
-        }                     
+        }
       } 
-      });
+    });
   });
 })();

@@ -14,17 +14,18 @@
     length = length || 60;
     var outerspan = $("<span>");
     if (name.length > length){
-      var full_text = name ;
-      if (app.lang === "en") {
-        full_text += " abbreviated here as:";
-      } else {
-        full_text += " abrégé ici:";
-      }
       $("<span>")
-          .addClass("ui-screen-hidden")
-          .html(full_text)
-          .appendTo(outerspan)
-          .after(name.substring(0,length-5)+"...");
+        .addClass("ui-screen-hidden original")
+        .html(name)
+        .appendTo(outerspan);
+      $("<span>")
+        .addClass("ui-screen-hidden abbrev")
+        .html(app.lang === "en" ?  " abbreviated here as:" :  " abrégé ici:")
+        .appendTo(outerspan);
+      $("<span>")
+        .addClass("shortened")
+        .html(name.substring(0,length-5)+"...")
+        .appendTo(outerspan);
       return outerspan.html();
     } else {
       return name;

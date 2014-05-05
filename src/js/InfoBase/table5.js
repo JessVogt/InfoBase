@@ -1,6 +1,8 @@
 (function (root) {
   var TABLES = ns('TABLES');
   var APP = ns('APP');
+  var D3 = ns('D3');
+
   APP.dispatcher.on("load_tables", function (app) {
     var m = TABLES.m;
     var years = TABLES.years;
@@ -116,11 +118,39 @@
                            this.horizontal("{{last_year}}",false)[personnel]];
       },
       graphics : {
-        "vote_stat_split": function(options){
-
+       "details_display_order" : [
+         "so_spending",
+       ],
+        "so_spending": function(options){
+          var last_years = this.data.last_years;
+          var last_year_3 =  this.data.dept_last_year_2_so_spend;
+          var last_year_2 =  this.data.dept_last_year_3_so_spend;
+          D3.pack_and_bar({
+            "height" : 400,
+            "formater" : this.compact1,
+            "app" : this.app,
+            "graph_area": this.graph_area,
+            "pack_data" :  _.chain(this.data.dept_last_year_so_spend)
+                          .pairs()
+                          .map(function(x){ return {value:x[1],name:x[0]};})
+                          .value(),
+            "post_bar_render": function(bar_container,d){
+              bar_container.selectAll(".x.axis .tick text")
+                .style({ 'font-size' : "10px" });
+              bar_container.selectAll(".title")
+                .style({ 'font-size' : "14px","font-weight":"bold" });
+            },
+            "packed_data_to_bar" : function(d){
+               return [last_year_3[d.name],
+                       last_year_2[d.name],
+                       d.__value__ ];
+            },
+            "ticks" : function(d){
+              return last_years;
+            }
+          });
         }
       }                 
-      });
-
+    });
   });
 })();

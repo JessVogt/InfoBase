@@ -4,6 +4,7 @@
     var STACKED = ns('D3.STACKED');
     var APP = ns('APP');
 
+
     STACKED.stacked_series = D3.extend_base(function(svg,index){
       /* data in the format of 
         data = [ {tick:"series 1" , vals : {
@@ -15,8 +16,8 @@
       var source_data = this.data;
       var normalized = this.normalized;
       var labels = this.labels;
-      var margin = {top: 20, right: 20, bottom: 30, left: 40};
-      var legend_width = 200;
+      var margin = {top: 20, right: 20, bottom: 30, left: 50};
+      var legend_width = 150;
       var width = this.width - margin.left - margin.right;
       var height = this.height - margin.top - margin.bottom;
       var html = d3.select(D3.get_html_parent(svg));
@@ -73,6 +74,26 @@
         } else {
           y.domain([0,d3.max(data, function(d){return d.total;})]);
         }
+
+        svg.selectAll("g.legend-background")
+          .data([0])
+          .enter()
+          .append("g")
+          .attr({
+            "class" : "legend-background",
+            "transform":"translate("+[width-125,0]+")"
+          })
+          .append("rect")
+          .attr({
+            "x" : 0, "y" : 0,
+            "width" : 150,
+            "height" : (color.domain().length * 14 + 50)
+          })
+          .style({
+            "fill" : "#F4F4F4",
+            "stroke-width" : "1px",
+            "stroke" : "#CCC"
+          });
 
         var legend = svg.selectAll(".legend")
               .data(color.domain().slice().reverse())
@@ -133,10 +154,10 @@
         .style({
           "position" : "absolute",
           "font-size" : "12px",
-          "top" : "0px",
+          "top" : "20px",
           "right" : "10px"
         })
-        .html("Change")
+        .html("Alternate")
         .on("click",function(){
            normalized = !normalized;
            render();
@@ -164,20 +185,23 @@
       */
 
       var display_cols = this.display_cols,
+          html = d3.select(D3.get_html_parent(svg)),
+          all_rows = this.rows,
           col_attrs = this.col_attrs,
-          non_zero_rows = _.filter(this.rows, function(d){
-            return _.all(col_attrs, function(attr){
-              return d[attr] !== 0;
-            });
-          }),
+          non_zero_rows = _.filter(all_rows, function(d){
+                  return _.any(col_attrs, function(attr){
+                    return d[attr] !== 0;
+                  });
+                }),
           totals = _.map(col_attrs, function(col_attr){
              return d3.sum(_.pluck(non_zero_rows, col_attr));
           }),
-          rows = _.head(non_zero_rows,5),
-          tail_rows = _.tail(non_zero_rows,5),
+          summary_choices = _.filter(_.range(1,non_zero_rows.length),function(d){
+            return d % 5 === 0;
+          }).concat(non_zero_rows.length),
+          choices_y_offset = 0,
           summary_row,srummary_vals,
           radius = this.radius,
-          extra_height = tail_rows.length > 0 ? 2*(radius+5) : 0,
           formater = this.formater,
           total_formater = this.total_formater,
           text_key = this.text_key,
@@ -186,277 +210,341 @@
                                     right: 20, 
                                     bottom: 20, 
                                     left: 40},
-          all_vals = d3.merge(_.map(col_attrs, function(col){
-            return _.map(rows, function(row){
-               return Math.abs(row[col]);
-            });
-          })),
-          max = d3.max(all_vals),
-          html = d3.select(D3.get_html_parent(svg)),
-          height =  2*(radius+5) * rows.length - (rows.length-2)*5 + extra_height,
           width = this.width - margin.left - margin.right,
-          scale = d3.scale.linear()
-            .domain([0,max])
-            .range([2,radius]),
-          graph_area  = svg
-            .attr({
-              width : width+margin.left+margin.right,
-              height : height+margin.top+margin.bottom})
-            .append("g")
-              .attr("transform", "translate(" + margin.left + "," + margin.top + ")"),
+          update = function(summary_choice){
+            var rows = _.head(non_zero_rows,summary_choice),
+                tail_rows = _.tail(non_zero_rows,summary_choice),
+                extra_height = tail_rows.length > 0 ? 2*(radius+5) : 0,
+                height =  2*(radius+5) * rows.length - (rows.length-2)*5 + extra_height,
+                graph_area  = svg.select("g.container"),
+                toggle = function(row){
+                  row_groups.transition().duration(1000);
 
-          toggle = function(row){
-            row_groups.transition().duration(1000);
+                  var data = row.datum();
+                  // get the current label
+                  var label = html.selectAll(".label")
+                                  .filter(function(d){
+                                    return d === row.datum();
+                                  });
 
-            var data = row.datum();
+                  var other_rows = row_groups.filter(function(d){
+                    return d !== data;
+                  }).each(function(d){
+                    var row = d3.select(this);
+                    d.active = false;
+                    row.selectAll("text").style("fill-opacity",0);
+                    row.selectAll("circle").style({"fill-opacity":0.5,"stroke-opacity":1});
+                  });
 
-            var other_rows = row_groups.filter(function(d){
-              return d !== data;
-            }).each(function(d){
-              var row = d3.select(this);
-              d.active = false;
-              row.selectAll("text").style("fill-opacity",0);
-              row.selectAll("circle").style({"fill-opacity":0.5,"stroke-opacity":1});
-            });
+                  if (d3.event.type === 'mouseenter'){
+                    data.active = true;
+                  } else if (d3.event.type === 'mouseleave'){
+                    data.active = false;
+                  } else if (d3.event.type === 'click' || d3.event.type === 'focus'){
+                    data.active = !data.active;
+                  }
 
-            if (d3.event.type === 'mouseenter'){
-              data.active = true;
-            } else if (d3.event.type === 'mouseleave'){
-              data.active = false;
-            } else if (d3.event.type === 'click' || d3.event.type === 'focus'){
-              data.active = !data.active;
+                  if (data.active){
+                    row.selectAll("circle").style({"fill-opacity":0.1,"stroke-opacity":0});
+                    row.selectAll("text").style("fill-opacity",1);
+                    label.style({"font-weight": "bold"});
+                  } else {
+                    row.selectAll("text").style("fill-opacity",0);
+                    row.selectAll("circle").style({"fill-opacity":0.5,"stroke-opacity":1});
+                    label.style({"font-weight": "normal"});
+                  }
+
+                  d3.event.stopPropagation();
+                },
+                svg_toggle = function(d){
+                  var row = d3.select(d3.event.target.parentNode);
+                  toggle(row);
+                },
+                html_toggle = function(d){
+                  if (d3.event.type === 'click'){
+                    d3.event.preventDefault();
+                  }
+                  var row = row_groups.filter(function(_d){return d === _d;});
+                  toggle(row);
+                };
+
+            svg.attr({ height : height+margin.top+margin.bottom});
+            if (tail_rows.length > 1){
+              // if this condition is true then there is a summary line to be created
+              //
+              summary_vals =  _.chain(col_attrs)
+                  .map(function(col_attr){
+                    return [col_attr, d3.sum(tail_rows, function(tail_row){
+                        return tail_row[col_attr];
+                      })];
+                  })
+                  .object()
+                  .value();
+              summary_row = _.extend({ expandable : true }, summary_vals);
+              summary_row[text_key] = "The sum of the " +tail_rows.length +" remaining items";
+              rows.push(summary_row);
+            } else if (tail_rows.length === 1){
+              rows.push(tail_rows[0]);
             }
 
-            if (data.active){
+            var all_vals = d3.merge(_.map(col_attrs, function(col){
+                  return _.map(rows, function(row){
+                    return Math.abs(row[col]);
+                  });
+                })),
+                max = d3.max(all_vals),
+                scale = d3.scale.linear()
+                  .domain([0,max])
 
-              row.selectAll("circle").style({"fill-opacity":0.1,"stroke-opacity":0});
-              row.selectAll("text").style("fill-opacity",1);
+                  .range([2,radius]);
 
-            } else {
+            var row_groups = graph_area.selectAll("g.row")
+              .data(rows,function(d,i){console.log(i+d[text_key]);return i+d[text_key];});
 
-              row.selectAll("text").style("fill-opacity",0);
-              row.selectAll("circle").style({"fill-opacity":0.5,"stroke-opacity":1});
-              //// ensure the first row gets highlighted  
-              //var first_row = row_groups.filter(function(d,i){
-              //   return i === 0;
-              //});
-              //first_row.selectAll("text").style("fill-opacity",0.5);
-              //first_row.selectAll("circle").style({
-              //    "stroke-opacity" : 0,
-              //    "fill-opacity":0.1
-              //});
+            row_groups.exit().remove();
 
+            var new_row_groups = row_groups
+              .enter()
+              .append("g")
+              .attr("class","row")
+              .each(function(d){d.active = false;})
+              .attr("transform",function(d,i){
+                return "translate(0,"+i*(2*radius+5)+")";
+              });
+
+            var cells = row_groups.selectAll("g.cell")
+              .data(function(d){return _.map(col_attrs, function(col,i){
+                  return {val : d[col], row_count : _.indexOf(rows,d)};
+                });
+              })
+              .enter()
+              .append("g")
+              .attr("class","cell")
+              .attr("transform",function(d,i){
+                return "translate("+i*(2*radius + 5)+",0)";
+              });
+
+            // add divider lines
+            // the divier lines need to be put first so that they won't be on
+            // top of the shadding rectangles which receive the events'
+            // if these are after, you will get weird glitches
+            new_row_groups
+              .append("line")
+              .style({
+                "stroke":"#CCC",
+                "stroke-width" : 2
+              })
+              .attr({ "x1" : 0, "x2" : width, "y1" : 2*radius, "y2" : 2*radius });
+
+            // add background shading for even lines
+            new_row_groups
+              .append("rect")
+              .attr({ "x" : 0, "y" : -5, "width" : width, "height" : 2*radius+5 })
+              .style({
+                "fill" : "CCC",
+                "fill-opacity" : function(d,i){
+                  return i%2 === 0 ? 0.1 : 0;
+                }
+              })
+              .on("click", svg_toggle);
+
+            svg.selectAll("text.headers").remove();
+            svg
+              .selectAll("text.headers")
+              .data(display_cols)
+              .enter()
+              .append("text")
+              .attr({
+                "class":"headers",
+                "x" : function(d,i){
+                  return i*(radius*2+5)+radius+margin.left;
+                },
+                "y" : 10
+              })
+              .style({
+                "font-size" : "12px",
+                "text-anchor" : "middle",
+                "font-weight" : "bold"
+              })
+              .text(Object);
+
+            svg.selectAll("text.footers").remove();
+            svg
+              .selectAll("text.footers")
+              .data(totals)
+              .enter()
+              .append("text")
+              .attr({
+                "class":"footers",
+                "x" : function(d,i){
+                  return i*(radius*2+5)+radius+margin.left;
+                },
+                "y" : height+margin.bottom+10
+              })
+              .style({
+                "font-size" : "12px",
+                "text-anchor" : "middle",
+                "font-weight" : "bold"
+              })
+              .text(total_formater);
+
+            svg.selectAll("text.total_").remove();
+            svg
+              .append("text")
+              .attr({
+                "class" : "total_",
+                "x" : 50 + display_cols.length *(2*radius + 5),
+                "y" : height+margin.bottom+10
+              })
+              .style({
+                "font-size" : "12px",
+                "font-weight" : "bold"
+              })
+              .text("Total");
+
+            cells
+              .append("circle")
+              .attr({
+                "cx": radius,
+                //"cy": radius-5,         
+                "cy" : function(d){
+                  return 2*radius - scale(Math.abs(d.val));
+                },
+                "r" : function(d){return scale(Math.abs(d.val));}
+              })
+              .style({
+                "fill" : function(d,i){ 
+                  if (d.val < 0 ){
+                    return "red";
+                  }
+                  return colors(d.row_count);
+                },
+                "fill-opacity" : 0.5,
+                "stroke" : function(d,i){ 
+                  if (d.val < 0 ){
+                    return "red";
+                  }
+                  return colors(d.row_count);
+                },
+                "stroke-width" : "2px",
+                "stroke-opacity" : 0.5
+              });
+
+            cells
+              .append("text")
+              .attr({
+                "x" : radius,
+                "y" : radius,
+                "font-weight" : "bold",
+                "text-anchor" : "middle",
+                "font-size" : "16px",
+                "fill" : function(d,i){
+                  if (d.val < 0){
+                    return "red";
+                  }
+                }
+              })
+              .style("fill-opacity",0)
+              .text(function(d){return formater(d.val);});
+
+            var labels = html
+              .selectAll("div.label")
+              .data(rows,function(d,i){return i+d[text_key];});
+
+            labels.exit().remove();
+
+            labels
+              .enter()
+              .append("div")
+              .attr("class","label ")
+              .style({
+                "width": width - display_cols.length*(2*radius+5)+ "px",
+                "height" : 20 +"px",
+                "position" : "absolute",
+                "top" :  function(d,i){
+                  return choices_y_offset + i*(2*radius+5)+radius+"px";
+                },
+                "left" : 50 + display_cols.length *(2*radius + 5) +"px"
+              })
+              .append("a")
+              .attr("title", function(d){
+                var el = document.createElement('div');
+                el.innerHTML = d[text_key];
+                if (d3.select(el).select(".original").node()){
+                  return d3.select(el).select(".original").html();
+                }
+              })
+              .attr("href","#")
+              .style({
+                "font-size":"12px",
+                "color":"black",
+                "text-decoration" : "none"
+              })
+              .html(function(d){
+                return d[text_key];
+              })
+              .on("click", html_toggle)
+              .on("focus", html_toggle);
+
+            // mouseenter events don't play well on mobile'
+            if (!is_mobile){
+              row_groups.selectAll("rect")
+                .on("mouseenter", svg_toggle)
+                .on("mouseleave", svg_toggle);
+              html.selectAll("div.label").on("mouseenter", html_toggle);
             }
-
-            d3.event.stopPropagation();
-          },
-          svg_toggle = function(d){
-            var row = d3.select(d3.event.target.parentNode);
-            toggle(row);
-          },
-          html_toggle = function(d){
-            if (d3.event.type === 'click'){
-              d3.event.preventDefault();
-            }
-            var row = row_groups.filter(function(_d){return d === _d;});
-            toggle(row);
           };
 
-          if (tail_rows.length > 1){
-            // if this condition is true then there is a summary line to be created
-            //
-            summary_vals =  _.chain(col_attrs)
-                .map(function(col_attr){
-                   return [col_attr, d3.sum(tail_rows, function(tail_row){
-                       return tail_row[col_attr];
-                     })];
-                })
-                .object()
-                .value();
-            summary_row = _.extend({
-              expandable : true,
-              desc: "The sum of the " +tail_rows.length +" remaining items"
-            }, summary_vals);
-            rows.push(summary_row);
-          } else if (tail_rows.length > 1){
-            rows.push(tail_rows[0]);
-          }
+      if (summary_choices.length > 1) {
+        var last_two = _.last(summary_choices,2);
+        if (last_two[0] === last_two[1]-1){
+          summary_choices = _.head(summary_choices,summary_choices.length-1 );
+        }
+      }
 
-          var row_groups = graph_area.selectAll("g.row")
-            .data(rows)
-            .enter()
-            .append("g")
-            .attr("class","row")
-            .each(function(d){d.active = false;})
-            .attr("transform",function(d,i){
-              return "translate(0,"+i*(2*radius+5)+")";
-            }),
-          cells = row_groups.selectAll("g.cell")
-            .data(function(d){return _.map(col_attrs, function(col,i){
-                 return {val : d[col], row_count : _.indexOf(rows,d)};
-              });
-            })
-            .enter()
-            .append("g")
-            .attr("class","cell")
-            .attr("transform",function(d,i){
-              return "translate("+i*(2*radius + 5)+",0)";
-            });
+      if (summary_choices.length > 1) {
+        var ul =html.insert("div","svg")
+          .attr("class","choice")
+          .style({"height":"30px"})
+          .append("ul")
+          .style({"margin-bottom":"0px","margin-top":"0px"})
+          .attr("class","list-bullet-none");
 
-          // add divider lines
-          // the divier lines need to be put first so that they won't be on
-          // top of the shadding rectangles which receive the events'
-          // if these are after, you will get weird glitches
-          row_groups
-            .append("line")
-            .style({
-              "stroke":"#CCC",
-              "stroke-width" : 2
-            })
-            .attr({ "x1" : 0, "x2" : width, "y1" : 2*radius, "y2" : 2*radius });
+        choices_y_offset = 30;
 
-          // add background shading for even lines
-          row_groups
-            .append("rect")
-            .attr({ "x" : 0, "y" : -5, "width" : width, "height" : 2*radius+5 })
-            .style({
-              "fill" : "CCC",
-              "fill-opacity" : function(d,i){
-                return i%2 === 0 ? 0.05 : 0;
-              }
-            })
-            .on("click", svg_toggle);
+        ul.selectAll("li")
+          .data(summary_choices)
+          .enter()
+          .append("li")
+          .style({
+            "display": "inline",
+            "list-style-type" : "none",
+            "padding-left": "10px",
+            "padding-right": "10px"
+          })
+          .append("a")
+          .attr("href","#")
+          .html(Object)
+          .on("click",function(d){
+            html.selectAll("div.choice li")
+                .classed("background-medium",false);
+            d3.select(this.parentNode).classed("background-medium",true);
+            update(d);
+          })
+          .filter(function(d,i){
+            return i === 0;
+          })
+          .each(function(d){
+            d3.select(this.parentNode).classed("background-medium",true);
+          });
+      }
 
-          svg
-            .selectAll("text.headers")
-            .data(display_cols)
-            .enter()
-            .append("text")
-            .attr({
-              "class":"headers",
-              "x" : function(d,i){
-                 return i*(radius*2+5)+radius+margin.left;
-              },
-              "y" : 10
-            })
-            .style({
-              "font-size" : "12px",
-              "text-anchor" : "middle",
-              "font-weight" : "bold"
-            })
-            .text(Object);
+      svg
+        .attr({ width : width+margin.left+margin.right})
+        .append("g")
+          .attr("class","container")
+          .attr("transform", "translate(" + margin.left + "," + margin.top + ")"); 
 
-          svg
-            .selectAll("text.footers")
-            .data(totals)
-            .enter()
-            .append("text")
-            .attr({
-              "class":"headers",
-              "x" : function(d,i){
-                 return i*(radius*2+5)+radius+margin.left;
-              },
-              "y" : height+margin.bottom+10
-            })
-            .style({
-              "font-size" : "12px",
-              "text-anchor" : "middle",
-              "font-weight" : "bold"
-            })
-            .text(total_formater);
-
-          svg
-            .append("text")
-            .attr({
-              "x" : 50 + display_cols.length *(2*radius + 5),
-              "y" : height+margin.bottom+10
-            })
-            .style({
-              "font-size" : "12px",
-              "font-weight" : "bold"
-            })
-            .text("Total");
-
-          cells
-            .append("circle")
-            .attr({
-              "cx": radius,
-              //"cy": radius-5,         
-              "cy" : function(d){
-                return 2*radius - scale(Math.abs(d.val));
-              },
-              "r" : function(d){return scale(Math.abs(d.val));}
-            })
-            .style({
-              "fill" : function(d,i){ 
-                if (d.val < 0 ){
-                  return "red";
-                }
-                return colors(d.row_count);
-              },
-              "fill-opacity" : 0.5,
-              "stroke" : function(d,i){ 
-                if (d.val < 0 ){
-                  return "red";
-                }
-                return colors(d.row_count);
-              },
-              "stroke-width" : "2px",
-              "stroke-opacity" : 0.5
-            });
-
-          cells
-            .append("text")
-            .attr({
-              "x" : radius,
-              "y" : radius,
-              "font-weight" : "bold",
-              "text-anchor" : "middle",
-              "font-size" : "16px",
-              "fill" : function(d,i){
-                if (d.val < 0){
-                  return "red";
-                }
-              }
-            })
-            .style("fill-opacity",0)
-            .text(function(d){return formater(d.val);});
-
-          html
-            .selectAll("div.label")
-            .data(rows)
-            .enter()
-            .append("div")
-            .attr("class","label wrap-none")
-            .style({
-              "width": width - display_cols.length*(2*radius+5)+ "px",
-              "height" : 20 +"px",
-              "position" : "absolute",
-              "overflow":"hidden",
-              "top" :  function(d,i){
-                return i*(2*radius+5)+radius+"px";
-              },
-              "left" : 50 + display_cols.length *(2*radius + 5) +"px"
-            })
-            .append("a")
-            .attr("href","#")
-            .style({
-              "font-size":"12px",
-              "color":"black",
-              "text-decoration" : "none"
-            })
-            .html(function(d){
-               return d[text_key];
-            })
-            .on("click", html_toggle)
-            .on("focus", html_toggle);
-
-          // mouseenter events don't play well on mobile'
-          if (!is_mobile){
-            row_groups.selectAll("rect")
-              .on("mouseenter", svg_toggle)
-              .on("mouseleave", svg_toggle);
-            html.selectAll("div.label").on("mouseenter", html_toggle);
-          }
+     update(summary_choices[0]);
     });
 })();

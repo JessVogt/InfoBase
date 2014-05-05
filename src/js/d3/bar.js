@@ -17,12 +17,13 @@
           add_labels = this.add_labels,
           html_ticks = this.html_ticks,
           colors = this.colors || D3.tbs_color,
+          title = this.title,
           label_formater = add_labels ? this.label_formater : undefined,
-          top_margin = add_legend ? series.length * 20 + 15 : 20,
+          top_margin = add_legend ? series.length > 1 * 20 + 15 : 20,
           margin = this.margin || {top: top_margin, 
                                     right: 20, 
                                     bottom: 30, 
-                                    left: 40},
+                                    left: 20},
           height = this.height - margin.top - margin.bottom,
           width = this.width - margin.left - margin.right,
           y_axis = this.y_axis || '',
@@ -72,13 +73,27 @@
           * setup the main graph area and add the bars
           * set up the axes  
           */
-          html = d3.select(D3.get_html_parent(svg)),
-          graph_area  = svg
+          html = d3.select(D3.get_html_parent(svg));
+      graph_area  = svg
             .attr({
               width : width+margin.left+margin.right,
               height : height+margin.top+margin.bottom})
             .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+      // add the title
+      svg.append("text")
+        .attr({
+          "class" : "title",
+          "x" : margin.left + width/2,
+          "y" : 12,
+        })
+        .style({
+          "text-anchor" : "middle",
+          "font-size" : "12px",
+          "font-weight" : "600"
+        })
+        .text(title);
 
       if (add_legend){
         make_legend(svg,series,width+margin.left);
@@ -101,7 +116,7 @@
               "position" : "absolute",
               "font-size" : "12px",
               "text-weight" : "bold",
-              "top" : height+margin.top+5+"px",
+              "top" : height+margin.top+10+"px",
               "width": x0.rangeBand()+"px",
               "left"  : function(d) {return x0(d)+margin.left+"px" ; }
             })
@@ -162,12 +177,12 @@
             "height" : "10px",
             "top"  : function(d){
               if (d.value === 0){
-                return y(d.value)+"px";
+                return  y(d.value)+"px";
               }
               else if (d.value > 0){
-                return y(d.value) - 5+"px";
+                return margin.top - 12 + y(d.value) - 5+"px";
               } else {
-                return y(d.value) + 15+"px";
+                return y(d.value) +20+ "px";
               }
             },
             "left"  : function(d) { return x1(d.name)+(x1.rangeBand()-bar_width)/2 +"px" ; }

@@ -31,6 +31,7 @@
       var  attr = options.attr || 'value';
       if (options.force_positive){
         _.each(data, function(x){
+          x["__"+attr+"__"] = x[attr];
           x[attr] = Math.abs(x[attr]);
         });
       }
@@ -85,6 +86,8 @@
       return data;
     };
 
+
+
     PACK.pack = D3.extend_base(function(svg,index){
       /*
       {
@@ -95,58 +98,145 @@
       }
       */
       var that = this,
+          current_hover_node,
           parent_width = $(svg.node().parentNode).width(),
           rand = Math.round(Math.random()*1000000),
           html = d3.select(D3.get_html_parent(svg)),
+          // for accessibility purposes, ensure the labels are in a list
+          // this will be helpful later when converting the page to a static
+          // HTML version
+          ul = html.append("ul")
+                   .style("margin","0px")
+                   .attr("class"," list-bullet-none"),
           k,
-          html_tags = this.html_tags || false,
+          first = true,
+          invisible_grand_parent = this.invisible_grand_parent || true,
+          hover_text_func = this.hover_text_func,
           cycle_colours = this.cycle_colours || false,
           top_font_size =  this.top_font_size,
           zoomable = this.zoomable || false,
           dispatch = this.dispatch,
           data = this.data,
           text_func = this.text_func || function(d){return d.name;},
+          on_focusout = this.on_focusout || function(){},
+          on_focusin = this.on_focusin || function(){},
           radius = Math.min(parent_width, this.height),
           x_scale = d3.scale.linear() .range([0,radius]),
           y_scale = d3.scale.linear() .range([0,radius]),
           pack=  d3.layout.pack().size([radius,radius]),
-          nodes = pack.nodes(data);
+          nodes = pack.nodes(data),
+          translate = [(this.width - radius)/2,0],
+          mouse_enter = function(d){
+            if (d === current_hover_node){
+              return;
+            }
+            dispatch.dataMouseEnter(d);
+          };
 
+
+      // assign a unique id to each node
       _.each(nodes, function(n){
         n.rid = APP.make_unique();
       });
-      this.nodes = nodes;
+
+      // filter to only show the first two depths of the packed circles
       if (!zoomable){
         nodes = _.filter(nodes,function(d){ return d.depth <= 1;});
       }
 
+      // normal svg setuup with the height, width
       svg = svg
         .attr({
           "width": parent_width,
           "height":radius})
         .append('g')
-         .attr("transform", "translate(0,0)");
+         .attr("transform", "translate("+translate+")");
 
-      if (html_tags){
-          html = html.append("ul").attr("class"," list-bullet-none");
-      }
+      var hover_in = function(d){
+        current_hover_node = d;
+         // traverse back up to the 
+         html.append("div")  
+           .attr("class","full_label")
+           .style({
+             "padding" : "1px",
+             "background-color" : "#F0F0F0",
+             "border-radius" : "5px",
+             "border" : "1px solid grey",
+             "font-size" : "12px",
+             "top" : d.zoom_pos.y-d.zoom_r + "px",
+             "left" : translate[0]+d.zoom_pos.x + "px",
+             "text-align": "center",
+             "position":"absolute"
+           })
+           .html(hover_text_func(d));
+      };
+      var hover_out = function(d){
+        current_hover_node = undefined;
+        html.selectAll("div.full_label").remove();
+      };
 
-      var on_circle_click = function(node){
+      dispatch.on("dataFocusIn.__",hover_in);
+      dispatch.on("dataMouseEnter.__",hover_in);
+      dispatch.on("dataFocusOut.__",hover_out);
+      dispatch.on("dataMouseLeave.__",hover_out);
+
+      // 
+      var add_zoom_out_link = function(node){
+        html.selectAll(".zoom a").datum(node);
+
+        if (node.depth >=1 && node.children && !html.select(".zoom").node()){
+          html
+            .insert("div", "svg")
+            .attr("class","zoom")
+            .style({
+              "position" : "absolute",
+              "left" : "10px",
+              "top" : "10px"
+            })
+            .append("a")
+            .datum(node)
+            .attr("href","#")
+            .html("Zoom Out")
+            .on("click",function(d){
+              that.dispatch.dataClick(d.parent);
+            });
+        } else if (_.isUndefined(node.parent)){
+          html.selectAll(".zoom").remove();
+        }
+      };
+
+      var setup_for_zoom = function(node){
         if (node.children && node.children.length > 0){
           k = radius / node.r / 2;
           x_scale.domain([node.x - node.r, node.x + node.r]);
           y_scale.domain([node.y - node.r, node.y + node.r]);
-          draw(node);
+          render(node);
         }
       };
+
+      // if the graph is zoomable, setup the event listeners and trigger
+      // a zoom event on the root node
+      // otherwise, don't handle click events and just render the graph
+      // once
       if (zoomable){
-        dispatch.on("dataClick.__zoom__",on_circle_click);
+        dispatch.on("dataClick.__zoom__",setup_for_zoom);
         _.delay(dispatch.dataClick,1, nodes[0],0);
       } else {
-        on_circle_click(nodes[0]);
+        setup_for_zoom(nodes[0]);
       }
 
-      function draw(node){
+      function render(node){
+
+        add_zoom_out_link(node);
+        if ( html.select(".zoom").node() ){
+          html.selectAll(".zoom a").node().focus();
+        } else if (!first){
+          setTimeout(function(){
+            html.select("ul a").node().focus();
+          });
+        }
+        first = false;
+
         _.each(nodes,apply_scales);
         var depth = that.depth = node.depth,
             text_element,
@@ -163,7 +253,7 @@
         // filter to the ondes which are being drawn
         // i.e. only those who are children of the current node
         var nodes_with_text =  _.filter(nodes,function(d){
-          return _.indexOf(node.children,d) != -1;
+          return _.indexOf(node.children,d) !== -1;
         });           
 
        var font_scale  = d3.scale.linear()
@@ -180,22 +270,55 @@
         var new_circles = circle
           .enter()
             .append("circle")
-            .on("mouseover", dispatch.dataMouseOver)
-            .on("mouseout", dispatch.dataMouseOut)
+            .attr("class","node")
             .on("click", dispatch.dataClick);
+
+        if (!is_mobile){
+          new_circles
+            .on("mouseenter", mouse_enter)
+            .on("mouseleave", dispatch.dataMouseLeave);
+        }
 
         var circles = circle
           .transition()
-          .attr({
-            "class" : function(d) { 
-               if (d.depth === 0) {
-                 return  "node grand-parent"; 
-               } else if (d.depth <=  depth+1 ) {
-                 return "node parent" ;
-               } else if (d.depth == depth +2){
-                 return  "node child"; 
-               }
+          .style({
+            "pointer-events": function(d){
+              if (d.depth === depth+2) {
+                return "none";
+              }
+              return "all";
             },
+            "stroke" : function(d){
+              if (d.__value__ && d.__value__ <0){
+                return "red";
+              }
+              return  "steelblue";
+            },
+            "stroke-opacity" : function(d){
+              if (d.depth === 0 && invisible_grand_parent){
+                return 0;
+              }
+              return 1;
+            },
+            "fill" : function(d){
+
+              if (d.__value__ && d.__value__ <0){
+                return "red";
+              } 
+              return  "#1f77b4";
+            },
+            "fill-opacity" : function(d){
+              if (d.depth === 0 && invisible_grand_parent){
+                return 0;
+              } else if ((d.depth === 0 && !invisible_grand_parent) || 
+                         d.depth <=  depth+1 ){
+                return 0.1;
+              } else {
+                return 0.2;
+              }
+            }
+          })
+          .attr({
             "cx": function(d) { return d.zoom_pos.x; },
             "cy": function(d) { return d.zoom_pos.y; },
             "r" : function(d) { return  d.zoom_r; }
@@ -214,83 +337,60 @@
             });
         }
 
-        if (html_tags ){
-          text_element = "li";
-          text_class = "text"+rand;
-          sel = html;
-        } else {
-          text_element = "text";
-          text_class = "text"+rand;
-          sel = svg;
-        }
-        var text = sel.selectAll(text_element+"."+text_class)
+        text_class = "text"+rand;
+
+        var text = ul.selectAll("li."+text_class)
               .data(nodes_with_text,function(d){ return d.rid;});
 
         text.exit().remove();
-
+        
         text
           .enter()
-          .append(text_element)
+          .append("li")
             .attr("class",text_class) 
-            .on("click", dispatch.dataClick);
-
-        if (html_tags){
-          text
+            .append("a")
+            .attr("href","#")
             .style({
+              "color" : "#000",
               "text-align": "center",
+              "text-decoration" : "none",
+              "left" : function(d) { return translate[0]+d.zoom_pos.x-d.zoom_r*1.5/2+"px"; },
+              "font-size" : function(d){ return font_scale(d.zoom_r)+"px";},
               "position" : "absolute",
               "width" : function(d){ return d.zoom_r*1.5+"px";},
-              "font-size" : function(d){ return font_scale(d.zoom_r)+"px";},
-              "left" : function(d) { return d.zoom_pos.x-d.zoom_r*1.5/2+"px"; }
             })
             .html(text_func)  
+            .on("click", dispatch.dataClick)
+            .on("focusout", dispatch.dataFocusOut)
+            .on("focusin", dispatch.dataFocusIn)
             .transition()
             .duration(10)
             .each(function(d){
               var t = d.zoom_pos.y - $(this).height()/2;
               $(this).css("top",t);
             });
-
-        } else {
-          text.each(function(d){
-            if (d.zoom_r > 40){
-              d.zoom_text= _.first(d.name.split(" "),2).join(" "); 
-            } else {
-              d.zoom_text  = '...';
-            }
-            var first_word = d.zoom_text.split(" ")[0];
-            d.zoom_text = d.zoom_text.replace(" and ",'').replace(" et ",'');
-            d.font_size =  font_scale(d.zoom_r)+"px";
-          })
-          .attr({
-            "x": function(d) { return d.zoom_pos.x; },
-            "y": function(d) { return d.zoom_pos.y; },
-            "dy": ".35em",
-            "text-anchor": "middle"
-          })
-          .style("font-size" , function(d){ return d.font_size;})
-          .text(function(d) { return d.zoom_text; });  
-        
-        }
-
+         if (!is_mobile){
+           text.selectAll("a")
+            .on("mouseenter", mouse_enter)
+            .on("mouseleave", dispatch.dataMouseLeave);
+         }
       }
-
 
       function zoom_position(x,y){
         return {x: x_scale(x),y:y_scale(y)};
       }
+
       function apply_scales (node){
         node.zoom_pos = zoom_position(node.x,node.y);
         node.absolute_zoom_pos = absolute_zoom_position(node.x,node.y);
         node.zoom_r = k * node.r;
       }
+
       function absolute_zoom_position(x,y){
         var offset = D3.get_offset(svg);
         var pos = zoom_position(x,y);
         return {x:pos.x+offset.left,y:pos.y+offset.top};
       }
+
     });
-
-
 })();
-

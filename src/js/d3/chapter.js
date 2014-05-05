@@ -40,16 +40,17 @@
 
     var _chapter = function(options){
       _.bindAll(this, _.functions(this));
+      var classes = options.classes || "";
       var toggles = options.toggles || [];
       var header = options.header || "h3";
       var span = options.span || (is_mobile ? "span-8" : "span-4");
 
       this.el = options.target
         .append("div")
-        .attr("class","span-8 border-all")
+        .attr("class","chapter span-8 border-all "+classes )
         .style({ "font-size" : "20px" });
 
-      this.el.append(header).html("Title");
+      this.el.append(header).html(options.title);
       
       //clear the div
       //this will align the chapters vertically
@@ -109,7 +110,7 @@
     };
 
     chapterp.add_toggle_section = function(target,text){
-      var toggler = target.append("div").attr("class","span-8 toggler border-top")
+      var toggler = target.append("div").attr("class","chapter span-8 toggler border-top")
         .style({
           "padding-top":"10px",
           "padding-bottom": "10px",
@@ -167,15 +168,18 @@
       /*
        * adds a 
        * div.span-8
-       *   div.span-4.text
+       *   div.span.text
        *     div.inner
-       *   div.span-4.graphic
+       *   div.span.graphic
        */
       var el =  target;
       el.append("div").attr("class",span +" text margin-bottom-none margin-left-none");
       el.select(".text")
         .append("div")
         .attr("class", "inner margin-top-large margin-left-large");
+      if (span === "span-8"){
+        el.select(".text").classed("margin-bottom-large",true);
+      }
       el.append("div").attr("class",span +" graphic margin-bottom-none margin-left-none");
       el.append("div").attr("class", span+ " source margin-bottom-none margin-left-none")
         .style({"font-size":"12px"});
