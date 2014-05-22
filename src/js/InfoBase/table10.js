@@ -8,7 +8,8 @@
     var years = TABLES.years;
     APP.dispatcher.trigger("new_table", {
       "id": "table10",
-      "attaches_to" : "hist_pm",
+      "coverage": TABLES.coverage.historical,
+      "data_type" :TABLES.data_types.people,
       "add_cols": function () {
         this.add_col({
           "type": "int",
@@ -145,6 +146,8 @@
           "prov_split"
         ],
         "prov_split" : function(){
+          this.graph_area.classed("span-4",false);
+          this.graph_area.classed("span-8",true);
           var data;
           if (this.dept){
           data = [this.data.dept_last_year_3_prov_split,
@@ -152,9 +155,9 @@
                   this.data.dept_last_year_prov_split ];
 
           } else {
-          data = [this.data.last_year_3_prov_split,
-                  this.data.last_year_2_prov_split,
-                  this.data.last_year_prov_split ];
+          data = [this.data.gov_last_year_3_prov_split,
+                  this.data.gov_last_year_2_prov_split,
+                  this.data.gov_last_year_prov_split ];
           }
 
           // reformat the data for display
@@ -174,7 +177,7 @@
 
           CANADA.canada({
             text_fragments : {
-              "three_year" : this.app.get_text("three_year_history")
+              "three_year" : app.get_text("three_year_history")
             },
             data : data,
             ticks : this.data.last_years,

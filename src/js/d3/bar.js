@@ -16,10 +16,10 @@
           add_legend = this.add_legend,
           add_labels = this.add_labels,
           html_ticks = this.html_ticks,
-          colors = this.colors || D3.tbs_color,
+          colors = this.colors || D3.tbs_color(),
           title = this.title,
           label_formater = add_labels ? this.label_formater : undefined,
-          top_margin = add_legend ? series.length > 1 * 20 + 15 : 20,
+          top_margin = add_legend ? series.length  * 20 + 15 : 20,
           margin = this.margin || {top: top_margin, 
                                     right: 20, 
                                     bottom: 30, 
@@ -54,7 +54,7 @@
             .rangeRoundBands([0, width], 0.1),
           x1 = d3.scale.ordinal()
             .domain(series)
-            .rangeRoundBands([0,x0.rangeBand()]),
+            .rangeRoundBands([0,x0.rangeBand()],0.1),
           bar_width = Math.min(x1.rangeBand(), this.max_width || 100),
           y = d3.scale.linear()
             .domain([y_bottom, y_top])
@@ -73,7 +73,7 @@
           * setup the main graph area and add the bars
           * set up the axes  
           */
-          html = d3.select(D3.get_html_parent(svg));
+          html = this.html,
       graph_area  = svg
             .attr({
               width : width+margin.left+margin.right,
@@ -96,7 +96,7 @@
         .text(title);
 
       if (add_legend){
-        make_legend(svg,series,width+margin.left);
+        make_legend(svg,series,width+margin.left, colors);
       }
 
       if (add_xaxis){
@@ -224,17 +224,17 @@
 
    });
 
-   function make_legend(sel,legend,width){
+   function make_legend(sel,legend,width,colors){
 
      var el = sel.selectAll(".legend")
            .data(legend)
          .enter().append("g")
            .attr("class", "legend")
            .attr("transform", function(d, i) { return "translate(0," + (5+(i* 20)) + ")"; });
-     el.append("rect")
-         .attr("x", width - 18)
-         .attr("width", 18)
-         .attr("height", 18)
+     el.append("circle")
+         .attr("cx", width - 18/2)
+         .attr("cy", 18/2)
+         .attr("r", 18/2)
          .style("fill", colors);
 
      el.append("text")
@@ -242,6 +242,7 @@
          .attr("y", 9)
          .attr("dy", ".35em")
          .style("text-anchor", "end")
+         .style("font-size", "10px")
          .text(function(d) { return d; });
 
      return el;

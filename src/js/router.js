@@ -6,8 +6,8 @@
   var decodeRE = /\+/g;  // Regex for replacing addition symbol with a space
   var decode = function (str) {return decodeURIComponent( str.replace(decodeRE, " ") );};
   $.parseParams = function(query) {
-      var params = {}, e;
-      while ( e = re.exec(query) ) { 
+      var params = {}, e=re.exec(query);
+      while ( e ) { 
           var k = decode( e[1] ), v = decode( e[2] );
           if (k.substring(k.length - 2) === '[]') {
               k = k.substring(0, k.length - 2);
@@ -15,6 +15,7 @@
           } else {
             params[k] = v;
           }
+          e =re.exec(query);
       }
       return params;
   };
@@ -44,6 +45,11 @@
         that.navigate($(e.target).attr("href"),{trigger:true});
       });
 
+      $(document).on("click", "a.scroll",function(e){
+        var el = $($(e.target).attr("href"));
+        window.scrollTo(0,el.posiiton().top);
+      });
+
       // when this number is larger than 0, a back button can be clicked
       // to return to the previous location in the app
       this.containers = {};
@@ -60,6 +66,11 @@
             func = that[func_name];
         that.containers[func_name]=container;
         that.route(key,func_name, function(){
+          // remap the other language link
+          var ref = $('li#gcwu-gcnb-lang a');
+          var link = ref.attr("href").split("#")[0];
+          ref.attr("href",link+window.location.hash);
+
           that.show(container);
           window.scrollTo(0, $('.nav_area').position().top);
 
@@ -156,8 +167,14 @@
       this.add_crumbs([this.home_crumb]);
       this.add_title("home");
       container.html(APP.t('#home_t')());
-      d3.selectAll(".choose_adventure .well")
-        .style("border-top-color",function(d,i){return D3.tbs_color(i);} )
+      container.find(".row").each(function(){
+        var panels = $(this).find(".netflix-panel");
+        var width = d3.sum(panels, function(x){return $(x).outerWidth();});
+        $(this).find(".inner").width(1.2*width);
+        if (1.2*width > $(this).width()){
+          $(this).height($(this).height()+10);
+        }
+      });
     },
 
     org_widget_view: function(container, org) {
@@ -207,7 +224,9 @@
       this.add_crumbs([this.home_crumb,{html: "Infographic"}]);
       
      this.add_title($('<h1>').html("Infographic"));
-     this.app.explore =  D3.STORY.story(container, this.app);
+     if (!this.app.explore){
+      this.app.explore =  D3.STORY.story(container, this.app);
+     }
     },
 
     infographic_org : function(container,org){

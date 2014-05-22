@@ -3,6 +3,13 @@
 
   PARSER.parse_orgs = function(org_rows){
     function make_bilingual(line,en,fr,force_array,join){
+      line = _.map(line, function(x){
+        // strip out the NULLs
+        if (x === 'NULL'){
+          return null;
+        }
+        return x;
+      });
       force_array = force_array || false;
       join = join || false;
       if (_.isArray(en)){

@@ -9,7 +9,8 @@
     APP.dispatcher.trigger("new_table",
       {
         id: "table6",
-      "attaches_to": "hist_exp",
+      "coverage": TABLES.coverage.historical,
+      "data_type" :TABLES.data_types.financial,
       add_cols : function(){
         this.add_col(
           {

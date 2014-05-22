@@ -1,8 +1,6 @@
 (function() {
   var APP = ns('APP');
-  var TABLES = ns('TABLES');
-  var GRAPHS = ns('GRAPHS');
-  var MAPPERS = ns('MAPPERS');
+  
   var LANG = ns('LANG');
   var PARSER = ns('PARSER');
   var WAIT = ns('WAIT');
@@ -27,14 +25,15 @@
       PARSER.parse_qfrlinks(window.depts, d3.csv.parseRows(data));
     });
   }
-  function kgraph_load(promisses,data){
-    PARSER.parse_kg(d3.csv.parse(data));
-  }
 
   APP.start = function(){
     // download initialization data files and when that's done,
     // parse the data and create a new app
+
+    // parse the file name of the html file to figure out if the 
+    // language is en or fr  TODO fix how awkwardly this is done
     var lang = _.last(location.pathname.replace(".html",""),3).join("")==='eng' ? 'en' : 'fr';
+
     WAIT.w = WAIT.waitscreen(lang);
     var setup_material = {
       "Language" :  {url:"data/lang.csv", onload:lang_load},
@@ -42,8 +41,8 @@
       "Templates" :  {url:"templates/od_handlebars_templates.html", onload:template_load},
       "Organizations" :  {url:"data/orgs.csv", onload:org_load},
       "Lookups" :  {url:"data/lookups.csv", onload:sos_load},
-      "QFR Links" :  {url:"data/QFRLinks.csv", onload:qfr_links_load},
-      "Knowledge Graph" : {url: "data/knowledge_graph.csv", onload:kgraph_load}
+      "QFR Links" :  {url:"data/QFRLinks.csv", onload:qfr_links_load}
+      //"PAA" : {url : "data/paa.csv",onload:function(){}}
     };
     var promises = _.object(_.map(setup_material,function(obj,key){
       var promise1 = $.Deferred(),promise2 = $.Deferred();
@@ -60,6 +59,8 @@
       });
       return [key,promise2];
     }));
+    // when the hot mess above is finished, create the app
+    // using the language you figured out from the url
     $.when.apply(null,_.values(promises)).done(function(){
       APP.app = new APP.appView({
         state : {

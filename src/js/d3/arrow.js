@@ -24,6 +24,7 @@
                                     right: 10, 
                                     bottom: 30, 
                                     left: 10};
+      var color = this.color || D3.tbs_color();
       var formater = this.formater;
       var arrow_width = 60;
       var arrow_height = 100;
@@ -94,8 +95,8 @@
           return transform;
         })
         .style({
-          "fill" : function(d,x,i){ return D3.tbs_color(i);},
-          "stroke": function(d,x,i){ return D3.tbs_color(i);}
+          "fill" : function(d,x,i){ return color(i);},
+          "stroke": function(d,x,i){ return color(i);}
         });
 
         arrow

@@ -45,7 +45,7 @@
       dept : org,
       lang : app.lang,
       data : data,
-      height : 200,
+      height : 400,
       written_data : TABLES.format_info(written, data),
       compact_data : TABLES.format_info(compact, data),
       percent : app.make_formater("percentage"),
@@ -64,7 +64,7 @@
        var chapter = STORY.chapter({
          header : "h4",
          target : container,
-         span : "span-8"
+         span : "span-4"
        });
 
        graph_context.graph_area = chapter.graph_area();
@@ -140,10 +140,7 @@
             href = HORIZONTAL.create_analytics_link(table,
                   col.nick || col.wcag,
                   lang,
-                  {
-                    pres_level : "depts",
-                    data_type : table.data_type[app.lang],
-                  }).href;
+                  { pres_level : "depts", }).href;
           } else {
             val = '';
           }            
@@ -159,8 +156,7 @@
                  val =  row[c];
                  href =  HORIZONTAL.create_analytics_link(table,
                   col.nick || col.wcag, lang,
-                  {  data_type : table.data_type[app.lang],
-                    pres_level : "depts" }).href;
+                  {  pres_level : "depts" }).href;
                }
                return { val : val, href : href };
            });
@@ -175,7 +171,6 @@
                   _.difference(cols, table.keys),
                   lang,
                   { pres_level : "depts",
-                    data_type : table.data_type[app.lang],
                     display_as : "table" }).href;
       })
       .html(function(){

@@ -7,7 +7,7 @@ module.exports = function(grunt) {
     pkg: grunt.file.readJSON('package.json'),
     watch: {
       files : ['./src/**/*.js'],
-      tasks: ["jshint",'concat','line_count'],
+      tasks: ["jshint"], //,'concat','line_count'],
       options: {
         spawn: false,
       },
@@ -28,13 +28,13 @@ module.exports = function(grunt) {
         dev : {
           options : {
             src : "/home/andrew/Projects/les/",
-            dest : "/media/andrew/PRIVATE/ExDB-code/"
+            dest : "/media/andrew/PRIVATE/InfoBase-code/"
           }
         },
         prod : {
           options : {
-            src : "/home/andrew/Projects/ExDB/",
-            dest : "/media/andrew/PRIVATE/ExDB/"
+            src : "/home/andrew/Projects/InfoBase/",
+            dest : "/media/andrew/PRIVATE/InfoBase/"
           }
         }
     },
@@ -82,18 +82,18 @@ module.exports = function(grunt) {
           "src/js/d3/table_builder.js",
           "src/js/d3/stacked.js",
           "src/js/d3/canada.js",
-          "src/js/d3/tree.js",
-          "src/js/d3/tree2.js",
+          //"src/js/d3/tree.js",
+          //"src/js/d3/tree2.js",
           "src/js/d3/pack_and_bar.js",
+          "src/js/d3/pie.js",
 
           "src/js/org_header.js",
           "src/js/other_ministries.js",
           "src/js/search.js",
           "src/js/widget.js",
-          "src/js/story.js",
           "src/js/horizontal.js",
           "src/js/d3/dept_explore.js",
-          "src/js/info_graph.js",
+          //"src/js/info_graph.js",
 
           "src/js/InfoBase/text.js",
           "src/js/InfoBase/home.js",
@@ -108,6 +108,7 @@ module.exports = function(grunt) {
           "src/js/InfoBase/table9.js",
           "src/js/InfoBase/table10.js",
           "src/js/InfoBase/table11.js",
+          "src/js/InfoBase/story.js",
 
           "src/js/InfoBase/InfoBase.js",
           "src/js/start.js"

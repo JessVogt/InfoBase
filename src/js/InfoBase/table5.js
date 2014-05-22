@@ -9,7 +9,8 @@
     APP.dispatcher.trigger("new_table",
       {
       "id": "table5",
-      "attaches_to" : "hist_exp",
+      "coverage": TABLES.coverage.historical,
+      "data_type" :TABLES.data_types.financial,
       add_cols : function(){
         this.add_col(
           {
@@ -125,6 +126,11 @@
           var last_years = this.data.last_years;
           var last_year_3 =  this.data.dept_last_year_2_so_spend;
           var last_year_2 =  this.data.dept_last_year_3_so_spend;
+
+          // ensure the graph will always be span-8
+          this.graph_area.classed("span-4",false);
+          this.graph_area.classed("span-8",true);
+
           D3.pack_and_bar({
             "height" : 400,
             "formater" : this.compact1,

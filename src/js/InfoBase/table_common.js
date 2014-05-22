@@ -3,6 +3,32 @@
   var APP = ns('APP');
   var TABLES = ns('TABLES');
 
+  TABLES.coverage = {
+    "historical" : {
+      "en": "Historical",
+      "fr": "Historiques"
+    },
+    "in_year" : {
+      "en": "Current Year",
+      "fr":  "L'exercise courrante"
+    },
+    "planned" : {
+      "en":  "Planned",
+      "fr":  "Prévues"
+    }
+  };
+
+  TABLES.data_types = {
+    "financial" : {
+      "en": "Financial Data",
+      "fr": "Données financiéres"
+    },
+    "people" : {
+      "en":  "People Management Data",
+      "fr":  "Gestion des personnes"
+    }
+  };
+
   TABLES.template_args = {
       'common': {
           'in_year_short': '2014',

@@ -116,9 +116,18 @@
       .attr("class",function(d){return d.class;})
       .style(function(){ return d.css;});
 
+    if (options.stripe){
+      rows.each(function(d,i){
+            if (i % 2 === 1 ){
+              d3.select(this).classed("odd",true);
+            }
+          });
+    }
+
     if (options.rowseach){
        rows.each(options.rowseach);
     }
+
 
     if (options.tdseach){
       tds.each(options.tdseach);

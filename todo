@@ -6,12 +6,6 @@ transition to-do:
   details/infograhic
     table1
       stackable summaries
-    table2
-      drillable bubble
-    table5
-      drillable bubble
-    table6
-      relaxed stacked
     table7
       vote state bubbles
       relaxed stacked
@@ -24,20 +18,17 @@ transition to-do:
     me
      add in total amount at the top of graphs
     team
-      construct automatic table/gaphic description
+      construct automatic table/graphic description
 
   infographic
     me
       add in appropriate links to more detailed pages section
       add in special cases for departments with missing data
-    team
       table headers
+    team
       hidden text
       wordsmithing
 
-  basic
-    me 
-      add details totals
 
   general
     me
@@ -49,8 +40,7 @@ transition to-do:
     team
       create definition for every column
       start work on FAQs
-      add in horizontal links between tables and analysis
       create secondary landing page for choice between graphics heavy and text based
-      phantomjs for accessibility
-      investigate data extract functionality
+      jess - phantomjs for accessibility
+      coop - investigate data extract functionality
 

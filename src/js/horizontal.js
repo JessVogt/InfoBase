@@ -20,14 +20,16 @@
           column_choice : _.map(cols, function(col){
             return table.col_from_nick(col).fully_qualified_name;
           }),
-          period : table.coverage,
+          period : table.coverage[lang],
+          data_type : table.data_type[lang],
           nu : true
         };
       } else {
         options =  {
           table : table.id,
           column : table.col_from_nick(cols).fully_qualified_name,
-          period : table.coverage,
+          data_type : table.data_type[lang],
+          period : table.coverage[lang],
           nu : true
         };
       }

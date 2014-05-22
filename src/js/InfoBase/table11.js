@@ -2,6 +2,7 @@
   var TABLES = ns('TABLES');
   var D3 = ns('D3');
   var STACKED = ns('D3.STACKED');
+  var PIE = ns('D3.PIE');
   var APP = ns('APP');
 
   APP.dispatcher.on("load_tables", function (app) {
@@ -9,7 +10,8 @@
     var years = TABLES.years;
     APP.dispatcher.trigger("new_table",
     {"id": "table11",
-     "attaches_to" : "hist_pm",
+      "coverage": TABLES.coverage.historical,
+      "data_type" :TABLES.data_types.people,
      "add_cols" : function(){
         this.add_col({
             "type":"int",
@@ -53,10 +55,10 @@
        c.dept_last_year_3_emp_ages = q.high_level_age_split2("{{last_year_3}}",c.dept);
     },
     "info" : function(c,q){
-       c.emp_ages = ['< 30','30-44','45-59','> 60'];
-       c.last_year_emp_ages = q.high_level_age_split2("{{last_year}}",true);
-       c.last_year_2_emp_ages = q.high_level_age_split2("{{last_year_2}}",true);
-       c.last_year_3_emp_ages = q.high_level_age_split2("{{last_year_3}}",true);
+       c.emp_ages = ['< 30','30-39','40-49','50-59','> 60'];
+       c.gov_last_year_emp_ages = q.high_level_age_split2("{{last_year}}",false);
+       c.gov_last_year_2_emp_ages = q.high_level_age_split2("{{last_year_2}}",false);
+       c.gov_last_year_3_emp_ages = q.high_level_age_split2("{{last_year_3}}",false);
     },
     "queries" : {
        "high_level_age_split" : function(year,options){
@@ -70,8 +72,9 @@
              // own seperate total calculated
              groups = _.groupBy(this.data, function(x){
                return ({ '< 20' : "< 30", '20-24' : "< 30", '25-29' : "< 30",
-                         '30-34' : "30-44", '35-39' : "30-44", '40-44' : "30-44",
-                         '45-49' : "45-59", '50-54' : "45-59", '55-59' : "45-59",
+                         '30-34' : "30-39", '35-39' : "30-39", '40-44' : "40-49",
+
+                         '45-49' : "40-49", '50-54' : "50-59", '55-59' : "50-59",
                          '60-64' : "> 60", '65-69':"> 60", '70 +' : "> 60"
                       })[x.age];
              }),
@@ -89,7 +92,7 @@
                  return [key, group_total, group_total/dept_total];
                }
              };
-         return _.map(['< 30','30-44','45-59','> 60'], mapfunc);
+         return _.map(['< 30','30-39','40-49','50-59','> 60'], mapfunc);
        },
        "high_level_age_split2" : function(year){
           var split = this.high_level_age_split(year);
@@ -127,16 +130,16 @@
     },
     "graphics" : {
       "details_display_order" :[
-        "employee_age_stacked"
+        "employee_age"
       ],
-      "employee_age_stacked": function(){
+      "employee_age": function(){
         var data = this.data;
         this.graph_area.style("max-width","700px");
          if (this.data.dept) {
           STACKED.stacked_series({
             labels : data.emp_ages,
             height : this.height,
-            colors : D3.tbs_color,
+            colors : D3.tbs_color(),
             data : [
               {tick :data.last_years[0], vals : data.dept_last_year_2_emp_ages  },
               {tick :data.last_years[1], vals : data.dept_last_year_2_emp_ages  },
@@ -144,16 +147,18 @@
             ]
           })(this.graph_area);
          } else {
-          STACKED.stacked_series({
-            labels : data.emp_ages,
-            height : this.height,
-            colors : D3.tbs_color,
-            data : [
-              {tick :data.last_years[0], vals : data.last_year_3_emp_ages  },
-              {tick :data.last_years[1], vals : data.last_year_2_emp_ages  },
-              {tick :data.last_years[2], vals : data.last_year_emp_ages  },
-            ]
-          })(this.graph_area);
+            PIE.pie({
+              labels : data.emp_types,
+              height : this.height,
+              colors : D3.tbs_color(),
+              label_attr : "label" ,
+              data_attr : "val",
+              inner_radius: 40,
+              data : _.chain(data.gov_last_year_emp_ages)
+                       .map(function(v,k){ return {val: v, label: k};})
+                       .value(),
+            })(this.graph_area);
+
          }
       }
     } 

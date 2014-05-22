@@ -4,8 +4,11 @@
   var MAPPERS = ns('MAPPERS');
   var WAIT = ns('WAIT');
 
-  TABLES.tables = [];
+  TABLES.org_name = function(code,lang){
+    return window.depts[code].dept[lang];
+  };
 
+  TABLES.tables = [];
 
   TABLES.Info = function(info){
     info = info || {};

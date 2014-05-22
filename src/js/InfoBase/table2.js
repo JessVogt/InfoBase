@@ -8,7 +8,8 @@
     APP.dispatcher.trigger("new_table",
       {
         id: "table2",
-      "attaches_to" : "in_year_exp",
+      "coverage": TABLES.coverage.in_year,
+      "data_type" :TABLES.data_types.financial,
       add_cols : function(){
         this.add_col("")
       .add_child([
@@ -147,6 +148,10 @@
        ],
         "so_spending": function(options){
           var last_year_data =  this.data.dept_last_year_qfr_so_spend;
+          // ensure the graph will always be span-8
+          this.graph_area.classed("span-4",false);
+          this.graph_area.classed("span-8",true);
+
           D3.pack_and_bar({
             "height" : 400,
             "formater" : this.compact1,

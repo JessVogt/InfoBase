@@ -2,6 +2,7 @@
   var TABLES = ns('TABLES');
   var D3 = ns('D3');
   var STACKED = ns('D3.STACKED');
+  var PIE = ns("D3.PIE");
   var APP = ns('APP');
 
   APP.dispatcher.on("load_tables", function (app) {
@@ -11,7 +12,8 @@
     APP.dispatcher.trigger("new_table",
      {
       "id": "table9",
-      "attaches_to" : "hist_pm",
+      "coverage": TABLES.coverage.historical,
+      "data_type" :TABLES.data_types.people,
       "add_cols" : function(){
         this.add_col(
         {
@@ -73,9 +75,9 @@
       },
       "info" : function(c,q){
         c.emp_types = _.uniq(q.get_col("employee_type"));
-        c.last_year_emp_types = this.horizontal("{{last_year}}",true);
-        c.last_year_2_emp_types = this.horizontal("{{last_year_2}}",true);
-        c.last_year_3_emp_types = this.horizontal("{{last_year_3}}",true);
+        c.gov_last_year_emp_types = this.horizontal("{{last_year}}",false);
+        c.gov_last_year_2_emp_types = this.horizontal("{{last_year_2}}",false);
+        c.gov_last_year_3_emp_types = this.horizontal("{{last_year_3}}",false);
       },
       "mini_view": {
         description: {
@@ -108,16 +110,16 @@
       },
       "graphics" : {
         "details_display_order" :[
-          "employee_type_stacked"
+          "employee_type"
         ],
-        "employee_type_stacked": function(){
+        "employee_type": function(){
           var data = this.data;
           this.graph_area.style("max-width","700px");
            if (this.data.dept) {
             STACKED.stacked_series({
               labels : data.emp_types,
               height : this.height,
-              colors : D3.tbs_color,
+              colors : D3.tbs_color(),
               data : [
                 {tick :data.last_years[0], vals : data.dept_last_year_2_emp_types  },
                 {tick :data.last_years[1], vals : data.dept_last_year_2_emp_types  },
@@ -125,15 +127,16 @@
               ]
             })(this.graph_area);
            } else {
-            STACKED.stacked_series({
+            PIE.pie({
               labels : data.emp_types,
               height : this.height,
-              colors : D3.tbs_color,
-              data : [
-                {tick :data.last_years[0], vals : data.last_year_3_emp_types  },
-                {tick :data.last_years[1], vals : data.last_year_2_emp_types  },
-                {tick :data.last_years[2], vals : data.last_year_emp_types  },
-              ]
+              colors : D3.tbs_color(),
+              label_attr : "label" ,
+              data_attr : "val",
+              inner_radius: 40,
+              data : _.chain(data.gov_last_year_emp_types)
+                       .map(function(v,k){ return {val: v, label: k};})
+                       .value(),
             })(this.graph_area);
            }
         }

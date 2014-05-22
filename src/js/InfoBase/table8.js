@@ -10,32 +10,43 @@
     APP.dispatcher.trigger("new_table",
       {
       "id": "table8",
-      "attaches_to" : "in_year_auth",
+      "coverage": TABLES.coverage.in_year,
+      "data_type" :TABLES.data_types.financial,
+      "link": {
+        "en": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-eng.asp",
+        "fr": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-fra.asp"
+      },
+      "name": { "en": "Current-year Authorities",
+        "fr": "Autorisations pour l'exercice en cours"
+      },
+      "title": { "en": "Current-year Authorities ($000)",
+        "fr": "Autorisations pour l'exercice en cours (en milliers de dollars)"
+      },
       "add_cols" : function(){
         this.add_col("")
       .add_child([
         {
           "type":"int",
-      "key" : true,
-      "hidden" : true,
-      "nick" : "dept",
-      "header":'',
+          "key" : true,
+          "hidden" : true,
+          "nick" : "dept",
+          "header":'',
         },
         {
           "type":"int",
-      "key":true,
-      'nick' : "votenum",
-      "header":{
-        "en":"Vote {{in_year}} / Statutory",
-      "fr":"Crédit {{in_year}} / Légis."
-      }
+          "key":true,
+          'nick' : "votenum",
+          "header":{
+            "en":"Vote {{in_year}} / Statutory",
+            "fr":"Crédit {{in_year}} / Légis."
+            }
         },
         {
           "type":"int",
-      "key" : true,
-      "hidden" : true,
-      "nick" : "votestattype",
-      "header":'',
+          "key" : true,
+          "hidden" : true,
+          "nick" : "votestattype",
+          "header":'',
         },
         {
           "type":"wide-str",
@@ -98,18 +109,18 @@
       .add_child([
           {
             "type":"big-int",
-        "header":{
-          "en":"Adjustments",
-        "fr":"Ajustements"
-        }
+            "header":{
+              "en":"Adjustments",
+            "fr":"Ajustements"
+            }
           },
           {
             "type":"big-int",
-        "nick" : "total_net_auth",
-        "header":{
-          "en":"Total Net Authority",
-        "fr":"Autorisations totales nettes"
-        }
+            "nick" : "total_net_auth",
+            "header":{
+              "en":"Total Net Authority",
+            "fr":"Autorisations totales nettes"
+            }
           }
           ]);
       },
@@ -195,16 +206,6 @@
         "horizontal" : TABLES.major_vote_stat,
         "voted_stat" : TABLES.vote_stat_dimension
       },
-      "link": {
-        "en": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-eng.asp",
-        "fr": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-fra.asp"
-      },
-      "name": { "en": "Current-year Authorities",
-        "fr": "Autorisations pour l'exercice en cours"
-      },
-      "title": { "en": "Current-year Authorities ($000)",
-        "fr": "Autorisations pour l'exercice en cours (en milliers de dollars)"
-      },
       "mapper": function (row) {
         if (this.lang === 'en') {
           row.splice(4, 1);
@@ -238,13 +239,11 @@
         c.dept_this_year_voted_num = this.voted_stat("total_net_auth",c.dept,false).voted.length;
         c.dept_this_year_stat_num = this.voted_stat("total_net_auth",c.dept,false).stat.length;
 
-        c.dept_this_year_top_voted = _.chain(this.voted_stat("total_net_auth",c.dept,false).voted) 
+        c.dept_this_year_voted = _.chain(this.voted_stat("total_net_auth",c.dept,false).voted) 
                               .sortBy(function(x){ return -x.total_net_auth;}) 
-                              .first(3)
                               .value();
-        c.dept_this_year_top_stat = _.chain(this.voted_stat("total_net_auth",c.dept,false).stat) 
+        c.dept_this_year_stat = _.chain(this.voted_stat("total_net_auth",c.dept,false).stat) 
                               .sortBy(function(x){ return -x.total_net_auth;}) 
-                              .first(3)
                               .value();
 
         c.dept_estimates_split = q.estimates_split({filter_zeros : true, as_tuple : true});
@@ -256,14 +255,31 @@
         c.gov_this_year_stat_voted =  this.voted_stat("total_net_auth",false);
         c.this_year_voted_num = this.voted_stat("total_net_auth",false,false).voted.length;
         c.this_year_stat_num = this.voted_stat("total_net_auth",false,false).stat.length;
-        c.gov_this_year_top_voted = _.chain(this.voted_stat("total_net_auth",false,false).voted) 
+
+        var gov_this_year_voted = _.chain(this.voted_stat("total_net_auth",false,false).voted) 
           .sortBy(function(x){ return -x.total_net_auth;}) 
-          .first(3)
           .value();
-        c.gov_this_year_top_stat = _.chain(this.voted_stat("total_net_auth",false,false).stat) 
+        c.gov_this_year_voted = _.head(gov_this_year_voted,10);
+        c.gov_this_year_voted.push({
+          desc : app.get_text("all_other_voted_items"),
+          others : true,
+          total_net_auth : d3.sum(_.tail(gov_this_year_voted,10), function(d){
+            return d.total_net_auth;
+          })
+        });
+
+        var gov_this_year_stat = _.chain(this.voted_stat("total_net_auth",false,false).stat) 
           .sortBy(function(x){ return -x.total_net_auth;}) 
-          .first(3)
           .value();
+        c.gov_this_year_stat = _.head(gov_this_year_stat,10);
+        c.gov_this_year_stat.push({
+          desc : app.get_text("all_other_stat_items"),
+          others : true,
+          total_net_auth : d3.sum(_.tail(gov_this_year_stat,10), function(d){
+            return d.total_net_auth;
+          })
+        });
+
         c.gov_estimates_split = q.estimates_split({filter_zeros : true, as_tuple : true});
 
         APP.dispatcher.once("info_collection_cleanup",function(info){
@@ -272,21 +288,28 @@
         });
       },
       graphics : {
+       "details_display_order" : [
+          "this_year_auth"
+        ],
+        "planned_voted" : function(){
+          this.graph =  graph_top;
+          this.graph(this.data.gov_this_year_voted);
+        },
+        "planned_stat" : function(){
+          this.graph =  graph_top;
+          this.graph(this.data.gov_this_year_stat);
+        },
         "this_year_auth": function(){
-
-          var graph,data,text,args={
+          var data,text,args={
             height : this.height,
             formater : this.compact
           };
 
           if (!this.dept){
-
-            graph = PACK.simple_circle_chart;
             args.data = [ {name : "this_year_auth",value: this.data.gov_this_year_auth} ];
             text = "gov_this_year_auth";
+            args.font_size = "24";
           } else {
-
-            graph = PACK.circle_pie_chart;
             text = "dept_this_year_auth";
             args.data = [
               {name:"this_year_auth",value: this.data.gov_this_year_auth},
@@ -295,30 +318,40 @@
             args.center = true;
           }
 
-          graph(args)(this.graph_area);
+          PACK.circle_pie_chart(args)(this.graph_area);
           this.text_area.html(m(app.get_text(text), this.written_data));
         },
         "stat_voted_split": function(options){
-          var d=this.data,text,args={
+          var d=this.data,formater = this.compact1, text,args={
+            invisible_grand_parent : false,
              height : this.height,
-             formater : this.compact
+             cycle_colours: true,
+             top_font_size : 18,
+             bottom_font_size : 16,
+             text_func : function(d){
+               var val = formater(d.__value__ || d.value) ;
+               return d.name + " - "+ val;   
+             },
+             data : {
+               children : null
+             }
           },gt = app.get_text;
 
           if (!this.dept){
             text = "gov_this_year_vote_stat_split";
-            args.data = [
-              {name: 'x', value:d.gov_this_year_stat_voted.stat, bottom_text : gt("stat") },
-              {name: 'y', value:d.gov_this_year_stat_voted.voted, bottom_text :gt("voted") }
+            args.data.children = [
+              {value:d.gov_this_year_stat_voted.stat, name : gt("stat") },
+              {value:d.gov_this_year_stat_voted.voted, name :gt("voted") }
             ];
           } else {
             text = "dept_this_year_vote_stat_split";
-            args.data = [
-              {name: 'x', value:d.dept_this_year_stat_voted.stat, bottom_text : gt("stat") },
-              {name: 'y', value:d.dept_this_year_stat_voted.voted, bottom_text :gt("voted") }
+            args.data.children = [
+              {value:d.dept_this_year_stat_voted.stat, name : gt("stat") },
+              {value:d.dept_this_year_stat_voted.voted, name :gt("voted") }
             ];
           }
 
-          PACK.simple_circle_chart(args)(this.graph_area);
+          PACK.pack(args)(this.graph_area);
           this.text_area.html(m(app.get_text(text), this.written_data));
         },
         "estimates_split" : function(options){
@@ -347,5 +380,35 @@
         }
       }                    
     });
+
+    graph_top = function(data){
+       var formater = this.compact1;
+       PACK.pack({
+         data : {name : "",
+                 children : _.map(data,_.clone)
+                },
+         top_font_size : 12,
+         bottom_font_size : 8,
+         value_attr : "total_net_auth",
+         height : this.height,
+         cycle_colours: true,
+         invisible_grand_parent : false,
+         hover_text_func : function(d) {
+           var text = "";
+           if (d.depth === 0){ return; }
+           if (d.dept){
+             text += window.depts[d.dept].dept[app.lang]+ " - ";
+           }
+           return text + d.desc;
+         },
+         text_func : function(d){
+           var val = formater(d.total_net_auth) ;
+           if (d.others){
+             return d.desc + " - "+ val;   
+           }
+           return val;
+         },
+       })(this.graph_area);
+    };
   });
 })();

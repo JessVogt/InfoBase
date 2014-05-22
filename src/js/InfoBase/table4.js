@@ -1,8 +1,8 @@
 (function (root) {
   var TABLES = ns('TABLES');
   var APP = ns('APP');
-  var PACK = ns('D3.PACK');
   var STACKED = ns('D3.STACKED');
+  var BAR = ns('D3.BAR');
   var D3 = ns('D3');
 
  APP.dispatcher.on("load_tables", function (app) {
@@ -11,7 +11,8 @@
     APP.dispatcher.trigger("new_table",
     {
     "id": "table4",
-    "attaches_to" : "hist_auth",
+    "coverage": TABLES.coverage.historical,
+    "data_type" :TABLES.data_types.financial,
     "add_cols": function(){
        this.add_col("")
        .add_child([
@@ -191,33 +192,29 @@
          "stat_spending"
        ],
        "vote_stat_split": function(){
-          var graph = PACK.simple_circle_chart,
+          var graph = BAR.bar,
+              colors = D3.tbs_color(),
               d=this.data,text,args={
                 height : this.height,
-                formater : this.compact1,
-                colors : function(x){ return D3.tbs_color(Math.floor(x/3));},
+                label_formater : this.compact1,
+                add_legend : true,
+                x_axis_line : false,
+                add_xaxis : true,
+                add_labels : true,
+                html_ticks : true,
+                ticks : this.data.last_years,
+                series : {}
               },gt=app.get_text;
           
           if (!this.data.dept){
             text = "gov_historical_auth";
-            args.data = [
-              {name : 'z',value: d.gov_last_year_3_stat_voted.stat, bottom_text : d.last_years[0]},
-              {name : 'y',value: d.gov_last_year_2_stat_voted.stat, bottom_text : d.last_years[1], top_text: gt("stat")},
-              {name : 'x',value: d.gov_last_year_stat_voted.stat, bottom_text : d.last_years[2]} ,
-              {name : 'a',value: d.gov_last_year_3_stat_voted.voted, bottom_text : d.last_years[0]},
-              {name : 'b',value: d.gov_last_year_2_stat_voted.voted, bottom_text : d.last_years[1] ,top_text: gt("voted")},
-              {name : 'c',value: d.gov_last_year_stat_voted.voted, bottom_text :  d.last_years[2]}
-            ];
+            args.series[gt("stat")] = [ d.gov_last_year_3_stat_voted.stat, d.gov_last_year_2_stat_voted.stat, d.gov_last_year_stat_voted.stat ];
+            args.series[gt("voted")] = [ d.gov_last_year_3_stat_voted.voted, d.gov_last_year_2_stat_voted.voted, d.gov_last_year_stat_voted.voted ];
           } else {
+            args.x_axis_line = true;
             text = "dept_historical_auth";
-            args.data = [
-              {name : 'z',value: d.dept_last_year_3_stat_voted.stat, bottom_text : d.last_years[0]},
-              {name : 'y',value: d.dept_last_year_2_stat_voted.stat, bottom_text : d.last_years[1], top_text: gt("stat")},
-              {name : 'x',value: d.dept_last_year_stat_voted.stat, bottom_text : d.last_years[2]} ,
-              {name : 'a',value: d.dept_last_year_3_stat_voted.voted, bottom_text : d.last_years[0]},
-              {name : 'b',value: d.dept_last_year_2_stat_voted.voted, bottom_text : d.last_years[1] ,top_text: gt("voted")},
-              {name : 'c',value: d.dept_last_year_stat_voted.voted, bottom_text :  d.last_years[2]}
-            ];
+            args.series[gt("stat")] = [ d.dept_last_year_3_stat_voted.stat, d.dept_last_year_2_stat_voted.stat, d.dept_last_year_stat_voted.stat ];
+            args.series[gt("voted")] = [ d.dept_last_year_3_stat_voted.voted, d.dept_last_year_2_stat_voted.voted, d.dept_last_year_stat_voted.voted ];
           }
 
           graph(args)(this.graph_area);
@@ -225,26 +222,33 @@
 
        },
        "historical_auth" : function(){
-          var graph = PACK.simple_circle_chart,
+
+          var graph = BAR.bar,
               d=this.data,text,args={
+                add_xaxis : true,
+                add_labels : true,
+                x_axis_line : false,
+                html_ticks : true,
                 height : this.height,
-                formater : this.compact1
+                label_formater : this.compact1,
+                ticks : this.data.last_years,
+                series : {'':null}
               };
 
+
           if (!this.dept){
+
             text = "gov_historical_auth";
-            args.data = [
-              {name : 'z',value: d.gov_last_year_3_auth, bottom_text : d.last_years[0]},
-              {name : 'y',value: d.gov_last_year_2_auth, bottom_text : d.last_years[1]},
-              {name : 'x',value: d.gov_last_year_auth, bottom_text : d.last_years[2]}
-            ];
+            args.series[''] = [ d.gov_last_year_3_auth, d.gov_last_year_2_auth, d.gov_last_year_auth ];
           } else {
+            this.graph_area.classed("span-4",true);
+            this.text_area.classed("span-4",true);
+            this.graph_area.classed("span-8",false);
+            this.text_area.classed("span-8",false);
+
+            args.x_axis_line = true;
             text = "dept_historical_auth";
-            args.data = [
-              {name : 'z',value: d.dept_last_year_3_auth, bottom_text : d.last_years[0]},
-              {name : 'y',value: d.dept_last_year_2_auth, bottom_text : d.last_years[1]},
-              {name : 'x',value: d.dept_last_year_auth, bottom_text : d.last_years[2]}
-            ];
+            args.series[''] = [ d.dept_last_year_3_auth, d.dept_last_year_2_auth, d.dept_last_year_auth ];
           }
 
           graph(args)(this.graph_area);
@@ -303,12 +307,16 @@
         return false;
       }
 
+      // ensure the graph will always be span-8
+      this.graph_area.classed("span-4",false);
+      this.graph_area.classed("span-8",true);
+
       _.each(data, function(d){
         d.desc = APP.abbrev(app,d.desc, Math.floor(text_length));
       });
 
       STACKED.relaxed_stacked({
-        colors : d3.scale.category20(),
+        colors : D3.tbs_color(),
         radius : radius,
         rows : data,
         formater : this.compact,

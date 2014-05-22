@@ -112,64 +112,65 @@ if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
   let s:wipebuf = bufnr('%')
 endif
 set shortmess=aoO
-badd +5 les/src/js/app.js
-badd +213 les/src/js/queries.js
-badd +53 les/src/js/d3/core.js
-badd +58 les/src/js/d3/bar.js
+badd +1 les/src/js/app.js
+badd +286 les/src/js/queries.js
+badd +45 les/src/js/d3/core.js
+badd +245 les/src/js/d3/bar.js
 badd +26 les/src/js/d3/tooltip.js
 badd +83 les/test/test-data.js
 badd +8 les/test/test.html
 badd +20 les/src/js/mappers.js
-badd +106 les/Gruntfile.js
-badd +287 les/src/js/d3/dept_explore.js
-badd +106 les/src/js/d3/pack.js
+badd +96 les/Gruntfile.js
+badd +22 les/src/js/d3/dept_explore.js
+badd +124 les/src/js/d3/pack.js
 badd +328 les/test/test-d3.js
-badd +190 les/src/mako/od_handlebars_templates.html
+badd +411 les/src/mako/od_handlebars_templates.html
 badd +57 les/src/js/waiting.js
-badd +97 les/src/mako/extracss.html
+badd +35 les/src/mako/extracss.html
 badd +119 les/src/js/d3/hbar.js
 badd +7 les/src/mako/od_script_includes.html
 badd +30 les/src/js/d3/chapter.js
-badd +22 les/src/js/d3/circle_chart.js
+badd +92 les/src/js/d3/circle_chart.js
 badd +121 les/src/js/d3/arrow.js
 badd +6 les/src/mako/od.html
-badd +78 les/src/js/router.js
-badd +109 les/src/js/loader.js
+badd +73 les/src/js/router.js
+badd +25 les/src/js/loader.js
 badd +21 les/src/js/sandbox.js
-badd +28 les/src/js/handlebars_helpers.js
+badd +24 les/src/js/handlebars_helpers.js
 badd +11 les/src/mako/od_fr.html
-badd +15 les/todo
+badd +11 les/todo
 badd +46 les/src/mako/od_base.html
 badd +103 les/src/js/search.js
 badd +90 les/src/js/detail.js
-badd +64 les/src/js/format.js
+badd +43 les/src/js/format.js
 badd +81 les/src/js/widget.js
 badd +54 les/src/js/table_builder.js
-badd +103 les/src/js/story.js
 badd +413 les/src/js/horizontal.js
-badd +22 les/src/js/InfoBase/table1.js
-badd +12 les/src/js/base_tables.js
-badd +10 les/src/js/InfoBase/table2.js
-badd +14 les/src/js/InfoBase/table4.js
+badd +10 les/src/js/InfoBase/table1.js
+badd +7 les/src/js/base_tables.js
+badd +161 les/src/js/InfoBase/table2.js
+badd +161 les/src/js/InfoBase/table4.js
 badd +12 les/src/js/InfoBase/table5.js
-badd +12 les/src/js/InfoBase/table6.js
-badd +9 les/src/js/InfoBase/table7.js
-badd +13 les/src/js/InfoBase/table8.js
+badd +13 les/src/js/InfoBase/table6.js
+badd +10 les/src/js/InfoBase/table7.js
+badd +40 les/src/js/InfoBase/table8.js
 badd +6 les/src/js/start.js
-badd +14 les/src/js/InfoBase/table9.js
-badd +12 les/src/js/InfoBase/table10.js
-badd +15 les/src/js/InfoBase/table11.js
-badd +32 les/src/js/InfoBase/InfoBase.js
+badd +121 les/src/js/InfoBase/table9.js
+badd +168 les/src/js/InfoBase/table10.js
+badd +57 les/src/js/InfoBase/table11.js
+badd +43 les/src/js/InfoBase/InfoBase.js
 badd +15 les/src/js/utils.js
 badd +8 les/src/js/d3/table_builder.js
-badd +58 les/src/js/InfoBase/table_common.js
-badd +25 les/src/js/d3/stacked.js
+badd +11 les/src/js/InfoBase/table_common.js
+badd +388 les/src/js/d3/stacked.js
 badd +166 les/src/js/d3/tree.js
 badd +37 les/src/js/info_graph.js
-badd +17 les/src/mako/od_table_text.html
+badd +137 les/src/mako/od_table_text.html
 badd +211 les/src/js/d3/canada.js
+badd +1 les/src/js/d3/pack_and_bar.js
+badd +238 les/src/js/InfoBase/story.js
 silent! argdel *
-edit les/src/js/d3/core.js
+edit les/src/js/InfoBase/story.js
 set splitbelow splitright
 wincmd _ | wincmd |
 vsplit
@@ -287,15 +288,15 @@ set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 69 - ((25 * winheight(0) + 21) / 43)
+let s:l = 241 - ((24 * winheight(0) + 21) / 43)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-69
-normal! 0
+241
+normal! 020|
 wincmd w
 argglobal
-edit les/src/js/info_graph.js
+edit les/src/js/InfoBase/table8.js
 setlocal keymap=
 setlocal noarabic
 setlocal noautoindent
@@ -401,13 +402,14 @@ set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 8 - ((7 * winheight(0) + 21) / 43)
+let s:l = 41 - ((22 * winheight(0) + 21) / 43)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-8
-normal! 06|
+41
+normal! 08|
 wincmd w
+2wincmd w
 exe 'vert 1resize ' . ((&columns * 79 + 79) / 159)
 exe 'vert 2resize ' . ((&columns * 79 + 79) / 159)
 tabnext 1

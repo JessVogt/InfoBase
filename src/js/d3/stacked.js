@@ -205,7 +205,7 @@
           formater = this.formater,
           total_formater = this.total_formater,
           text_key = this.text_key,
-          colors = this.colors || D3.tbs_color,
+          colors = this.colors || D3.tbs_color(),
           margin = this.margin || {top: 20, 
                                     right: 20, 
                                     bottom: 20, 
@@ -223,6 +223,7 @@
                   var data = row.datum();
                   // get the current label
                   var label = html.selectAll(".label")
+                                  .style({"font-weight":"normal"})
                                   .filter(function(d){
                                     return d === row.datum();
                                   });
@@ -299,7 +300,7 @@
                   .range([2,radius]);
 
             var row_groups = graph_area.selectAll("g.row")
-              .data(rows,function(d,i){console.log(i+d[text_key]);return i+d[text_key];});
+              .data(rows,function(d,i){return i+d[text_key];});
 
             row_groups.exit().remove();
 

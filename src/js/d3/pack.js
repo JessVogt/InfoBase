@@ -86,8 +86,6 @@
       return data;
     };
 
-
-
     PACK.pack = D3.extend_base(function(svg,index){
       /*
       {
@@ -100,8 +98,9 @@
       var that = this,
           current_hover_node,
           parent_width = $(svg.node().parentNode).width(),
+          colors = this.colors || D3.tbs_color(),
           rand = Math.round(Math.random()*1000000),
-          html = d3.select(D3.get_html_parent(svg)),
+          html = this.html,
           // for accessibility purposes, ensure the labels are in a list
           // this will be helpful later when converting the page to a static
           // HTML version
@@ -110,22 +109,28 @@
                    .attr("class"," list-bullet-none"),
           k,
           first = true,
-          invisible_grand_parent = this.invisible_grand_parent || true,
-          hover_text_func = this.hover_text_func,
+          invisible_grand_parent = _.isUndefined(this.invisible_grand_parent) ? true  : this.invisible_grand_parent,
+          hover_text_func = this.hover_text_func || function(){},
           cycle_colours = this.cycle_colours || false,
-          top_font_size =  this.top_font_size,
+          top_font_size =  this.top_font_size || 12,
+          bottom_font_size =  this.bottom_font_size || 10,
           zoomable = this.zoomable || false,
           dispatch = this.dispatch,
           data = this.data,
           text_func = this.text_func || function(d){return d.name;},
           on_focusout = this.on_focusout || function(){},
           on_focusin = this.on_focusin || function(){},
-          radius = Math.min(parent_width, this.height),
+          radius = Math.min(parent_width, this.height)-11,
           x_scale = d3.scale.linear() .range([0,radius]),
           y_scale = d3.scale.linear() .range([0,radius]),
-          pack=  d3.layout.pack().size([radius,radius]),
+          value_attr = this.value_attr || "value",
+          pack=  d3.layout.pack()
+            .size([radius,radius])
+            .value(function(d){
+              return d[value_attr];
+            }),
           nodes = pack.nodes(data),
-          translate = [(this.width - radius)/2,0],
+          translate = [(this.width - radius)/2,10],
           mouse_enter = function(d){
             if (d === current_hover_node){
               return;
@@ -148,7 +153,7 @@
       svg = svg
         .attr({
           "width": parent_width,
-          "height":radius})
+          "height":this.height})
         .append('g')
          .attr("transform", "translate("+translate+")");
 
@@ -258,7 +263,7 @@
 
        var font_scale  = d3.scale.linear()
          .domain(d3.extent(nodes_with_text, function(d){return d.zoom_r;}))
-         .rangeRound([10,top_font_size]);
+         .rangeRound([bottom_font_size,top_font_size]);
 
         // join the filtered data to the circles
         var circle = svg.selectAll(".node")
@@ -311,8 +316,8 @@
               if (d.depth === 0 && invisible_grand_parent){
                 return 0;
               } else if ((d.depth === 0 && !invisible_grand_parent) || 
-                         d.depth <=  depth+1 ){
-                return 0.1;
+                          d.depth <=  depth+1 ){
+                return 0.05;
               } else {
                 return 0.2;
               }
@@ -330,8 +335,8 @@
                return  d.depth ===  depth+1;
             })
             .style({
-              "fill" : function(d,i){ return D3.tbs_color(i); },
-              "stroke" : function(d,i){ return D3.tbs_color(i);},
+              "fill" : function(d,i){ return colors(i); },
+              "stroke" : function(d,i){ return colors(i);},
               "stroke-width" : "2px",
               "fill-opacity" : "0.5"
             });
@@ -366,7 +371,7 @@
             .transition()
             .duration(10)
             .each(function(d){
-              var t = d.zoom_pos.y - $(this).height()/2;
+              var t = d.zoom_pos.y - $(this).height()/2 + font_scale(d.zoom_r);
               $(this).css("top",t);
             });
          if (!is_mobile){

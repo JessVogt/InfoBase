@@ -39,9 +39,12 @@
 
 
     var add_bar_chart = function(d){
+      // don't redraw the graph if the currently selected object
+      // hasn't changes
       if (d.name === current_object){
         return;
       }
+      // update the currently selected object
       current_object = d.name;
       bar_container.selectAll("*").remove();
       if (d.name === app.get_text("other") || d.name === ''){

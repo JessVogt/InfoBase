@@ -9,9 +9,11 @@
           "#7b6888", "#6b486b", "#a05d56", "#d0743c", 
           "#ff8c00"]);
 
-    D3.tbs_color = d3.scale.ordinal()
-      .range([ '#2b6c7b', '#a3d6e3', '#3e97ab', '#cfc7a9',
-              '#919191', '#e0e0e0', '#c3e4ec', '#4d4d4d','#595959' ]);
+    D3.tbs_color = function(){
+      return d3.scale.ordinal()
+            .range([ '#2b6c7b', '#a3d6e3', '#3e97ab', '#cfc7a9',
+                    '#919191', '#e0e0e0', '#c3e4ec', '#4d4d4d','#595959' ]); 
+    };
 
     D3.rotate_2d_point = function(x,y,theta){
       return [
@@ -33,21 +35,6 @@
       }
     };
 
-    D3.toggle_abbrev = function(collection, show){
-        // reset all the labels
-
-        collection.selectAll(".label .original, .label .abbrev")
-          .classed("ui-screen-hidden",true);
-        collection.selectAll(".shortened")
-          .classed("ui-screen-hidden",false);
-        if (show){
-          show.selectAll(".original")
-            .classed("ui-screen-hidden",false)
-            .style({"font-weight": "bold"});
-          show.selectAll(".abbrev, .shortened").classed("ui-screen-hidden",true);
-        }
-    };
-
     D3.extend_base = function(chart){
       return function(options){
         options = options || {};
@@ -61,6 +48,7 @@
             var svg = d3.select(this)
                 .append("svg");
             options.width = $(this).width();
+            options.html = d3.select(this);
             chart.call(options,svg,i);
           });
           return my;

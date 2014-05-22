@@ -89,34 +89,34 @@
       };
     });
 
-    INFO.info_graph = function(container, app, dept){
-      var root = INFO.create_info_tree();
-
-      if (!_.isUndefined(dept)){
-        // filter out the tables where there is no data for this
-        // department
-        var filter_func = function(node){
-           node._children = _.filter(node._children, filter_func);
-           return !(node.table && _.isUndefined(node.table.depts,dept.accronym));
-        };
-        root.children = _.filter(root._children, filter_func);
-      }
-
-      var colors = D3.tbs_color;
-      root.color = colors(0);
-      _.map(root._children, function(child,i){
-         child.color = colors(i+1);
-      });
-
-      return TREE.make_horizontal_tree2({
-        root : root,
-        text_func : function(d){
-          if (d.table){
-            return d.name;
-          }
-          return d.name + " (" +d.tables +")";
-        }
-      })(container);
-    };
+//    INFO.info_graph = function(container, app, dept){
+//      var root = INFO.create_info_tree();
+//
+//      if (!_.isUndefined(dept)){
+//        // filter out the tables where there is no data for this
+//        // department
+//        var filter_func = function(node){
+//           node._children = _.filter(node._children, filter_func);
+//           return !(node.table && _.isUndefined(node.table.depts,dept.accronym));
+//        };
+//        root.children = _.filter(root._children, filter_func);
+//      }
+//
+//      var colors = D3.tbs_color();
+//      root.color = colors(0);
+//      _.map(root._children, function(child,i){
+//         child.color = colors(i+1);
+//      });
+//
+//      return TREE.make_horizontal_tree({
+//        root : root,
+//        text_func : function(d){
+//          if (d.table){
+//            return d.name;
+//          }
+//          return d.name + " (" +d.tables +")";
+//        }
+//      })(container);
+//    };
 
 })();
