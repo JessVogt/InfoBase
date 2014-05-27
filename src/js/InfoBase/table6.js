@@ -145,6 +145,10 @@
          "program_spending"
        ],
        "program_spending": function(){
+          // ensure the graph will always be span-8
+          this.graph_area.classed("span-4",false);
+          this.graph_area.classed("span-8",true);
+
           var data = _.map(this.data.dept_historical_program_spending ,_.identity);
           var col_attrs = years;
 
@@ -157,7 +161,7 @@
           });
 
           STACKED.relaxed_stacked({
-            colors : d3.scale.category20(),
+      //      colors : d3.scale.category20(),
             radius : 35,
             rows : data,
             formater : this.compact,

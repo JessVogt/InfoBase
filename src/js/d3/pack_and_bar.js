@@ -27,16 +27,14 @@
       "height" : height+"px",
       "overflow" : "hidden"
     });
-    var pack_container = graph_area.append("div")
-      .attr("class","span-4 pack border-right")
-      .style({"background-color":"#F4F4F4",
-              "margin" : "0px"
-    });
-    var bar_container = graph_area.append("div")
-      .attr("class","span-4 comparison")
-      .style({ "height" : height+"px" 
-    });
+    var pack_container = graph_area;
 
+    var bar_container =  graph_area.append("div")
+       .style({
+          "position" : "absolute",
+          "top" : "0px",
+          "right" : "0px"
+       });
 
     var add_bar_chart = function(d){
       // don't redraw the graph if the currently selected object
@@ -46,10 +44,23 @@
       }
       // update the currently selected object
       current_object = d.name;
+      // remove the contents
       bar_container.selectAll("*").remove();
+
       if (d.name === app.get_text("other") || d.name === ''){
         return;
       }
+
+      var inner_bar_container = bar_container.append("div")
+       .attr("class","border-all")
+       .style({
+         "position":"relative",
+         "margin" : "5px",
+         "height" : '200px',
+         "width" : '300px',
+         "background-color" : "#F4F4F4"
+       });
+
 
       BAR.bar({
         title : d.name,
@@ -58,10 +69,10 @@
         label_formater : formater,
         series : {"":packed_data_to_bar(d)},
         width : bar_container.offsetWidth,
-        height : height,
+        height : 200,
         ticks : ticks(d),
-      })(bar_container);
-      post_bar_render(bar_container,d);
+      })(inner_bar_container);
+      post_bar_render(inner_bar_container,d);
     };
 
     var graph = PACK.pack({

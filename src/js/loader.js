@@ -116,6 +116,5 @@
     window.info_nodes =  nodes;
   };
 
-
 })();
 

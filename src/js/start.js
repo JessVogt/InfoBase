@@ -9,5 +9,4 @@ $(function(){
     // get reference to the app and start it
     var APP = ns('APP');
     APP.start();
-
 });

@@ -2,6 +2,7 @@ ns().APP.dispatcher.once("init", function(app){
   Handlebars.registerHelper("gt",function(context){
     return app.get_text(context);
   });
+
   Handlebars.registerHelper("uri",function(context){
     return encodeURI(context[app.state.get("lang")]);
   });

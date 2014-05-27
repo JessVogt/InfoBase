@@ -134,7 +134,7 @@
       ],
       "employee_age": function(){
         var data = this.data;
-        this.graph_area.style("max-width","700px");
+        this.graph_area.style("max-width","400px");
          if (this.data.dept) {
           STACKED.stacked_series({
             labels : data.emp_ages,
@@ -153,7 +153,7 @@
               colors : D3.tbs_color(),
               label_attr : "label" ,
               data_attr : "val",
-              inner_radius: 40,
+              inner_radius: 20,
               data : _.chain(data.gov_last_year_emp_ages)
                        .map(function(v,k){ return {val: v, label: k};})
                        .value(),
