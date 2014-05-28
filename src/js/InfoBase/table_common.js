@@ -46,7 +46,10 @@
           'qfr_last_year': '2012-13',
           'last_year': '2012-13',
           'last_year_2': '2011-12',
-          'last_year_3': '2010-11'
+          'last_year_3': '2010-11',
+          'last_year_4': '2009-10',
+          'last_year_5': '2008-09'
+
       },
       'fr': {
           'month_name': 'février',
@@ -55,13 +58,19 @@
           'qfr_last_year': '2012‒2013',
           'last_year': '2012‒2013',
           'last_year_2': '2011‒2012',
-          'last_year_3': '2010‒2011'
+          'last_year_3': '2010‒2011',
+          'last_year_4': '2009‒2010',
+          'last_year_5': '2008‒2009'
+
       }
   };
   
-  TABLES.years =[ "{{last_year_3}}",
+  TABLES.years =["{{last_year_5}}",
+                 "{{last_year_4}}",
+                "{{last_year_3}}",
                 '{{last_year_2}}',
-               '{{last_year}}' ] ;
+               '{{last_year}}',
+               ] ;
 
   APP.dispatcher.once("app_ready",function(app){
     APP.dispatcher.on("info_collection",function(info){

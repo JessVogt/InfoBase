@@ -49,8 +49,7 @@
           }
          }
        ]);
-       _.each(['{{last_year_3}}','{{last_year_2}}','{{last_year}}'],
-           function(header){
+       _.each(years, function(header){
              this.add_col(header)
                .add_child([
                    {
@@ -133,6 +132,7 @@
       }
     },
     mapper: function (row) {
+
       if (this.lang === 'en') {
           row.splice(3, 1);
       } else {

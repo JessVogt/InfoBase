@@ -196,9 +196,7 @@
           totals = _.map(col_attrs, function(col_attr){
              return d3.sum(_.pluck(non_zero_rows, col_attr));
           }),
-          summary_choices = _.filter(_.range(1,non_zero_rows.length),function(d){
-            return d % 5 === 0;
-          }).concat(non_zero_rows.length),
+          summary_choices = [5,non_zero_rows.length],
           choices_y_offset = 0,
           summary_row,srummary_vals,
           radius = this.radius,
@@ -335,7 +333,7 @@
                 "stroke":"#CCC",
                 "stroke-width" : 2
               })
-              .attr({ "x1" : 0, "x2" : width, "y1" : 2*radius, "y2" : 2*radius });
+              .attr({ "x1" : 0, "x2" : width, "y1" : 2*radius+2, "y2" : 2*radius+2 });
 
             // add background shading for even lines
             new_row_groups
@@ -503,7 +501,7 @@
         }
       }
 
-      if (summary_choices.length > 1) {
+      if (summary_choices[1] > summary_choices[0]) {
         var ul =html.insert("div","svg")
           .attr("class","choice")
           .style({"height":"30px"})

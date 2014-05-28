@@ -6,41 +6,41 @@ map! <S-Insert> <MiddleMouse>
 nnoremap  o
 map   viw
 nmap ; :
-map ]<Down> :call PythonNextLine(1)
-map ]<Up> :call PythonNextLine(-1)
-map ]d :call PythonSelectObject("function")
-map ]c :call PythonSelectObject("class")
-map ]v ]tV]e
-omap ]t :PBoB
-nmap ]t :PBoB
-omap ]e :PEoB
-nmap ]e :PEoB
-omap ]< ]tV]e<
-nmap ]< ]tV]e<
-omap ]> ]tV]e>
-nmap ]> ]tV]e>
-omap ]# :call PythonCommentSelection()
-nmap ]# :call PythonCommentSelection()
-omap ]u :call PythonUncommentSelection()
-nmap ]u :call PythonUncommentSelection()
-omap ]J :call PythonDec("class", -1)
-nmap ]J :call PythonDec("class", -1)
-omap ]j :call PythonDec("class", 1)
-nmap ]j :call PythonDec("class", 1)
-omap ]F :call PythonDec("function", -1)
-nmap ]F :call PythonDec("function", -1)
-omap ]f :call PythonDec("function", 1)
-nmap ]f :call PythonDec("function", 1)
-vmap ]t :PBOBm'gv``
-vmap ]e :PEoBm'gv``
-vmap ]< <
-vmap ]> >
-vmap ]# :call PythonCommentSelection()
-vmap ]u :call PythonUncommentSelection()
-vmap ]J :call PythonDec("class", -1)
-vmap ]j :call PythonDec("class", 1)
-vmap ]F :call PythonDec("function", -1)
 vmap ]f :call PythonDec("function", 1)
+vmap ]F :call PythonDec("function", -1)
+vmap ]j :call PythonDec("class", 1)
+vmap ]J :call PythonDec("class", -1)
+vmap ]u :call PythonUncommentSelection()
+vmap ]# :call PythonCommentSelection()
+vmap ]> >
+vmap ]< <
+vmap ]e :PEoBm'gv``
+vmap ]t :PBOBm'gv``
+nmap ]f :call PythonDec("function", 1)
+omap ]f :call PythonDec("function", 1)
+nmap ]F :call PythonDec("function", -1)
+omap ]F :call PythonDec("function", -1)
+nmap ]j :call PythonDec("class", 1)
+omap ]j :call PythonDec("class", 1)
+nmap ]J :call PythonDec("class", -1)
+omap ]J :call PythonDec("class", -1)
+nmap ]u :call PythonUncommentSelection()
+omap ]u :call PythonUncommentSelection()
+nmap ]# :call PythonCommentSelection()
+omap ]# :call PythonCommentSelection()
+nmap ]> ]tV]e>
+omap ]> ]tV]e>
+nmap ]< ]tV]e<
+omap ]< ]tV]e<
+nmap ]e :PEoB
+omap ]e :PEoB
+nmap ]t :PBoB
+omap ]t :PBoB
+map ]v ]tV]e
+map ]c :call PythonSelectObject("class")
+map ]d :call PythonSelectObject("function")
+map ]<Up> :call PythonNextLine(-1)
+map ]<Down> :call PythonNextLine(1)
 nmap _c :%s/\s\+$//gc
 nmap gx <Plug>NetrwBrowseX
 nnoremap <silent> <Plug>NetrwBrowseX :call netrw#NetrwBrowseX(expand("<cWORD>"),0)
@@ -150,27 +150,27 @@ badd +10 les/src/js/InfoBase/table1.js
 badd +7 les/src/js/base_tables.js
 badd +161 les/src/js/InfoBase/table2.js
 badd +161 les/src/js/InfoBase/table4.js
-badd +12 les/src/js/InfoBase/table5.js
-badd +13 les/src/js/InfoBase/table6.js
+badd +33 les/src/js/InfoBase/table5.js
+badd +27 les/src/js/InfoBase/table6.js
 badd +10 les/src/js/InfoBase/table7.js
-badd +40 les/src/js/InfoBase/table8.js
+badd +304 les/src/js/InfoBase/table8.js
 badd +6 les/src/js/start.js
-badd +121 les/src/js/InfoBase/table9.js
+badd +117 les/src/js/InfoBase/table9.js
 badd +168 les/src/js/InfoBase/table10.js
-badd +57 les/src/js/InfoBase/table11.js
+badd +139 les/src/js/InfoBase/table11.js
 badd +43 les/src/js/InfoBase/InfoBase.js
 badd +15 les/src/js/utils.js
 badd +8 les/src/js/d3/table_builder.js
-badd +11 les/src/js/InfoBase/table_common.js
-badd +388 les/src/js/d3/stacked.js
+badd +72 les/src/js/InfoBase/table_common.js
+badd +338 les/src/js/d3/stacked.js
 badd +166 les/src/js/d3/tree.js
 badd +37 les/src/js/info_graph.js
 badd +137 les/src/mako/od_table_text.html
 badd +211 les/src/js/d3/canada.js
 badd +1 les/src/js/d3/pack_and_bar.js
-badd +238 les/src/js/InfoBase/story.js
+badd +132 les/src/js/InfoBase/story.js
 silent! argdel *
-edit les/src/js/InfoBase/story.js
+edit les/src/js/InfoBase/table4.js
 set splitbelow splitright
 wincmd _ | wincmd |
 vsplit
@@ -288,15 +288,15 @@ set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 241 - ((24 * winheight(0) + 21) / 43)
+let s:l = 123 - ((14 * winheight(0) + 21) / 43)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-241
-normal! 020|
+123
+normal! 026|
 wincmd w
 argglobal
-edit les/src/js/InfoBase/table8.js
+edit les/src/js/InfoBase/table4.js
 setlocal keymap=
 setlocal noarabic
 setlocal noautoindent
@@ -402,14 +402,13 @@ set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 41 - ((22 * winheight(0) + 21) / 43)
+let s:l = 52 - ((15 * winheight(0) + 21) / 43)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-41
-normal! 08|
+52
+normal! 019|
 wincmd w
-2wincmd w
 exe 'vert 1resize ' . ((&columns * 79 + 79) / 159)
 exe 'vert 2resize ' . ((&columns * 79 + 79) / 159)
 tabnext 1

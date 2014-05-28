@@ -30,6 +30,7 @@
     };
 
     _story = function(container,app,dept){
+      this.dept = dept;
       this.container = d3.select(container[0]);
       this.container.selectAll("*").remove();
       this.app = app;
@@ -70,16 +71,9 @@
 
     var p = _story.prototype;
 
-    p.get_table_classes = function(table){
-      return  name_to_class([
-        this.t[table].coverage.en,
-        this.t[table].data_type.en,
-        this.t[table].name.en
-      ]);
-    };
-
     p.make_graph_context = function(extra){
       return _.extend({
+        dept : this.dept,
         gt : this.app.get_text,
         data : this.data,
         written_data : this.written_data,
@@ -104,7 +98,6 @@
           add_divider : true,
           sources : [this.create_link("table4",["{{last_year}}auth","{{last_year_2}}auth","{{last_year_3}}auth"])],
         }],
-        classes :  this.get_table_classes("table4") + " authorities",
         target : this.container,
         sources : [this.create_link("table8","total_net_auth")],
         title : this.app.get_text("financial_data")

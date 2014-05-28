@@ -31,8 +31,7 @@
           }
           }
           );
-        _.each(['{{last_year_3}}','{{last_year_2}}','{{last_year}}'],
-            function(header){
+        _.each(years, function(header){
               this.add_col(
                 {
                   "type":"big-int",
