@@ -3,6 +3,7 @@
   var APP = ns('APP');
   var STACKED = ns('D3.STACKED');
   var BAR = ns('D3.BAR');
+  var LINE = ns('D3.LINE');
   var D3 = ns('D3');
 
  APP.dispatcher.on("load_tables", function (app) {
@@ -132,7 +133,6 @@
       }
     },
     mapper: function (row) {
-
       if (this.lang === 'en') {
           row.splice(3, 1);
       } else {
@@ -162,27 +162,23 @@
       }
     },
     dept_info : function(c, q){
-      c.dept_last_year_auth =  q.sum('{{last_year}}auth');
-      c.dept_last_year_2_auth = q.sum('{{last_year_2}}auth');
-      c.dept_last_year_3_auth = q.sum('{{last_year_3}}auth');
-      c.dept_last_year_stat_voted = this.voted_stat('{{last_year}}auth',c.dept,true);
-      c.dept_last_year_2_stat_voted =  this.voted_stat('{{last_year_2}}auth',c.dept,true); 
-      c.dept_last_year_3_stat_voted = this.voted_stat('{{last_year_3}}auth',c.dept,true); 
-      _.each(["","_2","_3"],function(x){
-        var key = "dept_last_year"+x+"_stat_voted";
+      _.each(years, function(year){
+        c["dept_"+year+"_auth"] = q.sum(year+"auth");
+
+        var key = "dept_"+year+"_stat_voted";
+        c[key] = this.voted_stat(year+'auth',c.dept,true); 
         c[key].voted = c[key].voted || 0;
         c[key].stat = c[key].stat || 0;
-      });
+      },this);
+
       c.dept_historical_voted = q.voted_items();
       c.dept_historical_stat = q.stat_items();
     },
     info : function(c,q){
-      c.gov_last_year_auth =  q.sum('{{last_year}}auth');
-      c.gov_last_year_2_auth = q.sum('{{last_year_2}}auth');
-      c.gov_last_year_3_auth = q.sum('{{last_year_3}}auth');
-      c.gov_last_year_stat_voted = this.voted_stat('{{last_year}}auth',false); 
-      c.gov_last_year_2_stat_voted =  this.voted_stat('{{last_year_2}}auth',false);
-      c.gov_last_year_3_stat_voted = this.voted_stat('{{last_year_3}}auth',false); 
+      _.each(years, function(year){
+        c["gov_"+year+"_auth"] = q.sum(year+"auth");
+        c["gov_"+year+"_stat_voted"] = this.voted_stat(year+'auth',false); 
+      },this);
     },
     "graphics": {
        "details_display_order" : [
@@ -208,25 +204,45 @@
           
           if (!this.data.dept){
             text = "gov_historical_auth";
-            args.series[gt("stat")] = [ d.gov_last_year_3_stat_voted.stat, d.gov_last_year_2_stat_voted.stat, d.gov_last_year_stat_voted.stat ];
-            args.series[gt("voted")] = [ d.gov_last_year_3_stat_voted.voted, d.gov_last_year_2_stat_voted.voted, d.gov_last_year_stat_voted.voted ];
+            args.series[gt("stat")] = [ 
+              d.gov_last_year_5_stat_voted.stat,
+              d.gov_last_year_4_stat_voted.stat,
+              d.gov_last_year_3_stat_voted.stat, 
+              d.gov_last_year_2_stat_voted.stat, 
+              d.gov_last_year_stat_voted.stat ];
+            args.series[gt("voted")] = [ 
+              d.gov_last_year_5_stat_voted.voted,
+              d.gov_last_year_4_stat_voted.voted,
+              d.gov_last_year_3_stat_voted.voted, 
+              d.gov_last_year_2_stat_voted.voted, 
+              d.gov_last_year_stat_voted.voted ];
           } else {
             args.x_axis_line = true;
             text = "dept_historical_auth";
-            args.series[gt("stat")] = [ d.dept_last_year_3_stat_voted.stat, d.dept_last_year_2_stat_voted.stat, d.dept_last_year_stat_voted.stat ];
-            args.series[gt("voted")] = [ d.dept_last_year_3_stat_voted.voted, d.dept_last_year_2_stat_voted.voted, d.dept_last_year_stat_voted.voted ];
+            args.series[gt("stat")] = [ 
+              d.dept_last_year_5_stat_voted.stat,
+              d.dept_last_year_4_stat_voted.stat,
+              d.dept_last_year_3_stat_voted.stat, 
+              d.dept_last_year_2_stat_voted.stat, 
+              d.dept_last_year_stat_voted.stat ];
+            args.series[gt("voted")] = [ 
+              d.dept_last_year_5_stat_voted.voted,
+              d.dept_last_year_4_stat_voted.voted,
+              d.dept_last_year_3_stat_voted.voted, 
+              d.dept_last_year_2_stat_voted.voted, 
+              d.dept_last_year_stat_voted.voted ];
           }
-
           graph(args)(this.graph_area);
           this.text_area.html(m(app.get_text(text), this.written_data));
 
        },
        "historical_auth" : function(){
-
-          var graph = BAR.bar,
+          var graph = LINE.ordinal_line,
               d=this.data,text,args={
                 add_xaxis : true,
                 add_labels : true,
+                add_yaxis : true,
+                y_tick_formater : this.compact,
                 x_axis_line : false,
                 html_ticks : true,
                 height : this.height,
@@ -235,11 +251,15 @@
                 series : {'':null}
               };
 
-
           if (!this.dept){
 
             text = "gov_historical_auth";
-            args.series[''] = [ d.gov_last_year_3_auth, d.gov_last_year_2_auth, d.gov_last_year_auth ];
+            args.series[''] = [ 
+              d.gov_last_year_5_auth, 
+              d.gov_last_year_4_auth, 
+              d.gov_last_year_3_auth, 
+              d.gov_last_year_2_auth, 
+              d.gov_last_year_auth ];
           } else {
             this.graph_area.classed("span-4",true);
             this.text_area.classed("span-4",true);
@@ -248,7 +268,12 @@
 
             args.x_axis_line = true;
             text = "dept_historical_auth";
-            args.series[''] = [ d.dept_last_year_3_auth, d.dept_last_year_2_auth, d.dept_last_year_auth ];
+            args.series[''] = [ 
+              d.dept_last_year_5_auth, 
+              d.dept_last_year_4_auth, 
+              d.dept_last_year_3_auth, 
+              d.dept_last_year_2_auth, 
+              d.dept_last_year_auth ];
           }
 
           graph(args)(this.graph_area);

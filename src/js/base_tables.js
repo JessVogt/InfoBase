@@ -20,7 +20,12 @@
        table.info(info,table.q());
      });
     APP.dispatcher.trigger("info_collection_cleanup",info);
-    return info;
+    return  _.chain(info)
+      .map(function(value,key){
+         return [key.replace(/(\{|\})/g,""),value];
+      })
+      .object()
+      .value();
   };
 
   TABLES.format_info = function(formater,info){

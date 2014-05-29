@@ -1,9 +1,9 @@
 (function() {
 
     var D3 = ns('D3');
-    var BAR = ns('D3.BAR');
+    var LINE = ns('D3.LINE');
 
-    BAR.bar = D3.extend_base(function(svg,index){
+    LINE.ordinal_line = D3.extend_base(function(svg,index){
       /* data in the format of 
       *  data = { "series 1" : [y1,y2,y3],
           *     "series 2" : [y1,y2,y3]}
@@ -16,6 +16,7 @@
           add_legend = this.add_legend,
           add_labels = this.add_labels,
           html_ticks = this.html_ticks,
+          y_tick_formater  = this.y_tick_formater,
           colors = this.colors || D3.tbs_color(),
           title = this.title,
           label_formater = add_labels ? this.label_formater : undefined,
@@ -23,7 +24,7 @@
           margin = this.margin || {top: top_margin, 
                                     right: 20, 
                                     bottom: 30, 
-                                    left: 20},
+                                    left: 50},
           height = this.height - margin.top - margin.bottom,
           width = this.width - margin.left - margin.right,
           y_axis = this.y_axis || '',
@@ -40,35 +41,17 @@
           y_bottom = extent[0] > 0 ? 0 : 1.1 * extent[0],
           y_top = extent[1] < 0 ? 0 : 1.1 * extent[1],
           zero = 0,
-          /*  x0 scale sets out the chunks of space for each 
-          *  of the series
-          *  x1 uses the chunks of space from x0 to then create 
-          *  sub-spaces for each of the labels
-          *  y maps the domain of the input data onto the available 
-          *  height
-          *  max->merge will merge all the arrays into a single
-          *  and fine the max value 
-          */  
-          x0 = d3.scale.ordinal()
+          x = d3.scale.ordinal()
             .domain(ticks)
-            .rangeRoundBands([0, width], 0.1),
-          x1 = d3.scale.ordinal()
-            .domain(series)
-            .rangeRoundBands([0,x0.rangeBand()],0.1),
-          bar_width = Math.min(x1.rangeBand(), this.max_width || 100),
+            .rangePoints([0, width], 0.1),
+          point_width = x.range()[1] -x.range()[0],
           y = d3.scale.linear()
             .domain([y_bottom, y_top])
             .range([height, 0]),
           xAxis = d3.svg.axis()
-            .scale(x0)
+            .scale(x)
             .tickPadding(5)
             .orient("bottom"),
-          yAxis = d3.svg.axis()
-            .scale(y)
-            .ticks(10)
-            .tickSize(-width)
-            //.tickFormat(d3.format(this.yAxisTickFormat || ".2s"))
-            .orient("left"),
           /*
           * setup the main graph area and add the bars
           * set up the axes  
@@ -112,13 +95,12 @@
             .append("div")
             .attr("class","tick")
             .style({
-              "text-align": "center",
               "position" : "absolute",
               "font-size" : "12px",
               "text-weight" : "bold",
               "top" : height+margin.top+10+"px",
-              "width": x0.rangeBand()+"px",
-              "left"  : function(d) {return x0(d)+margin.left+"px" ; }
+              "width": point_width+"px",
+              "left"  : function(d) {return x(d)+margin.left+"px" ; }
             })
             .html(function(d){ return d;});
         }
@@ -128,6 +110,13 @@
       }
 
       if (add_yaxis){
+        var yAxis = d3.svg.axis()
+            .scale(y)
+            .ticks(10)
+            .tickSize(-width)
+            .tickFormat(y_tick_formater)
+            .orient("left");
+
         graph_area.append("g")
               .attr("class", "y axis")
               .call(yAxis)
@@ -143,7 +132,6 @@
                 .text(y_axis);
       }
 
-
       if (add_labels){
         html.selectAll("div.labels")
           .data(data)
@@ -154,8 +142,8 @@
             "position" : "absolute",
             "top" : "0px",
             "height" : "10px",
-            "width": x0.rangeBand()+"px",
-            "left"  : function(d) {return x0(d.tick)+margin.left+"px" ; }
+            "width": point_width+"px",
+            "left"  : function(d) {return x(d.tick)+margin.left+"px" ; }
           })
           .selectAll("div.label")
           .data(function(d){ return d.data;})
@@ -167,7 +155,6 @@
             "text-align": "center",
             "position" : "absolute",
             "text-weight" : "bold",
-            "width" : bar_width+"px",
             "font-size" : "12px",
             "height" : "10px",
             "top"  : function(d){
@@ -180,7 +167,7 @@
                 return y(d.value) +20+ "px";
               }
             },
-            "left"  : function(d) { return x1(d.name)+(x1.rangeBand()-bar_width)/2 +"px" ; }
+            "left"  : function(d) { return x(d.name)+"px" ; }
           });
         html.selectAll("div.labels")
           .data(data)
@@ -188,41 +175,47 @@
           .remove();
       }
 
-      var groups = graph_area.selectAll(".group")
-            .data(data)
-          .enter().append("g")
-            .attr("class", "g")
-            .attr("transform", function(d) { return "translate(" + x0(d.tick) + ",0)"; });
+      _.each(series, function(serie, i){
 
-      var bars = groups.selectAll("rect")
-          .data(function(d) { return d.data; })
-        .enter().append("rect")
-          .attr( "width", bar_width)
-          .attr( "x", function(d) { return x1(d.name) + (x1.rangeBand()-bar_width)/2 + "px"; })
+        var yfunc = function(d){return y(d.data[i].value);};
+        var xfunc = function(d){return x(d.tick);} ;
+
+        var area = d3.svg.line()
+          .x(xfunc)
+          .y(yfunc);
+
+        var path = graph_area.append("path")
+          .datum(data)
           .style({
-           "fill": function(d) { return colors(d.name); },
-           "fill-opacity" : 0.8
+            "fill" : "none",
+            "stroke" : "steelblue",
+            "stroke-width" : "3px"
           })
-          .attr("height",0)
-          .on("mouseover", this.dispatch.dataHover);
+          .attr("d", area);
 
-      bars.transition()
-          .duration(750)
-          .attr("y", function(d) {  
-            if (d.value > 0){
-              return y(d.value); 
-            } else {
-              return y(zero);
-            }
-          })
-          .attr("height", function(d) { 
-            if (d.value >= 0){
-              return y(zero) - y(d.value);
-            } else {
-              return y(d.value) - y(zero);
-            }
-          });
+        if (add_under_area){
 
+        }
+
+        var dots = graph_area.selectAll("circle.dots")
+            .data(data);
+        dots.exit().remove();
+        dots
+          .enter()
+          .append("circle")
+          .attr({
+            "class" : "dots",
+            "cy" : yfunc,
+            "cx" : xfunc,
+            "r" : "10"
+        })
+        .style({
+          "fill" : "steelblue",
+          "fill-opacity": "0.8",
+          "stroke" : "white",
+          "stroke-width" : "3px"
+        });
+      });
    });
 
    function make_legend(sel,legend,width,colors){
@@ -250,3 +243,4 @@
    }
 
 })();
+

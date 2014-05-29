@@ -86,6 +86,7 @@ module.exports = function(grunt) {
           //"src/js/d3/tree2.js",
           "src/js/d3/pack_and_bar.js",
           "src/js/d3/pie.js",
+          "src/js/d3/line.js",
 
           "src/js/org_header.js",
           "src/js/other_ministries.js",
