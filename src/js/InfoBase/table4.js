@@ -188,15 +188,14 @@
          "stat_spending"
        ],
        "vote_stat_split": function(){
-          var graph = BAR.bar,
+          var graph = LINE.ordinal_line,
               colors = D3.tbs_color(),
               d=this.data,text,args={
                 height : this.height,
-                label_formater : this.compact1,
+                formater : this.compact,
                 add_legend : true,
-                x_axis_line : false,
+                add_yaxis : true,
                 add_xaxis : true,
-                add_labels : true,
                 html_ticks : true,
                 ticks : this.data.last_years,
                 series : {}
@@ -242,11 +241,11 @@
                 add_xaxis : true,
                 add_labels : true,
                 add_yaxis : true,
-                y_tick_formater : this.compact,
-                x_axis_line : false,
+                add_under_area : true,
+                x_axis_line : true,
                 html_ticks : true,
                 height : this.height,
-                label_formater : this.compact1,
+                formater : this.compact,
                 ticks : this.data.last_years,
                 series : {'':null}
               };
@@ -350,7 +349,6 @@
         col_attrs : col_attrs,
         text_key : "desc"
       })(this.graph_area);
-
     };
   });
 })();

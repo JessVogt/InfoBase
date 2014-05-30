@@ -4,6 +4,7 @@
     var PIE = ns('D3.PIE');
 
     PIE.pie = D3.extend_base(function(svg,index){
+
       var html = this.html,
           margin = this.margin || {top: 20, 
                                     right: 20, 
@@ -13,10 +14,6 @@
           font_size = this.font_size || 10,
           radius = Math.min(this.width, this.height)/2-40,
           color = this.color || D3.tbs_color(),
-          graph_area  = svg
-                .attr({ width : this.width, height : this.height})
-                .append("g")
-            .attr("transform", "translate(" + (width/2 )+ "," + this.height/2 + ")"),
           data_attr = this.data_attr,
           label_attr = this.label_attr,
           arc = d3.svg.arc()
@@ -39,6 +36,10 @@
             top : this.height/2,
             left : this.width/2
           },
+          graph_area  = svg
+                .attr({ width : this.width, height : this.height})
+                .append("g")
+            .attr("transform", "translate(" + (width/2 )+ "," + this.height/2 + ")"),
           g = graph_area.selectAll(".arc")
               .data(pie_data)
             .enter().append("g")

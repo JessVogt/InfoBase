@@ -16,10 +16,10 @@
           add_legend = this.add_legend,
           add_labels = this.add_labels,
           html_ticks = this.html_ticks,
-          y_tick_formater  = this.y_tick_formater,
+          add_under_area  = this.add_under_area || false,
+          formater  = this.formater,
           colors = this.colors || D3.tbs_color(),
           title = this.title,
-          label_formater = add_labels ? this.label_formater : undefined,
           top_margin = add_legend ? series.length  * 20 + 15 : 20,
           margin = this.margin || {top: top_margin, 
                                     right: 20, 
@@ -63,6 +63,8 @@
               height : height+margin.top+margin.bottom})
             .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+     D3.add_hatching(svg,width+margin.left+margin.right,height+margin.top+margin.bottom);
 
       // add the title
       svg.append("text")
@@ -113,17 +115,12 @@
         var yAxis = d3.svg.axis()
             .scale(y)
             .ticks(10)
-            .tickSize(-width)
-            .tickFormat(y_tick_formater)
+            .tickFormat(formater)
             .orient("left");
 
         graph_area.append("g")
               .attr("class", "y axis")
               .call(yAxis)
-              .call( function (g) {
-                g.selectAll("text")
-                    .attr("dy", -4);
-              })
               .append("text")
                 .attr("transform", "rotate(-90)")
                 .attr("y", 6)
@@ -140,7 +137,7 @@
           .attr("class","labels")
           .style({
             "position" : "absolute",
-            "top" : "0px",
+            "top" : "-8px",
             "height" : "10px",
             "width": point_width+"px",
             "left"  : function(d) {return x(d.tick)+margin.left+"px" ; }
@@ -150,7 +147,7 @@
           .enter()
           .append("div")
           .attr("class","label")
-          .html(function(d){ return label_formater(d.value);})
+          .html(function(d){ return formater(d.value);})
           .style({
             "text-align": "center",
             "position" : "absolute",
@@ -180,7 +177,7 @@
         var yfunc = function(d){return y(d.data[i].value);};
         var xfunc = function(d){return x(d.tick);} ;
 
-        var area = d3.svg.line()
+        var line = d3.svg.line()
           .x(xfunc)
           .y(yfunc);
 
@@ -188,23 +185,35 @@
           .datum(data)
           .style({
             "fill" : "none",
-            "stroke" : "steelblue",
+            "stroke" : colors(i),
             "stroke-width" : "3px"
           })
-          .attr("d", area);
+          .attr("d", line);
 
         if (add_under_area){
 
+          var area = d3.svg.area()
+            .x(xfunc)
+            .y0(height)
+            .y1(yfunc);
+
+          var under_area = graph_area.append("path")
+            .datum(data)
+            .style({
+              "fill" : colors(i),
+              "fill-opacity" : "0.2"
+            })
+            .attr("d", area);
         }
 
-        var dots = graph_area.selectAll("circle.dots")
+        var dots = graph_area.selectAll("circle.dots"+i)
             .data(data);
         dots.exit().remove();
         dots
           .enter()
           .append("circle")
           .attr({
-            "class" : "dots",
+            "class" : "dots"+i,
             "cy" : yfunc,
             "cx" : xfunc,
             "r" : "10"
@@ -229,7 +238,7 @@
          .attr("cx", width - 18/2)
          .attr("cy", 18/2)
          .attr("r", 18/2)
-         .style("fill", colors);
+         .style("fill", function(d,i){return colors(i);});
 
      el.append("text")
          .attr("x", width - 24)

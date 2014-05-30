@@ -323,9 +323,6 @@ circle.hidden {
   stroke: #777;
   stroke-dasharray: 2,2;
 }
-.y.axis path {
-  display: none;
-}
 .y.axis text {
   font-size : 10px;
 }
