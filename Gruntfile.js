@@ -27,7 +27,7 @@ module.exports = function(grunt) {
         },
         dev : {
           options : {
-            src : "/home/andrew/Projects/les/",
+            src : "/home/andrew/Projects/reporting/",
             dest : "/media/andrew/PRIVATE/InfoBase-code/"
           }
         },

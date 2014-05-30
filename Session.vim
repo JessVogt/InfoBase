@@ -6,41 +6,6 @@ map! <S-Insert> <MiddleMouse>
 nnoremap  o
 map   viw
 nmap ; :
-vmap ]f :call PythonDec("function", 1)
-vmap ]F :call PythonDec("function", -1)
-vmap ]j :call PythonDec("class", 1)
-vmap ]J :call PythonDec("class", -1)
-vmap ]u :call PythonUncommentSelection()
-vmap ]# :call PythonCommentSelection()
-vmap ]> >
-vmap ]< <
-vmap ]e :PEoBm'gv``
-vmap ]t :PBOBm'gv``
-nmap ]f :call PythonDec("function", 1)
-omap ]f :call PythonDec("function", 1)
-nmap ]F :call PythonDec("function", -1)
-omap ]F :call PythonDec("function", -1)
-nmap ]j :call PythonDec("class", 1)
-omap ]j :call PythonDec("class", 1)
-nmap ]J :call PythonDec("class", -1)
-omap ]J :call PythonDec("class", -1)
-nmap ]u :call PythonUncommentSelection()
-omap ]u :call PythonUncommentSelection()
-nmap ]# :call PythonCommentSelection()
-omap ]# :call PythonCommentSelection()
-nmap ]> ]tV]e>
-omap ]> ]tV]e>
-nmap ]< ]tV]e<
-omap ]< ]tV]e<
-nmap ]e :PEoB
-omap ]e :PEoB
-nmap ]t :PBoB
-omap ]t :PBoB
-map ]v ]tV]e
-map ]c :call PythonSelectObject("class")
-map ]d :call PythonSelectObject("function")
-map ]<Up> :call PythonNextLine(-1)
-map ]<Down> :call PythonNextLine(1)
 nmap _c :%s/\s\+$//gc
 nmap gx <Plug>NetrwBrowseX
 nnoremap <silent> <Plug>NetrwBrowseX :call netrw#NetrwBrowseX(expand("<cWORD>"),0)
@@ -48,16 +13,17 @@ map <S-Insert> <MiddleMouse>
 inoremap  I
 inoremap  A
 imap  d$i
+inoremap "" "
 inoremap " ""<Left>
+inoremap '' '
 inoremap ' ''<Left>
 inoremap (( (
 inoremap ( ()<Left>
 inoremap < <><Left>
+inoremap [[ [
 inoremap [ []<Left>
 imap jj 
-inoremap {} {}
 inoremap {{ {
-inoremap { {}O
 inoremap { {}<Left>
 iabbr from. from . import 
 iabbr ipp import IPythonIPython.embed(:w
@@ -78,12 +44,9 @@ set helplang=en
 set hidden
 set hlsearch
 set ignorecase
-set iminsert=0
-set imsearch=0
 set incsearch
 set isident=@,48-57,_,192-255,$
 set laststatus=2
-set listchars=tab:>.,trail:.,extends:#,nbsp:.
 set mouse=a
 set printoptions=paper:letter
 set ruler
@@ -107,81 +70,20 @@ set window=44
 let s:so_save = &so | let s:siso_save = &siso | set so=0 siso=0
 let v:this_session=expand("<sfile>:p")
 silent only
-cd ~/Projects
+cd ~/Projects/reporting
 if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
   let s:wipebuf = bufnr('%')
 endif
 set shortmess=aoO
-badd +1 les/src/js/app.js
-badd +286 les/src/js/queries.js
-badd +45 les/src/js/d3/core.js
-badd +245 les/src/js/d3/bar.js
-badd +26 les/src/js/d3/tooltip.js
-badd +83 les/test/test-data.js
-badd +8 les/test/test.html
-badd +20 les/src/js/mappers.js
-badd +96 les/Gruntfile.js
-badd +22 les/src/js/d3/dept_explore.js
-badd +124 les/src/js/d3/pack.js
-badd +328 les/test/test-d3.js
-badd +411 les/src/mako/od_handlebars_templates.html
-badd +57 les/src/js/waiting.js
-badd +35 les/src/mako/extracss.html
-badd +119 les/src/js/d3/hbar.js
-badd +7 les/src/mako/od_script_includes.html
-badd +30 les/src/js/d3/chapter.js
-badd +92 les/src/js/d3/circle_chart.js
-badd +121 les/src/js/d3/arrow.js
-badd +6 les/src/mako/od.html
-badd +73 les/src/js/router.js
-badd +25 les/src/js/loader.js
-badd +21 les/src/js/sandbox.js
-badd +24 les/src/js/handlebars_helpers.js
-badd +11 les/src/mako/od_fr.html
-badd +11 les/todo
-badd +46 les/src/mako/od_base.html
-badd +103 les/src/js/search.js
-badd +90 les/src/js/detail.js
-badd +43 les/src/js/format.js
-badd +81 les/src/js/widget.js
-badd +54 les/src/js/table_builder.js
-badd +413 les/src/js/horizontal.js
-badd +10 les/src/js/InfoBase/table1.js
-badd +7 les/src/js/base_tables.js
-badd +161 les/src/js/InfoBase/table2.js
-badd +161 les/src/js/InfoBase/table4.js
-badd +33 les/src/js/InfoBase/table5.js
-badd +27 les/src/js/InfoBase/table6.js
-badd +10 les/src/js/InfoBase/table7.js
-badd +304 les/src/js/InfoBase/table8.js
-badd +6 les/src/js/start.js
-badd +117 les/src/js/InfoBase/table9.js
-badd +168 les/src/js/InfoBase/table10.js
-badd +139 les/src/js/InfoBase/table11.js
-badd +43 les/src/js/InfoBase/InfoBase.js
-badd +15 les/src/js/utils.js
-badd +8 les/src/js/d3/table_builder.js
-badd +72 les/src/js/InfoBase/table_common.js
-badd +338 les/src/js/d3/stacked.js
-badd +166 les/src/js/d3/tree.js
-badd +37 les/src/js/info_graph.js
-badd +137 les/src/mako/od_table_text.html
-badd +211 les/src/js/d3/canada.js
-badd +1 les/src/js/d3/pack_and_bar.js
-badd +132 les/src/js/InfoBase/story.js
+badd +142 Gruntfile.js
+badd +0 src/mako/od.html
 silent! argdel *
-edit les/src/js/InfoBase/table4.js
+edit src/mako/od.html
 set splitbelow splitright
-wincmd _ | wincmd |
-vsplit
-1wincmd h
-wincmd w
 set nosplitbelow
 set nosplitright
 wincmd t
 set winheight=1 winwidth=1
-exe 'vert 1resize ' . ((&columns * 79 + 79) / 159)
-exe 'vert 2resize ' . ((&columns * 79 + 79) / 159)
 argglobal
 setlocal keymap=
 setlocal noarabic
@@ -191,13 +93,13 @@ setlocal nobinary
 setlocal bufhidden=
 setlocal buflisted
 setlocal buftype=
-setlocal cindent
+setlocal nocindent
 setlocal cinkeys=0{,0},0),:,0#,!^F,o,O,e
-setlocal cinoptions=j1,J1
+setlocal cinoptions=
 setlocal cinwords=if,else,while,do,for,switch
 setlocal colorcolumn=
-setlocal comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,://
-setlocal commentstring=//%s
+setlocal comments=s:<!--,m:\ \ \ \ ,e:-->
+setlocal commentstring=<!--%s-->
 setlocal complete=.,w,b,u,t,i
 setlocal concealcursor=
 setlocal conceallevel=0
@@ -214,8 +116,8 @@ setlocal nodiff
 setlocal equalprg=
 setlocal errorformat=
 setlocal expandtab
-if &filetype != 'javascript'
-setlocal filetype=javascript
+if &filetype != 'html'
+setlocal filetype=html
 endif
 setlocal foldcolumn=0
 setlocal foldenable
@@ -228,15 +130,15 @@ setlocal foldminlines=1
 setlocal foldnestmax=20
 setlocal foldtext=foldtext()
 setlocal formatexpr=
-setlocal formatoptions=croql
+setlocal formatoptions=tcq
 setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*
 setlocal grepprg=
-setlocal iminsert=0
-setlocal imsearch=0
+setlocal iminsert=2
+setlocal imsearch=2
 setlocal include=
 setlocal includeexpr=
-setlocal indentexpr=
-setlocal indentkeys=0{,0},:,0#,!^F,o,O,e
+setlocal indentexpr=HtmlIndent()
+setlocal indentkeys=o,O,<Return>,<>>,{,},!^F
 setlocal noinfercase
 setlocal iskeyword=@,48-57,_,192-255
 setlocal keywordprg=
@@ -244,14 +146,14 @@ setlocal nolinebreak
 setlocal nolisp
 setlocal nolist
 setlocal makeprg=
-setlocal matchpairs=(:),{:},[:]
+setlocal matchpairs=(:),{:},[:],<:>
 setlocal modeline
 setlocal modifiable
 setlocal nrformats=octal,hex
 set number
 setlocal number
 setlocal numberwidth=4
-setlocal omnifunc=javascriptcomplete#CompleteJS
+setlocal omnifunc=htmlcomplete#CompleteTags
 setlocal path=
 setlocal nopreserveindent
 setlocal nopreviewwindow
@@ -274,8 +176,8 @@ setlocal statusline=
 setlocal suffixesadd=
 setlocal swapfile
 setlocal synmaxcol=3000
-if &syntax != 'javascript'
-setlocal syntax=javascript
+if &syntax != 'html'
+setlocal syntax=html
 endif
 setlocal tabstop=2
 setlocal tags=
@@ -288,129 +190,12 @@ set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 123 - ((14 * winheight(0) + 21) / 43)
+let s:l = 5 - ((4 * winheight(0) + 21) / 43)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-123
-normal! 026|
-wincmd w
-argglobal
-edit les/src/js/InfoBase/table4.js
-setlocal keymap=
-setlocal noarabic
-setlocal noautoindent
-setlocal balloonexpr=
-setlocal nobinary
-setlocal bufhidden=
-setlocal buflisted
-setlocal buftype=
-setlocal cindent
-setlocal cinkeys=0{,0},0),:,0#,!^F,o,O,e
-setlocal cinoptions=j1,J1
-setlocal cinwords=if,else,while,do,for,switch
-setlocal colorcolumn=
-setlocal comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,://
-setlocal commentstring=//%s
-setlocal complete=.,w,b,u,t,i
-setlocal concealcursor=
-setlocal conceallevel=0
-setlocal completefunc=
-setlocal nocopyindent
-setlocal cryptmethod=
-setlocal nocursorbind
-setlocal nocursorcolumn
-set cursorline
-setlocal cursorline
-setlocal define=
-setlocal dictionary=
-setlocal nodiff
-setlocal equalprg=
-setlocal errorformat=
-setlocal expandtab
-if &filetype != 'javascript'
-setlocal filetype=javascript
-endif
-setlocal foldcolumn=0
-setlocal foldenable
-setlocal foldexpr=0
-setlocal foldignore=#
-setlocal foldlevel=0
-setlocal foldmarker={{{,}}}
-setlocal foldmethod=manual
-setlocal foldminlines=1
-setlocal foldnestmax=20
-setlocal foldtext=foldtext()
-setlocal formatexpr=
-setlocal formatoptions=croql
-setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*
-setlocal grepprg=
-setlocal iminsert=0
-setlocal imsearch=0
-setlocal include=
-setlocal includeexpr=
-setlocal indentexpr=
-setlocal indentkeys=0{,0},:,0#,!^F,o,O,e
-setlocal noinfercase
-setlocal iskeyword=@,48-57,_,192-255
-setlocal keywordprg=
-setlocal nolinebreak
-setlocal nolisp
-setlocal nolist
-setlocal makeprg=
-setlocal matchpairs=(:),{:},[:]
-setlocal modeline
-setlocal modifiable
-setlocal nrformats=octal,hex
-set number
-setlocal number
-setlocal numberwidth=4
-setlocal omnifunc=javascriptcomplete#CompleteJS
-setlocal path=
-setlocal nopreserveindent
-setlocal nopreviewwindow
-setlocal quoteescape=\\
-setlocal noreadonly
-setlocal norelativenumber
-setlocal norightleft
-setlocal rightleftcmd=search
-setlocal noscrollbind
-setlocal shiftwidth=2
-setlocal noshortname
-setlocal nosmartindent
-setlocal softtabstop=2
-set spell
-setlocal spell
-setlocal spellcapcheck=[.?!]\\_[\\])'\"\	\ ]\\+
-setlocal spellfile=
-setlocal spelllang=en
-setlocal statusline=
-setlocal suffixesadd=
-setlocal swapfile
-setlocal synmaxcol=3000
-if &syntax != 'javascript'
-setlocal syntax=javascript
-endif
-setlocal tabstop=2
-setlocal tags=
-setlocal textwidth=0
-setlocal thesaurus=
-setlocal noundofile
-setlocal nowinfixheight
-setlocal nowinfixwidth
-set nowrap
-setlocal nowrap
-setlocal wrapmargin=0
-silent! normal! zE
-let s:l = 52 - ((15 * winheight(0) + 21) / 43)
-if s:l < 1 | let s:l = 1 | endif
-exe s:l
-normal! zt
-52
-normal! 019|
-wincmd w
-exe 'vert 1resize ' . ((&columns * 79 + 79) / 159)
-exe 'vert 2resize ' . ((&columns * 79 + 79) / 159)
+5
+normal! 0
 tabnext 1
 if exists('s:wipebuf')
   silent exe 'bwipe ' . s:wipebuf
