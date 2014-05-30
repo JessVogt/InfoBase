@@ -35,6 +35,40 @@
       }
     };
 
+    D3.add_hatching = function(container, width,height){
+      container = container.append("g").attr("class","hatching");
+      var vertical_lines = d3.scale.ordinal()
+        .domain(_.range(height/30))
+        .rangePoints([0,height]);
+      var horizontal_lines = d3.scale.ordinal()
+        .domain(_.range(width/30))
+        .rangePoints([0,width]); 
+      _.each(vertical_lines.range(),function(y){
+        container.append("line")
+          .attr({
+            "x1" : 0,
+            "x2" : width,
+            "y1" : y,
+            "y2" : y,
+          });
+      });
+      _.each(horizontal_lines.range(),function(x){
+        container.append("line")
+          .attr({
+            "x1" : x,
+            "x2" : x,
+            "y1" : 0,
+            "y2" : height,
+          });
+      });
+      container.selectAll("line")
+        .style({
+          "stroke" : "#CCC",
+          "stroke-opacity" : 0.5,
+          "stroke-width" : "1px"
+        });
+    };
+
     D3.extend_base = function(chart){
       return function(options){
         options = options || {};
