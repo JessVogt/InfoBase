@@ -38,14 +38,22 @@
         "header":{
           "en":"Planned expenditures for the year ending March 31, {{in_year_short}}",
         "fr":"Dépenses prévues pour l'exercice se terminant le 31 mars {{in_year_short}}"
-        }
+        },
+              "description": {
+                  "en": "corresponds to the planned expenditures tabled by agencies and departments in their QFR for the fiscal year ending on March 31st of the relevant year.",
+                  "fr": "correspondent aux dépenses prévues présentées par les organismes et ministères dans leur rapport financier trimestriel (RFT) pour l’exercice se terminant le 31 mars de l’année pertinente."
+              }
           },
           {
             "type":"big-int",
         "header":{
           "en":"Expended during the quarter ended {{qfr_month_name}}, {{qfr_last_year_short}}",
         "fr":"Dépensées durant le trimestre terminé le {{qfr_month_name}} {{qfr_last_year_short}}"
-        }
+        },
+              "description": {
+                  "en": "represents the expenditures that have been made for the selected quarter.",
+                  "fr": "représentent les dépenses engagées pendant le trimestre sélectionné."
+              }
           },
           {
             "type":"big-int",
@@ -53,7 +61,11 @@
         "header":{
           "en":"Year to date used at quarter-end",
           "fr":"Cumul des crédits utilisés à la fin du trimestre"
-        }
+        },
+              "description": {
+                  "en": "represents the sum of all spending made by the organization up to the specified period.",
+                  "fr": "désigne la somme de toutes les dépenses effectuées par le ministère ou l’organisme jusqu’à la période sélectionnée."
+              }
           }
     ]);
     this.add_col("{{qfr_last_year}}")
@@ -64,21 +76,33 @@
         "header":{
           "en":"Planned expenditures for the year ending March 31, {{qfr_last_year_short}}",
         "fr":"Dépenses prévues pour l'exercice se terminant le 31 mars {{qfr_last_year_short}}"
-        }
+        },
+              "description": {
+                  "en": "corresponds to the planned expenditures tabled by agencies and departments in their QFR for the fiscal year ending on March 31st of the relevant year.",
+                  "fr": "correspondent aux dépenses prévues présentées par les organismes et ministères dans leur rapport financier trimestriel (RFT) pour l’exercice se terminant le 31 mars de l’année pertinente."
+              }
           },
           {
             "type":"big-int",
         "header":{
           "en":"Expended during the quarter ended {{qfr_month_name}}, {{last_year_short}}",
         "fr":"Dépensées durant le trimestre terminé le {{qfr_month_name}} {{last_year_short}}"
-        }
+        },
+              "description": {
+                  "en": "represents the expenditures that have been made for the selected quarter.",
+                  "fr": "représentent les dépenses engagées pendant le trimestre sélectionné."
+              }
           },
           {
             "type":"big-int",
         "header":{
           "en":"Year to date used at quarter-end",
         "fr":"Cumul des crédits utilisés à la fin du trimestre"
-        }
+        },
+              "description": {
+                  "en": "represents the sum of all spending made by the organization up to the specified period.",
+                  "fr": "désigne la somme de toutes les dépenses effectuées par le ministère ou l’organisme jusqu’à la période sélectionnée."
+              }
           }
     ]);
       },

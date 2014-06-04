@@ -9,6 +9,7 @@
     };               
 
     var center_text = function(container){
+      container = $(container);
       // this function will vertically center all the inner text
       // based on the calculated height of the accompanying graphic
       if (!is_mobile){
@@ -47,10 +48,11 @@
 
       this.el = options.target
         .append("div")
-        .attr("class","chapter span-8 border-all "+classes )
-        .style({ "font-size" : "20px" });
+        .attr("class","chapter span-8 border-all "+classes );
 
-      this.el.append(header).html(options.title);
+      if (options.title) {
+        this.el.append(header).html(options.title);
+      }
       
       //clear the div
       //this will align the chapters vertically
@@ -68,7 +70,7 @@
       }
 
       _.each(toggles, function(toggle_section){
-          var new_section= this.add_toggle_section(this.el,toggle_section.toggle_text);
+          var new_section= STORY.add_toggle_section(this.el,toggle_section.toggle_text);
           this.toggle_sections.push(new_section);
           if (toggle_section.add_divider){
             add_section(new_section,false,span);
@@ -109,7 +111,7 @@
       return this.el.select("source");
     };
 
-    chapterp.add_toggle_section = function(target,text){
+    STORY.add_toggle_section = function(target,text){
       var toggler = target.append("div").attr("class","chapter span-8 toggler border-top")
         .style({
           "padding-top":"10px",
@@ -120,38 +122,30 @@
         .append("a")
           .html(text)
           .attr("class","ui-link")
-          .attr("href","#")
-          .on("click", this.onToggle); 
+          .attr("href","#");
       var div = target.append("div").attr("class", "span-8 toggle ");
       toggler.datum(div);
       return div;
     };
 
-    // respond to the click on the div element, this implemented for touch screens
-    chapterp.onToggleParent = function (e){
-      var parent = d3.select(d3.event.target),
-          target = parent.select("a").node();
-      this._Toggle(target,parent);
-    };
-
-    // respond to the click on the a element
-    chapterp.onToggle = function (e){
-      var target = d3.event.target,
-          parent = d3.select(target.parentNode);
-      this._Toggle(target,parent);
-    };
-
-    chapterp._Toggle = function(target,parent){
+    STORY.onToggleParent = function (e){
+      var target,parent;
+      if (d3.event.target.tagName.toLowerCase() === 'a'){
+            target = d3.event.target;
+            parent = d3.select(target.parentNode);
+      } else {
+            parent = d3.select(d3.event.target);
+            target = parent.select("a").node();
+      }
       var el = d3.select(target).datum(),
           closed = !el.classed("ui-screen-hidden");
-          
       el.classed("ui-screen-hidden",closed);
       if (!closed){
          parent.style({"background-color":"#EEE"});
       } else {
          parent.style({"background-color":"#FFF"});
       }
-      _.delay( this.dispatch.toggle,0,el,closed ? "closed" : "open");
+      //_.delay( this.dispatch.toggle,0,el,closed ? "closed" : "open");
     };
 
     function add_source(target,sources){

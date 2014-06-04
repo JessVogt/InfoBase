@@ -48,54 +48,77 @@
     this.add_col("{{in_year}}")
       .add_child([
           {
-            "type":"big-int",
-        "nick" : 'thisyearauthorities',
-        "header":{
-          "en":"Total available for use for the year ending March 31, {{in_year_short}}",
-        "fr":"Crédits totaux disponibles pour l'exercice se terminant le 31 mars {{in_year_short}}"
-        }
+              "type": "big-int",
+              "nick": 'thisyearauthorities',
+              "header": {
+                  "en": "Total available for use for the year ending March 31, {{in_year_short}}",
+                  "fr": "Crédits totaux disponibles pour l'exercice se terminant le 31 mars {{in_year_short}}"
+              },
+              "description": {
+                  "en": "corresponds to the authorities provided by Parliament, including transfers from other organizations, central votes, or adjustments available for use at quarter end. This value only includes authorities available for use and granted by Parliament at quarter end.",
+                  "fr": "correspondent aux autorisations accordées par le Parlement, y compris les transferts provenant d’autres organismes, les crédits centraux ou les rajustements disponibles pour emploi à la fin du trimestre. Ceci ne comprend que les autorisations disponibles et octroyées par le Parlement à la fin du trimestre."
+              }
           },
           {
-            "type": "big-int",
-        "header":{
-          "en":"Used during the quarter ended {{qfr_month_name}},{{qfr_last_year_short}}",
-        "fr":"Crédits utilisés pour le trimestre terminé le {{qfr_month_name}} {{qfr_last_year_short}}"
-        }
+              "type": "big-int",
+              "header": {
+                  "en": "Used during the quarter ended {{qfr_month_name}},{{qfr_last_year_short}}",
+                  "fr": "Crédits utilisés pour le trimestre terminé le {{qfr_month_name}} {{qfr_last_year_short}}"
+              },
+              "description": {
+                  "en": "reflects the selected quarter’s expenditures against provided authorities.",
+                  "fr": "représentent les dépenses du trimestre sélectionné par rapport aux autorisations accordées."
+              }
           },
           {
-            "type":"big-int",
-        "nick" : 'thisyearexpenditures',
-        "header":{
-          "en":"Year to date used at quarter-end",
-          "fr":"Cumul des crédits utilisés à la fin du trimestre"
-        }
+              "type": "big-int",
+              "nick": 'thisyearexpenditures',
+              "header": {
+                  "en": "Year to date used at quarter-end",
+                  "fr": "Cumul des crédits utilisés à la fin du trimestre"
+              },
+              "description": {
+                  "en": "represents cumulative spending by the organization during the fiscal year up to the end of the selected quarter.",
+                  "fr": "représente les dépenses cumulatives engagées par le ministère ou l'organisme durant l’exercice jusqu'à la fin de la période précisée."
+              }
           }
     ]);
     this.add_col("{{qfr_last_year}}")
-      .add_child([ {
-        "type":"big-int",
-        "nick" : 'lastyearauthorities',
-        "header":{
-            "en":"Total available for use for the year ending March 31, {{qfr_last_year_short}}",
-            "fr":"Crédits totaux disponibles pour l'exercice se terminant le 31 mars {{qfr_last_year_short}}"
+      .add_child([{
+          "type": "big-int",
+          "nick": 'lastyearauthorities',
+          "header": {
+              "en": "Total available for use for the year ending March 31, {{qfr_last_year_short}}",
+              "fr": "Crédits totaux disponibles pour l'exercice se terminant le 31 mars {{qfr_last_year_short}}"
+          },
+          "description": {
+              "en": "corresponds to the authorities provided by Parliament, including transfers from other organizations, central votes, or adjustments available for use at quarter end. This value only includes authorities available for use and granted by Parliament at quarter end.",
+              "fr": "correspondent aux autorisations accordées par le Parlement, y compris les transferts provenant d’autres organismes, les crédits centraux ou les rajustements disponibles pour emploi à la fin du trimestre. Ceci ne comprend que les autorisations disponibles et octroyées par le Parlement à la fin du trimestre."
           }
-        },
-        {
-         "type":"big-int",
-         "header":{
-            "en":"Used during the quarter ended {{qfr_month_name}},{{last_year_short}} ",
-            "fr":"Crédits utilisés pour le trimestre terminé le {{qfr_month_name}} {{last_year_short}}"
-         }
-        },
-        {
-          "type":"big-int",
-          "nick" : 'lastyearexpenditures',
-          "header":{
-            "en":"Year to date used at quarter-end",
-            "fr":"Cumul des crédits utilisés à la fin du trimestre"
-            }
-        }
-      ]);
+      },
+      {
+       "type": "big-int",
+       "header": {
+           "en": "Used during the quarter ended {{qfr_month_name}},{{last_year_short}} ",
+           "fr": "Crédits utilisés pour le trimestre terminé le {{qfr_month_name}} {{last_year_short}}"
+       },
+       "description": {
+           "en": "reflects the selected quarter’s expenditures against provided authorities.",
+           "fr": "représentent les dépenses du trimestre sélectionné par rapport aux autorisations accordées."
+       }
+      },
+      {
+       "type": "big-int",
+       "nick": 'lastyearexpenditures',
+       "header": {
+           "en": "Year to date used at quarter-end",
+           "fr": "Cumul des crédits utilisés à la fin du trimestre"
+       },
+       "description": {
+           "en": "represents cumulative spending by the organization during the fiscal year up to the end of the selected quarter.",
+           "fr": "représente les dépenses cumulatives engagées par le ministère ou l'organisme durant l’exercice jusqu'à la fin de la période précisée."
+       }
+      }]);
       },
       "queries" : {
         "auth_change" : function(format) {

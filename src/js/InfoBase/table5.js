@@ -33,12 +33,14 @@
           );
         _.each(years, function(header){
               this.add_col(
-                {
-                  "type":"big-int",
-              "nick":header,
-              "header":header
-                }
-                );
+                { "type":"big-int",
+                  "nick":header,
+                  "header": header,
+                   "description": {
+                     "en": "Corresponds to the funds spent during the fiscal year " + header,
+                     "fr": "Correspondent aux dépenses effectuées au cours de l'exercice financier " + header
+                   }
+                });
             },this);
       },
       "dimensions" : {

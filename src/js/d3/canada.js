@@ -193,9 +193,10 @@
           return d3.select(this).attr("id").replace("label-","") === prov;
         });
         var coords = label.attr("transform")
-                          .replace("translate(","")
-                          .replace(")","")
-                          .split(",");
+                          .replace(/(translate\(|\)|)/g,"")
+                          .replace(","," ")
+                          .split(" ");
+
         d3.select(this)
            .style({
              "border-radius" : "5px",

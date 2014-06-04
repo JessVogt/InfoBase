@@ -340,7 +340,7 @@
               .append("rect")
               .attr({ "x" : 0, "y" : -5, "width" : width, "height" : 2*radius+5 })
               .style({
-                "fill" : "CCC",
+                "fill" : "#CCC",
                 "fill-opacity" : function(d,i){
                   return i%2 === 0 ? 0.1 : 0;
                 }

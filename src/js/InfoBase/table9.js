@@ -39,8 +39,12 @@
               {
                 "type":"big-int-real",
             "nick":header,
-            "header":header
-              });
+            "header":header,
+              "description": {
+                           "en": "Corresponds to the active employee population by Employee Type for the fiscal year " + header,
+                           "fr": "Correspondent à l'effectif de l’organisation choisie par période d'affectation au cours de l'exercice financier " + header
+                       }
+                });
         },this);
       },
       "link": {

@@ -38,7 +38,11 @@
             this.add_col({
               "type": "big-int-real",
               "nick": header,
-              "header": header
+              "header": header,
+              "description": {
+                  "en": "Corresponds to the active employee population by Geographic Region for the fiscal year " + header,
+                  "fr": "Correspondent à l'effectif de l’organisation choisie par région géographique au cours de l'exercice financier " + header
+              }
             });
           }, this);
       },

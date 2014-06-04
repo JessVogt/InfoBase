@@ -34,10 +34,13 @@
               this.add_col(
                 {
                   "type":"big-int",
-              "nick":header,
-              "header":header
-                }
-                );
+                  "nick":header,
+                  "header":header,  
+                  "description": {
+                    "en": "Corresponds to the funds spent by program during the fiscal year " + header,
+                    "fr": "Correspondent aux dépenses par programme effectuées au cours de l'exercice financier " + header
+                  }
+                });
             },this);
       },
       "dimensions" : {

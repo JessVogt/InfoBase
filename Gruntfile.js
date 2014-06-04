@@ -14,7 +14,7 @@ module.exports = function(grunt) {
     },
     rsync : {
         options : {
-          args : ['-aLdcv'],
+          args : ['-aLdc', '--delete'],
           exclude : ['.git*',"*.swp","node_modules"],
           recursive : true
         },
@@ -71,6 +71,8 @@ module.exports = function(grunt) {
           "src/js/handlebars_helpers.js",
           "src/js/queries.js",
           "src/js/base_tables.js",
+          "src/js/text.js",
+          "src/js/home.js",
 
           "src/js/d3/core.js",
           "src/js/d3/chapter.js",
@@ -96,7 +98,7 @@ module.exports = function(grunt) {
           "src/js/d3/dept_explore.js",
           //"src/js/info_graph.js",
 
-          "src/js/InfoBase/text.js",
+          "src/js/InfoBase/start.js",
           "src/js/InfoBase/home.js",
           "src/js/InfoBase/table_common.js",
           "src/js/InfoBase/table1.js",

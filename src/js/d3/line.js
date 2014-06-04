@@ -137,7 +137,7 @@
           .attr("class","labels")
           .style({
             "position" : "absolute",
-            "top" : "-8px",
+            "top" : "0px",
             "height" : "10px",
             "width": point_width+"px",
             "left"  : function(d) {return x(d.tick)+margin.left+"px" ; }
@@ -163,8 +163,7 @@
               } else {
                 return y(d.value) +20+ "px";
               }
-            },
-            "left"  : function(d) { return x(d.name)+"px" ; }
+            }
           });
         html.selectAll("div.labels")
           .data(data)

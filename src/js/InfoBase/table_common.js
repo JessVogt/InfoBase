@@ -6,26 +6,46 @@
   TABLES.coverage = {
     "historical" : {
       "en": "Historical",
-      "fr": "Historiques"
+      "fr": "Historiques",
+      "description" : {
+        "en" : "Historical data covers the time-fame from {last_year_5}} to {las_year}}",
+        "fr" : ""
+      }
     },
     "in_year" : {
       "en": "Current Year",
-      "fr":  "L'exercise courrante"
+      "fr":  "L'exercice courant",
+      "description" : {
+        "en" : "Curren year data describes data for this current fiscal year of {{in_uear}}",
+        "fr" : ""
+      }          
     },
     "planned" : {
       "en":  "Planned",
-      "fr":  "Prévues"
+      "fr": "Prévues"            
+      "description" : {
+        "en" : "",
+        "fr" : ""
+      }          
     }
   };
 
   TABLES.data_types = {
     "financial" : {
       "en": "Financial Data",
-      "fr": "Données financiéres"
+      "fr": "Données financiéres",
+      "description" : {
+        "en" : "Financial data describes spending authorities voted by Parliament along with the resulting actual expenditures as recorded in the Public Accounts of Canada ",
+        "fr" : ""
+      }          
     },
     "people" : {
       "en":  "People Management Data",
-      "fr":  "Gestion des personnes"
+      "fr":  "Gestion des personnes",
+      "description" : {
+        "en" : "People Management data describes the demographics of the employees working in the Federal public service",
+        "fr" : ""
+      }          
     }
   };
 

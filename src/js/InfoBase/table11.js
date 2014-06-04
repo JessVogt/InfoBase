@@ -35,7 +35,12 @@
                 {
                 "type":"big-int-real",
                 "nick":header,
-                "header":header
+                "header":header,
+                "description": {
+                    "en": "Corresponds to the active employee population by age group for the fiscal year " + header,
+                    "fr": "Correspondent à l'effectif de l’organisation choisie par groupe d'âge au cours de l'exercice financier " + header
+                }
+
                 });
             },this);
      },

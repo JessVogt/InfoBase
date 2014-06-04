@@ -62,8 +62,46 @@
         id = table.id,
         selector = "#"+id +"_"+lang,
         to_be_appended = $(selector).html();
+    container = container.select(".table_description");
 
-    container.find(".table_description").append(to_be_appended);
+    var chapter = STORY.chapter({
+      toggles : [{
+         "toggle_text" : app.get_text("description_of_columns"), add_divider:true
+      }],
+      header : "h4",
+      target : container,
+      span : "span-8"
+    });
+
+    chapter.graph_area().remove();
+    chapter.text_area().html(to_be_appended);
+
+    // now create the tabular description of the columns and their definitions
+    var rows = _.chain(table.flat_headers)
+      .filter(function(col){
+         return col.definition;
+      })
+      .map(function(col){
+         return [col.fully_qualified_name, TABLES.m(col.definition[lang])];
+      })
+      .value();
+
+    var headers =[[app.get_text("column_header"),app.get_text("column_description")]];
+
+    TABLES.prepare_and_build_table({
+      table_class : "table-condensed table-medium",
+      node : chapter.toggle_area().select(".text").node(),
+      headers : headers,
+      rows : rows,
+      rowseach : function(d,i){
+        if (i % 2 === 1 ){
+          d3.select(this).classed("odd",true);
+        }
+      }
+    });
+
+    chapter.el.selectAll(".toggle").classed("ui-screen-hidden",true);
+
   };
 
   make_graph_context = function(app,org){

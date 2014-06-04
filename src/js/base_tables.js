@@ -66,6 +66,9 @@
       if (_.isArray(s)){
         return _.map(s,function(__){ return TABLES.m(__,extra_args);});
       }
+      if (s[0] === "#" && $(s).length > 0){
+        s = $(s).html();
+      }
       extra_args = extra_args || {};
       var lang = app.state.get('lang');
       var args = TABLES.template_args.common;
@@ -91,6 +94,8 @@
        *
        */
       var key = table.name[app.state.get("lang")];
+      // fetch the table descriptions and attach it
+      table.description = TABLES.m($('#'+table.id+"_"+app.lang).html());
       var promise1= $.Deferred(),promise2 =$.Deferred();
       // sent signal to indicate the files is being downloaded
       WAIT.w.update_item(key,"download");

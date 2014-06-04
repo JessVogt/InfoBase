@@ -291,13 +291,19 @@
       // setup the presentation level choice
       // the data
       var pres_levels = [
-        {name : this.gt("government_stats"), func: this.fetch_gov_data ,val : 'gov'},
-        {name : this.gt("org"), func : this.fetch_dept_data, val : 'depts'}
+        {name : this.gt("government_stats"), 
+         func: this.fetch_gov_data ,
+         val : 'gov',
+         description : this.gt("gov_level_description")
+        },
+        {name : this.gt("org"), 
+         func : this.fetch_dept_data, 
+         val : 'depts',
+         description : this.gt("org_level_description") }
       ];
       this.config.set_options("pres_level",pres_levels);
       // create the list
       this.make_select("pres_level",pres_levels,{html : function(d){return d.name;}});
-
 
      this.on_data_type_click();
      this.data_type.node().focus();
@@ -306,6 +312,8 @@
    p.on_data_type_click = function(){
      // for each of the elements fire off a selection of the first choice
      var data_type = this.config.get_active("data_type");
+     update_description(this.gt("data_type"), data_type.description);
+
      var period_data  = _.chain(TABLES.tables)
        .filter(function(table){
           return table.data_type[this.lang] === data_type.val;
@@ -345,10 +353,11 @@
    };
 
    p.on_pres_level_click = function(d){
+     update_description(this.gt("pres_level"), d.description);
 
      if (d.val === 'gov'){
        // remove the shown groups and organizations section
-       if (_.has(this, 'shown')){ this.shown.remove();}
+       if (_.has(this, 'shown')){ this.shown.remove(); }
        if (_.has(this, 'org')){ this.org.remove();}
      } else {
        // add the shown groups and organizations section
@@ -359,10 +368,12 @@
    };
 
    p.on_period_click = function(){
-
      var lang = this.lang;
      var period = this.config.get_active("period");
      var data_type = this.config.get_active("data_type");
+     update_description(this.gt("period"), period.description);
+
+
      // setup the tables choice
      // the data
      var tables = _.chain(TABLES.tables)
@@ -385,6 +396,8 @@
    };
 
    p.on_display_as_click = function(d){
+     update_description(this.gt("display_as"), null);
+
      // always remove the org section
      // it will be recreated later if needed
      if (_.has(this, 'column')){ this.column.remove();}
@@ -409,7 +422,9 @@
    };
 
    p.on_table_click = function(table){
-    var dimensions = _.map(table.dimensions, function(d){
+     update_description(this.gt("table"), table.name[this.lang]+ " " +table.description);
+
+     var dimensions = _.map(table.dimensions, function(d){
            return {val: d, name : this.gt(d)};
          },this);
     
@@ -429,6 +444,7 @@
    };
 
    p.on_dimension_click = function(dimension){
+     update_description(this.gt("dimension"), null);
 
       var lang = this.lang,
           // retrieve the columns of the current table
@@ -477,7 +493,8 @@
 
    };
 
-   p.on_column_click = function(){
+   p.on_column_click = function(d){
+     update_description(this.gt("column"),d.definition[this.lang] );
      var pres_level = this.config.get_active("pres_level");
      if (this.config.get_active("pres_level").val !== 'gov'){
        this.build_shown_and_orgs();
@@ -487,7 +504,15 @@
    };
 
    p.on_column_choice_click = function(d){
+     // currently selected column choices are stored as just an
+     // array of fully_qualified_names, accoordingly for the descriptions, the names will
+     // have to be used to extract the descriptions from the list of 
+     // columns for the table
+     var table = this.config.get_active("table");
+     var lang = this.lang;
      var currently_active;
+     // if d is undefined, then we have just switched over from the graphical
+     // view ohterwise, a column has been either deselected or selected
      if (_.isUndefined(d)){
        if (!this.config.currently_selected.column_choice){
           currently_active  = [this.config.get_active("column_choice").val];
@@ -509,6 +534,15 @@
        }
        this.config.currently_selected.column_choice = currently_active;
       }
+
+     // use the array of currently active names to pull out the descriptions
+     update_description(this.gt("column"), _.map(currently_active, function(col_name){
+       var col_def = _.find(table.flat_headers, function(col){
+         return col.fully_qualified_name === col_name;
+       });
+       return col_def.definition[this.lang];
+     },this));
+
 
      this.config.set_options("sort_by",this.config.get_active("column_choice"));
      this.make_select("sort_by",this.config.get_active("column_choice"),{
@@ -569,6 +603,7 @@
    };
 
    p.on_shown_click = function(shown){
+     update_description(this.gt("shown"),shown.val);
      this.on_org_click();
    };
 
@@ -603,6 +638,7 @@
        }
      }
      this.config.update_selection("org",null,this.active_depts);
+     update_description(this.gt("org"),this.active_depts());
 
      // highlight the active departments
      this.org.selectAll("li")
