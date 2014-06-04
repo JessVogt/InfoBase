@@ -1,13 +1,21 @@
 (function() {
     var D3 = ns('D3'),
-    PACK = ns('D3.PACK'),
-    TABLES = ns('TABLES');
+        APP = ns("APP"),
+        PACK = ns('D3.PACK'),
+        TABLES = ns('TABLES');
 
-    D3.bubbleOrgList =  function(app,container,method){
-      return new _bubbleOrgList(app,container,method);
-    };
+    APP.add_container_route("explore-:method","explore",function(container,method){
+      this.add_crumbs([this.home_crumb,
+          {html: "Explore"}]);
+      this.add_title($('<h1>').html("Explore"));
+      if (!this.app.explorer){
+        this.app.explorer = new bubbleOrgList(this.app, d3.select(container), method);
+      } else {
+        this.app.explorer.setup(method);
+      }
+    });
 
-    _bubbleOrgList = function(app,container,method){
+    var bubbleOrgList = function(app,container,method){
       this.app = app;
       this.container = container;
       this.gt = this.app.get_text;
@@ -15,13 +23,13 @@
       this.setup(method);
     };
 
-    var p = _bubbleOrgList.prototype;
+    var p = bubbleOrgList.prototype;
 
     p.setup = function(method) {
       if ( this.current_method === method){
         return;
       } else {
-        $(this.container).children().remove();
+        this.container.selectAll("*").remove();
         this.current_method = method;
         if (method === 'dept'){
           this.by_min_dept();
@@ -212,26 +220,16 @@
           }
         }
       });
-      
-      // create the layout for the explorer
-      //  <div class='span-1'></div>
-      //  <div class='dept-explorer span-6'>
-      //     <div class='breadcrumb'/>
-      //     <div class='svg-container'/>
-      //  </div>
-      var target = container.append(
-          $('<div>').addClass("dept-explorer span-8").css({margin : "0px"})
-            .append(
-                $('<div>').addClass("breadcrumb well border-all span-2").css({'margin':'0px', "padding" : "0px"}),
-                $('<div>').addClass("svg-container well span-6 border-all ").css({"margin" : "0px", "padding" : "0px"})
-            )
-          ).find('.svg-container');
+
+      // find the handlebar template and copy out the html
+      container.html(d3.select("#explore_t").html());
+      var target = container.select('.svg-container');
 
       chart.dispatch.on("dataClick.breadcrumb",function(d){
 
         var pointer=d,parents = [],crumbs,containers, height=50,scale,svg,
              // assuming a container setup of span-8
-            span_width = container.width()/4;
+            span_width = container.node().offsetWidth/4;
         // walk up the parent chain and collect them
         while (typeof pointer.parent !== "undefined"){
           parents.push(pointer.parent);
@@ -296,7 +294,7 @@
       chart(target);
       // set the breadcrumb trail container height to that of the main container
       setTimeout(function(){
-        container.find(".breadcrumb").css("min-height", container.find(".svg-container").height());
+        container.selectAll(".breadcrumb").style("min-height", container.select(".svg-container").node().offsetHeight+"px");
       });
     };
 

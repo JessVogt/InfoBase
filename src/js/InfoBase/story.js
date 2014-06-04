@@ -7,7 +7,27 @@
     var STORY = ns('D3.STORY');
     var PACK = ns('D3.PACK');
     var BAR = ns('D3.BAR');
-//    var INFO = ns("INFO");
+
+    APP.add_container_route("infograph","infographic",function(container){
+      this.add_crumbs([this.home_crumb,{html: "Infographic"}]);
+      
+      this.add_title($('<h1>').html("Infographic"));
+      if (!this.app.explore){
+       this.app.explore =  new STORYBOARD(container, this.app);
+      }
+    });
+
+    APP.add_container_route("infograph-:org","infographic_org",function(container, org){
+      org = window.depts[org];
+      if (org){
+        this.app.state.set("dept",org);
+      }
+      var title =  org.dept[this.app.lang] + " Infographic";
+      this.add_crumbs([this.home_crumb,{html: title}]);
+      this.add_title($('<h1>').html(title));
+      container.children().remove();
+      STORYBOARD(container, this.app, org.accronym);
+    });
 
     var height = 250;
 
@@ -25,13 +45,9 @@
       };
     };
 
-    STORY.story =  function(container,app,dept){
-      return new _story(container,app,dept);
-    };
-
-    _story = function(container,app,dept){
+    var STORYBOARD = function(container,app,dept){
       this.dept = dept;
-      this.container = d3.select(container[0]);
+      this.container = d3.select(container);
       this.container.selectAll("*").remove();
       this.app = app;
       this.gt = app.get_text;
@@ -65,11 +81,12 @@
       this.by_employee_type();
       this.by_age_band();
       
+      // psas DOM object instead of wrapped
       STORY.center_text(container);
       this.container.selectAll(".toggle").classed("ui-screen-hidden",true);
     };
 
-    var p = _story.prototype;
+    var p = STORYBOARD.prototype;
 
     p.make_graph_context = function(extra){
       return _.extend({

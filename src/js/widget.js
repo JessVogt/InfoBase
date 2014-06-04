@@ -1,13 +1,29 @@
 (function(root) {
-  
-  var TABLES = ns('TABLES');
   var APP = ns('APP');
-  var WIDGET = ns('WIDGET');
+  var TABLES = ns('TABLES');
 
-  WIDGET.OrgWidgetView = function(app, container){
+  // add the d-:org" route, example:   #d-AGR or d-FO     
+  APP.add_container_route("d-:org","org_widget_view",function(container, org){
+    container= $(container) ;
+    container.children().remove();
+    org = window.depts[org];
+    if (org){
+      this.app.state.set("dept",org);
+      this.app.state.unset("table");
+      var title = org.dept[this.app.lang];
+      this.add_crumbs([this.home_crumb,{html: title}]);
+      this.add_title($('<h1>').html(title));
+      OrgWidgetView(this.app, container);
+    // if the wrong department code is sent, redirect to the home page
+    } else {
+      this.navigate("#adv",{trigger: true});
+    }
+  });
+
+  var OrgWidgetView = function(app, container){
     var org = app.state.get("dept");
 
-    APP.OrgHeader(app,org,container);
+    APP.OrgHeader(app,org,container[0]);
     var template = APP.t( '#widgets_layout_t');
 
     $(template()).appendTo(container);

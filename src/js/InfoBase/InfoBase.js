@@ -35,32 +35,37 @@
     var lang = _.last(location.pathname.replace(".html",""),3).join("")==='eng' ? 'en' : 'fr';
 
     WAIT.w = WAIT.waitscreen(lang);
+
     var setup_material = {
       "Language" :  {url:"data/lang.csv", onload:lang_load},
-      "Table Text" :  {url:"templates/od_table_text.html", onload:table_text_load},
-      "Templates" :  {url:"templates/od_handlebars_templates.html", onload:template_load},
+      "Table Text" :  {url:"handlebars/infobase_tables.html", onload:table_text_load},
+      "Templates" :  {url:"handlebars/infobase.html", onload:template_load},
       "Organizations" :  {url:"data/orgs.csv", onload:org_load},
       "Lookups" :  {url:"data/lookups.csv", onload:sos_load},
       "QFR Links" :  {url:"data/QFRLinks.csv", onload:qfr_links_load}
-      //"PAA" : {url : "data/paa.csv",onload:function(){}}
     };
-    var promises = _.object(_.map(setup_material,function(obj,key){
-      var promise1 = $.Deferred(),promise2 = $.Deferred();
-      WAIT.w.update_item(key,"download");
-      var req = $.ajax(obj.url);
-      req.done(function(data){
-        WAIT.w.update_item(key,"loading");
-        _.delay(promise1.resolve,0,data);
-      });
-      promise1.done(function(data){
-        obj.onload(promises,data);
-        WAIT.w.update_item(key,"finished");
-        _.delay(promise2.resolve,0);
-      });
-      return [key,promise2];
-    }));
+
+    var promises = _.chain(setup_material)
+       .map(function(obj,key){
+          var promise1 = $.Deferred(),promise2 = $.Deferred();
+          WAIT.w.update_item(key,"download");
+          var req = $.ajax(obj.url);
+          req.done(function(data){
+            WAIT.w.update_item(key,"loading");
+            _.delay(promise1.resolve,0,data);
+          });
+          promise1.done(function(data){
+            obj.onload(promises,data);
+            WAIT.w.update_item(key,"finished");
+            _.delay(promise2.resolve,0);
+          });
+          return [key,promise2];
+      })
+      .object().value();
+
     // when the hot mess above is finished, create the app
     // using the language you figured out from the url
+
     $.when.apply(null,_.values(promises)).done(function(){
       APP.app = new APP.appView({
         state : {
@@ -98,14 +103,16 @@
       "hover .horizontal" : "highlighter"
     },
     initialize: function(){
+      // there is an implicit this.options which equals the
+      // values passed in when this was created
       _.bindAll.apply(this,[this].concat(_.functions(this)));
 
       this.state = new APP.stateModel(_.extend({app:this},this.options.state));
+      this.lang = this.state.get("lang");
 
       APP.dispatcher.trigger("init",this);
 
       //initialize values
-      this.lang = this.state.get("lang");
       // check for a language or set the default of english
       this.state
         .on("change:lang", this.render)
@@ -115,7 +122,6 @@
       this.render();
 
       this.router = new APP.AppRouter({app:this});
-
     },
     formater : function(format,val){
       if (_.has(APP.types_to_format,format)){

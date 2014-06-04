@@ -1,9 +1,17 @@
 (function() {
     var APP = ns('APP');
-    var LANG = ns('LANG');
-    var TABLES = ns('TABLES');
+ 
+    // add the #search route
+    APP.add_container_route("search","search",function(container){
+      this.add_crumbs([this.home_crumb,{html: this.gt("search")}]);
+      this.add_title("search");
+      if (!this.app.full_org_list){
+        this.app.full_org_list = new searchOrg({ app: this.app, container : $(container)});
+        this.app.full_org_list.render();
+      }
+    });
 
-    APP.searchOrg = Backbone.View.extend({
+    var searchOrg = Backbone.View.extend({
       events : {
         "click a.dept_sel_cancel" : "cancel",
         "click .org_list .sort_buttons a" : "sort"

@@ -5,9 +5,44 @@
 
 (function() {
     var D3 = ns('D3'),
-    HORIZONTAL = ns("D3.HORIZONTAL"),
-    TABLES = ns('TABLES');
+        HORIZONTAL = ns("D3.HORIZONTAL"),
+        APP = ns("APP"),
+        TABLES = ns('TABLES'),
+        STORY = ns("STORY");
     
+    var _descriptions = [];
+    var update_description = function(key,template_args){
+      var key_entry = _.find(_descriptions, function(d){ return d.key ===key;});
+      if (key_entry){
+        key_entry.description = description;
+      } else {
+        _descriptions.push({
+          key : key,
+          description : description
+        });
+      }
+      remove_description_after(key);
+      console.log(_descriptions);
+    };
+
+    var remove_description_after = function(key){
+      var index = _.findIndex(_descriptions, function(x){return x.key === key;});
+      _descriptions.slice(index+1);
+    };
+
+    var reset_description = function(){
+      _descriptions = [];
+    };
+
+    APP.add_container_route("analysis-:config","analysis",function(container,config){
+      if (config!== 'start') {
+       config = $.parseParams(config);
+      } 
+      this.add_crumbs([this.home_crumb,{html: "Horizontal Analysis"}]);
+      this.add_title($('<h1>').html("Horizontal Analysis"));
+      this.app.analysis =   new horizontal_gov(this.app,d3.select(container),config);
+    });
+
     HORIZONTAL.create_analytics_link = function(table,cols,lang,more_options){
       var options,href;
       more_options = more_options || {};
@@ -40,10 +75,10 @@
       };
     };
 
-
     var Config = HORIZONTAL.Config = function(currently_selected){
       this._config = {};
       this.currently_selected = currently_selected;
+      this.dispatch = d3.dispatch("config_changed");
     };
 
     Config.create_link = function(to_be_selected){
@@ -93,12 +128,9 @@
       return $.param(this.currently_selected);
     };
 
-    HORIZONTAL.horizontal_gov =  function(app,container,config){
-      return new _horizontal_gov(app,container,config);
-    };
-
-    var _horizontal_gov = function(app,container,config){
-      container.children().remove();
+    var horizontal_gov = function(app,container,config){
+      container.selectAll("*").remove();
+      container.html(d3.select('#horizontal_t').html());
       config = config || {};
       // ensure all functions on this object are always bound to this
       _.bindAll(this, _.functions(this));
@@ -106,25 +138,13 @@
       this.app = app;
       this.no_wrap = ['org',"column_choice"];
       this.gt = app.get_text;
-      var lang = this.lang = app.state.get("lang");
+      var lang = this.lang = app.lang;
       this.formater = app.formater;
       // create the span-8 contain and then the selections side bar and the 
       // main chart area
-      var area = d3.select(container[0])
-            .append("div")
-            .attr("class","span-8 horizontal_gov")
-            .style("min-height","800px")
-            .style("margin-left","0px");
-      this.selections  = area
-            .append("div")
-            .attr("class","span-2 selections border-all margin-none")
-            .style("margin-left","10px");
-      this.chart_area  = area
-            .append("div")
-            .attr("class","span-6 chart border-all margin-none")
-            .style({"margin-left":"10px","overflow-x":"auto"});
-
-      // listen to all events to update the config object 
+      this.selections  = container.select(".selections");
+      this.chart_area  = container.select(".chart-area");
+      this.description_area = container.select(".chart-description");
 
       // add the default option sections
       this.add_section("data_type",2);
@@ -149,7 +169,7 @@
       this.start_build();
     };
 
-    var p = _horizontal_gov.prototype;
+    var p = horizontal_gov.prototype;
 
    p.update_url = function(){
      var config = this.config.to_url();

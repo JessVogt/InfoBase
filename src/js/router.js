@@ -23,11 +23,22 @@
 
 (function() {
   var APP = ns('APP');
-  var WIDGET = ns("WIDGET");
   var DETAILS = ns("DETAILS");
   var TABLES = ns('TABLES');
   var STORY = ns("STORY");
   var D3 = ns("D3");
+
+ // as modules are loaded, they can declare their routes
+ // and routing functions
+ APP.add_container_route = function(pattern, func_name,func ){
+   container_routes.push({
+     pattern : pattern,
+     func_name : func_name,
+     func : func
+   });
+ };
+
+ var container_routes = [];
 
   APP.AppRouter = Backbone.Router.extend({
     initialize : function(options){
@@ -39,7 +50,8 @@
       this.bread_crumb.find("li:last").addClass("infobase-links");
 
       this.start_crumb = {html : this.app.get_text("title"), href : "#start"};
-      this.home_crumb = {html : this.app.get_text("home"), href : "#adv"};
+
+      this.home_crumb = {html : this.app.get_text("home"), href : "#home"};
 
       $(document).on("click", "a.router",function(e){
         that.navigate($(e.target).attr("href"),{trigger:true});
@@ -59,13 +71,16 @@
       //  3 - keep a reference to the container based on the function name
       //  4 - wrap the function in a call which will ensure associated container
       //      is made visible when that route is called
-      _.each(this._routes, function(func_name,key){
-        var container = $('<div>')
+      _.each(container_routes, function(container_route){
+        var func_name = container_route.func_name,
+            pattern = container_route.pattern,
+            func = container_route.func,
+            container = $('<div>')
                           .attr("id",func_name)
-                          .addClass("grid-8"),
-            func = that[func_name];
+                          .addClass("grid-8");
+
         that.containers[func_name]=container;
-        that.route(key,func_name, function(){
+        that.route(pattern,func_name, function(){
           // remap the other language link
           var ref = $('li#gcwu-gcnb-lang a');
           var link = ref.attr("href").split("#")[0];
@@ -76,7 +91,9 @@
 
           $(".nav_area .right").html("");
           $(".nav_area .left").html("");
-          var rtn = func.apply(that, [container].concat(_.map(arguments,_.identity)));
+          // always pass the raw dom object, the module wlil wrap it in either
+          // jquery or d3.select
+          var rtn = func.apply(that, [container[0]].concat(_.map(arguments,_.identity)));
         });
       });
     },
@@ -90,18 +107,6 @@
      this.navigate("start",{trigger:true});
     },
 
-    _routes: {
-      "start"  : "start",  //#start
-      "search" :  "search", // #search
-      "d-:org": "org_widget_view", // #d-AGR      
-      "t-:org-:table": "org_table_details_view", // #t-AGR-table1
-      "infograph" : "infographic",  //#inforgraph
-      "infograph-:org"  : "infographic_org",  //#inforgraph/AGR
-      "explore-:method"  : "explore",  //#explore
-      "adv"  : "home", //#analysis
-      "analysis-:config"  : "analysis"  //#analysis
-    },
-
     show : function(container){
       _.each(_.values(this.containers), function(x){ x.detach();});
       $('#app').append(container);
@@ -113,6 +118,7 @@
       }
       $(".nav_area .left").append(title);
     },
+
     add_crumbs : function(crumbs){
       crumbs = crumbs || [];
       crumbs.unshift(this.start_crumb);
@@ -136,132 +142,9 @@
         .html(last.html)
       );
     },
-
     reset_crumbs : function(title){
        this.bread_crumb.find(".infobase-links").remove();
-    },
-
-    start : function(container){
-      var inside = APP.t('#greeting_'+this.app.lang)();
-      var outside = APP.t("#greeting")({greeting : inside});
-
-      this.add_crumbs();
-      this.app.reset();
-
-      APP.dispatcher.trigger("reset",this.app);
-      container.html(outside);
-      this.add_title("welcome");
-      APP.dispatcher.trigger_a("home",this.app);
-    },
-
-    search : function(container){
-      this.add_crumbs([this.home_crumb,{html: this.gt("search")}]);
-      this.add_title("search");
-      if (!this.app.full_org_list){
-        this.app.full_org_list = new APP.searchOrg({ app: this.app, container : container });
-        this.app.full_org_list.render();
-      }
-    },
-
-    home : function(container){
-      this.add_crumbs([this.home_crumb]);
-      this.add_title("home");
-      container.html(APP.t('#home_t')());
-      container.find(".row").each(function(){
-        var panels = $(this).find(".netflix-panel");
-        var width = d3.sum(panels, function(x){return $(x).outerWidth();});
-        $(this).find(".inner").width(1.2*width);
-        if (1.2*width > $(this).width()){
-          $(this).height($(this).height()+10);
-        }
-      });
-    },
-
-    org_widget_view: function(container, org) {
-      container.children().remove();
-      org = window.depts[org];
-      if (org){
-        this.app.state.set("dept",org);
-        this.app.state.unset("table");
-        var title = org.dept[this.app.lang];
-        this.add_crumbs([this.home_crumb,{html: title}]);
-        this.add_title($('<h1>').html(title));
-        WIDGET.OrgWidgetView(this.app, container);
-      // if the wrong department code is sent, redirect to the home page
-      } else {
-        this.navigate("#adv",{trigger: true});
-      }
-    },
-
-    org_table_details_view : function(container,org,table){
-      container.children().remove();
-      org = window.depts[org];
-      if (org){
-        this.app.state.set("dept",org);
-      }
-      table = "table" + table;
-      table = _.find(TABLES.tables,function(t){ return t.id === table;});
-      if (table){
-        this.app.state.set({table:table},{silent:true});
-      } else {
-        this.navigate("#d-"+org.accronym,{trigger: true});
-      }
-      // check to see if the selected table has data for the department
-      if (table.depts[org.accronym]) {
-        var title =  table.name[this.app.lang];
-        this.add_title($('<h1>').html(title));
-        this.add_crumbs([this.home_crumb,
-            {html : org.dept[this.app.lang],href : "#d-"+org.accronym},
-            {html: title}]);
-        new DETAILS.OrgTabletView( this.app,table, container);
-      // if there aren't any data, redirect to the widget view 
-      } else {
-        this.navigate("#d-"+org.accronym,{trigger: true});
-      }
-    },
-
-    infographic : function(container){
-      this.add_crumbs([this.home_crumb,{html: "Infographic"}]);
-      
-     this.add_title($('<h1>').html("Infographic"));
-     if (!this.app.explore){
-      this.app.explore =  D3.STORY.story(container, this.app);
-     }
-    },
-
-    infographic_org : function(container,org){
-      org = window.depts[org];
-      if (org){
-        this.app.state.set("dept",org);
-      }
-      var title =  org.dept[this.app.lang] + " Infographic";
-      this.add_crumbs([this.home_crumb,{html: title}]);
-      this.add_title($('<h1>').html(title));
-      container.children().remove();
-      D3.STORY.story(container, this.app, org.accronym);
-    },
-
-    explore : function(container, method){
-      this.add_crumbs([this.home_crumb,
-          {html: "Explore"}]);
-      this.add_title($('<h1>').html("Explore"));
-      if (!this.app.explorer){
-        this.app.explorer = D3.bubbleOrgList(this.app, container, method);
-      } else {
-        this.app.explorer.setup(method);
-      }
-    },
-
-    analysis: function(container,config){
-      if (config!== 'start') {
-       config = $.parseParams(config);
-      } 
-      this.add_crumbs([this.home_crumb,{html: "Horizontal Analysis"}]);
-      this.add_title($('<h1>').html("Horizontal Analysis"));
-      this.app.analysis =   D3.HORIZONTAL.horizontal_gov(this.app,container,config);
     }
   });
-
-
 })();
 

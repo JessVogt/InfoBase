@@ -6,14 +6,44 @@
   var DETAILS = ns('DETAILS');
   var STORY = ns('D3.STORY');
 
+  // add the t-:org-:table" route, example:   #d-AGR or d-FO     
+  APP.add_container_route("t-:org-:table","org_table_view",function(container, org,table){
+    $(container).children().remove();
+    org = window.depts[org];
+    if (org){
+      this.app.state.set("dept",org);
+    }
+    table = "table" + table;
+    table = _.find(TABLES.tables,function(t){ return t.id === table;});
+    if (table){
+      this.app.state.set({table:table},{silent:true});
+    } else {
+      this.navigate("#d-"+org.accronym,{trigger: true});
+    }
+    // check to see if the selected table has data for the department
+    if (table.depts[org.accronym]) {
+      var title =  table.name[this.app.lang];
+      this.add_title($('<h1>').html(title));
+      this.add_crumbs([this.home_crumb,
+          {html : org.dept[this.app.lang],href : "#d-"+org.accronym},
+          {html: title}]);
+      new DETAILS.OrgTabletView( this.app,table, container);
+    // if there aren't any data, redirect to the widget view 
+    } else {
+      this.navigate("#d-"+org.accronym,{trigger: true});
+    }
+  });
+
   DETAILS.OrgTabletView = function(app,table, container){
+    container = d3.select(container);
     var template = APP.t("#details_t");
     var org = app.state.get("dept");
-    APP.OrgHeader(app,org,container);
-    container.append($(template({org:org})));
+    APP.OrgHeader(app,org,container.node());
+
+    container.append("div").html(template({org:org}));
     add_text(app,org,table, container);
-    add_graph(app,org,table, d3.select(container[0]));
-    add_table(app,org,table, d3.select(container[0]));
+    add_graph(app,org,table,container);
+    add_table(app,org,table,container);
   };
 
   var get_key_to_horizontal = function(table,cols,org){
