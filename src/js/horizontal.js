@@ -12,17 +12,17 @@
     
     var _descriptions = [];
     var update_description = function(key,template_args){
-      var key_entry = _.find(_descriptions, function(d){ return d.key ===key;});
-      if (key_entry){
-        key_entry.description = description;
-      } else {
-        _descriptions.push({
-          key : key,
-          description : description
-        });
-      }
-      remove_description_after(key);
-      console.log(_descriptions);
+      //var key_entry = _.find(_descriptions, function(d){ return d.key ===key;});
+      //if (key_entry){
+      //  key_entry.description = description;
+      //} else {
+      //  _descriptions.push({
+      //    key : key,
+      //    description : description
+      //  });
+      //}
+      //remove_description_after(key);
+      //console.log(_descriptions);
     };
 
     var remove_description_after = function(key){
@@ -293,13 +293,12 @@
       var pres_levels = [
         {name : this.gt("government_stats"), 
          func: this.fetch_gov_data ,
-         val : 'gov',
-         description : this.gt("gov_level_description")
+         val : 'gov'
         },
         {name : this.gt("org"), 
          func : this.fetch_dept_data, 
-         val : 'depts',
-         description : this.gt("org_level_description") }
+         val : 'depts'
+        }
       ];
       this.config.set_options("pres_level",pres_levels);
       // create the list
@@ -311,8 +310,11 @@
 
    p.on_data_type_click = function(){
      // for each of the elements fire off a selection of the first choice
+
      var data_type = this.config.get_active("data_type");
-     update_description(this.gt("data_type"), data_type.description);
+     update_description("data_type", {
+       name : data_type.name
+     });
 
      var period_data  = _.chain(TABLES.tables)
        .filter(function(table){
@@ -325,7 +327,8 @@
        .map(function(coverage){
           return {
             val : coverage,
-            name :coverage 
+            name :coverage,
+            //description : coverage.description[this.lang]
           };
        },this)
        .value();
@@ -353,7 +356,9 @@
    };
 
    p.on_pres_level_click = function(d){
-     update_description(this.gt("pres_level"), d.description);
+     update_description("pres_level", {
+       name : d.name
+     });
 
      if (d.val === 'gov'){
        // remove the shown groups and organizations section
@@ -371,7 +376,11 @@
      var lang = this.lang;
      var period = this.config.get_active("period");
      var data_type = this.config.get_active("data_type");
-     update_description(this.gt("period"), period.description);
+
+     update_description("period", {
+       name : period.name,
+       description : period.description
+     });
 
 
      // setup the tables choice
@@ -422,7 +431,10 @@
    };
 
    p.on_table_click = function(table){
-     update_description(this.gt("table"), table.name[this.lang]+ " " +table.description);
+     update_description("table", {
+       name : table.name[this.lang],
+       description: table.description
+     });
 
      var dimensions = _.map(table.dimensions, function(d){
            return {val: d, name : this.gt(d)};
@@ -494,7 +506,12 @@
    };
 
    p.on_column_click = function(d){
-     update_description(this.gt("column"),d.definition[this.lang] );
+
+     update_description(this.gt("column"),{
+       description : d.description[this.lang],
+     
+     });
+
      var pres_level = this.config.get_active("pres_level");
      if (this.config.get_active("pres_level").val !== 'gov'){
        this.build_shown_and_orgs();
@@ -536,12 +553,16 @@
       }
 
      // use the array of currently active names to pull out the descriptions
-     update_description(this.gt("column"), _.map(currently_active, function(col_name){
-       var col_def = _.find(table.flat_headers, function(col){
-         return col.fully_qualified_name === col_name;
-       });
-       return col_def.definition[this.lang];
-     },this));
+     update_description(this.gt("column"),
+         {cols :  _.map(currently_active, function(col_name){
+                var col_def = _.find(table.flat_headers, function(col){
+                  return col.fully_qualified_name === col_name;
+                });
+                return {name : col_def.fully_qualified_name,
+                        description : col_def.description[this.lang]
+                };
+              },this)
+         });
 
 
      this.config.set_options("sort_by",this.config.get_active("column_choice"));
@@ -603,7 +624,7 @@
    };
 
    p.on_shown_click = function(shown){
-     update_description(this.gt("shown"),shown.val);
+     update_description("shown",shown.val);
      this.on_org_click();
    };
 
@@ -638,7 +659,8 @@
        }
      }
      this.config.update_selection("org",null,this.active_depts);
-     update_description(this.gt("org"),this.active_depts());
+
+     update_description("org",this.active_depts());
 
      // highlight the active departments
      this.org.selectAll("li")

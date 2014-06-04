@@ -22,7 +22,7 @@
     },
     "planned" : {
       "en":  "Planned",
-      "fr": "Prévues"            
+      "fr": "Prévues",
       "description" : {
         "en" : "",
         "fr" : ""

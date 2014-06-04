@@ -79,10 +79,10 @@
     // now create the tabular description of the columns and their definitions
     var rows = _.chain(table.flat_headers)
       .filter(function(col){
-         return col.definition;
+         return col.description;
       })
       .map(function(col){
-         return [col.fully_qualified_name, TABLES.m(col.definition[lang])];
+         return [col.fully_qualified_name, TABLES.m(col.description[lang])];
       })
       .value();
 

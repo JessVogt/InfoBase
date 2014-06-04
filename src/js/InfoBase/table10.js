@@ -157,11 +157,12 @@
           data = [this.data.dept_last_year_3_prov_split,
                   this.data.dept_last_year_2_prov_split,
                   this.data.dept_last_year_prov_split ];
-
+          formater = this.bigintreal
           } else {
           data = [this.data.gov_last_year_3_prov_split,
                   this.data.gov_last_year_2_prov_split,
                   this.data.gov_last_year_prov_split ];
+          formater = this.bigintreal
           }
 
           // reformat the data for display
@@ -184,8 +185,8 @@
               "three_year" : app.get_text("three_year_history")
             },
             data : data,
-            ticks : this.data.last_years,
-            formater : this.bigintreal
+            ticks : _.last(this.data.last_years,3),
+            formater : formater
           })(this.graph_area);
         }
       }
