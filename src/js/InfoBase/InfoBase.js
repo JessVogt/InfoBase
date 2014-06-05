@@ -8,18 +8,23 @@
   function lang_load(promises,data){
    LANG.lookups = PARSER.parse_lang(d3.csv.parseRows(data));
   }
+
   function table_text_load(promises,data){
     $('html').append(data);
   }
+
   function template_load(promises,data){
     $('html').append(data);
   }
+
   function org_load(promises,data){
     window.depts = PARSER.parse_orgs(d3.csv.parseRows(data));
   }
+
   function sos_load(promises,data){
     PARSER.parse_lookups(d3.csv.parseRows(data));
   }
+
   function qfr_links_load(promises,data){
     promises.Organizations.done(function(){
       PARSER.parse_qfrlinks(window.depts, d3.csv.parseRows(data));
@@ -67,7 +72,7 @@
     // using the language you figured out from the url
 
     $.when.apply(null,_.values(promises)).done(function(){
-      APP.app = new APP.appView({
+      APP.app = new APP.APP({
         state : {
           "lang":lang,
           "use_footer":false,
@@ -95,52 +100,38 @@
     Backbone.history.start();
   });
 
-  /************APP VIEW***********/
-  APP.appView = Backbone.View.extend({
-    el : $('body'),
-    events : {
-      "click #lang_change" : "toggle_lang",
-      "hover .horizontal" : "highlighter"
-    },
-    initialize: function(){
-      // there is an implicit this.options which equals the
-      // values passed in when this was created
-      _.bindAll.apply(this,[this].concat(_.functions(this)));
+  // this is a constructor function, so this will be a new
+  // object when new APP.APP() is called
+  APP.APP = function(options) {
+    // 
+    _.bindAll.apply(this,[this].concat(_.functions(this)));
+    this.state = new APP.stateModel(_.extend({app:this},options.state));
+    this.lang = this.state.get("lang");
+  
+    APP.dispatcher.trigger("init",this);
+  
+    this.router = new APP.AppRouter({app:this});
+  };
 
-      this.state = new APP.stateModel(_.extend({app:this},this.options.state));
-      this.lang = this.state.get("lang");
+  APP.APP.prototype.formater = function(format,val){
+    if (_.has(APP.types_to_format,format)){
+      if (_.isArray(val)){
+        return _.map(val, function(v){ return this.formater(format,v);},this);
+      } else if (_.isObject(val)){
+        return _.chain(val)
+          .map(function(v,k){ return [k,this.formater(format,v)];},this)
+          .object()
+          .value();
+      } else  if (_.isString(val)){
+        return val;
+      } else {
+        return APP.types_to_format[format](val,this.lang);
+      }
+    } 
+    return val;
+  };
 
-      APP.dispatcher.trigger("init",this);
-
-      //initialize values
-      // check for a language or set the default of english
-      this.state
-        .on("change:lang", this.render)
-        .on("change:lang", this.reset_dept)
-        .on("change:lang", this.lang_change);
-
-      this.render();
-
-      this.router = new APP.AppRouter({app:this});
-    },
-    formater : function(format,val){
-      if (_.has(APP.types_to_format,format)){
-        if (_.isArray(val)){
-          return _.map(val, function(v){ return this.formater(format,v);},this);
-        } else if (_.isObject(val)){
-          return _.chain(val)
-            .map(function(v,k){ return [k,this.formater(format,v)];},this)
-            .object()
-            .value();
-        } else  if (_.isString(val)){
-          return val;
-        } else {
-          return APP.types_to_format[format](val,this.lang);
-        }
-      } 
-      return val;
-    },
-    list_formater : function(formats,vals){
+   APP.APP.prototype.list_formater = function(formats,vals){
       // formats can be either an array of values or one single one
       // which will be duplicated for each item in vals
       if (!_.isArray(formats)){
@@ -149,59 +140,15 @@
       return _.map(formats, function(format,i){
         return this.formater(format,vals[i]);
       },this);
-    },
-    make_formater : function(format){
+    };
+
+   APP.APP.prototype.make_formater = function(format){
       var that = this;
       return function(d){ return that.formater(format,d);};
-    },
-    lang_change : function(state,lang){
-      APP.dispatcher.trigger("lang_change",lang);
-    },
-    get_text : function(txt){
-      return LANG.l(txt,this.state.get('lang'));
-    },
-    toggle_lang : function(){
-      this.state.set({
-        lang:this.state.get("lang") === "en" ? "fr" : "en" 
-      });
-    },
-    reset_dept : function(model, dept){
-      dept = this.state.get('dept');
-      if (!dept){ return;}
-      this.state.unset("dept",{silent:true});
-      this.state.set('dept',dept);
-    },
-    reset : function() {
-      var min_tot = this.state.get("min_tot");
-      var goc_tot = this.state.get("goc_tot");
-      this.state.clear({silent:true});
-      this.state.set({
-        lang : this.lang,
-        min_tot : min_tot,
-        goc_tot : goc_tot
-      });
-    },
-    highlighter : function(e){
-       $(e.currentTarget).toggleClass('alert-info');
-    },
-    render: function(){
-      this.remove();
-    },
-    remove : function(){
-      if (this.app){
-        this.app.find('*').off();
-        this.app.children().remove();
-      }
-    }
-  });
+    };
 
-   APP.dispatcher.on("dept_ready", function(container,app,dept){
-      // create a new organization view and link its rendering to 
-      // the dept_ready signal
-      var org_view = new APP.OrgView({app:app, dept:dept,container:container});
-      org_view.render();
-   });
-
-
+   APP.APP.prototype.get_text = function(txt){
+     return LANG.l(txt,this.state.get('lang'));
+   };
 
 })();
