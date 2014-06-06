@@ -158,7 +158,7 @@
               colors : D3.tbs_color(),
               label_attr : "label" ,
               data_attr : "val",
-              inner_radius: 20,
+              inner_radius: 40,
               data : _.chain(data.gov_last_year_emp_ages)
                        .map(function(v,k){ return {val: v, label: k};})
                        .value(),

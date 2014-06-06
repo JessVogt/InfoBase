@@ -8,7 +8,7 @@
       "en": "Historical",
       "fr": "Historiques",
       "description" : {
-        "en" : "Historical data covers the time-fame from {last_year_5}} to {las_year}}",
+        "en" : "Historical data covers the time-fame from {{last_year_5}} to {{last_year}}",
         "fr" : ""
       }
     },
@@ -16,7 +16,7 @@
       "en": "Current Year",
       "fr":  "L'exercice courant",
       "description" : {
-        "en" : "Curren year data describes data for this current fiscal year of {{in_uear}}",
+        "en" : "Current year data describes data for this current fiscal year of {{in_year}}",
         "fr" : ""
       }          
     },
@@ -87,9 +87,9 @@
   
   TABLES.years =["{{last_year_5}}",
                  "{{last_year_4}}",
-                "{{last_year_3}}",
-                '{{last_year_2}}',
-               '{{last_year}}',
+                 "{{last_year_3}}",
+                 "{{last_year_2}}",
+                 '{{last_year}}',
                ] ;
 
   APP.dispatcher.once("app_ready",function(app){

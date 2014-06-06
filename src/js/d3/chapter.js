@@ -112,8 +112,9 @@
     };
 
     STORY.add_toggle_section = function(target,text){
-      var toggler = target.append("div").attr("class","chapter span-8 toggler border-top")
+      var toggler = target.append("div").attr("class","chapter toggler border-top")
         .style({
+          "width" : "100%",
           "padding-top":"10px",
           "padding-bottom": "10px",
           "margin-bottom" : "0px"
@@ -123,7 +124,7 @@
           .html(text)
           .attr("class","ui-link")
           .attr("href","#");
-      var div = target.append("div").attr("class", "span-8 toggle ");
+      var div = target.append("div").attr("class", "toggle ");
       toggler.datum(div);
       return div;
     };

@@ -8,31 +8,8 @@
         HORIZONTAL = ns("D3.HORIZONTAL"),
         APP = ns("APP"),
         TABLES = ns('TABLES'),
-        STORY = ns("STORY");
+        STORY = ns("D3.STORY");
     
-    var _descriptions = [];
-    var update_description = function(key,template_args){
-      //var key_entry = _.find(_descriptions, function(d){ return d.key ===key;});
-      //if (key_entry){
-      //  key_entry.description = description;
-      //} else {
-      //  _descriptions.push({
-      //    key : key,
-      //    description : description
-      //  });
-      //}
-      //remove_description_after(key);
-      //console.log(_descriptions);
-    };
-
-    var remove_description_after = function(key){
-      var index = _.findIndex(_descriptions, function(x){return x.key === key;});
-      _descriptions.slice(index+1);
-    };
-
-    var reset_description = function(){
-      _descriptions = [];
-    };
 
     APP.add_container_route("analysis-:config","analysis",function(container,config){
       if (config!== 'start') {
@@ -127,7 +104,7 @@
     Config.prototype.to_url = function(){
       return $.param(this.currently_selected);
     };
-
+                                     
     var horizontal_gov = function(app,container,config){
       container.selectAll("*").remove();
       container.html(d3.select('#horizontal_t').html());
@@ -140,11 +117,19 @@
       this.gt = app.get_text;
       var lang = this.lang = app.lang;
       this.formater = app.formater;
+
+      this._descriptions = [];
+
       // create the span-8 contain and then the selections side bar and the 
       // main chart area
       this.selections  = container.select(".selections");
       this.chart_area  = container.select(".chart-area");
       this.description_area = container.select(".chart-description");
+
+      STORY.add_toggle_section(this.description_area,this.gt("report_details"));
+      container.selectAll(".toggle")
+        .style("padding-left","20px")
+        .classed("ui-screen-hidden",true);
 
       // add the default option sections
       this.add_section("data_type",2);
@@ -169,7 +154,39 @@
       this.start_build();
     };
 
-    var p = horizontal_gov.prototype;
+   var p = horizontal_gov.prototype;
+
+   p.update_description = function(key,template_args){
+     var gt = this.gt;
+     var index = _.findIndex(this._descriptions, function(x){return x.key === key;});
+     if (index !== -1) {
+      this._descriptions.splice(index);
+    }
+     this._descriptions.push({
+       key : key,
+       args : template_args
+     });
+
+     var data = _.chain(this._descriptions)
+         .filter(function(d){ return d.args !== null;} )
+         .map(function(d){
+           d.description = TABLES.m(TABLES.m(gt("describe_"+d.key),d.args));
+           return d;
+         })
+         .value();
+
+     var descs = this.description_area.select(".toggle")
+       .selectAll("p.description")
+       .data(data);
+
+     descs.exit().remove();
+     descs.enter().append("p").attr("class","description");
+
+     descs
+       .html(function(d){
+           return d.description;
+       });
+   };
 
    p.update_url = function(){
      var config = this.config.to_url();
@@ -278,11 +295,13 @@
    p.start_build = function(_class, span){
       var data_types = _.chain(TABLES.tables)
         .map( function(t){
-           return t.data_type[this.lang];
+           return t.data_type;
+        })
+        .uniq(function(data_type){
+           return data_type[this.lang];
         },this)
-        .uniq()
         .map(function(type){
-          return {name : type, val : type};
+          return {name : type[this.lang], val : type[this.lang], description: type.description[this.lang]};
         },this)
         .value();
       this.config.set_options("data_type",data_types);
@@ -312,8 +331,9 @@
      // for each of the elements fire off a selection of the first choice
 
      var data_type = this.config.get_active("data_type");
-     update_description("data_type", {
-       name : data_type.name
+     this.update_description("data_type", {
+       name : data_type.name,
+       description : data_type.description
      });
 
      var period_data  = _.chain(TABLES.tables)
@@ -321,14 +341,16 @@
           return table.data_type[this.lang] === data_type.val;
        },this)
        .map(function(table){
-         return table.coverage[this.lang];
+         return table.coverage;
+       })
+       .uniq(function(coverage){
+         return coverage[this.lang];
        },this)
-       .uniq()
        .map(function(coverage){
           return {
-            val : coverage,
-            name :coverage,
-            //description : coverage.description[this.lang]
+            val : coverage[this.lang],
+            name :coverage[this.lang],
+            description : coverage.description[this.lang]
           };
        },this)
        .value();
@@ -356,7 +378,7 @@
    };
 
    p.on_pres_level_click = function(d){
-     update_description("pres_level", {
+     this.update_description("pres_level", {
        name : d.name
      });
 
@@ -377,7 +399,7 @@
      var period = this.config.get_active("period");
      var data_type = this.config.get_active("data_type");
 
-     update_description("period", {
+     this.update_description("period", {
        name : period.name,
        description : period.description
      });
@@ -405,7 +427,7 @@
    };
 
    p.on_display_as_click = function(d){
-     update_description(this.gt("display_as"), null);
+     this.update_description("display_as", null);
 
      // always remove the org section
      // it will be recreated later if needed
@@ -431,7 +453,7 @@
    };
 
    p.on_table_click = function(table){
-     update_description("table", {
+     this.update_description("table", {
        name : table.name[this.lang],
        description: table.description
      });
@@ -456,7 +478,7 @@
    };
 
    p.on_dimension_click = function(dimension){
-     update_description(this.gt("dimension"), null);
+     this.update_description("dimension", null);
 
       var lang = this.lang,
           // retrieve the columns of the current table
@@ -507,9 +529,9 @@
 
    p.on_column_click = function(d){
 
-     update_description(this.gt("column"),{
+     this.update_description("column",{
        description : d.description[this.lang],
-     
+       name : d.header[this.lang]
      });
 
      var pres_level = this.config.get_active("pres_level");
@@ -553,7 +575,7 @@
       }
 
      // use the array of currently active names to pull out the descriptions
-     update_description(this.gt("column"),
+     this.update_description("column_choice",
          {cols :  _.map(currently_active, function(col_name){
                 var col_def = _.find(table.flat_headers, function(col){
                   return col.fully_qualified_name === col_name;
@@ -624,14 +646,15 @@
    };
 
    p.on_shown_click = function(shown){
-     update_description("shown",shown.val);
+     this.update_description("shown",null);
      this.on_org_click();
    };
 
-   p.active_depts = function(){
+   p.active_depts = function(attr_to_pluck){
+      attr_to_pluck  = attr_to_pluck  || "acronym" ;
      return _.chain(this.orgs)
              .filter(function(d){return d.active;})
-             .pluck("acronym")
+             .pluck(attr_to_pluck)
              .value();         
    };
 
@@ -660,7 +683,11 @@
      }
      this.config.update_selection("org",null,this.active_depts);
 
-     update_description("org",this.active_depts());
+     this.update_description("org",{
+       name: this.gt("org"),
+       orgs : this.active_depts("name"),
+       all : this.active_depts()[0] === "__all__"
+     });
 
      // highlight the active departments
      this.org.selectAll("li")

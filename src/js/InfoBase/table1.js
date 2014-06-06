@@ -214,24 +214,28 @@
         c.dept_this_year_qfr_spend =  q.sum("thisyearexpenditures");
         c.dept_last_year_qfr_auth =  q.sum("lastyearauthorities");
         c.dept_last_year_qfr_spend = q.sum("lastyearexpenditures");
+         c.dept_this_qfr_spend_percent = c.dept_this_year_qfr_spend / c.dept_this_year_qfr_auth; 
       },
       info : function(c,q){
         c.gov_auth_change = q.auth_change(false)[2];
         c.gov_spend_change = q.exp_change(false)[2];
         c.gov_this_year_qfr_auth =  q.sum("thisyearauthorities");
         c.gov_this_year_qfr_spend =  q.sum("thisyearexpenditures");
-        c.gov_last_year_qfr_auth =  q.sum("lastyearauthorities");
+        c.gov_this_qfr_spend_percent = c.gov_this_year_qfr_spend / c.gov_this_year_qfr_auth;
+        c.gov_last_year_qfr_auth = q.sum("lastyearauthorities");
         c.gov_last_year_qfr_spend = q.sum("lastyearexpenditures");
 
-        APP.dispatcher.once("info_formating_cleanup",function(formated_info, info){
-          var d = formated_info;
-          var formater = function(x){return app.formater("percentage",x);};
-          if (d.dept){
-            d.dept_auth_change = formater(info.dept_auth_change);
-            d.dept_spend_change = formater(info.dept_spend_change);
-          }
-          d.gov_auth_change = formater(info.gov_auth_change);
-          d.gov_spend_change = formater(info.gov_spend_change);
+        APP.dispatcher.once("info_formating_cleanup", function (formated_info, info) {
+            var d = formated_info;
+            var formater = function (x) { return app.formater("percentage", x); };
+            if (d.dept) {
+                d.dept_auth_change = formater(info.dept_auth_change);
+                d.dept_spend_change = formater(info.dept_spend_change);
+                d.dept_this_qfr_spend_percent = formater(info.dept_this_qfr_spend_percent);
+            }
+            d.gov_auth_change = formater(info.gov_auth_change);
+            d.gov_spend_change = formater(info.gov_spend_change);
+            d.gov_this_qfr_spend_percent = formater(info.gov_this_qfr_spend_percent);
         });
       },
       graphics : {

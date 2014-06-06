@@ -199,7 +199,7 @@
               colors = D3.tbs_color(),
               d=this.data,text,args={
                 height : this.height,
-                formater : this.compact,
+                formater : this.compact1,
                 add_legend : true,
                 add_yaxis : true,
                 add_xaxis : true,
@@ -252,7 +252,7 @@
                 x_axis_line : true,
                 html_ticks : true,
                 height : this.height,
-                formater : this.compact,
+                formater : this.compact1,
                 ticks : this.data.last_years,
                 series : {'':null}
               };

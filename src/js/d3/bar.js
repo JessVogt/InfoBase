@@ -167,6 +167,9 @@
             "text-align": "center",
             "position" : "absolute",
             "text-weight" : "bold",
+            "color": function(d) {
+              return d.value<0 ? "red" : "black" ;
+            },
             "width" : bar_width+"px",
             "font-size" : "12px",
             "height" : "10px",
