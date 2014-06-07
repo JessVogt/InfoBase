@@ -97,6 +97,11 @@
         if (i % 2 === 1 ){
           d3.select(this).classed("odd",true);
         }
+      },
+      tdseach : function(d,i){
+        if (i  === 0 ){
+          d3.select(this).style({"font-weight" : "bold"});
+        }
       }
     });
 

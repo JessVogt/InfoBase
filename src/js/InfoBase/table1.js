@@ -55,8 +55,8 @@
                   "fr": "Crédits totaux disponibles pour l'exercice se terminant le 31 mars {{in_year_short}}"
               },
               "description": {
-                  "en": "corresponds to the authorities provided by Parliament, including transfers from other organizations, central votes, or adjustments available for use at quarter end. This value only includes authorities available for use and granted by Parliament at quarter end.",
-                  "fr": "correspondent aux autorisations accordées par le Parlement, y compris les transferts provenant d’autres organismes, les crédits centraux ou les rajustements disponibles pour emploi à la fin du trimestre. Ceci ne comprend que les autorisations disponibles et octroyées par le Parlement à la fin du trimestre."
+                  "en": "Corresponds to the authorities provided by Parliament, including transfers from other organizations, central votes, or adjustments available for use at quarter end. This value only includes authorities available for use and granted by Parliament at quarter end.",
+                  "fr": "Correspondent aux autorisations accordées par le Parlement, y compris les transferts provenant d’autres organismes, les crédits centraux ou les rajustements disponibles pour emploi à la fin du trimestre. Ceci ne comprend que les autorisations disponibles et octroyées par le Parlement à la fin du trimestre."
               }
           },
           {
@@ -66,8 +66,8 @@
                   "fr": "Crédits utilisés pour le trimestre terminé le {{qfr_month_name}} {{qfr_last_year_short}}"
               },
               "description": {
-                  "en": "reflects the selected quarter’s expenditures against provided authorities.",
-                  "fr": "représentent les dépenses du trimestre sélectionné par rapport aux autorisations accordées."
+                  "en": "Reflects the selected quarter’s expenditures against provided authorities.",
+                  "fr": "Représentent les dépenses du trimestre sélectionné par rapport aux autorisations accordées."
               }
           },
           {

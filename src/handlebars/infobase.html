@@ -5,7 +5,7 @@
 </div>
 </script>
 <script type='text/plain' id='greeting_en'>
-  <p><a class='dept_sel ui-link router' href='#home'>{{gt "to_select"}}</a> from a list presented either by ministry, alphabetically or by 2011-12 budgetary net expenditures.  Users will then be directed to the organization’s overview page.</p>
+  <p><a class='dept_sel ui-link router' href='#home'>{{gt "to_select"}}</a> from a list presented either by ministry, alphabetically or by {{last_year}} budgetary net expenditures.  Users will then be directed to the organization’s overview page.</p>
                                                 
   <h2>Navigation</h2>
 <ul>
@@ -18,31 +18,40 @@
             <li>Hyperlink to the organization’s enabling legislation.</li>
         </ol>
   </li>
-  <li>Financial information for the current fiscal year (2013-14), based on authorities approved to date and on the organization’s most recent Quarterly Financial Report (QFR), is summarized in three panels on the overview page:
+  <li>Financial information for the current fiscal year ({{in_year}}), based on authorities approved to date and on the organization’s most recent Quarterly Financial Report (QFR), is summarized in three panels on the overview page:  
       <ol>
         <li>Current-year Authorities</li>
         <li>Statement of Authorities and Expenditures</li>
         <li>Expenditure by Standard Object</li>
       </ol>
   </li>
-  <li> Historical financial information for the 2009‒10 to 2011‒12 fiscal years are summarized in three panels on the overview page:
+    <li>Employee population by organization for the {{last_year_5}} to {{ last_year}} fiscal years is summarized in three panels on the overview page:
+      <ol>
+        <li>Population by Employee Type</li>
+        <li>Population by Geographic Region</li>
+        <li>Population by Employee Age Group</li>
+      </ol>
+  </li>
+  <li> Historical financial information for the {{last_year_5}} to {{last_year}} fiscal years are summarized in three panels on the overview page:
       <ol>
         <li>Authorities and Expenditures</li>
         <li>Expenditures by Standard Object</li>
         <li>Expenditures by Program</li>
       </ol>
   </li>
-    <li> Financial information on Transfer Payments for the 2009‒10 to 2011‒12 fiscal years are summarized in one panel on the overview page:
+    <li> Financial information on Transfer Payments for the {{last_year_5}} to {{last_year}} fiscal years are summarized in one panel on the overview page:
       <ol>
         <li>Transfer Payments</li>
       </ol>
   </li>
   <li>Details: Each financial panel expands to show further details (click on the “Details” link). The expanded panel offers various details, including the following:
       <ol>
-        <li>Voted or statutory item categories;</li>
+         <li>Voted or statutory item categories;</li>
         <li>Standard object information;</li>
         <li>Programs;</li>
         <li>Transfer Payment types (Contribution, Grant and Other transfer payment);</li>
+        <li>Active Employee Population information for the Federal Public Service ;</li>
+        <li>Employee Type (Indeterminate, Term, Casual and Student);</li>
         <li>Ministry totals; and</li>
         <li>Government totals.</li>
       </ol>
@@ -51,30 +60,34 @@
 
   <li>Users on the overview page can also choose from a list of other organizations that are part of the same ministerial portfolio.</li>
 </ul>
-<h2>A Note about Recently Completed Fiscal Years</h2>
-<p>The government’s fiscal year ends March 31st, but audited financial information only becomes available when the Public Accounts of Canada is released in the fall of each year. Information for 2012-13 currently presented in the Expenditure Database is unaudited and limited to the organizations’ 2013-14 Quarterly Financial Reports. The Expenditure Database will be updated to reflect the figures displayed in the Public Accounts of Canada after it is published.</p>
 </script>
 <script type='text/plain' id='greeting_fr'>
-  <p><a class='dept_sel ui-link router ' href='#home'>{{gt "to_select"}}</a>  à partir d’une liste organisée soit par portefeuille ministériel ou sous forme alphabétique ou encore selon les dépenses nettes pour l’exercice 2011-2012.  Les utilisateurs seront ensuite redirigés vers la page « Aperçu » de l’organisation choisie.</p>
+  <p><a class='dept_sel ui-link router ' href='#home'>{{gt "to_select"}}</a>  à partir d’une liste organisée soit par portefeuille ministériel ou sous forme alphabétique ou encore selon les dépenses nettes pour l’exercice {{gt last_year}}.  Les utilisateurs seront ensuite redirigés vers la page « Aperçu » de l’organisation choisie.</p>
   <h2>Navigation</h2>
-
 <ul>
-  <li>La page « Aperçu » de chaque organisation présente un court résumé de cette dernière  — appellation légale, site web, ministre, rôle (ou mandat) au sein du gouvernement — et contient un lien vers la loi habilitante de cette organisation.</li>
-   <li>Les renseignements financiers pour l'exercice en cours (2013-2014), fondés sur les autorisations approuvées à ce jour et sur le dernier rapport financier trimestriel (RFT) du ministère ou de l'organisme, sont résumés dans trois tableaux figurant sur la page « Aperçu »: 
+<li>La page « Aperçu » de chaque organisation présente un court résumé de cette dernière  — appellation légale, site web, ministre, rôle (ou mandat) au sein du gouvernement — et contient un lien vers la loi habilitante de cette organisation.</li>
+   <li>Les renseignements financiers pour l'exercice en cours ({{in_year}}), fondés sur les autorisations approuvées à ce jour et sur le dernier rapport financier trimestriel (RFT) du ministère ou de l'organisme, sont résumés dans trois tableaux figurant sur la page « Aperçu »: 
       <ol>
         <li>Autorisations pour l'exercice en cours </li>
         <li>Énoncé des autorisations et des dépenses</li>
         <li>Dépenses par article courant </li>
       </ol>
   </li>
-  <li>Les informations financières historiques pour les exercices 2009-2010 à 2011-2012 sont résumées en trois tableaux sur la page « Aperçu » : 
+   <li>Les informations concernant l’effectif de l’organisation pour les années exercices {{last_year_5}} à {{last_year}} sont résumées dans trois tableaux figurant sur la page « Aperçu »:
+      <ol>
+        <li>Effectif par période d’affectation </li>
+        <li>Effectif par région géographique </li>
+        <li>Effectif par groupe d’âge</li>
+      </ol>
+  </li>
+  <li>Les informations financières historiques pour les exercices {{last_year_5}} à {{last_year}} sont résumées en trois tableaux sur la page « Aperçu » : 
       <ol>
         <li>Autorisations et dépenses </li>
         <li>Dépenses par article courant </li>
         <li>Dépenses par programme </li>
       </ol>
   </li>
-   <li>Les renseignements financiers sur les paiements de transfert pour les exercices de 2009-2010 à 2011-2012 sont résumés dans un tableau figurant sur la page « Aperçu » : 
+   <li>Les renseignements financiers sur les paiements de transfert pour les exercices de {{last_year_5}} à {{last_year}} sont résumés dans un tableau figurant sur la page « Aperçu » : 
       <ol>
         <li>Paiements de transfert </li>
       </ol>
@@ -84,16 +97,16 @@
         <li>les catégories de crédits votés et de postes législatifs</li>
         <li>de l’information sur les articles courants </li>
         <li>les programmes </li>
-        <li>les paiements de transfert </li>
+        <li>les paiements de transfert (subvention, contribution et autre paiement de transfert)</li>
+        <li>de l'information sur l'effectif actifs de la fonction publique fédérale</li>
+        <li>les périodes d'affectation (indéterminée, déterminée, emploi occasionnel et étudiants)</li>
         <li>les montants totaux pour le portefeuille ministériel </li>
         <li>les montants totaux pour le gouvernement </li>
       </ol>
   </li>
   <li>Comparaison horizontale : À l’intérieur des tableaux agrandis, les utilisateurs peuvent cliquer sur une valeur pour consulter un tableau comparant les données de cette organisation avec celles de toutes les autres organisations fédérales. </li>
   <li>Dans la page « Aperçu », les utilisateurs peuvent également choisir, dans une liste, d’autres organisations qui font partie du même portefeuille ministériel. </li>
-</ul>
-<h2>Remarque au sujet des derniers exercices terminés</h2>
-<p>L’exercice financier du gouvernement se termine le 31 mars, mais les renseignements financiers audités ne sont rendus publics qu’au moment de la publication des Comptes publics du Canada à l’automne de chaque année. Les renseignements de 2012-2013 présentés actuellement dans la base de données des dépenses n’ont pas été audités et se limitent aux rapports financiers trimestriels de 2013-2014 des ministères et organismes. La base de données des dépenses sera mise à jour afin que les renseignements correspondent à ceux se trouvant dans les Comptes publics du Canada lorsqu’ils auront été publiés.</p>
+
 </script>
 
 <script type='text/plain' id='org_header'>
@@ -376,7 +389,7 @@
 <script type='text/plain' id='home_t'>
 <div class='span-8 choose_adventure'>
   <div class='span-8 label'></div>
-	<div class='span-8 well header-options row'> 
+	<div class='span-8 well header-options row {{_lang}}'> 
     <div class='inner'>
         <div class='netflix-panel'>
           <div class='icon lightbulb'><a class='router icon' href='#infograph'>{{gt "learn_and_explore"}}</a></div>
@@ -393,8 +406,8 @@
     </div>
  </div>
 
-  <div class='span-8 label'>Analyze Data by Subject Area</div>
-  <div class='span-8  well row'>
+  <div class='span-8 label'>{{gt "Analyze_Data_by_Subject_Area"}}</div>
+  <div class='span-8  well row {{_lang}}'>
     <div class='inner'>
     <div class='netflix-panel'>
       <div class='icon dollar'><a class='router icon' href='#analysis-org%5B%5D=__all__&data_type=Financial+Data&pres_level=depts&period=Historical&display_as=graph&table=table6&dimension=horizontal&column=2012-13&shown=Internal+Services&nu=true'>{{gt 'internal_services_expenditures'}}</a></div>
@@ -419,26 +432,26 @@
     </div>
   </div>
 
- <div class='span-8  label'>Explore Government of Canada Management Data</div>
-      <div class='span-8  well row'>
+ <div class='span-8  label'>{{gt "Explore_Government_of_Canada_Management_Data"}}</div>
+      <div class='span-8  well row {{_lang}}'>
         <div class='inner'>
         <div class='netflix-panel'>
           <div class='icon dollar'></div>
-          <div class='label'>Reconciliation of Budget with Estimates</div>
+          <div class='label'>{{gt "Reconciliation_of_Budget_with_Estimates"}}</div>
         </div>
         <div class='netflix-panel'>
           <div class='icon conference'></div>
-          <div class='label'>Total Compensation</div>
+          <div class='label'>{{gt "Total_Compensation"}}</div>
         </div>
         <div class='netflix-panel'>
           <div class='icon charts-growth'></div>
-          <div class='label'>Planned vs. Actual Results</div>
+          <div class='label'>{{gt "Planned_Actual_Results"}}</div>
         </div>
     </div>
   </div>
 
-  <div class='span-8 label'>Analyze Government of Canada Publications</div>
-  <div class='span-8  well row'>
+  <div class='span-8 label'>{{gt "Analyze_Gov_Canada_Publications"}}</div>
+  <div class='span-8  well row {{_lang}}'>
     <div class='inner'>
     <div class='netflix-panel'>
       <div class='icon mains-15'><a class='router icon' href='#analysis-org%5B%5D=__all__&data_type=Financial+Data&pres_level=depts&period=Current+Year&display_as=table&table=table8&dimension=horizontal&shown=All&column_choice%5B%5D=Estimates+-+Main+Estimates&sort_by=Estimates+-+Main+Estimates&nu=true'>{{gt "main_estimates"}}</a></div>

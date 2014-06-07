@@ -10,7 +10,7 @@ ns().APP.dispatcher.once("init", function(app){
 
   Handlebars.registerHelper("change_de_m",function(context){
      if (_.head(context)==='-'){
-      return "diminués de " + context;
+      return "diminés de " + context;
      } else {
       return "augmentés de " + context;
      }
@@ -18,7 +18,7 @@ ns().APP.dispatcher.once("init", function(app){
 
   Handlebars.registerHelper("change_de_f",function(context){
      if (_.head(context)==='-'){
-      return "diminuées de " + context;
+      return "diminées de " + context;
      } else {
       return "augmentées de " + context;
      }

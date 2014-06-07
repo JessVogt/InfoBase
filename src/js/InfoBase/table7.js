@@ -48,9 +48,9 @@
                   "en":"Total budgetary authority available for use",
                   "fr":"Autorisations budgétaires disponibles pour l'emploi"
                 },
-              "definition": {
-                  "en": "corresponds to the authorities provided by Parliament, including transfers from other organizations or adjustments that are made during the year. ",
-                  "fr": "correspond aux autorisations accordées par le Parlement, y compris les transferts provenant d’autres organismes ou les rajustements qui ont été effectués au cours de l’exercice."
+              "description": {
+                  "en": "Corresponds to the authorities provided by Parliament, including transfers from other organizations or adjustments that are made during the year. ",
+                  "fr": "Correspond aux autorisations accordées par le Parlement, y compris les transferts provenant d’autres organismes ou les rajustements qui ont été effectués au cours de l’exercice."
               }
               },{
                 "type":"big-int",
@@ -59,9 +59,9 @@
                   "en":"Expenditures",
                   "fr":"Dépenses"
                 },
-              "definition": {
-                  "en": "reflects expenditures against these budgetary authorities.",
-                  "fr": "représentent les dépenses par rapport à ces autorisations budgétaires."
+              "description": {
+                  "en": "Reflects expenditures against these budgetary authorities.",
+                  "fr": "Représentent les dépenses par rapport à ces autorisations budgétaires."
               }
            }
        ]);

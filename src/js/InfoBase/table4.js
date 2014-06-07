@@ -61,8 +61,8 @@
                         "fr": "Autorisations budgétaires disponibles pour l'emploi"
                     },
                     "description": {
-                        "en": "corresponds to the authorities provided by Parliament, including transfers from other organizations or adjustments that are made during the year.",
-                        "fr": "correspondent aux autorisations accordées par le Parlement, y compris les transferts provenant d’autres organisations ou les rajustements qui ont été effectués au cours de l’exercice."
+                        "en": "Corresponds to the authorities provided by Parliament, including transfers from other organizations or adjustments that are made during the year.",
+                        "fr": "Correspondent aux autorisations accordées par le Parlement, y compris les transferts provenant d’autres organisations ou les rajustements qui ont été effectués au cours de l’exercice."
                     }
                    },{
                     "type": "big-int",
@@ -72,8 +72,8 @@
                         "fr": "Dépenses"
                     },
                     "description": {
-                        "en": "corresponds to the funds spent against these authorities.",
-                        "fr": "correspondent aux dépenses effectuées aux termes de ces autorisations."
+                        "en": "Corresponds to the funds spent against these authorities.",
+                        "fr": "Correspondent aux dépenses effectuées aux termes de ces autorisations."
                     }
                    }
                ]);

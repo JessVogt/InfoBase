@@ -72,8 +72,8 @@
           "fr":"Budget Principal"
         },
          "description": {
-                  "en": "identifies the spending authorities presented in Estimates before the beginning of a fiscal year. Royal assent for voted expenditures is obtained through two separate appropriation acts: interim supply before the beginning of a new fiscal year and full supply in June. Main Estimates is presented net of the Employment Insurance Operating Account.",
-                  "fr": "énonce les autorisations de dépenser présentées dans les budgets de dépenses avant le début d'un exercice financier. La sanction royale pour les dépenses votées est obtenue au moyen de deux lois de crédits distinctes : l'une visant les crédits provisoires déposée au début d’un exercice financier et une autre pour la totalité des crédits présentée en juin. Le Budget principal des dépenses est présenté net des compte des opérations de l'assurance-emploi."
+                  "en": "Identifies the spending authorities presented in Estimates before the beginning of a fiscal year. Royal assent for voted expenditures is obtained through two separate appropriation acts: interim supply before the beginning of a new fiscal year and full supply in June. Main Estimates is presented net of the Employment Insurance Operating Account.",
+                  "fr": "Énonce les autorisations de dépenser présentées dans les budgets de dépenses avant le début d'un exercice financier. La sanction royale pour les dépenses votées est obtenue au moyen de deux lois de crédits distinctes : l'une visant les crédits provisoires déposée au début d’un exercice financier et une autre pour la totalité des crédits présentée en juin. Le Budget principal des dépenses est présenté net des compte des opérations de l'assurance-emploi."
               }
       }, {
         "type":"big-int",
@@ -83,41 +83,41 @@
         "fr":"Disponibles des exercices antérieurs"
         },
         "description": {
-             "en": "refers to spending authorities allowed to be brought forward from the previous year. This amount includes only those authorities where there is a specified dollar limit on total spending or on the accumulated outstanding balance of items where revenues and receipts are available for spending. Usually these items represent revolving funds, proceeds from the disposal of surplus Crown assets or loans authorities. These amounts are available for spending without further approval from Parliament.",
-             "fr": " correspondent aux autorisations de dépenses reportées de l'exercice précédent. Comprennent seulement les autorisations pour lesquelles il existe une limite spécifique quant au montant total à être dépensé, ou sur le solde cumulatif en circulation pour les crédits pour lesquels il est permis de dépenser les revenus et les rentrées. Ces crédits représentent généralement soit des autorisations relatives à des fonds renouvelables, au produit de la vente de biens excédentaires de l'État ou à des prêts. Ces montants sont disponibles pour être dépensés sans aucune autre autorisation du Parlement."
+             "en": "Refers to spending authorities allowed to be brought forward from the previous year. This amount includes only those authorities where there is a specified dollar limit on total spending or on the accumulated outstanding balance of items where revenues and receipts are available for spending. Usually these items represent revolving funds, proceeds from the disposal of surplus Crown assets or loans authorities. These amounts are available for spending without further approval from Parliament.",
+             "fr": " Correspondent aux autorisations de dépenses reportées de l'exercice précédent. Comprennent seulement les autorisations pour lesquelles il existe une limite spécifique quant au montant total à être dépensé, ou sur le solde cumulatif en circulation pour les crédits pour lesquels il est permis de dépenser les revenus et les rentrées. Ces crédits représentent généralement soit des autorisations relatives à des fonds renouvelables, au produit de la vente de biens excédentaires de l'État ou à des prêts. Ces montants sont disponibles pour être dépensés sans aucune autre autorisation du Parlement."
          }
       },{
         "type":"big-int",
         "nick": "suppsa",
         "header":{
           "en":"Supplementary Estimates A",
-          "fr":"Budget supplémentaire A"
+          "fr":"Budget supplémentaire des dépenses A"
         },
          "description": {
-             "en": "may be tabled in May to provide additional funding to organizations. The associated appropriation act generally receives Royal assent and becomes law in June.",
-             "fr": "peut être déposé en mai en vue de fournir aux ministères et organismes des fonds supplémentaires. La loi de crédits connexe reçoit habituellement la sanction royale et devient loi en juin."
+             "en": "May be tabled in May to provide additional funding to organizations. The associated appropriation act generally receives Royal assent and becomes law in June.",
+             "fr": "Peut être déposé en mai en vue de fournir aux ministères et organismes des fonds supplémentaires. La loi de crédits connexe reçoit habituellement la sanction royale et devient loi en juin."
          }
       },{
         "type":"big-int",
         "nick": "suppsb",
         "header":{
           "en":"Supplementary Estimates B",
-          "fr":"Budget supplémentaire B"
+          "fr":"Budget supplémentaire des dépenses B"
         },
         "description": {
-            "en": "may be tabled in late October or early November to provide additional funding to organizations. The associated appropriation act generally receives Royal assent in December.",
-            "fr": "peut être déposé à la fin d’octobre ou au début de novembre pour fournir des fonds supplémentaires aux ministères et organismes. La loi de crédits connexe reçoit habituellement la sanction royale et devient loi en décembre."
+            "en": "May be tabled in late October or early November to provide additional funding to organizations. The associated appropriation act generally receives Royal assent in December.",
+            "fr": "Peut être déposé à la fin d’octobre ou au début de novembre pour fournir des fonds supplémentaires aux ministères et organismes. La loi de crédits connexe reçoit habituellement la sanction royale et devient loi en décembre."
         }
       }, {
         "type":"big-int",
         "nick": "suppsc",
         "header":{
           "en":"Supplementary Estimates C",
-          "fr":"Budget supplémentaire C"
+          "fr":"Budget supplémentaire des dépenses C"
         },
         "description": {
-            "en": "may be tabled in February to provide additional funding to organizations. The associated appropriation act generally receives Royal assent in March.",
-            "fr": "peut être déposé en février pour fournir des fonds supplémentaires aux ministères et organismes. La loi de crédits connexe reçoit habituellement la sanction royale et devient loi en mars."
+            "en": "May be tabled in February to provide additional funding to organizations. The associated appropriation act generally receives Royal assent in March.",
+            "fr": "Peut être déposé en février pour fournir des fonds supplémentaires aux ministères et organismes. La loi de crédits connexe reçoit habituellement la sanction royale et devient loi en mars."
         }
       }
     ]);

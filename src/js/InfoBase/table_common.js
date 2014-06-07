@@ -8,7 +8,7 @@
       "en": "Historical",
       "fr": "Historiques",
       "description" : {
-        "en" : "Historical data covers the time-fame from {{last_year_5}} to {{last_year}}",
+        "en" : "<strong>Historical data</strong> covers the time-fame from {{last_year_5}} to {{last_year}}",
         "fr" : ""
       }
     },
@@ -16,7 +16,7 @@
       "en": "Current Year",
       "fr":  "L'exercice courant",
       "description" : {
-        "en" : "Current year data describes data for this current fiscal year of {{in_year}}",
+        "en" : "<strong>Current year</strong> data describes data for this current fiscal year of {{in_year}}",
         "fr" : ""
       }          
     },
@@ -35,7 +35,7 @@
       "en": "Financial Data",
       "fr": "Données financiéres",
       "description" : {
-        "en" : "Financial data describes spending authorities voted by Parliament along with the resulting actual expenditures as recorded in the Public Accounts of Canada ",
+        "en" : "<strong>Financial data</strong> describes spending authorities voted by Parliament along with the resulting actual expenditures as recorded in the Public Accounts of Canada ",
         "fr" : ""
       }          
     },
@@ -43,7 +43,7 @@
       "en":  "People Management Data",
       "fr":  "Gestion des personnes",
       "description" : {
-        "en" : "People Management data describes the demographics of the employees working in the Federal public service",
+        "en" : "<strong>People Management </strong>data describes the demographics of the employees working in the Federal public service",
         "fr" : ""
       }          
     }

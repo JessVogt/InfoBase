@@ -71,8 +71,8 @@
       }
       extra_args = extra_args || {};
       var lang = app.state.get('lang');
-      var args = TABLES.template_args.common;
-      _.extend(args,TABLES.template_args[lang],extra_args);
+      var args = _.clone(TABLES.template_args.common);
+      _.extend(args,_.clone(TABLES.template_args[lang]),extra_args);
       if (s){
         return Handlebars.compile(s)(args);
       }
