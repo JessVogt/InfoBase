@@ -650,8 +650,8 @@
      this.on_org_click();
    };
 
-   p.active_depts = function(attr_to_pluck){
-      attr_to_pluck  = attr_to_pluck  || "acronym" ;
+   p.active_depts = function(orgs,val, attr_to_pluck){
+     attr_to_pluck  = attr_to_pluck  || "acronym" ;
      return _.chain(this.orgs)
              .filter(function(d){return d.active;})
              .pluck(attr_to_pluck)
@@ -685,7 +685,7 @@
 
      this.update_description("org",{
        name: this.gt("org"),
-       orgs : this.active_depts("name"),
+       orgs : this.active_depts(null,null,"name"),
        all : this.active_depts()[0] === "__all__"
      });
 
