@@ -1,7 +1,4 @@
 transition to-do:
-  ochro
-    me
-      add in infographic sections
 
   details/infograhic
     table1
@@ -13,10 +10,6 @@ transition to-do:
   d3
     me
       refactor the width calculation
-
-  analytics
-    me
-     add in total amount at the top of graphs
 
   infographic
     me

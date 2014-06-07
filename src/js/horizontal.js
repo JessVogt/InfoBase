@@ -900,6 +900,7 @@
      //this.chart_area.selectAll("svg").remove();
      var formater = this.formater;
      var type = this.config.get_active("column").type;
+     var total = formater("compact1",d3.sum(this.data, function(d){return d.value;}));
 
      if (!this.chart) {
       this.chart_area.selectAll("*").remove();
@@ -911,6 +912,7 @@
      // create the chart
      this.chart.update({
        data : this.data,
+       total : "Total: " + total,
        href : this.href,
        formater : function(x){ return formater(type,x);}
      });

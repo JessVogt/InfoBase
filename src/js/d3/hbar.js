@@ -10,7 +10,7 @@
         { "val" : 11, "name" : "XYZ" }
         ]
       */
-      var margin = this.margin || {top: 30, 
+      var margin = this.margin || {top: 50,
                                     right: 20, 
                                     bottom: 30, 
                                     left: 40};
@@ -29,7 +29,14 @@
             .attr("class", "x axis")
             .attr("transform", "translate(0,0)");
 
-      this.html = d3.select(D3.get_html_parent(this.svg));
+      this.html.append("div")
+        .attr("class","total")
+        .style({
+          "top" : "0px",
+          "left" : "0px",
+          "margin-left" : margin.left + "px",
+          "position" : "absolute",
+          "font-weight" : "bold"});
 
       if (this.data) {
         this.chart.update();
@@ -59,11 +66,16 @@
            data = this.data,
            formater = this.formater || _.identity,
            g = this.svg.selectAll("g.bar")
-            .data(this.data,function(d){return d.name;});
+            .data(this.data,function(d){return d.name;}),
            text = this.html.selectAll("div.hbar_chart_labels")
-            .data(this.data,function(d){return d.name;});
+            .data(this.data,function(d){return d.name;}),
+           total = this.total;
 
       x_scale = this.x_scale.domain([x_left,x_right]);
+
+      if (total) {
+         this.html.select("div.total").html(total);
+      }
 
       this.xAxis = d3.svg.axis()
             .scale(this.x_scale)
