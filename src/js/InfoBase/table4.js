@@ -1,7 +1,6 @@
 (function (root) {
   var TABLES = ns('TABLES');
   var APP = ns('APP');
-  var STACKED = ns('D3.STACKED');
   var BAR = ns('D3.BAR');
   var LINE = ns('D3.LINE');
   var D3 = ns('D3');
@@ -329,32 +328,38 @@
     var create_stacked_graph = function(){
       var radius = 35;
       var data_type = "dept_historical_" + this.data_type;
-      var data = _.map(this.data[data_type] ,_.identity);
-      var col_attrs = _.map(years, function(year){
-                        return year+"auth";
-                      });
-      var text_length = (this.graph_area.node().offsetWidth -  col_attrs.length * radius)/4;
-      if (data.length <= 1){
-        return false;
-      }
+      var data = _.chain(this.data[data_type])
+        .map(function(row){
+          return [row.desc, _.map(years, function(year){
+              return row[year+"auth"];
+          })];
+        })
+        .object()
+        .value();
+      //var col_attrs = _.map(years, function(year){
+      //                  return ;
+      //                });
+      //if (data.length <= 1){
+      //  return false;
+      //}
 
       // ensure the graph will always be span-8
-      this.graph_area.classed("span-4",false);
-      this.graph_area.classed("span-8",true);
+      //this.graph_area.classed("span-4",false);
+      //this.graph_area.classed("span-8",true);
 
-      _.each(data, function(d){
-        d.desc = APP.abbrev(app,d.desc, Math.floor(text_length));
-      });
+      //var text_length = (this.graph_area.node().offsetWidth -  col_attrs.length * radius)/4;
+      //_.each(data, function(d){
+      //  d.desc = APP.abbrev(app,d.desc, Math.floor(text_length));
+      //});
+      
 
-      STACKED.relaxed_stacked({
+      LINE.ordinal_line({
         colors : D3.tbs_color(),
-        radius : radius,
-        rows : data,
-        formater : this.compact,
-        total_formater : this.compact1,
-        display_cols : this.data.last_years,
-        col_attrs : col_attrs,
-        text_key : "desc"
+        add_legend : false,
+        add_xaxis : true,
+        series : data,
+        ticks : this.data.last_years,
+        formater : this.compact
       })(this.graph_area);
     };
   });

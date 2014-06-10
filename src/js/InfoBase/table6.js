@@ -1,7 +1,6 @@
 (function (root) {
   var TABLES = ns('TABLES');
   var APP = ns('APP');
-  var STACKED = ns('D3.STACKED');
 
   APP.dispatcher.on("load_tables", function (app) {
     var m = TABLES.m;
@@ -148,30 +147,30 @@
        ],
        "program_spending": function(){
           // ensure the graph will always be span-8
-          this.graph_area.classed("span-4",false);
-          this.graph_area.classed("span-8",true);
+          //this.graph_area.classed("span-4",false);
+          //this.graph_area.classed("span-8",true);
 
-          var data = _.map(this.data.dept_historical_program_spending ,_.identity);
-          var col_attrs = years;
+          //var data = _.map(this.data.dept_historical_program_spending ,_.identity);
+          //var col_attrs = years;
 
-          if (data.length <= 1){
-            return false;
-          }
+          //if (data.length <= 1){
+          //  return false;
+          //}
 
-          _.each(data, function(d){
-            d.prgm = APP.abbrev(app,d.prgm, 100);
-          });
+          //_.each(data, function(d){
+          //  d.prgm = APP.abbrev(app,d.prgm, 100);
+          //});
 
-          STACKED.relaxed_stacked({
-      //      colors : d3.scale.category20(),
-            radius : 35,
-            rows : data,
-            formater : this.compact,
-            total_formater : this.compact1,
-            display_cols : this.data.last_years,
-            col_attrs : col_attrs,
-            text_key : "prgm"
-          })(this.graph_area);
+          //STACKED.relaxed_stacked({
+      //  //    colors : d3.scale.category20(),
+          //  radius : 35,
+          //  rows : data,
+          //  formater : this.compact,
+          //  total_formater : this.compact1,
+          //  display_cols : this.data.last_years,
+          //  col_attrs : col_attrs,
+          //  text_key : "prgm"
+          //})(this.graph_area);
 
         }
       }
