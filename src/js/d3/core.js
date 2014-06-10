@@ -63,8 +63,8 @@
       });
       container.selectAll("line")
         .style({
-          "stroke" : "#CCC",
-          "stroke-opacity" : 0.5,
+          "stroke" : "steelblue",
+          "stroke-opacity" : 0.2,
           "stroke-width" : "1px"
         });
     };
