@@ -172,7 +172,7 @@
         c["dept_"+year+"_auth"] = q.sum(year+"auth");
 
         var key = "dept_"+year+"_stat_voted";
-        c[key] = this.voted_stat(year+'auth',c.dept,true); 
+        c[key] = this.voted_stat(year+'auth',c.dept,true);
         c[key].voted = c[key].voted || 0;
         c[key].stat = c[key].stat || 0;
       },this);
@@ -183,7 +183,7 @@
     info : function(c,q){
       _.each(years, function(year){
         c["gov_"+year+"_auth"] = q.sum(year+"auth");
-        c["gov_"+year+"_stat_voted"] = this.voted_stat(year+'auth',false); 
+        c["gov_"+year+"_stat_voted"] = this.voted_stat(year+'auth',false);
       },this);
     },
     "graphics": {
@@ -206,35 +206,35 @@
                 ticks : this.data.last_years,
                 series : {}
               },gt=app.get_text;
-          
+
           if (!this.data.dept){
             text = "gov_historical_auth";
-            args.series[gt("stat")] = [ 
+            args.series[gt("stat")] = [
               d.gov_last_year_5_stat_voted.stat,
               d.gov_last_year_4_stat_voted.stat,
-              d.gov_last_year_3_stat_voted.stat, 
-              d.gov_last_year_2_stat_voted.stat, 
+              d.gov_last_year_3_stat_voted.stat,
+              d.gov_last_year_2_stat_voted.stat,
               d.gov_last_year_stat_voted.stat ];
-            args.series[gt("voted")] = [ 
+            args.series[gt("voted")] = [
               d.gov_last_year_5_stat_voted.voted,
               d.gov_last_year_4_stat_voted.voted,
-              d.gov_last_year_3_stat_voted.voted, 
-              d.gov_last_year_2_stat_voted.voted, 
+              d.gov_last_year_3_stat_voted.voted,
+              d.gov_last_year_2_stat_voted.voted,
               d.gov_last_year_stat_voted.voted ];
           } else {
             args.x_axis_line = true;
             text = "dept_historical_auth";
-            args.series[gt("stat")] = [ 
+            args.series[gt("stat")] = [
               d.dept_last_year_5_stat_voted.stat,
               d.dept_last_year_4_stat_voted.stat,
-              d.dept_last_year_3_stat_voted.stat, 
-              d.dept_last_year_2_stat_voted.stat, 
+              d.dept_last_year_3_stat_voted.stat,
+              d.dept_last_year_2_stat_voted.stat,
               d.dept_last_year_stat_voted.stat ];
-            args.series[gt("voted")] = [ 
+            args.series[gt("voted")] = [
               d.dept_last_year_5_stat_voted.voted,
               d.dept_last_year_4_stat_voted.voted,
-              d.dept_last_year_3_stat_voted.voted, 
-              d.dept_last_year_2_stat_voted.voted, 
+              d.dept_last_year_3_stat_voted.voted,
+              d.dept_last_year_2_stat_voted.voted,
               d.dept_last_year_stat_voted.voted ];
           }
           graph(args)(this.graph_area);
@@ -259,11 +259,11 @@
           if (!this.dept){
 
             text = "gov_historical_auth";
-            args.series[''] = [ 
-              d.gov_last_year_5_auth, 
-              d.gov_last_year_4_auth, 
-              d.gov_last_year_3_auth, 
-              d.gov_last_year_2_auth, 
+            args.series[''] = [
+              d.gov_last_year_5_auth,
+              d.gov_last_year_4_auth,
+              d.gov_last_year_3_auth,
+              d.gov_last_year_2_auth,
               d.gov_last_year_auth ];
           } else {
             this.graph_area.classed("span-4",true);
@@ -273,11 +273,11 @@
 
             args.x_axis_line = true;
             text = "dept_historical_auth";
-            args.series[''] = [ 
-              d.dept_last_year_5_auth, 
-              d.dept_last_year_4_auth, 
-              d.dept_last_year_3_auth, 
-              d.dept_last_year_2_auth, 
+            args.series[''] = [
+              d.dept_last_year_5_auth,
+              d.dept_last_year_4_auth,
+              d.dept_last_year_3_auth,
+              d.dept_last_year_2_auth,
               d.dept_last_year_auth ];
           }
 
@@ -285,22 +285,22 @@
           this.text_area.html(m(app.get_text(text), this.written_data));
        },
        "voted_spending" :   function(){
-         var func = _.bind(create_stacked_graph,this);
+         var func = _.bind(create_line_graph,this);
          this.data_type = 'voted';
          return func();
        },
        "stat_spending" :  function(){
-         var func = _.bind(create_stacked_graph,this);
+         var func = _.bind(create_line_graph,this);
          this.data_type = 'stat';
          return func();
-       },                    
+       },
        "top_vote_items" : function(){
 
        },
        "top_stat_items" : function(){
 
        }
-    } 
+    }
     });
 
     var vote_stat_query = function(vote_or_stat, cut_off){
@@ -316,7 +316,7 @@
          })
          .each(function(d){
            d.percent = d.total / total;
-         }) 
+         })
          .each(function(d){
            if (!cut_off){return;}
            cut_off_counter += d.percent;
@@ -325,42 +325,52 @@
          .value();
     };
 
-    var create_stacked_graph = function(){
-      var radius = 35;
+    var create_line_graph = function(){
       var data_type = "dept_historical_" + this.data_type;
+
+      // transform the data
       var data = _.chain(this.data[data_type])
         .map(function(row){
-          return [row.desc, _.map(years, function(year){
-              return row[year+"auth"];
-          })];
+          return {label : row.desc,
+                  data : _.map(years, function(year){
+                            return row[year+"auth"];
+                        }),
+                  active : false};
         })
-        .object()
+        .sortBy(function(x){
+            return -d3.sum(x.data);
+        })
         .value();
-      //var col_attrs = _.map(years, function(year){
-      //                  return ;
-      //                });
-      //if (data.length <= 1){
-      //  return false;
-      //}
 
-      // ensure the graph will always be span-8
-      //this.graph_area.classed("span-4",false);
-      //this.graph_area.classed("span-8",true);
-
-      //var text_length = (this.graph_area.node().offsetWidth -  col_attrs.length * radius)/4;
-      //_.each(data, function(d){
-      //  d.desc = APP.abbrev(app,d.desc, Math.floor(text_length));
-      //});
       
+      // append an empty div
+      var legend = this.text_area.append("div");
 
-      LINE.ordinal_line({
-        colors : D3.tbs_color(),
+      // create the list as a dynamic graph legend
+      var list = D3.create_list(legend,data, {
+        html : function(d){
+          return d.label;
+        },
+        height : this.height,
+        legend : app.get_text("legend"),
+        ul_classes : "legend",
+        li_classes : "wrap-none",
+        multi_select : true} );
+
+      // create the graph
+      var graph = LINE.ordinal_line({
         add_legend : false,
         add_xaxis : true,
-        series : data,
         ticks : this.data.last_years,
         formater : this.compact
-      })(this.graph_area);
+        });
+
+      // run the graph once on empty data to establish the sizes
+      graph(this.graph_area);
+      // hook the list dispatcher up to the graph
+      list.dispatch.on("click", LINE.ordinal_on_legend_click(graph));
+      // simulate the first item on the list being selected
+      list.dispatch.click(data[0],0,list.first,list.list);
     };
   });
 })();

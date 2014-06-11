@@ -1,10 +1,9 @@
-(function (root) {
+(function () {
   var TABLES = ns('TABLES');
   var D3 = ns('D3');
   var APP = ns('APP');
   APP.dispatcher.on("load_tables", function (app) {
     var m = TABLES.m;
-    var years = TABLES.years;
     APP.dispatcher.trigger("new_table",
       {
         id: "table2",
@@ -28,7 +27,7 @@
         "en":"Standard Object",
       "fr":"Article Courant"
       }
-        } 
+        }
         ]);
     this.add_col("{{in_year}}")
       .add_child([
@@ -145,8 +144,8 @@
           "en": "Top three net expenditure categories as of Q{{q}} {{in_year}} by value ($000) and proportion of total expenditures (%).",
             "fr": "Les trois plus importantes catégories de dépenses nettes lors du premier trimestre de {{in_year}} en fonction de leur valeur (en milliers de dollars) et en tant que pourcentage des dépenses totales (%)."
         },
-        classes : [ 'left_text', 
-        'right_number', 
+        classes : [ 'left_text',
+        'right_number',
         'right_number'],
         prep_data: function () {
           var top3 = this.da.get_top_x(["ytd-exp",'so'],3,
@@ -163,14 +162,14 @@
         c.dept_last_year_qfr_so_spend = this.horizontal("last_year_plannedexp",c.dept,true);
         c.dept_this_year_type_spend = q.get_cols(["plannedexp","so"],{"sorted": true});
       },
-      info : function(c,q){
+      info : function(c){
         c.gov_this_year_type_spend =  this.spending_type("plannedexp",false);
       },
       graphics : {
        "details_display_order" : [
          "so_spending",
        ],
-        "so_spending": function(options){
+       "so_spending": function(){
           var last_year_data =  this.data.dept_last_year_qfr_so_spend;
           // ensure the graph will always be span-8
           this.graph_area.classed("span-4",false);
@@ -185,7 +184,7 @@
                           .pairs()
                           .map(function(x){ return {value:x[1],name:x[0]};})
                           .value(),
-            "post_bar_render": function(bar_container,d){
+            "post_bar_render": function(bar_container){
               bar_container.selectAll(".x.axis .tick text")
                 .style({ 'font-size' : "10px" });
               bar_container.selectAll(".title")
@@ -197,14 +196,19 @@
                  d.__value__
                 ];
             },
-            "ticks" : function(d){
+            "ticks" : function(){
               return [
                   m("{{qfr_last_year}}"),
                   m("{{in_year}}")
                 ];
             }
           });
-        }
+       },
+       "gov_type_spend" : function() {
+      
+      
+      
+       }
       }
     });
   });

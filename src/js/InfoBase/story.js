@@ -233,7 +233,7 @@
           stripe : true,
           rowseach : function(d,i){
             if (d === total){
-              d3.select(this).classed("background-medium",true);
+              d3.select(this).classed("background-medium total-row",true);
             }
           },
           table_css : { "font-size" : "10px" },
@@ -355,7 +355,7 @@
             graph_div.selectAll("*").remove();
             // look the key back up
             var key = label_mapping[label];
-            var years = [ T.m("{{last_year_3}}"), T.m("{{last_year_2}}"), T.m("{{last_year}}") ];
+            var years = T.m(["{{last_year_3}}","{{last_year_2}}", "{{last_year}}"]);
             var data = [
               d.gov_last_year_3_type_spend[key],
               d.gov_last_year_2_type_spend[key],
@@ -436,8 +436,6 @@
         .append("li")
         .attr("class","margin-bottom-small")
         .append("a")
-        .attr("class","ui-link")
-        //.style("color","inherit")
         .html(function(d){return d;})
         .on("click", function(d){on_label_click(d);});
 

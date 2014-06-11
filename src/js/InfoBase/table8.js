@@ -342,7 +342,7 @@
           }
 
           PACK.circle_pie_chart(args)(this.graph_area);
-          this.text_area.html(m(app.get_text(text), this.written_data));
+          this.text_area.html(app.get_text(text, this.written_data));
         },
         "stat_voted_split": function(options){
           var d=this.data,formater = this.compact1, text,args={
@@ -375,7 +375,7 @@
           }
 
           PACK.pack(args)(this.graph_area);
-          this.text_area.html(m(app.get_text(text), this.written_data));
+          this.text_area.html(app.get_text(text, this.written_data));
         },
         "estimates_split" : function(options){
           var data,text,args={
@@ -398,7 +398,7 @@
           }
 
           BAR.bar(args)(this.graph_area);
-          this.text_area.html(m(app.get_text(text), this.written_data));
+          this.text_area.html(app.get_text(text, this.written_data));
 
         }
       }                    

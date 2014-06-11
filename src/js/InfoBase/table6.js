@@ -1,6 +1,8 @@
 (function (root) {
   var TABLES = ns('TABLES');
   var APP = ns('APP');
+  var LINE = ns('D3.LINE');
+  var D3 = ns('D3');
 
   APP.dispatcher.on("load_tables", function (app) {
     var m = TABLES.m;
@@ -146,35 +148,50 @@
          "program_spending"
        ],
        "program_spending": function(){
-          // ensure the graph will always be span-8
-          //this.graph_area.classed("span-4",false);
-          //this.graph_area.classed("span-8",true);
 
-          //var data = _.map(this.data.dept_historical_program_spending ,_.identity);
-          //var col_attrs = years;
+          var data = _.chain(this.data.dept_historical_program_spending)
+            .map(function(row){
+              return {label : row.prgm ,
+                      data : _.map(years, function(year){
+                                return row[year];
+                            }),
+                      active : false};
+            })
+            .sortBy(function(x){
+                return -d3.sum(x.data);
+            })
+            .value();
+          
+          // append an empty div
+          var legend = this.text_area.append("div");
 
-          //if (data.length <= 1){
-          //  return false;
-          //}
+          // create the list as a dynamic graph legend
+          var list = D3.create_list(legend,data, {
+            html : function(d){
+              return d.label;
+            },
+            height : this.height,
+            legend : app.get_text("legend"),
+            ul_classes : "legend",
+            li_classes : "wrap-none",
+            multi_select : true} );
 
-          //_.each(data, function(d){
-          //  d.prgm = APP.abbrev(app,d.prgm, 100);
-          //});
+          // create the graph
+          var graph = LINE.ordinal_line({
+            add_legend : false,
+            add_xaxis : true,
+            ticks : this.data.last_years,
+            formater : this.compact
+            });
 
-          //STACKED.relaxed_stacked({
-      //  //    colors : d3.scale.category20(),
-          //  radius : 35,
-          //  rows : data,
-          //  formater : this.compact,
-          //  total_formater : this.compact1,
-          //  display_cols : this.data.last_years,
-          //  col_attrs : col_attrs,
-          //  text_key : "prgm"
-          //})(this.graph_area);
-
+          // run the graph once on empty data to establish the sizes
+          graph(this.graph_area);
+          // hook the list dispatcher up to the graph
+          list.dispatch.on("click", LINE.ordinal_on_legend_click(graph));
+          // simulate the first item on the list being selected
+          list.dispatch.click(data[0],0,list.first,list.list);
         }
       }
-      });
-
+    });
   });
 })();

@@ -44,6 +44,7 @@ set helplang=en
 set hidden
 set hlsearch
 set ignorecase
+set imsearch=0
 set incsearch
 set isident=@,48-57,_,192-255,$
 set laststatus=2
@@ -75,15 +76,23 @@ if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
   let s:wipebuf = bufnr('%')
 endif
 set shortmess=aoO
-badd +144 Gruntfile.js
-badd +21 src/js/d3/line.js
-badd +200 src/js/InfoBase/table4.js
-badd +44 src/js/d3/core.js
-badd +329 src/js/d3/stacked.js
+badd +54 Gruntfile.js
+badd +6 src/js/d3/line.js
+badd +6 src/js/InfoBase/table4.js
+badd +67 src/js/d3/core.js
+badd +3 src/js/d3/stacked.js
 badd +70 src/js/d3/bar.js
-badd +0 src/css/site.css
+badd +343 src/css/site.css
+badd +313 src/js/InfoBase/story.js
+badd +163 src/js/InfoBase/InfoBase.js
+badd +389 src/js/InfoBase/table8.js
+badd +87 src/js/d3/pack.js
+badd +150 src/js/InfoBase/table6.js
+badd +10 src/js/d3/interactive_line.js
+badd +237 src/js/InfoBase/table1.js
+badd +197 src/js/InfoBase/table2.js
 silent! argdel *
-edit src/js/d3/line.js
+edit src/js/d3/interactive_line.js
 set splitbelow splitright
 wincmd _ | wincmd |
 vsplit
@@ -201,15 +210,15 @@ set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 66 - ((11 * winheight(0) + 21) / 43)
+let s:l = 8 - ((7 * winheight(0) + 21) / 43)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-66
-normal! 0
+8
+normal! 07|
 wincmd w
 argglobal
-edit src/css/site.css
+edit src/js/d3/core.js
 setlocal keymap=
 setlocal noarabic
 setlocal noautoindent
@@ -218,13 +227,13 @@ setlocal nobinary
 setlocal bufhidden=
 setlocal buflisted
 setlocal buftype=
-setlocal nocindent
+setlocal cindent
 setlocal cinkeys=0{,0},0),:,0#,!^F,o,O,e
-setlocal cinoptions=
+setlocal cinoptions=j1,J1
 setlocal cinwords=if,else,while,do,for,switch
 setlocal colorcolumn=
-setlocal comments=s1:/*,mb:*,ex:*/
-setlocal commentstring=/*%s*/
+setlocal comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,://
+setlocal commentstring=//%s
 setlocal complete=.,w,b,u,t,i
 setlocal concealcursor=
 setlocal conceallevel=0
@@ -241,8 +250,8 @@ setlocal nodiff
 setlocal equalprg=
 setlocal errorformat=
 setlocal expandtab
-if &filetype != 'css'
-setlocal filetype=css
+if &filetype != 'javascript'
+setlocal filetype=javascript
 endif
 setlocal foldcolumn=0
 setlocal foldenable
@@ -258,12 +267,12 @@ setlocal formatexpr=
 setlocal formatoptions=croql
 setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*
 setlocal grepprg=
-setlocal iminsert=2
+setlocal iminsert=0
 setlocal imsearch=0
-setlocal include=^\\s*@import\\s\\+\\%(url(\\)\\=
+setlocal include=
 setlocal includeexpr=
-setlocal indentexpr=GetCSSIndent()
-setlocal indentkeys=0{,0},!^F,o,O
+setlocal indentexpr=
+setlocal indentkeys=0{,0},:,0#,!^F,o,O,e
 setlocal noinfercase
 setlocal iskeyword=@,48-57,_,192-255
 setlocal keywordprg=
@@ -278,7 +287,7 @@ setlocal nrformats=octal,hex
 set number
 setlocal number
 setlocal numberwidth=4
-setlocal omnifunc=csscomplete#CompleteCSS
+setlocal omnifunc=javascriptcomplete#CompleteJS
 setlocal path=
 setlocal nopreserveindent
 setlocal nopreviewwindow
@@ -301,8 +310,8 @@ setlocal statusline=
 setlocal suffixesadd=
 setlocal swapfile
 setlocal synmaxcol=3000
-if &syntax != 'css'
-setlocal syntax=css
+if &syntax != 'javascript'
+setlocal syntax=javascript
 endif
 setlocal tabstop=2
 setlocal tags=
@@ -315,13 +324,14 @@ set nowrap
 setlocal nowrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 327 - ((32 * winheight(0) + 21) / 43)
+let s:l = 92 - ((30 * winheight(0) + 21) / 43)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-327
-normal! 02|
+92
+normal! 0
 wincmd w
+2wincmd w
 exe 'vert 1resize ' . ((&columns * 79 + 79) / 159)
 exe 'vert 2resize ' . ((&columns * 79 + 79) / 159)
 tabnext 1

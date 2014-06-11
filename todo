@@ -4,20 +4,19 @@ transition to-do:
     table1
       stackable summaries
     table7
-      vote state bubbles
-      relaxed stacked
+      line chart
 
   d3
     me
       refactor the width calculation
+      refactor hover labels
+      refactor legend
 
   infographic
     me
       add in appropriate links to more detailed pages section
-      add in special cases for departments with missing data
-      table headers
+      add table headers
     team
-      hidden text
       wordsmithing
 
   general
@@ -28,9 +27,17 @@ transition to-do:
       add testing
         ensure multiple horizontal funtions don't return the same keys
     team
-      create definition for every column
-      start work on FAQs
       create secondary landing page for choice between graphics heavy and text based
       jess - phantomjs for accessibility
       coop - investigate data extract functionality
+
+  from Julie:
+    0 start work on FAQs
+    1 - search options - fix 
+    2 - adding decimals
+    3 - more percentages in text
+    4 - increase/decrease
+    5 - ensure axes use consistent labeling/decimals
+    6 - add total-row class
+    7 - T.m for every get_text
 

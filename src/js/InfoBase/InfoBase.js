@@ -4,6 +4,7 @@
   var LANG = ns('LANG');
   var PARSER = ns('PARSER');
   var WAIT = ns('WAIT');
+  var TABLES = ns("TABLES");
 
   function lang_load(promises,data){
    LANG.lookups = PARSER.parse_lang(d3.csv.parseRows(data));
@@ -157,8 +158,9 @@
     lang_change : function(state,lang){
       APP.dispatcher.trigger("lang_change",lang);
     },
-    get_text : function(txt){
-      return LANG.l(txt,this.state.get('lang'));
+    get_text : function(txt,context ){
+      context = context || {};
+      return TABLES.m(LANG.l(txt,this.state.get('lang')),context);
     },
     toggle_lang : function(){
       this.state.set({

@@ -5,14 +5,14 @@
 
 
     D3.orange_purple_color = d3.scale.ordinal()
-      .range(["#98abc5", "#8a89a6", 
-          "#7b6888", "#6b486b", "#a05d56", "#d0743c", 
+      .range(["#98abc5", "#8a89a6",
+          "#7b6888", "#6b486b", "#a05d56", "#d0743c",
           "#ff8c00"]);
 
     D3.tbs_color = function(){
       return d3.scale.ordinal()
             .range([ '#2b6c7b', '#a3d6e3', '#3e97ab', '#cfc7a9',
-                    '#919191', '#e0e0e0', '#c3e4ec', '#4d4d4d','#595959' ]); 
+                    '#919191', '#e0e0e0', '#c3e4ec', '#4d4d4d','#595959' ]);
     };
 
     D3.rotate_2d_point = function(x,y,theta){
@@ -42,7 +42,7 @@
         .rangePoints([0,height]);
       var horizontal_lines = d3.scale.ordinal()
         .domain(_.range(width/30))
-        .rangePoints([0,width]); 
+        .rangePoints([0,width]);
       _.each(vertical_lines.range(),function(y){
         container.append("line")
           .attr({
@@ -69,10 +69,61 @@
         });
     };
 
+
+    D3.create_list = function(container, data,options){
+      options.key = options.key || function(d,i){return i;};
+      var dispatch = d3.dispatch("click","hover");
+
+      container
+        .style({
+        "overflow-x" : "hidden",
+        "max-height" : options.height + "px",
+        "overflow-y" : "auto",
+        "margin-right" : '10px',
+        "margin-left" : '10px',
+      })
+      .attr("class", "well");
+
+      container.append("p")
+        .attr("class", "margin-bottom-none margin-top-none nav-header")
+        .html(options.legend);
+
+      var list = container
+        .append("ul")
+        .attr("class", "list-bullet-none "+options.ul_classes)
+        .style("margin-left", "5px")
+        .selectAll("li.d3-list")
+        .data(data,options.key);
+      list.exit().remove();
+      list.enter().append("li")
+        .attr("class","d3-list "+ options.li_classes)
+        .append("div")
+        .attr("class", "color-tag")
+        .style({
+           "float" : "left",
+           "width" : "20px",
+           "height" : "20px",
+           "margin-right" : "5px" 
+        });
+
+      list
+        .append("a")
+        .attr("href",'#')
+        .html(options.html)
+        .on("click", function(d,i){
+           dispatch.click(d,i,d3.select(this),list);
+        });
+
+      return {
+        dispatch : dispatch,
+        list : list,
+        first : d3.select(list.node())
+      };
+    };
+
     D3.extend_base = function(chart){
       return function(options){
         options = options || {};
-        options.chart = my;
         options.height = options.height || 400;
         options.width = options.width || 800;
         options.hover_legend = options.hover_legend || true;
@@ -87,6 +138,8 @@
           });
           return my;
         }
+
+        options.chart = my;
 
         my.dispatch = options.dispatch = d3.dispatch(
             'dataMouseEnter',

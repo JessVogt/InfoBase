@@ -48,6 +48,9 @@ module.exports = function(grunt) {
         eqnull: true,
         browser: true,
         debug : true,
+        latedef : true,
+        noempty : true,
+        trailing : true,
         //strict : true
       },
       full : {
