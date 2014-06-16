@@ -26,7 +26,7 @@
           return;
         }
 
-        var colors = D3.tbs_color();
+        var colors = d3.scale.category10();
         var tags = list.selectAll(".color-tag");
         tags.style("background-color","transparent");
         // now check and see if nothing else is selected

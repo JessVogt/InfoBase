@@ -40,4 +40,5 @@ transition to-do:
     5 - ensure axes use consistent labeling/decimals
     6 - add total-row class
     7 - T.m for every get_text
+    8 - fix font differences between axes
 

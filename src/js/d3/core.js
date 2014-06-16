@@ -72,6 +72,8 @@
 
     D3.create_list = function(container, data,options){
       options.key = options.key || function(d,i){return i;};
+      options.colors = options.colors || function(d,i){ return "transparent";};
+
       var dispatch = d3.dispatch("click","hover");
 
       container
@@ -80,7 +82,7 @@
         "max-height" : options.height + "px",
         "overflow-y" : "auto",
         "margin-right" : '10px',
-        "margin-left" : '10px',
+        "margin-left" : '10px'
       })
       .attr("class", "well");
 
@@ -94,6 +96,7 @@
         .style("margin-left", "5px")
         .selectAll("li.d3-list")
         .data(data,options.key);
+
       list.exit().remove();
       list.enter().append("li")
         .attr("class","d3-list "+ options.li_classes)
@@ -101,18 +104,27 @@
         .attr("class", "color-tag")
         .style({
            "float" : "left",
-           "width" : "20px",
+           "width" : "5%",
            "height" : "20px",
-           "margin-right" : "5px" 
+           "border": "1px solid grey",
+           "margin-right" : "5px" ,
+           "background-color" : options.color
         });
 
       list
+        .append("div")
+        .style({
+           "float" : "left",
+           "width": "90%",
+           "display": "inline-block"
+        })
         .append("a")
         .attr("href",'#')
         .html(options.html)
         .on("click", function(d,i){
            dispatch.click(d,i,d3.select(this),list);
         });
+      list.append("div").attr("class","clear");
 
       return {
         dispatch : dispatch,

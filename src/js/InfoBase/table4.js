@@ -341,7 +341,6 @@
             return -d3.sum(x.data);
         })
         .value();
-
       
       // append an empty div
       var legend = this.text_area.append("div");
@@ -354,7 +353,7 @@
         height : this.height,
         legend : app.get_text("legend"),
         ul_classes : "legend",
-        li_classes : "wrap-none",
+        //li_classes : "wrap-none",
         multi_select : true} );
 
       // create the graph
@@ -362,7 +361,7 @@
         add_legend : false,
         add_xaxis : true,
         ticks : this.data.last_years,
-        formater : this.compact
+        formater : this.compact1
         });
 
       // run the graph once on empty data to establish the sizes

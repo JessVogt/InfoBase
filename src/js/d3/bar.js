@@ -185,10 +185,10 @@
         //    },
         //    "left"  : function(d) { return x1(d.name)+(x1.rangeBand()-bar_width)/2 +"px" ; }
         //  });
-        html.selectAll("div.labels")
-          .data(data)
-          .exit()
-          .remove();
+        //html.selectAll("div.labels")
+        //  .data(data)
+        //  .exit()
+        //  .remove();
       }
 
       var groups = graph_area.selectAll(".group")
