@@ -351,6 +351,8 @@
           return d.label;
         },
         height : this.height,
+        width : 300,
+        interactive : true,
         legend : app.get_text("legend"),
         ul_classes : "legend",
         //li_classes : "wrap-none",

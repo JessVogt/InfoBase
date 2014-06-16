@@ -71,8 +71,25 @@
 
 
     D3.create_list = function(container, data,options){
+      /*
+       *  container is html element
+       *  data is an array of data
+       *  options
+       *    .html is funciton which extacts
+       *     the relevant data to be displayed
+       *    .colors will provide the right color
+       *     a default will be supplied
+       *     .height is a number
+       *     .legend is the title
+       *    .ul_classes
+       *    .li_classes
+       *    .ineractive - if set to true, will
+       *     put all legend text in anchor elements
+       *     and dispatch an event when they are clicked
+       */
       options.key = options.key || function(d,i){return i;};
       options.colors = options.colors || function(d,i){ return "transparent";};
+      options.width = options.width || 200;
 
       var dispatch = d3.dispatch("click","hover");
 
@@ -82,9 +99,11 @@
         "max-height" : options.height + "px",
         "overflow-y" : "auto",
         "margin-right" : '10px',
-        "margin-left" : '10px'
+        "margin-left" : '10px',
+        "width" : options.width + "px"
       })
-      .attr("class", "well");
+      .classed("border-all", true)
+      .classed("well", true);
 
       container.append("p")
         .attr("class", "margin-bottom-none margin-top-none nav-header")
@@ -104,26 +123,28 @@
         .attr("class", "color-tag")
         .style({
            "float" : "left",
-           "width" : "5%",
+           "width" : "20px",
            "height" : "20px",
            "border": "1px solid grey",
+           "margin-left" : "5px" ,
            "margin-right" : "5px" ,
-           "background-color" : options.color
+           "background-color" : options.colors
         });
 
-      list
+      var text = list
         .append("div")
         .style({
            "float" : "left",
-           "width": "90%",
-           "display": "inline-block"
-        })
-        .append("a")
+           "width": options.width -10 - 50 + "px",
+        });
+      if (options.interactive){
+       text = text.append("a")
         .attr("href",'#')
-        .html(options.html)
         .on("click", function(d,i){
            dispatch.click(d,i,d3.select(this),list);
         });
+      }
+      text.html(options.html);
       list.append("div").attr("class","clear");
 
       return {

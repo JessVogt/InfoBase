@@ -124,8 +124,8 @@
           "en": "Organization’s active employee population by region of work by value (number of employees) and proportion of total population (%). The National Capital Region (NCR) includes both Ottawa (ON) and Gatineau (QC). Select the fiscal year in the drop-down menu to display the population for that year.",
           "fr": "Population active par région géographique en fonction du nombre d'employés et en tant que pourcentage du total de la population (%). La région de la capitale nationale (RCN) inclus Ottawa (ON) et Gatineau (QC). Sélectionnez l'exercice financier figurant dans le menu déroulant pour afficher la population."
         },
-        drop_down_options: [{ val: "{{last_year}}", selected: true }, 
-        { val: "{{last_year_2}}" }, 
+        drop_down_options: [{ val: "{{last_year}}", selected: true },
+        { val: "{{last_year_2}}" },
         { val: "{{last_year_3}}" }
         ],
         classes: ['left_text',
@@ -182,7 +182,8 @@
 
           CANADA.canada({
             text_fragments : {
-              "three_year" : app.get_text("three_year_history")
+              "three_year" : app.get_text("three_year_history"),
+              "legend"  : app.get_text("legend")
             },
             data : data,
             ticks : _.last(this.data.last_years,3),

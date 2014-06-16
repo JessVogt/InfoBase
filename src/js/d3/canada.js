@@ -4,7 +4,7 @@
 // height="81.185539"
 
 (function(root) {
-  
+
   var APP = ns('APP');
   var D3 = ns("D3");
   var BAR = ns('D3.BAR');
@@ -31,8 +31,8 @@
          padding = (this.width - width) /2,
          tys = three_year_size,
          scaled_three_year_size = [scale*tys[0],scale*tys[1]],
-         scaled_three_year_coord = [818*scale,0];
-         html = d3.select(D3.get_html_parent(svg));
+         scaled_three_year_coord = [818*scale,0],
+         html = this.html;
 
      //remove the default svg node, it will be replaced from the template
      html.select("svg").remove();
@@ -53,7 +53,7 @@
          "height" : scaled_three_year_size[1]+'px',
          "width" : scaled_three_year_size[0]+'px',
          "background-color" : "#F4F4F4"
-         
+
        });
 
      svg = html.select("svg");
@@ -65,59 +65,28 @@
         })
         .select("g.container")
         .attr("transform","translate("+padding+",0),scale("+scale+")");
-     
-     svg.select("g.container")
-       .append("g")
-       .attr({
-         "class" : "legend-background",
-         "transform":"translate("+[scale*50,scale*20]+")"
-       })
-       .append("rect")
-       .attr({
-         "x" : 0, "y" : 0,
-         "width" : 100/scale,
-         "height" : (color_scale.ticks(5).length * 14 + 20)/scale
-       })
-       .style({
-         "fill" : "#F4F4F4",
-         "stroke-width" : "1px",
-         "stroke" : "#CCC"
-       });
 
-     var legend = svg.select("g.container").selectAll(".legend")
-       .data(color_scale.ticks(5).reverse())
-       .enter()
-       .append("g")
-       .attr({
-         "class" :"legend",
-         "transform":function(d,i){
-            return "translate("+scale*100+","+ 1/scale*(14*i + 20) + ")";
-         }
-       });
 
-     legend.append("rect")
-       .attr({
-         'x' : 0,
-         "y" : 0,
-         "width" : 12/scale,
-         "height" : 12/scale
-       })
-       .style({
-         "fill" :  "#1f77b4",
-         "fill-opacity" : color_scale
-       });
-
-     legend.append("text")
-       .attr({
-         "x" : 15/scale,
-         "y" : 12/scale 
-       })
-       .style({
-         "font-size" : 12/scale + "px"
-       })
-       .text(function(d,i){
+     // add legend
+     D3.create_list(
+      html.append("div")
+       .style({"position": "absolute",
+           "left" : "10px",
+           "top" : "10px",
+       }),
+      color_scale.ticks(5).reverse(),
+      {html : function(d){
          return formater(d) +"+";
-       });
+       },
+       legend : text_fragments.legend,
+       height : color_scale.ticks(5).length*30+30,
+       width : 100,
+       ul_classes : "legend",
+       interactive : false,
+       colors : function(d){
+         return "rgba(31, 119, 180,"+color_scale(d) +")";
+       }
+      });
 
      svg.selectAll(".province")
         .style({
