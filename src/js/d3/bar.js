@@ -225,31 +225,5 @@
               return y(d.value) - y(zero);
             }
           });
-
    });
-
-   function make_legend(sel,legend,width,colors){
-
-     var el = sel.selectAll(".legend")
-           .data(legend)
-         .enter().append("g")
-           .attr("class", "legend")
-           .attr("transform", function(d, i) { return "translate(0," + (5+(i* 20)) + ")"; });
-     el.append("circle")
-         .attr("cx", width - 18/2)
-         .attr("cy", 18/2)
-         .attr("r", 18/2)
-         .style("fill", colors);
-
-     el.append("text")
-         .attr("x", width - 24)
-         .attr("y", 9)
-         .attr("dy", ".35em")
-         .style("text-anchor", "end")
-         .style("font-size", "10px")
-         .text(function(d) { return d; });
-
-     return el;
-   }
-
 })();
