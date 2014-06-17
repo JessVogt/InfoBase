@@ -6,7 +6,7 @@
 
 
     STACKED.stacked_series = D3.extend_base(function(svg,index){
-      /* data in the format of 
+      /* data in the format of
         data = [ {tick:"series 1" , vals : {
              "name1" : val,"name2" : val,"name3" : val}},
         {tick:"series 2" , vals : {
@@ -45,7 +45,7 @@
             return {
               vals : stacked,
               total : total,
-              tick : row.tick 
+              tick : row.tick
             };
         });
 
@@ -75,45 +75,19 @@
           y.domain([0,d3.max(data, function(d){return d.total;})]);
         }
 
-        svg.selectAll("g.legend-background")
-          .data([0])
-          .enter()
-          .append("g")
-          .attr({
-            "class" : "legend-background",
-            "transform":"translate("+[width-125,0]+")"
-          })
-          .append("rect")
-          .attr({
-            "x" : 0, "y" : 0,
-            "width" : 150,
-            "height" : (color.domain().length * 14 + 50)
-          })
-          .style({
-            "fill" : "#F4F4F4",
-            "stroke-width" : "1px",
-            "stroke" : "#CCC"
+        D3.create_list(
+          html.append("div")
+          .style({"position": "absolute",
+                  "right" : "10px",
+                  "top" : "10px",
+          }),
+          color.domain().slice().reverse(),
+          {
+            html : _.identity,
+            colors : color,
+            width : legend_width,
+            height : color.domain().slice().reverse() * 20 + 40
           });
-
-        var legend = svg.selectAll(".legend")
-              .data(color.domain().slice().reverse())
-            .enter().append("g")
-              .attr("class", "legend")
-              .attr("transform", function(d, i) { return "translate(0," + (i+1) * 20 + ")"; });
-
-        legend.append("rect")
-          .attr("x",  width - 18)
-          .attr("width", 18)
-          .attr("height", 18)
-          .style("fill", color);
-
-        legend.append("text")
-          .attr("x", width - 24)
-          .attr("y", 9)
-          .attr("dy", ".35em")
-          .style("text-anchor", "end")
-          .style("font-size","10px")
-          .text(function(d) { return d; });
 
         svg.selectAll(".axis").remove();
 
@@ -149,14 +123,21 @@
 
       };
 
+      // add button to toggle between percentage
+      // composition and aboslute value
       html
-        .append("a")
+        .append("div")
+        .classed("well border-all", true)
         .style({
+          "width" : legend_width+"px",
+          "padding-left" : "10px",
+          "margin-right" : "10px",
           "position" : "absolute",
           "font-size" : "12px",
-          "top" : "20px",
-          "right" : "10px"
+          "right" : "10px",
+          "top" : 10 + 10 +  color.domain().slice().length * 20 + 40  + "px"
         })
+        .append("a")
         .html("Alternate")
         .on("click",function(){
            normalized = !normalized;
