@@ -170,11 +170,10 @@
      var data = _.chain(this._descriptions)
          .filter(function(d){ return d.args !== null;} )
          .map(function(d){
-           d.description = TABLES.m(TABLES.m(gt("describe_"+d.key),d.args));
+           d.description = gt("describe_"+d.key,d.args);
            return d;
          })
          .value();
-
      var descs = this.description_area.select(".toggle")
        .selectAll("p.description")
        .data(data);
