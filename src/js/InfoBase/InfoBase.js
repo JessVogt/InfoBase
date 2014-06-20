@@ -1,6 +1,6 @@
 (function() {
   var APP = ns('APP');
-  
+
   var LANG = ns('LANG');
   var PARSER = ns('PARSER');
   var WAIT = ns('WAIT');
@@ -27,37 +27,54 @@
     });
   }
 
+  var sizes  = [];
+
   APP.start = function(){
     // download initialization data files and when that's done,
     // parse the data and create a new app
 
-    // parse the file name of the html file to figure out if the 
+    // parse the file name of the html file to figure out if the
     // language is en or fr  TODO fix how awkwardly this is done
     var lang = _.last(location.pathname.replace(".html",""),3).join("")==='eng' ? 'en' : 'fr';
 
-    WAIT.w = WAIT.waitscreen(lang);
+    WAIT.w = WAIT.waitscreen(lang,"Application");
 
     var setup_material = {
       "Language" :  {url:"data/lang.csv", onload:lang_load},
-      "Table Text" :  {url:"handlebars/infobase_tables.html", onload:table_text_load},
+      "Table Text" : {url:"handlebars/infobase_tables.html",onload:table_text_load},
       "Templates" :  {url:"handlebars/infobase.html", onload:template_load},
       "Organizations" :  {url:"data/orgs.csv", onload:org_load},
       "Lookups" :  {url:"data/lookups.csv", onload:sos_load},
       "QFR Links" :  {url:"data/QFRLinks.csv", onload:qfr_links_load}
     };
 
-    var promises = _.chain(setup_material)
+    var promise0 = $.Deferred();
+    WAIT.getContentSizes(setup_material,sizes).done(function(){
+      WAIT.w.initRequestInfo(sizes);
+      promise0.resolve();
+    });
+
+      var promises = _.chain(setup_material)
        .map(function(obj,key){
           var promise1 = $.Deferred(),promise2 = $.Deferred();
-          WAIT.w.update_item(key,"download");
-          var req = $.ajax(obj.url);
+          var req = $.ajax({
+            url:obj.url,
+            xhrFields: {
+              onprogress: function (e) {
+                if (e.lengthComputable && promise0.state() == 'resolved') {
+                  WAIT.w.update_item(key,e.loaded);
+                }
+              }
+            }
+          });
           req.done(function(data){
-            WAIT.w.update_item(key,"loading");
             _.delay(promise1.resolve,0,data);
           });
           promise1.done(function(data){
+            console.log("calling onload for:");
+            console.log(obj);
             obj.onload(promises,data);
-            WAIT.w.update_item(key,"finished");
+
             _.delay(promise2.resolve,0);
           });
           return [key,promise2];
@@ -68,6 +85,8 @@
     // using the language you figured out from the url
 
     $.when.apply(null,_.values(promises)).done(function(){
+      WAIT.w.teardown();
+      console.log("teardown 1");
       APP.app = new APP.appView({
         state : {
           "lang":lang,
@@ -75,11 +94,12 @@
           "min_tot":true,
           "goc_tot":true
        }});
+
+
     });
   };
 
   APP.dispatcher.on("data_loaded",function(app){
-    WAIT.w.teardown();
     window.mins = d3.nest()
       .key(function(d){ return d.min.en;})
       .map(_.values(window.depts));
@@ -90,6 +110,7 @@
       .object()
       .value();
     APP.dispatcher.trigger_a("app_ready",app);
+    console.log("app ready");
   });
 
   APP.dispatcher.on("app_ready",function(app){
@@ -138,7 +159,7 @@
         } else {
           return APP.types_to_format[format](val,this.lang);
         }
-      } 
+      }
       return val;
     },
     list_formater : function(formats,vals){
@@ -164,7 +185,7 @@
     },
     toggle_lang : function(){
       this.state.set({
-        lang:this.state.get("lang") === "en" ? "fr" : "en" 
+        lang:this.state.get("lang") === "en" ? "fr" : "en"
       });
     },
     reset_dept : function(model, dept){
@@ -198,7 +219,7 @@
   });
 
    APP.dispatcher.on("dept_ready", function(container,app,dept){
-      // create a new organization view and link its rendering to 
+      // create a new organization view and link its rendering to
       // the dept_ready signal
       var org_view = new APP.OrgView({app:app, dept:dept,container:container});
       org_view.render();
