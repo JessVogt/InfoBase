@@ -71,8 +71,6 @@
             _.delay(promise1.resolve,0,data);
           });
           promise1.done(function(data){
-            console.log("calling onload for:");
-            console.log(obj);
             obj.onload(promises,data);
 
             _.delay(promise2.resolve,0);
@@ -86,7 +84,6 @@
 
     $.when.apply(null,_.values(promises)).done(function(){
       WAIT.w.teardown();
-      console.log("teardown 1");
       APP.app = new APP.appView({
         state : {
           "lang":lang,
@@ -110,7 +107,6 @@
       .object()
       .value();
     APP.dispatcher.trigger_a("app_ready",app);
-    console.log("app ready");
   });
 
   APP.dispatcher.on("app_ready",function(app){

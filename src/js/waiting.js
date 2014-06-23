@@ -113,7 +113,6 @@
       arc = this.arc,
       text = this.text,
       self = this;
-      console.log(progress);
 
 
       this.foreground.attr("d",arc.endAngle(twoPi*progress));

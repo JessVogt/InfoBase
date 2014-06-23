@@ -62,8 +62,7 @@
 
   function setup_tables(app){
     //TODO fix the hardcoding of 'en' by finding a way to access the lang in the InfoBase.js
-    WAIT.w = WAIT.waitscreen('en','tables');
-    console.log("waitscreen 2 init");
+    WAIT.w = WAIT.waitscreen(app.state.get('lang'),'tables');
     TABLES.m = function(s,extra_args){
       if (_.isArray(s)){
         return _.map(s,function(__){ return TABLES.m(__,extra_args);});
@@ -86,7 +85,6 @@
     $.when.apply(null, load_data(app))
       .done(function(){
         WAIT.w.teardown();
-        console.log("teardown 2");
         APP.dispatcher.trigger("data_loaded",app);
       });
   }
@@ -102,7 +100,6 @@
     WAIT.getContentSizes(setup_material,sizes).done(function(){
       WAIT.w.initRequestInfo(sizes);
       promise0.resolve();
-      console.log("tables header files are loaded!");
     });
 
     return _.map(TABLES.tables, function(table){
@@ -111,8 +108,6 @@
        */
       var key = table.name[app.state.get("lang")];
       // fetch the table descriptions and attach it
-      console.log(table.id+"_"+app.lang);
-      //table.description = TABLES.m($('#'+table.id+"_"+app.lang).html());
       table.description = TABLES.m($('#'+table.id+"_"+app.lang).html());
 
       var promise1= $.Deferred(),promise2 =$.Deferred();
