@@ -62,7 +62,7 @@
       "header":{
         "en":"Estimates",
       "fr":"Budgets des dépenses"
-      }    
+      }
     }).add_child([
       {
         "type":"big-int",
@@ -161,24 +161,24 @@
               if (type === 'Crown Corporation'){
                 return "crown";
               }
-              return "op"; 
+              return "op";
             })
-          .rollup(function(depts){
-            if (rollup){
-              var rows = _.filter(data, function(d){ return _.include(depts,d.dept);});
-              return d3.sum(rows,function(r){return r.total_net_auth;});
-            } else {
-              return _.chain(depts)
-            .map(function(dept){
-              var rows = _.filter(data, function(d){ return d.dept === dept ;});
-              var sum = d3.sum(rows,function(r){return r.total_net_auth;});
-              return [dept,sum ];
+            .rollup(function(depts){
+              if (rollup){
+                var rows = _.filter(data, function(d){ return _.include(depts,d.dept);});
+                return d3.sum(rows,function(r){return r.total_net_auth;});
+              } else {
+                return _.chain(depts)
+                        .map(function(dept){
+                          var rows = _.filter(data, function(d){ return d.dept === dept ;});
+                          var sum = d3.sum(rows,function(r){return r.total_net_auth;});
+                          return [dept,sum ];
+                        })
+                        .object()
+                        .value();
+              }
             })
-          .object()
-            .value();
-            }
-          })
-          .map(depts);
+            .map(depts);
         },
         "estimates_split"  : function(options,format){
           format = format || false;
@@ -252,7 +252,7 @@
           as_tuple:true},
           true);
           this.headers= [[this.gt("Estimates"),
-            this.gt("amount") + ' ($000)', 
+            this.gt("amount") + ' ($000)',
             '(%)']];
         }
       },
@@ -262,11 +262,11 @@
         c.dept_this_year_voted_num = this.voted_stat("total_net_auth",c.dept,false).voted.length;
         c.dept_this_year_stat_num = this.voted_stat("total_net_auth",c.dept,false).stat.length;
 
-        c.dept_this_year_voted = _.chain(this.voted_stat("total_net_auth",c.dept,false).voted) 
-                              .sortBy(function(x){ return -x.total_net_auth;}) 
+        c.dept_this_year_voted = _.chain(this.voted_stat("total_net_auth",c.dept,false).voted)
+                              .sortBy(function(x){ return -x.total_net_auth;})
                               .value();
-        c.dept_this_year_stat = _.chain(this.voted_stat("total_net_auth",c.dept,false).stat) 
-                              .sortBy(function(x){ return -x.total_net_auth;}) 
+        c.dept_this_year_stat = _.chain(this.voted_stat("total_net_auth",c.dept,false).stat)
+                              .sortBy(function(x){ return -x.total_net_auth;})
                               .value();
 
         c.dept_estimates_split = q.estimates_split({filter_zeros : true, as_tuple : true});
@@ -279,8 +279,8 @@
         c.this_year_voted_num = this.voted_stat("total_net_auth",false,false).voted.length;
         c.this_year_stat_num = this.voted_stat("total_net_auth",false,false).stat.length;
 
-        var gov_this_year_voted = _.chain(this.voted_stat("total_net_auth",false,false).voted) 
-          .sortBy(function(x){ return -x.total_net_auth;}) 
+        var gov_this_year_voted = _.chain(this.voted_stat("total_net_auth",false,false).voted)
+          .sortBy(function(x){ return -x.total_net_auth;})
           .value();
         c.gov_this_year_voted = _.head(gov_this_year_voted,10);
         c.gov_this_year_voted.push({
@@ -291,8 +291,8 @@
           })
         });
 
-        var gov_this_year_stat = _.chain(this.voted_stat("total_net_auth",false,false).stat) 
-          .sortBy(function(x){ return -x.total_net_auth;}) 
+        var gov_this_year_stat = _.chain(this.voted_stat("total_net_auth",false,false).stat)
+          .sortBy(function(x){ return -x.total_net_auth;})
           .value();
         c.gov_this_year_stat = _.head(gov_this_year_stat,10);
         c.gov_this_year_stat.push({
@@ -353,7 +353,7 @@
              bottom_font_size : 16,
              text_func : function(d){
                var val = formater(d.__value__ || d.value) ;
-               return d.name + " - "+ val;   
+               return d.name + " - "+ val;
              },
              data : {
                children : null
@@ -401,7 +401,7 @@
           this.text_area.html(app.get_text(text, this.written_data));
 
         }
-      }                    
+      }
     });
 
     graph_top = function(data){
@@ -427,7 +427,7 @@
          text_func : function(d){
            var val = formater(d.total_net_auth) ;
            if (d.others){
-             return d.desc + " - "+ val;   
+             return d.desc + " - "+ val;
            }
            return val;
          },

@@ -16,10 +16,10 @@
         this.add_col(
           {
             "type":"int",
-        "key" : true,
-        "hidden" : true,
-        "nick" : "dept",
-        "header":'',
+            "key" : true,
+            "hidden" : true,
+            "nick" : "dept",
+            "header":'',
           });
         this.add_col(
           {
@@ -36,13 +36,23 @@
                 {
                   "type":"big-int",
                   "nick":header,
-                  "header":header,  
+                  "header":header,
                   "description": {
                     "en": "Corresponds to the funds spent by program during the fiscal year " + header,
                     "fr": "Correspondent aux dépenses par programme effectuées au cours de l'exercice financier " + header
                   }
                 });
             },this);
+      },
+      "link": {
+        "en": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-eng.asp",
+        "fr": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-fra.asp"
+      },
+      "name": { "en": "Expenditures by Program",
+        "fr": "Dépenses par programme"
+      },
+      "title": { "en": "Expenditures by Program from {{last_year_3}} to {{last_year}} ($000)",
+        "fr": "Dépenses par programme de {{last_year_3}} à {{last_year}} (en milliers de dollars)"
       },
       "dimensions" : {
         "horizontal": function(options){
@@ -75,16 +85,6 @@
           return func;
         }
       },
-      "link": {
-        "en": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-eng.asp",
-        "fr": "http://www.tbs-sct.gc.ca/ems-sgd/aegc-adgc-fra.asp"
-      },
-      "name": { "en": "Expenditures by Program",
-        "fr": "Dépenses par programme"
-      },
-      "title": { "en": "Expenditures by Program from {{last_year_3}} to {{last_year}} ($000)",
-        "fr": "Dépenses par programme de {{last_year_3}} à {{last_year}} (en milliers de dollars)"
-      },
       "sort": function (mapped_rows, lang) {
         return _.sortBy(mapped_rows, function (row) { return row[0];});
       },
@@ -106,8 +106,8 @@
         {val:"{{last_year_2}}"},
         {val:"{{last_year_3}}"}
         ],
-          classes : [ 'left_text', 
-          'right_number', 
+          classes : [ 'left_text',
+          'right_number',
           'right_number'],
           prep_data: function () {
             var year = this.option.val ;
@@ -133,22 +133,44 @@
       dept_info : function(c,q){
         c.dept_historical_program_spending = q.sorted_programs();
         var is = app.get_text("internal_services");
-        c.dept_is = [this.horizontal("{{last_year_3}}",c.dept,true)[is],
-                       this.horizontal("{{last_year_2}}",c.dept,true)[is],
-                       this.horizontal("{{last_year}}",c.dept,true)[is]];
+        c.gov_is = _.map(years, function(year){
+           return this.horizontal(year,c.dept,true)[is];
+        },this);
       },
       info : function(c,q){
         var is = app.get_text("internal_services");
-        c.gov_is = [this.horizontal("{{last_year_3}}",false)[is],
-                    this.horizontal("{{last_year_2}}",false)[is],
-                    this.horizontal("{{last_year}}",false)[is]];
+        c.gov_is = _.map(years, function(year){
+           return this.horizontal(year,false)[is];
+        },this);
       },
       graphics : {
        "details_display_order" : [
          "program_spending"
        ],
-       "program_spending": function(){
+       "gov_internal_services" : function(){
+         this.text_area.html(app.get_text("internal_service_spend"));
 
+         data =_.zip( this.data.last_years, this.written_data.gov_is ) ;
+         LINE.ordinal_line({
+           series :  {'':  _.clone(this.data.gov_is)},
+           ticks : this.data.last_years,
+           add_yaxis : true,
+           add_xaxis : true,
+           formater : this.compact1
+         })(this.graph_area);
+
+         // add the  table
+         TABLES.prepare_and_build_table({
+           table_class : "table-condensed ",
+           stripe : true,
+           rows : data,
+           headers : [['','']],
+           row_class : ['left_text','right_number'],
+           node : this.text_area.node()
+         });
+
+       },
+       "program_spending": function(){
           var data = _.chain(this.data.dept_historical_program_spending)
             .map(function(row){
               return {label : row.prgm ,
@@ -161,7 +183,7 @@
                 return -d3.sum(x.data);
             })
             .value();
-          
+
           // append an empty div
           var legend = this.text_area.append("div");
 
@@ -171,9 +193,11 @@
               return d.label;
             },
             height : this.height,
-            legend : app.get_text("legend"),
+            width : 300,
+            interactive : true,
+            legend : true,
+            title : app.get_text("legend"),
             ul_classes : "legend",
-            li_classes : "wrap-none",
             multi_select : true} );
 
           // create the graph
@@ -181,7 +205,7 @@
             add_legend : false,
             add_xaxis : true,
             ticks : this.data.last_years,
-            formater : this.compact
+            formater : this.compact1
             });
 
           // run the graph once on empty data to establish the sizes

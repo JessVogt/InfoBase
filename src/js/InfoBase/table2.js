@@ -2,6 +2,8 @@
   var TABLES = ns('TABLES');
   var D3 = ns('D3');
   var APP = ns('APP');
+  var PACK = ns('D3.PACK');
+
   APP.dispatcher.on("load_tables", function (app) {
     var m = TABLES.m;
     APP.dispatcher.trigger("new_table",
@@ -204,10 +206,52 @@
             }
           });
        },
-       "gov_type_spend" : function() {
-      
-      
-      
+       "goc_type_spend" : function() {
+
+          var formater = this.compact,
+              table_data = _.sortBy(_.map(this.written_data.gov_this_year_type_spend,function(value,key){
+                    var label =  app.get_text(key+"_spend_type");
+                    return [label,value];
+                  }),1),
+              packing_data = {
+                name : '',
+                children : _.map(this.data.gov_this_year_type_spend,function(value,key){
+                    var label =  app.get_text(key+"_spend_type");
+                    return {
+                      children : null,
+                      name :  label + " (" + this.compact(value)+")",
+                      value : value
+                    };
+                  },this)
+              };
+
+          TABLES.prepare_and_build_table({
+            rows : table_data,
+            headers : [["",""]],
+            table_class : "table-condensed table-medium",
+            stripe : true,
+            row_class : ['left_text','right_number'],
+            node : this.text_area.node()
+          });
+
+          PACK.pack({
+            width : this.height*1.7,
+            formater : formater,
+            invisible_grand_parent : false,
+            top_font_size : 14,
+            data : packing_data,
+            cycle_colours : true,
+            text_func : function(d){
+              var val = formater(d.value);
+              if (d.zoom_r > 60) {
+                return d.name ; 
+              } else if (d.zoom_r > 40) {
+                return _.first(d.name.split(" "),2).join(" ")+ " - "+ val;  
+              } else  {
+                return val;
+              }
+            }
+          })(this.graph_area);
        }
       }
     });

@@ -199,7 +199,7 @@
               d=this.data,text,args={
                 height : this.height,
                 formater : this.compact1,
-                add_legend : true,
+                add_legend : false,
                 add_yaxis : true,
                 add_xaxis : true,
                 html_ticks : true,
@@ -247,6 +247,7 @@
                 add_xaxis : true,
                 add_labels : true,
                 add_yaxis : true,
+                add_legend : false,
                 add_under_area : true,
                 x_axis_line : true,
                 html_ticks : true,
@@ -341,7 +342,7 @@
             return -d3.sum(x.data);
         })
         .value();
-      
+
       // append an empty div
       var legend = this.text_area.append("div");
 
@@ -353,10 +354,11 @@
         height : this.height,
         width : 300,
         interactive : true,
-        legend : app.get_text("legend"),
+        title : app.get_text("legend"),
+        legend : true,
         ul_classes : "legend",
-        //li_classes : "wrap-none",
-        multi_select : true} );
+        multi_select : true} 
+      );
 
       // create the graph
       var graph = LINE.ordinal_line({

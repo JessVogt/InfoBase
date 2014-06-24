@@ -1,6 +1,9 @@
 (function (root) {
   var TABLES = ns('TABLES');
   var APP = ns('APP');
+  var PACK = ns("D3.PACK");
+  var D3 = ns("D3");
+
   APP.dispatcher.on("load_tables", function (app) {
     var m = TABLES.m;
     var years = TABLES.years;
@@ -19,7 +22,7 @@
       "nick" : "dept",
       "header":''
         },
-        { 
+        {
           "type":"int",
       "key" : true,
       "nick" : "votenum",
@@ -123,7 +126,7 @@
       "queries" : {
         "auth_change" : function(format) {
           // returns last year, this year, and change
-          var this_year = "thisyearauthorities", 
+          var this_year = "thisyearauthorities",
           last_year= "lastyearauthorities",
           total = this.sum([this_year, last_year]),
           change =  total[this_year] / (total[last_year])-1,
@@ -135,7 +138,7 @@
         },
         "exp_change" : function(format) {
           // returns last year, this year, and change
-          var this_year = "thisyearexpenditures", 
+          var this_year = "thisyearexpenditures",
           last_year= "lastyearexpenditures",
           total = this.sum([this_year, last_year]),
           change =  total[this_year] / (total[last_year]) - 1,
@@ -162,19 +165,19 @@
         "fr": "État des autorisations et des dépenses (en milliers de dollars)"
       },
       "sort": function (mapped_rows) {
-        var grps = _.groupBy(mapped_rows, function (row) { 
+        var grps = _.groupBy(mapped_rows, function (row) {
           return _.isNumber(row[0]);
         });
         if (_.has(grps, true)) {
-          grps[true] = _.sortBy(grps[true], function (row) { 
+          grps[true] = _.sortBy(grps[true], function (row) {
             return row[0];
           });
         } else {
           grps[true] = [];
         }
         if (_.has(grps, false)) {
-          grps[false] = _.sortBy(grps[false], function (row) { 
-            return row[1]; 
+          grps[false] = _.sortBy(grps[false], function (row) {
+            return row[1];
           });
         } else {
           grps[false] = [];
@@ -214,7 +217,8 @@
         c.dept_this_year_qfr_spend =  q.sum("thisyearexpenditures");
         c.dept_last_year_qfr_auth =  q.sum("lastyearauthorities");
         c.dept_last_year_qfr_spend = q.sum("lastyearexpenditures");
-         c.dept_this_qfr_spend_percent = c.dept_this_year_qfr_spend / c.dept_this_year_qfr_auth; 
+        c.dept_this_qfr_spend_percent = c.dept_this_year_qfr_spend / c.dept_this_year_qfr_auth;
+
       },
       info : function(c,q){
         c.gov_auth_change = q.auth_change(false)[2];
@@ -239,16 +243,53 @@
         });
       },
       graphics : {
-        "total_planned_spend": function(options){
+        "details_display_order" : [
+          "qfr_spend_comparison",
+          "qfr_percentage_change"
+        ],
+        "qfr_spend_comparison" : function(){
+            this.text_area.html(app.get_text("gov_this_year_qfr_spend",this.written_data ));
+            this.graph_area.append("div").attr("class","first");
+            this.graph_area.append("div").attr("class","second");
+            this.graph_area.selectAll("div")
+              .style("position","relative")
+              .style("width","49%")
+              .style("float", "left");
+
+            PACK.circle_pie_chart({
+              data : [
+                {name: 'x', value : this.data.gov_this_year_qfr_auth},
+                {name: 'y', value : this.data.gov_this_year_qfr_spend}
+              ],
+              formater : this.compact,
+              height : this.height,
+              title : TABLES.m("{{in_year}}")
+            })(this.graph_area.select(".first"));
+
+            PACK.circle_pie_chart({
+              data : [
+                {name: 'x', value : this.data.gov_last_year_qfr_auth},
+                {name: 'y', value : this.data.gov_last_year_qfr_spend }
+              ],
+              formater : this.compact,
+              height : this.height,
+              title : TABLES.m("{{qfr_last_year}}")
+            })(this.graph_area.select(".second"));
 
         },
-        "voted_spending" : function(){
+        "qfr_percentage_change" : function(){
+            this.text_area.html(app.get_text("gov_this_year_qfr_spend_change",this.written_data ));
 
-        },
-        "stat_spending" : function(){
-
+           D3.arrows({
+             data : [
+              {value: this.data.gov_auth_change, name : app.get_text("authorities")},
+              {value: this.data.gov_spend_change, name : app.get_text("expenditures")},
+             ],
+             formater : this.percent,
+             height : this.height,
+           })(this.graph_area);
         }
-      } 
+      }
     });
   });
 })();

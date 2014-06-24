@@ -1,16 +1,15 @@
 (function(root) {
-  
+
     var APP = ns('APP');
     var T = ns('TABLES');
     var D3 = ns('D3');
     var HORIZONTAL = ns("D3.HORIZONTAL");
     var STORY = ns('D3.STORY');
-    var PACK = ns('D3.PACK');
     var BAR = ns('D3.BAR');
 
     APP.add_container_route("infograph","infographic",function(container){
       this.add_crumbs([this.home_crumb,{html: "Infographic"}]);
-      
+
       this.add_title($('<h1>').html("Infographic"));
       if (!this.app.explore){
        this.app.explore =  new STORYBOARD(container, this.app);
@@ -80,7 +79,7 @@
       this.by_province();
       this.by_employee_type();
       this.by_age_band();
-      
+
       // psas DOM object instead of wrapped
       STORY.center_text(container);
       this.container.selectAll(".toggle").classed("ui-screen-hidden",true);
@@ -153,7 +152,7 @@
     p.vote_stat_spend = function(){
       // create the chapter
       var chapter = new STORY.chapter({
-        toggles : [ 
+        toggles : [
           {toggle_text : this.app.get_text("previous_year_fisc"), add_divider: true},
           {toggle_text : "More details on statutory spending", add_divider : true },
           {toggle_text : "More details on voted spending" , add_divider : true }
@@ -251,65 +250,6 @@
           wd = this.written_data,
           cd = this.compact_data,
           compact = this.compact,
-
-          internal_services_text = this.gt("internal_service_spend"),
-          internal_services_data = _.zip( d.last_years, wd.gov_is  ),
-          internal_services_bar = BAR.bar({
-            series :  {'':  _.clone(d.gov_is)},
-            ticks : d.last_years,
-            add_xaxis : true,
-            x_axis_line : false,
-            add_labels : true,
-            html_ticks : true,
-            margin : {top: 20, right: 20, left: 20, bottom: 80},
-            label_formater : compact
-          }),
-
-          perosnnel_text = this.gt("personnel_spend"),
-          personnel_data =_.zip( d.last_years, wd.gov_personnel ) ,
-          personnel_bar = BAR.bar({
-            series :  {'':  _.clone(d.gov_personnel)},
-            ticks : d.last_years,
-            add_xaxis : true,
-            x_axis_line : false,
-            add_labels : true,
-            html_ticks : true,
-            margin : {top: 20, right: 20, left: 20, bottom: 80},
-            label_formater : compact
-          }),
-
-          label_mapping = {},
-          // add in the labels to the data
-          data = _.chain(this.data.gov_this_year_type_spend)
-              .map(function(value,key){
-                var label =  this.gt(key+"_spend_type");
-                label_mapping[label]= key;
-                return [label,value];
-              },this)
-              .value(),
-          packing_data = {
-            name : '',
-            children : _.chain(data)
-              .map(function(label_value){
-                var label=label_value[0], value = label_value[1];
-                return {
-                  children : null,
-                  name :  label + " (" + this.compact0(value)+")",
-                  value : value
-                };
-              },this)
-              .value()
-          },
-          table_data = _.chain(data)
-              .sortBy(function(label_value){
-                return -label_value[1];
-              })
-             .map(function(label_value){
-                label_value[1] = this.compact(label_value[1]).replace("B","");
-                return label_value;
-              },this)
-             .value(),
-          // create the chapter
           chapter = new STORY.chapter({
              toggles :[{
               toggle_text : this.app.get_text("previous_year_fisc"),
@@ -323,178 +263,61 @@
              } ],
              target : this.container,
              title : this.app.get_text("fin_spending_type")
-          }),
-          headers = [['','($ B)']],
-          formater = this.compact,
-          pack_chart = PACK.pack({
-            width : height*1.7,
-            formater : formater,
-            invisible_grand_parent : false,
-            top_font_size : 14,
-            data : packing_data,
-            cycle_colours : true,
-            text_func : function(d){
-              var val = formater(d.value);
-              if (d.zoom_r > 60) {
-                return d.name ; 
-              } else if (d.zoom_r > 40) {
-                return _.first(d.name.split(" "),2).join(" ")+ " - "+ val;  
-              } else  {
-                return val;
-              }
-            }
-          }),
-          //create the graph
-          on_label_click = function(label){
-            // highlight the current link
-            list_div.selectAll("li").classed("background-medium",false);
-            list_div.selectAll("li")
-              .filter(function(d){return d === label;})
-              .classed("background-medium",true);
-            // remove the previous graph
-            graph_div.selectAll("*").remove();
-            // look the key back up
-            var key = label_mapping[label];
-            var years = T.m(["{{last_year_3}}","{{last_year_2}}", "{{last_year}}"]);
-            var data = [
-              d.gov_last_year_3_type_spend[key],
-              d.gov_last_year_2_type_spend[key],
-              d.gov_last_year_type_spend[key]
-            ];
-            
-            BAR.bar({
-            series :  {'': data },
-            ticks : years,
-            height : 300,
-            add_xaxis : true,
-            x_axis_line : false,
-            add_labels : true,
-            label_formater : compact
-            })(graph_div);
-          },
-          //create the year options list
-          list_div = chapter.toggle_area().select(".text .inner"),
-          graph_div = chapter.toggle_area().select(".graphic");
+          });
 
-      //add the text 
-      chapter.text_area().html(Handlebars.compile(text)(this.written_data));
+      this.t.table2.graph("goc_type_spend",this.make_graph_context({
+        height : 1.5*height,
+        graph_area : chapter.graph_area(),
+        text_area : chapter.text_area()
+      })).render();
 
-      // add the table
-      T.prepare_and_build_table({
-        rows : table_data,
-        headers : headers,
-        table_class : "table-condensed ",
-        rowseach : function(d,i){
-          if (i % 2 === 1 ){
-            d3.select(this).classed("odd",true);
-          }
-        },
-        row_class : ['left_text','right_number'],
-        node : chapter.text_area().node()
-      });
+      this.t.table5.graph("gov_type_spend",this.make_graph_context({
+        height : 1.5*height,
+        graph_area : chapter.toggle_area().select(".graphic"),
+        text_area : chapter.toggle_area().select(".text .inner")
+      })).render();
 
-      // add the personnel table
-      T.prepare_and_build_table({
-        table_class : "table-condensed ",
-        rowseach : function(d,i){
-          if (i % 2 === 1 ){
-            d3.select(this).classed("odd",true);
-          }
-        },
-        rows : personnel_data,
-        headers : [['','']],
-        row_class : ['left_text','right_number'],
-        node : chapter.toggle_area(1).select(".text .inner").node()
-      });
-      personnel_bar(chapter.toggle_area(1).select(".graphic"));
+      this.t.table5.graph("gov_personnel_spend",this.make_graph_context({
+        height : 1.5*height,
+        graph_area : chapter.toggle_area(1).select(".graphic"),
+        text_area : chapter.toggle_area(1).select(".text .inner")
+      })).render();
 
-      // add the personnel table
-      T.prepare_and_build_table({
-        table_class : "table-condensed ",
-        rowseach : function(d,i){
-          if (i % 2 === 1 ){
-            d3.select(this).classed("odd",true);
-          }
-        },
-        rows : internal_services_data,
-        headers : [['','']],
-        row_class : ['left_text','right_number'],
-        node : chapter.toggle_area(2).select(".text .inner").node()
-      });
-      internal_services_bar(chapter.toggle_area(2).select(".graphic"));
+      this.t.table6.graph("gov_internal_services",this.make_graph_context({
+        height : 1.5*height,
+        graph_area : chapter.toggle_area(2).select(".graphic"),
+        text_area : chapter.toggle_area(2).select(".text .inner")
+      })).render();
 
-      // create the pack chart for this year and add to the graph area
-      pack_chart(chapter.graph_area());
-
-      // add in the list of items
-      list_div
-        .append("ul")
-        .attr("class","list-bullet-none")
-        .selectAll("li")
-        .data(d3.keys(label_mapping))
-        .enter()
-        .append("li")
-        .attr("class","margin-bottom-small")
-        .append("a")
-        .html(function(d){return d;})
-        .on("click", function(d){on_label_click(d);});
-
-      // select the first item in the list
-      on_label_click(d3.keys(label_mapping)[0]);
     };
 
 
     p.qfr_spend = function(){
-      var text = this.gt("gov_this_year_qfr_spend"),
-          d = this.data;
       // create the chapter
       var chapter = new STORY.chapter({
-        toggles : [{
-          toggle_text : T.m(this.app.get_text("this_time_last_year")),
-          add_divider: true 
-        }],
         target : this.container
       });
-      chapter.text_area().html(T.m(text, this.written_data));
 
-      PACK.circle_pie_chart({
-        data : [
-          {name: 'x', value : d.gov_this_year_qfr_auth},
-          {name: 'y', value : d.gov_this_year_qfr_spend}
-        ],
-        formater : this.compact,
+      this.t.table1.graph("qfr_spend_comparison",this.make_graph_context({
         height : height,
-      })(chapter.graph_area());
+        graph_area : chapter.graph_area(),
+        text_area : chapter.text_area()
+      })).render();
 
-      PACK.circle_pie_chart({
-        data : [
-          {name: 'x', value : d.gov_last_year_qfr_auth},
-          {name: 'y', value : d.gov_last_year_qfr_spend }
-        ],
-        formater : this.compact,
-        height : height,
-      })(chapter.toggle_area().select(".graphic"));
 
     };
 
     p.qfr_spend_change = function(){
-      var text = this.gt("gov_this_year_qfr_spend_change"),
-          d = this.data;
-
       // create the chapter
       var chapter = new STORY.chapter({
         target : this.container
       });
-      chapter.text_area().html(T.m(text, this.written_data));
 
-     D3.arrows({
-       data : [
-        {value: d.gov_auth_change, name : this.gt("authorities")},
-        {value: d.gov_spend_change, name : this.gt("expenditures")},
-       ],
-       formater : this.percent,
-       height : height,
-     })(chapter.graph_area());
+      this.t.table1.graph("qfr_percentage_change",this.make_graph_context({
+        height : height,
+        graph_area : chapter.graph_area(),
+        text_area : chapter.text_area()
+      })).render();
 
     };
 
