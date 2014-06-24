@@ -248,6 +248,28 @@
           "qfr_percentage_change"
         ],
         "qfr_spend_comparison" : function(){
+
+            var this_year_data, last_year_data;
+            if (this.dept){
+              this_year_data = [
+                {name: 'x', value : this.data.dept_this_year_qfr_auth},
+                {name: 'y', value : this.data.dept_this_year_qfr_spend}
+              ];
+              last_year_data = [
+                {name: 'x', value : this.data.dept_last_year_qfr_auth},
+                {name: 'y', value : this.data.dept_last_year_qfr_spend}
+              ];
+            } else {
+              this_year_data = [
+                {name: 'x', value : this.data.gov_this_year_qfr_auth},
+                {name: 'y', value : this.data.gov_this_year_qfr_spend}
+              ];
+              last_year_data = [
+                {name: 'x', value : this.data.gov_last_year_qfr_auth},
+                {name: 'y', value : this.data.gov_last_year_qfr_spend}
+              ];
+            }
+
             this.text_area.html(app.get_text("gov_this_year_qfr_spend",this.written_data ));
             this.graph_area.append("div").attr("class","first");
             this.graph_area.append("div").attr("class","second");
@@ -257,34 +279,37 @@
               .style("float", "left");
 
             PACK.circle_pie_chart({
-              data : [
-                {name: 'x', value : this.data.gov_this_year_qfr_auth},
-                {name: 'y', value : this.data.gov_this_year_qfr_spend}
-              ],
-              formater : this.compact,
+              data : this_year_data,
+              formater : this.compact1,
               height : this.height,
               title : TABLES.m("{{in_year}}")
             })(this.graph_area.select(".first"));
 
             PACK.circle_pie_chart({
-              data : [
-                {name: 'x', value : this.data.gov_last_year_qfr_auth},
-                {name: 'y', value : this.data.gov_last_year_qfr_spend }
-              ],
-              formater : this.compact,
+              data : last_year_data,
+              formater : this.compact1,
               height : this.height,
               title : TABLES.m("{{qfr_last_year}}")
             })(this.graph_area.select(".second"));
 
         },
         "qfr_percentage_change" : function(){
-            this.text_area.html(app.get_text("gov_this_year_qfr_spend_change",this.written_data ));
-
-           D3.arrows({
-             data : [
+          var data;
+          if (this.dept) {
+            data = [
+              {value: this.data.dept_auth_change, name : app.get_text("authorities")},
+              {value: this.data.dept_spend_change, name : app.get_text("expenditures")},
+             ];
+          } else {
+            data = [
               {value: this.data.gov_auth_change, name : app.get_text("authorities")},
               {value: this.data.gov_spend_change, name : app.get_text("expenditures")},
-             ],
+             ];
+          }
+           this.text_area.html(app.get_text("gov_this_year_qfr_spend_change",this.written_data ));
+
+           D3.arrows({
+             data : data,
              formater : this.percent,
              height : this.height,
            })(this.graph_area);
