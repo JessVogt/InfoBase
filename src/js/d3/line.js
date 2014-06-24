@@ -21,7 +21,8 @@
         list.each(function(d){
           total_active += d.active? 1 : 0;
         });
-        if (total_active > 6){
+
+        if (total_active > 10){
           d.active = !d.active;
           return;
         }
@@ -119,9 +120,9 @@
             })
             .text(title);
 
-          if (add_legend){
-            make_legend(svg,series,width+margin.left, colors);
-          }
+          //if (add_legend){
+          //  make_legend(svg,series,width+margin.left, colors);
+          //}
 
           if (add_xaxis){
 

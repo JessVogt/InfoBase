@@ -263,7 +263,9 @@ tr.total-row {
   color: #FFFFFF;
   text-decoration: underline;
 }
-
+tr.odd {
+  background-color: #f5f5f5;
+}
 
 
 /* SVG Specific */

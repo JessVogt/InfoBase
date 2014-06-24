@@ -78,7 +78,8 @@
       {html : function(d){
          return formater(d) +"+";
        },
-       legend : text_fragments.legend,
+       legend : true,
+       title : text_fragments.legend,
        height : color_scale.ticks(5).length*30+30,
        width : 100,
        ul_classes : "legend",

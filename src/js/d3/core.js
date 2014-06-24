@@ -90,6 +90,7 @@
       options.key = options.key || function(d,i){return i;};
       options.colors = options.colors || function(d,i){ return "transparent";};
       options.width = options.width || 200;
+      options.legend = options.legend || false;
 
       var dispatch = d3.dispatch("click","hover");
 
@@ -107,7 +108,7 @@
 
       container.append("p")
         .attr("class", "margin-bottom-none margin-top-none nav-header")
-        .html(options.legend);
+        .html(options.title);
 
       var list = container
         .append("ul")
@@ -117,19 +118,23 @@
         .data(data,options.key);
 
       list.exit().remove();
-      list.enter().append("li")
+      var lis = list.enter().append("li")
         .attr("class","d3-list "+ options.li_classes)
-        .append("div")
-        .attr("class", "color-tag")
-        .style({
-           "float" : "left",
-           "width" : "20px",
-           "height" : "20px",
-           "border": "1px solid grey",
-           "margin-left" : "5px" ,
-           "margin-right" : "5px" ,
-           "background-color" : options.colors
-        });
+
+      if (options.legend) {
+        lis
+         .append("div")
+         .attr("class", "color-tag")
+         .style({
+            "float" : "left",
+            "width" : "20px",
+            "height" : "20px",
+            "border": "1px solid grey",
+            "margin-left" : "5px" ,
+            "margin-right" : "5px" ,
+            "background-color" : options.colors
+         });
+      }
 
       var text = list
         .append("div")
