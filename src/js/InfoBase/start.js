@@ -10,7 +10,6 @@
       var outside = TABLES.m("#greeting",{greeting : inside});
 
       this.add_crumbs();
-      this.app.reset();
 
       APP.dispatcher.trigger("reset",this.app);
       container.html(outside);

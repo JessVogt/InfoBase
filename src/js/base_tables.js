@@ -48,7 +48,7 @@
           compact0 : function(x){return app.formater("compact0",x);}
         };
 
-    TABLES.Info(iinfo);
+    TABLES.Info(info);
 
     _.extend(context, info);
 
@@ -61,7 +61,8 @@
   };
 
   function setup_tables(app){
-
+    //TODO fix the hardcoding of 'en' by finding a way to access the lang in the InfoBase.js
+    WAIT.w = WAIT.waitscreen(app.state.get('lang'),'tables');
     TABLES.m = function(s,extra_args){
       if (_.isArray(s)){
         return _.map(s,function(__){ return TABLES.m(__,extra_args);});
@@ -83,12 +84,24 @@
     // all tables should download their respective datasets
     $.when.apply(null, load_data(app))
       .done(function(){
+        WAIT.w.teardown();
         APP.dispatcher.trigger("data_loaded",app);
       });
   }
   APP.dispatcher.once("init", setup_tables);
 
   var load_data = function(app){
+    var setup_material = {};
+    _.each(TABLES.tables,function(item){
+      setup_material[item.id] = {url:"data/"+item.id+".csv"};
+    });
+    var sizes = [];
+    var promise0 = $.Deferred();
+    WAIT.getContentSizes(setup_material,sizes).done(function(){
+      WAIT.w.initRequestInfo(sizes);
+      promise0.resolve();
+    });
+
     return _.map(TABLES.tables, function(table){
       /*
        *
@@ -96,16 +109,24 @@
       var key = table.name[app.state.get("lang")];
       // fetch the table descriptions and attach it
       table.description = TABLES.m($('#'+table.id+"_"+app.lang).html());
+
       var promise1= $.Deferred(),promise2 =$.Deferred();
       // sent signal to indicate the files is being downloaded
-      WAIT.w.update_item(key,"download");
+      //WAIT.w.update_item(key,"download");
        var req = $.ajax({
          url: "data/"+table.id+".csv",
-         context : table
+         //context : table,?
+         xhrFields:{
+           onprogress: function (e) {
+             if (e.lengthComputable && promise0.state() == 'resolved') {
+               WAIT.w.update_item(table.id,e.loaded);
+             }
+           }
+         }
        });
        req.done(function(data){
          // sent signal to indicate the loading is starting
-          WAIT.w.update_item(key,"loading");
+          //WAIT.w.update_item(key,"loading");
           _.delay(promise1.resolve,0,data) ;
        });
        promise1.done(function(data){
@@ -124,7 +145,7 @@
 
         TABLES.setup_table_for_queries(app,table,data);
         // send signal to indicate the table loading is finished
-        WAIT.w.update_item(key,"finished");
+        //WAIT.w.update_item(key,"finished");
         _.delay(promise2.resolve,0) ;
        });
       return promise2;
@@ -158,7 +179,7 @@
        col.wcag =  APP.make_unique();
        col.level = col.parent.level +1;
        col.table = col.parent.table;
-       
+
     },this);
     this.children = (this.children || []).concat(x);
     return this;
@@ -180,7 +201,7 @@
       x.wcag =  APP.make_unique();
       this._cols.push(x);
       x.level = 0;
-    }   
+    }
     this.flat_headers.push(x);
     x.add_child = add_child;
     return x;
@@ -270,12 +291,12 @@
     table.col_from_nick = _.memoize(col_from_nick);
     table.add_col = col_adder;
     table.add_fully_qualified_col_name = add_fully_qualified_col_name;
-    table.horizontal_group_sort=  table.horizontal_group_sort || _.identity; 
+    table.horizontal_group_sort=  table.horizontal_group_sort || _.identity;
 
     // register callbacks for things like after the data has been
     // loaded
     _.each(table.on,function(func, signal){
-      // bind the listener to the table 
+      // bind the listener to the table
       APP.dispatcher.on(signal,_.bind(func,table));
     });
 
@@ -308,4 +329,3 @@
   });
 
 })(this);
-
