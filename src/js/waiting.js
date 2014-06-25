@@ -114,9 +114,10 @@
       text = this.text,
       self = this;
 
-
-      this.foreground.attr("d",arc.endAngle(twoPi*progress));
-      this.text.text(formatPercent(progress));
+      _.defer(function(){
+        self.foreground.attr("d",arc.endAngle(twoPi*progress));
+        self.text.text(formatPercent(progress));
+      });
     };
 
     waitscreen.prototype.update_item = function(key,amt){
