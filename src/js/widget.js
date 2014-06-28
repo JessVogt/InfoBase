@@ -21,14 +21,15 @@
   });
 
   var OrgWidgetView = function(app, container){
-    var org = app.state.get("dept");
+    var dept = app.state.get("dept"),
+        lang = app.lang;
 
-    APP.OrgHeader(app,org,container[0]);
-    var template = APP.t( '#widgets_layout_t');
+    APP.OrgHeader(app,dept,container[0]);
+    var template = APP.t('#widgets_layout_t');
 
-    $(template()).appendTo(container);
+    $(template({code : dept.accronym})).appendTo(container);
 
-    listen_for_tables(container,app, org);
+    listen_for_tables(container,app, dept);
 
     _.each(TABLES.tables,function(table){
       (new widgetView({

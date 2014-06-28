@@ -18,14 +18,25 @@
 
     APP.add_container_route("infograph-:org","infographic_org",function(container, org){
       org = window.depts[org];
+
       if (org){
         this.app.state.set("dept",org);
       }
       var title =  org.dept[this.app.lang] + " Infographic";
       this.add_crumbs([this.home_crumb,{html: title}]);
       this.add_title($('<h1>').html(title));
-      container.children().remove();
-      STORYBOARD(container, this.app, org.accronym);
+      $(container).children().remove();
+
+      APP.OrgHeader(this.app,org,container);
+      d3.select(container)
+        .append("div")
+        .style({"padding": "10px"})
+        .append("a")
+        .classed("router",true)
+        .attr("href","#d-"+org.accronym)
+        .html(this.app.get_text("widget_view"));
+
+      new STORYBOARD(container, this.app, org.accronym);
     });
 
     var height = 250;
@@ -47,7 +58,6 @@
     var STORYBOARD = function(container,app,dept){
       this.dept = dept;
       this.container = d3.select(container);
-      this.container.selectAll("*").remove();
       this.app = app;
       this.gt = app.get_text;
       this.calculated_values = {};
