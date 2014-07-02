@@ -25,39 +25,45 @@
         this.state = this.app.state;
         this.lookup = depts;
         this.sort_func = 'min_sort';
+
+        var lang = this.state.get('lang');
+
+        var suggestionsArray = _.map(window.depts,function(obj){
+          return obj.dept[lang];
+        });
+
+        this.obtainer = function(query,cb){
+		        var filteredList = $.grep(suggestionsArray,function(item,index){
+			           return item.match(query);
+		    });
+
+		      var mapped = $.map(filteredList,function(item){return {value:item}; });
+		      cb(mapped);
+	      };
+
+
       },
       render : function(){
         var lang = this.state.get('lang');
 
+        var temp = structureMinistries(lang);
         // render the template and append to the container
-        var el = $($.trim(this.template({
-          depts : this[this.sort_func].group_by(lang,this)
-        })));
+        //old arg: { depts : this[this.sort_func].group_by(lang,this)  }
+        var el = $($.trim(this.template(
+            temp
+          )));
         this.container.append(el);
 
-        //activate listview
-        el.find('ul.orgs').listview({
-          autodividers:true,
-          filter:true,
-          autodividersSelector : this[this.sort_func].dividers_func(this),
-          filterPlaceholder : this.app.get_text("search")
-        });
+        $('#auto-complete').typeahead({
+      		hint:true,
+      		highlight:true,
+      		minLength:1
+      		},{
+      		name:'noname',
+      		displayKey:'value',
+      		source:this.obtainer
+    	});
 
-        // add WCAG required label
-        el.find('div.ui-input-search input')
-          .attr("id","dept_search_filter")
-          .before($('<label>')
-                  .attr("for","dept_search_filter")
-                  .addClass("wb-invisible")
-                  .html(this.app.get_text("search")));
-
-        // add the class
-        // to the active button
-        el.find('a[sort-func-name="'+this.sort_func+'"]')
-          .addClass('button-accent');
-
-        // focus the cursor on the cancel button
-        //this.controller_button.focus();
       },
       min_sort : {
         group_by : function(lang,view){
@@ -122,6 +128,20 @@
         this.sort_func =  btn.attr("sort-func-name");
         this.render();
       }
+
     });
+
+    //Returns a nested object identical to window.mins, but has an extra property for the ministry's name in language of choice.
+    var structureMinistries = function(language){
+
+      var ret = {};
+
+       _.each(mins,function(obj){
+        ret[obj[0].min[language]]={depts:obj};
+      });
+
+      return {mins:ret};
+
+    };
 
 })();
