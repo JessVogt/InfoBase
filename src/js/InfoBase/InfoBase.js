@@ -89,7 +89,7 @@
 
     $.when.apply(null,_.values(promises)).done(function(){
       WAIT.w.teardown();
-      APP.app = new APP.APP({ state : { "lang":lang, }});
+      APP.app = new APP.APP({ state : { "lang":lang }});
     });
   };
 
@@ -114,13 +114,13 @@
   // this is a constructor function, so this will be a new
   // object when new APP.APP() is called
   APP.APP = function(options) {
-    // 
+    //
     _.bindAll.apply(this,[this].concat(_.functions(this)));
     this.state = new APP.stateModel(_.extend({app:this},options.state));
     this.lang = this.state.get("lang");
-  
+
     APP.dispatcher.trigger("init",this);
-  
+
     this.router = new APP.AppRouter({app:this});
   };
 
@@ -138,7 +138,7 @@
       } else {
         return APP.types_to_format[format](val,this.lang);
       }
-    } 
+    }
     return val;
   };
 
