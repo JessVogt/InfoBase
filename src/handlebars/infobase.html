@@ -6,19 +6,19 @@
 </script>
 <script type='text/plain' id='greeting_en'>
   <p><a class='dept_sel ui-link router' href='#home'>{{gt "to_select"}}</a> from a list presented either by ministry, alphabetically or by {{last_year}} budgetary net expenditures.  Users will then be directed to the organization’s overview page.</p>
-                                                
+
   <h2>Navigation</h2>
 <ul>
-  <li>The overview page of each organization contains brief summary information about that organization: 
+  <li>The overview page of each organization contains brief summary information about that organization:
         <ol>
             <li>Legal name;</li>
             <li>Website;</li>
             <li>Current minister;</li>
-            <li>Role (or mandate) in government; and</li> 
+            <li>Role (or mandate) in government; and</li>
             <li>Hyperlink to the organization’s enabling legislation.</li>
         </ol>
   </li>
-  <li>Financial information for the current fiscal year ({{in_year}}), based on authorities approved to date and on the organization’s most recent Quarterly Financial Report (QFR), is summarized in three panels on the overview page:  
+  <li>Financial information for the current fiscal year ({{in_year}}), based on authorities approved to date and on the organization’s most recent Quarterly Financial Report (QFR), is summarized in three panels on the overview page:
       <ol>
         <li>Current-year Authorities</li>
         <li>Statement of Authorities and Expenditures</li>
@@ -66,7 +66,7 @@
   <h2>Navigation</h2>
 <ul>
 <li>La page « Aperçu » de chaque organisation présente un court résumé de cette dernière  — appellation légale, site web, ministre, rôle (ou mandat) au sein du gouvernement — et contient un lien vers la loi habilitante de cette organisation.</li>
-   <li>Les renseignements financiers pour l'exercice en cours ({{in_year}}), fondés sur les autorisations approuvées à ce jour et sur le dernier rapport financier trimestriel (RFT) du ministère ou de l'organisme, sont résumés dans trois tableaux figurant sur la page « Aperçu »: 
+   <li>Les renseignements financiers pour l'exercice en cours ({{in_year}}), fondés sur les autorisations approuvées à ce jour et sur le dernier rapport financier trimestriel (RFT) du ministère ou de l'organisme, sont résumés dans trois tableaux figurant sur la page « Aperçu »:
       <ol>
         <li>Autorisations pour l'exercice en cours </li>
         <li>Énoncé des autorisations et des dépenses</li>
@@ -80,14 +80,14 @@
         <li>Effectif par groupe d’âge</li>
       </ol>
   </li>
-  <li>Les informations financières historiques pour les exercices {{last_year_5}} à {{last_year}} sont résumées en trois tableaux sur la page « Aperçu » : 
+  <li>Les informations financières historiques pour les exercices {{last_year_5}} à {{last_year}} sont résumées en trois tableaux sur la page « Aperçu » :
       <ol>
         <li>Autorisations et dépenses </li>
         <li>Dépenses par article courant </li>
         <li>Dépenses par programme </li>
       </ol>
   </li>
-   <li>Les renseignements financiers sur les paiements de transfert pour les exercices de {{last_year_5}} à {{last_year}} sont résumés dans un tableau figurant sur la page « Aperçu » : 
+   <li>Les renseignements financiers sur les paiements de transfert pour les exercices de {{last_year_5}} à {{last_year}} sont résumés dans un tableau figurant sur la page « Aperçu » :
       <ol>
         <li>Paiements de transfert </li>
       </ol>
@@ -114,7 +114,7 @@
 
   <div class='module-menu-section border-top border-left border-right' style='width: 100%'>
     <h2>
-        {{gt "supplementary_data"}} {{lang org.dept}} 
+        {{gt "supplementary_data"}} {{lang org.dept}}
         <a href='{{{gt "IGOC_site"}}}'  class='ui-link' target='_new' style='color: white'>
           {{gt "igoc_from"}}
         </a>
@@ -133,7 +133,7 @@
         </tr>
         <tr class='well'>
           <th id='website__'> {{gt "website"}} </th>
-          <td headers='website__'> 
+          <td headers='website__'>
             {{#org.website}}
             <div class='margin-top-none'><a href="http://{{lang .}}" target='_blank'>{{lang .}}</a></div>
             {{/org.website}}
@@ -145,9 +145,9 @@
         </tr>
         <tr class='well'>
           <th id='mandate__'> {{gt "mandate"}} </th>
-          <td headers='mandate__'> 
+          <td headers='mandate__'>
             {{#org.mandate}}
-            <div class='margin-top-none'>{{{lang .}}}</div>  
+            <div class='margin-top-none'>{{{lang .}}}</div>
             {{/org.mandate}}
           </td>
         </tr>
@@ -167,7 +167,7 @@
     </table>
   </div>
 </div>
-<div class='span-2 margin-bottom-none'> 
+<div class='span-2 margin-bottom-none'>
   <div class='module-menu-section border-all other_in_min'>
   </div>
 </div>
@@ -176,22 +176,22 @@
 <script type='text/plain' id='widgets_layout_t'>
   <div class='span-8'>
     <h2 class='font-xlarge border-bottom'
-        style='padding: 15px;'> 
-      {{gt 'current_year_fisc'}} 
+        style='padding: 15px;'>
+      {{gt 'current_year_fisc'}}
     </h2>
   </div>
   <div class="row widget-row" >
       <div class="float-left border-all well margin-top-large margin-left-large" id='table8'>
-      </div>                       
+      </div>
       <div class="float-left border-all well margin-top-large margin-left-large" id='table1'>
-      </div>                       
+      </div>
       <div class="float-left border-all well margin-top-large margin-left-large" id='table2'>
-      </div>                       
+      </div>
       <!--
       <div class="float-left border-all well margin-top-large margin-left-large"  id='table3'>
-      </div>                       
+      </div>
       -->
-  </div>                           
+  </div>
   <div class="clear"></div>
   <div class='span-8'>
     <h2 class='font-xlarge border-bottom'
@@ -200,12 +200,12 @@
   </div>
   <div class="row widget-row" >
       <div class="float-left border-all well margin-top-large margin-right-large margin-left-large" id='table9'>
-      </div>                       
+      </div>
       <div class="float-left border-all well margin-top-large margin-right-large" id='table10'>
-      </div>                       
+      </div>
       <div class="float-left border-all well margin-top-large " id='table11'>
-      </div>                       
-  </div>                           
+      </div>
+  </div>
   <div class="clear"></div>
   <div class='span-8'>
     <h2 class='font-xlarge border-bottom'
@@ -215,23 +215,23 @@
   <div class="clear"></div>
   <div class='row widget-row'>
       <div class="float-left border-all well margin-top-large margin-left-large" id='table4'>
-      </div>                       
+      </div>
       <div class="float-left border-all well margin-top-large margin-left-large" id='table5'>
-      </div>                       
+      </div>
       <div class="float-left border-all well margin-top-large margin-left-large"  id='table6'>
-      </div>                       
-  </div>                           
+      </div>
+  </div>
   <div class='span-8'>
     <h2 class='font-xlarge border-bottom'
         style='padding: 15px;'>
     {{gt 'previous_year_fisc_targeted'}} </h2>
   </div>
-    
+
   <div class="clear"></div>
   <div class='row widget-row'>
       <div class="float-left border-all well margin-top-large margin-left-large"  id='table7'>
-      </div>                       
-  </div>                           
+      </div>
+  </div>
 
 </script>
 <script type='text/plain' id='mini_t'>
@@ -247,9 +247,9 @@
     </div>
     <div class='clear'></div>
     <div class='details_button section-footer'>
-      <a class='button button-none details float-right router' 
+      <a class='button button-none details float-right router'
         href='#{{href}}'
-        title='{{details_title}}' > 
+        title='{{details_title}}' >
             {{gt 'details'}} </a>
     </div>
   </div>
@@ -269,7 +269,7 @@
 
   <div id='graph__' class='span-8'>
     <h3 class='border-bottom margin-bottom-none' style='width:100%'> {{gt "graphs"}} </h3>
-    <div class='graph_payload'> 
+    <div class='graph_payload'>
     </div>
   </div>
 
@@ -279,14 +279,14 @@
   <div class='clear'></div>
   <div class='span-8 '>
     <p class='margin-left-medium'>{{gt "data_table_instructions"}}</p>
-    <div class='table_payload sidescroll' style='font-size: 12px'> 
+    <div class='table_payload sidescroll' style='font-size: 12px'>
     </div>
     <div class='horizontal_instructions span-4'>
     </div>
   </div>
 </div>
 </script>
-<script type='text/plain' id='footnotes_t'> 
+<script type='text/plain' id='footnotes_t'>
 <div class='footnotes well well-small'>
   <table class="table-condensed">
     <tbody>
@@ -301,18 +301,21 @@
 </div>
 </script>
 <script type='text/plain' id='org_list_t'>
+
 <div class='org_list span-8 '>
-  <div class='sort_buttons margin-bottom-medium'>
-    <ul class="menu-horizontal margin-top-none">
-      <li><a href="#" sort-func-name='min_sort' class="button ">{{gt "ministry"}}</a></li>
-      <li><a href="#" sort-func-name='alpha_sort' class="button ">{{gt "alphabetical"}}</a></li>
-      <li><a href="#" sort-func-name='fin_size_sort' class="button ">{{gt "financial_size"}}</a></li>
-    </ul>
-  </div>
+  <input class='typeahead' type='text' autocomplete="off" placeholder='search'/>
   <ul class='list-bullet-none orgs'>
-    {{#each depts}}
-       <li min='{{lang this.min}}' fin-size='{{this.fin_size}}'>
-          <a class='org_select router' href='#d-{{this.accronym}}' >{{lang this.dept}}</a>
+
+    {{#each mins}}
+      <li>
+        <h4>{{@key}}</h4>
+        <ul>
+          {{#each depts}}
+            <li>
+              <a class='org_select router' href='#d-{{accronym}}'>{{lang this.dept}}</a>
+            </li>
+          {{/each}}
+        </ul>
       </li>
     {{/each}}
   </ul>
@@ -331,7 +334,7 @@
 
   {{#if items}}
 
-  <div class='span-2 well sidebar border-all margin-right-none'  
+  <div class='span-2 well sidebar border-all margin-right-none'
     id='{{id}}_sidebar' style='height:450px;'>
     <p class='margin-bottom-none margin-top-none nav-header'>{{header}}</p>
     {{#filter}}
@@ -376,7 +379,7 @@
       {{ index }}
     </td>
     <td>
-      <a href='#'>{{dept_name}} </a> 
+      <a href='#'>{{dept_name}} </a>
     </td>
     <td>
       {{ col }}
@@ -389,7 +392,7 @@
 <script type='text/plain' id='home_t'>
 <div class='span-8 choose_adventure'>
   <div class='span-8 label'></div>
-	<div class='span-8 well header-options row {{_lang}}'> 
+	<div class='span-8 well header-options row {{_lang}}'>
     <div class='inner'>
         <div class='netflix-panel'>
           <div class='icon lightbulb'><a class='router icon' href='#infograph'>{{gt "learn_and_explore"}}</a></div>
@@ -490,7 +493,7 @@
 <g class="container">
   <path
      d="m 299.71,1028.7296 c -53.5216,-14.1346 -47.7588,-11.9781 -50.9375,-19.0612 l -2.6783,-5.9681 2.1718,-11.05137 c 2.2903,-11.65427 2.1636,-14.6033 -0.8888,-20.68462 -1.0369,-2.06573 -3.959,-7.88887 -6.4935,-12.94032 -2.5346,-5.05145 -5.5611,-12.02645 -6.7256,-15.5 -1.1645,-3.47355 -3.421,-8.29274 -5.0144,-10.7093 -1.5933,-2.41656 -3.1944,-6.01656 -3.5579,-8 -0.3636,-1.98344 -1.9468,-5.08441 -3.5184,-6.89105 -1.5716,-1.80663 -2.8574,-3.76217 -2.8574,-4.34563 0,-0.58345 -0.9348,-2.37357 -2.0772,-3.97804 -1.2018,-1.68768 -2.4788,-5.75224 -3.0299,-9.64365 -0.6001,-4.23785 -1.8458,-8.0253 -3.3668,-10.23716 -1.3279,-1.93089 -2.8725,-4.73299 -3.4326,-6.22686 -0.56,-1.49388 -2.6046,-3.74388 -4.5435,-5 -3.4746,-2.25108 -4.7587,-5.91882 -2.55,-7.28386 0.55,-0.33992 1,-3.11674 1,-6.17071 0,-5.43129 6.559,-24.26144 51.1754,-146.91967 l 4.0341,-11.09037 22.1452,7.3645 c 12.1799,4.05047 30.6953,9.86977 41.1453,12.93178 10.45,3.062 28.8657,8.45432 40.9237,11.98292 12.0581,3.52861 22.0347,6.52663 22.1704,6.66228 0.6596,0.65959 -2.974,15.33806 -3.9602,15.99811 -0.6237,0.41736 -2.2194,1.04698 -3.5462,1.39915 -2.5095,0.6661 -13.0087,11.04291 -13.059,12.9068 -0.016,0.58563 1.5782,1.83106 3.5422,2.76762 3.4362,1.63861 3.6791,1.62576 6.4408,-0.34077 1.5785,-1.12398 3.1627,-2.96582 3.5205,-4.09298 0.3577,-1.12716 0.8569,-1.84291 1.1092,-1.59055 0.2524,0.25236 -1.3132,7.82377 -3.479,16.82536 -5.1132,21.251 -10.6244,44.26812 -18.1657,75.86653 -3.3472,14.025 -7.1693,30 -8.4936,35.5 -6.6776,27.7332 -12.6219,52.50632 -15.8366,66 -16.9717,71.23856 -15.5381,65.55426 -16.4839,65.35916 -0.3754,-0.077 -6.9826,-1.8045 -14.6826,-3.838 z"
-     class="province" 
+     class="province"
      id="CA-AB" />
   <g
      id="CA-BC"
@@ -508,15 +511,15 @@
   </g>
   <path
      d="m 493.4288,766.55219 -0.7188,6.3125 c -0.3982,3.48099 -0.8534,7.01875 -1,7.84375 -0.1466,0.825 -0.5963,3.975 -1,7 -0.4037,3.025 -0.8503,6.175 -1,7 -0.1498,0.825 -1.0468,7.30718 -2,14.40625 -1.6346,12.17273 -1.6404,13.08838 -0.031,15.8125 1.6706,2.82817 1.6493,2.94551 -1.125,6.4375 -1.5586,1.96156 -3.3439,4.31809 -3.9688,5.21875 -0.6248,0.90069 -1.4652,7.475 -1.8437,14.625 -0.3786,7.15 -0.8273,14.8 -1,17 -0.1727,2.2 -0.6123,8.05 -0.9688,13 -0.3565,4.95 -0.8202,11.7 -1.0625,15 -1.0079,13.72694 -1.4516,19.41294 -2,27 -0.3181,4.4 -0.7658,10.25 -1,13 -0.2342,2.75 -0.6922,9.5 -1.0312,15 -0.3391,5.5 -0.7786,11.8 -0.9688,14 -0.1902,2.2 -0.6305,8.725 -1,14.5 -0.3695,5.775 -0.8214,12.075 -1,14 -0.1786,1.925 -0.6489,8.67496 -1.0312,14.99996 -0.3824,6.325 -0.814,12.175 -0.9688,13 -0.512,2.7295 -1.8827,25.3849 -1.9375,32 l -0.062,6.5 6,0.5938 c 9.6211,0.9766 18.8031,2.0107 21.5,2.4062 1.375,0.2017 4.975,0.6339 8,0.9688 5.833,0.6457 9.1474,1.034 18,2.0937 3.025,0.3621 9.775,0.9561 15,1.3125 5.225,0.3564 14.0752,0.7713 19.6563,0.9375 l 10.125,0.3125 0.625,-4.8125 c 0.3299,-2.6479 0.8294,-10.2125 1.125,-16.8125 0.2956,-6.6 0.7397,-15.15 0.9687,-19 0.2289,-3.85 0.6785,-13.75 1,-22 1.1133,-28.57447 1.4323,-31.53979 3.8125,-35.53121 1.2185,-2.04329 8.3087,-10.19065 15.7813,-18.09375 7.4725,-7.9031 15.5767,-16.6041 18,-19.34375 2.4232,-2.73967 4.8562,-5.50501 5.4062,-6.125 9.624,-10.8488 14.2515,-16.16275 19.4375,-22.375 3.4319,-4.11104 9.3502,-10.91664 13.1563,-15.125 3.806,-4.20839 8.4621,-9.40068 10.3437,-11.53125 1.8815,-2.13057 5.6868,-6.35 8.4688,-9.375 2.7819,-3.025 5.0852,-5.98547 5.0937,-6.5625 0.016,-1.12029 -5.2312,-3.28502 -9.75,-4.03125 -6.9159,-1.14212 -8.8209,-1.79863 -9.9687,-3.4375 -0.9677,-1.38145 -2.5581,-1.73775 -7.3125,-1.625 -3.3301,0.079 -6.3579,0.64647 -6.75,1.25 -0.8065,1.241 -12.3731,2.67667 -14.625,1.8125 -1.0232,-0.39258 -1.2247,-1.20413 -0.6875,-2.65625 0.7823,-2.1147 0.6087,-3.34772 -2.2188,-16.75 -2.0306,-9.62508 -2.552,-12.49247 -3.25,-18 -0.8002,-6.3135 -3.3596,-8.24391 -13.8125,-10.4375 -6.6928,-1.4045 -8.9567,-2.31141 -9.8437,-3.9375 -1.2489,-2.28968 -1.2233,-10.19488 0.062,-20.875 l 0.8125,-6.75 -5.3438,-0.125 c -2.9266,-0.0688 -5.65,-0.21387 -6.0625,-0.3125 -0.4125,-0.0986 -4.125,-0.52673 -8.25,-0.96875 -4.125,-0.44203 -8.175,-0.92077 -9,-1.0625 -0.825,-0.14176 -4.626,-0.59678 -8.4375,-1 -3.8116,-0.40323 -7.8616,-0.883 -9,-1.0625 -1.1385,-0.17947 -4.7625,-0.59912 -8.0625,-0.9375 -3.3,-0.3384 -9.6,-1.00689 -14,-1.5 -4.4,-0.49311 -10.7,-1.15395 -14,-1.46875 -3.3,-0.31482 -8.1029,-0.84291 -10.6562,-1.15625 l -4.625,-0.5625 z m 28.5937,171.875 c 3.858,0.033 6.4408,1.84052 8.375,5.65625 1.1518,2.27233 2.4188,4.35 2.8125,4.625 1.8726,1.30772 6.4481,13.46154 5.5938,14.84375 -0.5406,0.87456 1.2557,6.38921 3.2187,9.90625 0.6866,1.23026 1.1399,4.60526 1.0313,7.5 -0.2085,5.55652 3.0986,17.80656 6.25,23.21876 1.2688,2.1791 1.8489,5.6936 2.0625,12.5312 0.2925,9.3671 0.2451,9.5055 -2.125,9.8438 -1.322,0.1886 -3.24,1.4261 -4.2813,2.75 -2.1639,2.7508 -3.9848,3.0463 -6.0625,0.9687 -1.7095,-1.7095 -1.1849,-8.8654 0.875,-12.0312 0.728,-1.1191 1.5646,-3.3149 1.8438,-4.875 0.2792,-1.5602 1.0602,-3.5129 1.75,-4.3438 1.9968,-2.4062 1.9204,-4.7771 -0.1875,-6.0937 -1.6466,-1.0282 -2.1323,-0.9087 -3.1875,0.7812 -1.3645,2.1847 -3.7813,2.6992 -3.7813,0.8125 0,-0.6485 0.5283,-2.6069 1.1563,-4.3437 2.6933,-7.44844 -1.692,-13.8756 -7.9688,-11.68751 -2.5606,0.89264 -3.2884,0.7316 -4.9687,-1.125 -1.0777,-1.19077 -2.6385,-4.27529 -3.5,-6.875 -0.8616,-2.59972 -2.6797,-6.19973 -4.0313,-8 -1.7375,-2.3143 -2.3444,-4.16014 -2.0312,-6.28125 0.4036,-2.73472 0.028,-3.22998 -4.4375,-5.5625 -6.5052,-3.39761 -9.1425,-2.41192 -9.3438,3.46875 -0.077,2.25346 -0.2904,6.34375 -0.4687,9.09375 -0.8907,13.74088 -0.8933,13.75917 3.1875,17 8.7653,6.96101 9.4674,7.85399 10.875,13.99996 0.7558,3.3 1.3518,7.6216 1.3437,9.5938 -0.01,1.9722 1.1637,5.8967 2.5938,8.7187 3.3421,6.5954 3.4788,11.7222 0.3437,12.5625 -3.3008,0.8846 -4.5572,0.7727 -5.3437,-0.5 -0.6831,-1.1051 -3.4385,-13.8445 -5.375,-24.75 -1.0947,-6.164 -2.5507,-8.0788 -9.5313,-12.59371 -5.5399,-3.58323 -8.2231,-6.38644 -7.9375,-8.28125 0.1036,-0.6875 0.2438,-2.12677 0.3125,-3.1875 0.069,-1.06072 0.7467,-2.52802 1.5,-3.28125 0.8921,-0.89217 1.3367,-3.69288 1.3125,-8 -0.037,-6.61053 -0.013,-6.59713 -3.8437,-8.75 -4.2782,-2.40448 -5.8438,-4.66848 -5.8438,-8.46875 0,-2.06036 0.4894,-2.5625 2.4688,-2.5625 3.7058,0 4.9589,-3.18642 2.5,-6.3125 -1.0879,-1.38303 -1.9688,-3.01062 -1.9688,-3.625 0,-1.31541 4.6949,-3.37133 7.4063,-3.25 2.4,0.1074 7.5937,5.0236 7.5937,7.1875 0,0.90122 1.0459,2.62253 2.3125,3.8125 l 2.2813,2.15625 1.3437,-3.625 c 2.2331,-6.17549 6.2895,-11.30233 9.5625,-12.0625 1.5959,-0.37064 3.0265,-0.57349 4.3125,-0.5625 z"
-     class="province" 
+     class="province"
      id="CA-MB" />
   <path
      d="m 1069.7834,1116.9851 c -2.2757,-0.5804 -5.0159,-3.6856 -6.653,-7.5394 -0.6455,-1.5195 -2.1741,-3.0139 -3.3969,-3.3208 -4.0563,-1.018 -10.466,-17.7085 -10.5289,-27.4165 -0.022,-3.3336 -0.6079,-5.0478 -2.2619,-6.6134 -3.891,-3.683 -9.126,-6.379 -12.3939,-6.3829 l -3.1612,0 -0.39,-6.25 c -0.2145,-3.4375 -0.2279,-6.5875 -0.03,-7 0.1981,-0.4125 3.1462,-0.7842 6.5512,-0.8261 7.3514,-0.09 11.4384,-1.4458 15.6034,-5.1749 1.8883,-1.6907 5.9398,-3.5376 10.5118,-4.7919 6.9097,-1.8957 7.7048,-1.93 11.1682,-0.4829 3.5559,1.4857 3.821,1.4592 5.7132,-0.5719 4.0627,-4.3608 15.7491,-7.8328 15.659,-4.6523 -0.019,0.6875 -0.6786,2.375 -1.4646,3.75 -2.1168,3.703 -1.9088,12.2088 0.3697,15.1151 1.0283,1.3117 2.1942,3.8709 2.5909,5.6872 0.4415,2.0212 2.522,5.0278 5.3629,7.75 4.4565,4.2704 4.8848,4.4477 10.7424,4.4477 3.3554,0 6.3612,0.2604 6.6795,0.5787 0.3182,0.3183 -1.6683,2.9058 -4.4147,5.75 -2.7463,2.8442 -6.134,7.5759 -7.5281,10.5149 -3.5627,7.5102 -16.072,20.1564 -19.9383,20.1564 -2.1875,0 -3.1725,0.6696 -4.1141,2.7969 -1.8122,4.0941 -8.3566,6.0916 -14.6768,4.4798 z"
-     class="province" 
+     class="province"
      id="CA-NB" />
   <g
      id="CA-NL"
-     class="province" 
+     class="province"
      transform="translate(-959.79,0.708441)">
     <path
        id="path3149"
@@ -538,7 +541,7 @@
   </g>
   <g
      id="CA-NT"
-     class="province" 
+     class="province"
      transform="translate(-959.79,0.708441)">
     <path
        id="path3159"
@@ -567,7 +570,7 @@
   </g>
   <g
      id="CA-NU"
-     class="province" 
+     class="province"
      transform="translate(-959.79,0.708441)">
     <path
        id="path3176"
@@ -666,8 +669,8 @@
      class='province'
      id="CA-PE" />
   <g
-     id="CA-QC" 
-     class="province" 
+     id="CA-QC"
+     class="province"
      transform="translate(-959.79,0.708441)">
     <path
        id="path3237"
@@ -678,11 +681,11 @@
   </g>
   <path
      d="m 460.1267,1059.3216 c -0.2292,-0.2128 -4.0167,-0.691 -8.4167,-1.0627 -4.4,-0.3717 -9.125,-0.8417 -10.5,-1.0445 -1.375,-0.2028 -5.425,-0.6555 -9,-1.006 -3.575,-0.3505 -7.625,-0.7959 -9,-0.9897 -1.375,-0.1939 -5.425,-0.6505 -9,-1.0148 -3.575,-0.3643 -17.525,-3.1382 -31,-6.1642 -13.475,-3.026 -25.175,-5.6462 -26,-5.8227 -4.5446,-0.9723 -7.1169,-1.5529 -13,-2.9342 -3.575,-0.8394 -7.4,-1.6829 -8.5,-1.8744 -1.1,-0.1915 -5.5024,-1.1509 -9.7832,-2.1319 -6.3238,-1.4492 -7.6873,-2.0916 -7.2721,-3.4259 0.477,-1.5329 8.3409,-33.84052 9.0407,-37.14216 0.1749,-0.825 1.7306,-7.35 3.4572,-14.5 1.7265,-7.15 4.7469,-19.75 6.7118,-28 1.965,-8.25 5.8124,-24.225 8.5499,-35.5 2.7375,-11.275 5.1564,-21.39568 5.3754,-22.4904 0.2189,-1.09472 1.7548,-7.61972 3.4131,-14.5 1.6583,-6.88028 5.0595,-21.0596 7.5582,-31.5096 2.4987,-10.45 6.0621,-25.3 7.9186,-33 1.8565,-7.7 5.019,-20.82724 7.0278,-29.17164 l 3.6524,-15.17164 5.1751,0.42821 c 2.8463,0.23552 7.3837,0.76276 10.0831,1.17164 2.6994,0.40889 8.4026,0.32908 12.6738,-0.17735 7.3287,-0.86898 8.1077,-0.76729 13.8447,1.80731 5.6663,2.54288 8.0735,2.72821 8.0735,0.6216 0,-1.12423 -21.2468,-11.47108 -26.5,-12.90507 -2.2,-0.60055 -5.0125,-1.09442 -6.25,-1.09748 -1.2375,-0.003 -3.15,-0.90558 -4.25,-2.00558 -2.2049,-2.20492 -5.1012,-2.55137 -8.0657,-0.96482 -2.2816,1.22107 -2.3272,0.89536 -0.8432,-6.02443 0.8561,-3.992 1.4484,-4.98656 2.75,-4.61809 1.4822,0.41957 8.5483,1.87308 15.2308,3.13298 1.3355,0.25178 3.3281,0.64622 4.4281,0.87652 3.3367,0.69861 44.8204,8.77468 47.5,9.24735 1.375,0.24253 7.9,1.51473 14.5,2.8271 6.6,1.31237 13.8,2.55824 16,2.76859 3.8523,0.36833 3.9944,0.50936 3.8475,3.81863 -0.084,1.88989 -1.3091,11.76117 -2.7228,21.93617 -1.4137,10.175 -2.8546,20.75 -3.2019,23.5 -0.6196,4.90466 -1.8348,7.5 -3.5119,7.5 -1.5333,0 -7.5203,6.64289 -8.8243,9.79099 -0.948,2.28858 -1.0096,3.95066 -0.2374,6.4002 2.2242,7.05465 1.8338,10.50892 -1.5864,14.03765 -2.2184,2.2888 -2.9187,3.70987 -2.3121,4.69145 0.7073,1.14436 1.4634,0.90908 4.0365,-1.25609 1.7414,-1.46531 3.8323,-2.6642 4.6464,-2.6642 1.5014,0 1.4826,3.15089 -0.1367,23 -0.2468,3.025 -0.7058,9.55 -1.02,14.5 -0.3142,4.95 -0.7597,11.025 -0.9899,13.5 -0.2303,2.475 -0.686,9 -1.0128,14.5 -0.3268,5.5 -0.7705,11.575 -0.9861,13.5 -0.2157,1.925 -0.6749,8.45 -1.0206,14.5 -0.3458,6.05 -0.7861,12.125 -0.9785,13.5 -0.1925,1.375 -0.6594,7.9 -1.0375,14.5 -0.3782,6.6 -0.8086,12.675 -0.9565,13.5 -0.1479,0.825 -0.5956,7.125 -0.995,13.99996 -0.3994,6.875 -0.8494,13.175 -1,14 -0.1506,0.825 -0.6006,7.125 -1,14 -0.3994,6.875 -0.8769,13.3004 -1.0612,14.2786 -0.1842,0.9783 -0.4293,4.6908 -0.5445,8.25 -0.1871,5.7784 -1.1619,7.7703 -2.9776,6.0846 z"
-     class="province" 
+     class="province"
      id="CA-SK" />
   <path
      d="m 200.6497,681.38373 c -1.0668,-0.70329 -5.3147,-2.79428 -9.4397,-4.64665 -6.2983,-2.82831 -28.0222,-14.10455 -63.6742,-33.05141 -11.3331,-6.02281 -52.8515,-31.826 -83.5758,-51.94126 -10.88063,-7.12358 -15.75,-10.87982 -15.75,-12.1496 0,-2.53109 3.08744,-7.38071 6.31523,-9.91969 5.80007,-4.56236 2.45128,-7.5066 -8.9486,-7.86749 -2.25866,-0.0715 -3.28147,-0.66552 -3.66389,-2.12789 -0.29178,-1.11579 -0.90676,-1.92664 -1.36663,-1.80188 -1.87096,0.50758 -5.27417,-1.39891 -5.87471,-3.29102 -0.47788,-1.50567 1.89077,-5.75319 9.31217,-16.69885 13.76387,-20.30003 39.20883,-57.98265 58.86743,-87.17955 15.6575,-23.25445 35.8902,-53.23674 63.2135,-93.67448 l 12.2803,-18.17448 3.1826,1.09681 c 6.5599,2.26073 8.4583,4.51184 9.2009,10.9102 0.377,3.24799 1.7359,7.98034 3.0198,10.51632 1.2839,2.53599 2.6273,6.3453 2.9855,8.46512 0.4784,2.83154 1.7333,4.78056 4.7297,7.34531 3.7206,3.18469 3.9473,3.64572 2.5833,5.25314 -2.0997,2.47449 -12.2174,18.95338 -14.5893,23.76206 -1.0852,2.2 -2.772,6.475 -3.7485,9.5 -0.9764,3.025 -2.7799,7.525 -4.0076,10 -4.3609,8.79134 -4.6091,8.12209 5.9592,16.06576 7.2784,5.47081 9.5496,7.73189 9.5496,9.50716 0,1.28108 -1.6097,5.41081 -3.5771,9.17718 -2.3351,4.47042 -3.7584,8.7597 -4.0995,12.35433 -0.5119,5.39554 -0.4491,5.56231 3.1208,8.28522 3.8981,2.97322 3.741,2.14722 2.6204,13.78089 -0.035,0.3688 -1.3815,0.95979 -2.9911,1.31331 -3.1647,0.69509 -6.0735,4.25061 -6.0735,7.42381 0,1.08791 -0.9106,3.52145 -2.0237,5.40786 -2.1822,3.69862 -1.6993,7.00966 1.3973,9.57956 1.1404,0.94646 1.4429,2.41902 1.0839,5.27615 -0.382,3.04067 0.021,4.6918 1.7305,7.09286 1.596,2.24127 2.2692,4.70941 2.3718,8.69542 0.079,3.07425 0.9269,7.08104 1.8937,8.95058 1.6835,3.25561 1.6724,3.65569 -0.2921,10.48732 -2.6118,9.08248 -3.882,16.17339 -4.6138,25.75617 -0.3214,4.20947 -1.0809,9.07772 -1.6876,10.81832 -0.9809,2.8137 -0.826,3.46219 1.3962,5.84642 3.3383,3.58173 4.2702,5.55518 6.2355,13.20505 0.9151,3.56215 2.9214,8.81302 4.4584,11.66861 2.0409,3.79153 2.4518,5.32355 1.5235,5.67976 -0.6991,0.26828 -1.4987,2.65689 -1.7768,5.30802 -0.2782,2.65113 -0.8303,6.07926 -1.227,7.61807 -0.8598,3.33545 0.418,4.57628 8.5302,8.28347 3.025,1.38238 7.2306,3.70816 9.3457,5.16839 2.1151,1.46023 5.0401,2.67641 6.5,2.70264 l 2.6543,0.0477 -0.279,10.44563 c -0.1534,5.74509 -0.4055,10.57224 -0.5603,10.727 -0.1547,0.15475 -1.1542,-0.29405 -2.221,-0.99734 z"
-     class="province" 
+     class="province"
      id="CA-YT" />
   <path
      d="m 1058.5908,1168.2552 a 45.362591,45.362591 0 1 1 -90.72518,0 45.362591,45.362591 0 1 1 90.72518,0 z"
@@ -731,6 +734,3 @@
   </div>
 </div>
 </script>
-
-
-

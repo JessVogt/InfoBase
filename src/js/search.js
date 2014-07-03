@@ -1,6 +1,6 @@
 (function() {
     var APP = ns('APP');
- 
+
     // add the #search route
     APP.add_container_route("search","search",function(container){
       this.add_crumbs([this.home_crumb,{html: this.gt("search")}]);
@@ -18,65 +18,87 @@
       },
       initialize: function(){
         this.template = APP.t('#org_list_t');
-        _.bindAll(this,"render","sort","cancel");
+      _.bindAll(this,"render");
         this.app = this.options.app;
         this.container = this.options.container;
         this.state = this.app.state;
         this.lookup = depts;
         this.sort_func = 'min_sort';
-      },
-      add_search_button : function(){
-        this.controller_button  = $('<a>')
-          .addClass("clickable")
-          .attr("href","#search");
-        $('.nav_area').children().remove();
-        $('.nav_area').append(this.controller_button);
-         this.show();
-      },
-      cancel : function(){
-        this.controller_button
-         .html(this.app.get_text("to_select"))
-         .addClass("dept_sel")
-         .removeClass("dept_sel_cancel");
-      },
-      show : function(){
-        this.controller_button =  $('a.dept_sel')
-          .html(this.app.get_text("cancel"))
-          .removeClass("dept_sel")
-          .addClass("dept_sel_cancel");
-      },
-      render : function(){
-        var lang = this.state.get('lang');
-       
-        // render the template and append to the container
-        var el = $($.trim(this.template({
-          depts : this[this.sort_func].group_by(lang,this)
-        })));
-        this.container.append(el);
 
-        //activate listview
-        el.find('ul.orgs').listview({
-          autodividers:true,
-          filter:true,
-          autodividersSelector : this[this.sort_func].dividers_func(this),
-          filterPlaceholder : this.app.get_text("search")
+        var lang = this.state.get('lang');
+
+        this.simple_depts = _.map(window.depts,function(obj,key){
+          return {dept_name:obj.dept[lang],accr:obj.accronym};
         });
 
-        // add WCAG required label
-        el.find('div.ui-input-search input')
-          .attr("id","dept_search_filter")
-          .before($('<label>')
-                  .attr("for","dept_search_filter")
-                  .addClass("wb-invisible")
-                  .html(this.app.get_text("search")));
+        this.nested_depts = structureMinistries(lang);
 
-        // add the class
-        // to the active button
-        el.find('a[sort-func-name="'+this.sort_func+'"]')
-          .addClass('button-accent');
+        this.obtainer = function(query,cb){
+		        var filteredList = $.grep(suggestionsArray,function(item,index){
+             return item.match(new RegExp(query, 'gi'));
+		    });
 
-        // focus the cursor on the cancel button
-        //this.controller_button.focus();
+		      var mapped = $.map(filteredList,function(item){return {value:item}; });
+		      cb(mapped);
+	      };
+
+
+      },
+      render : function(){
+        self = this;
+
+
+        // render the template and append to the container
+        //old arg: { depts : this[this.sort_func].group_by(lang,this)  }
+        var el = $($.trim(this.template(
+            this.nested_depts
+          )));
+        this.container.append(el);
+/*
+        $('.typeahead').typeahead({
+          hint:false,
+      		highlight:true,
+      		minLength:1
+      		},{
+      		name:'noname',
+      		displayKey:'value',
+      		source:this.obtainer
+    	});
+*/
+
+        $('.typeahead').typeahead({
+          hint:true,
+          highlight:true,
+          minLength:3
+          },{
+           source: function(query, process) {
+
+             //RegExp for filtering
+              var re = new RegExp(query, 'gi');
+
+             //Filter the list
+              var filtered_depts = $.grep(self.simple_depts,function(item){
+                return (item.dept_name+item.accr).match(re);
+              });
+
+
+              process(filtered_depts);
+            },
+            /*
+            highlighter: function(item){
+              return "<div class='typeahead_wrapper'> <div class='typeahead_labels'> <div class='typeahead_primary'>" + item.dept[lang] + "</div> <div class='typeahead_secondary'>" + item.accronym + "</div> </div> </div>";
+              //return "<a href='#d-"+item.accronym+"'>"+item.dept[lang]+"("+item.accronym+")</a>";
+            },
+            */
+          templates: {
+            suggestion:Handlebars.compile('<a id="typeahead" href="#d-{{accr}}"><p>{{dept_name}} ({{accr}})</p></a>')
+          }
+        }).on('typeahead:selected',function( event, datum ) {
+          window.location.href ="#d-"+datum.accr;
+        });
+
+
+
       },
       min_sort : {
         group_by : function(lang,view){
@@ -84,14 +106,14 @@
             return dept.accronym !== 'ZGOC';
           }),function(dept){
             return   [dept.min[lang],dept.dept[lang]];
-          }); 
+          });
         },
         dividers_func : function(app){
-         return function(li){ 
+         return function(li){
             return $(li).attr("min");
           };
        }
-      },                      
+      },
       alpha_sort : {
         group_by : function(lang,view){
           return _.sortBy(_.filter(_.values(depts),function(dept){
@@ -101,11 +123,11 @@
           });
         },
         dividers_func : function(view){
-          return function(li){ 
+          return function(li){
             return $(li).text()[0];
           };
         }
-      },                      
+      },
       fin_size_sort : {
         group_by  : function(lang,view){
           return _.sortBy(_.filter(_.values(depts),function(dept){
@@ -116,7 +138,7 @@
         },
         dividers_func : function(view){
           var app = view.app;
-          return function(li){ 
+          return function(li){
             var fin_size =  parseFloat($(li).attr("fin-size"));
             var sizes = [ 10000000000,
                           7500000000,
@@ -135,12 +157,26 @@
             return  app.get_text("less_than") + app.formater("big-int",_.last(sizes));
           };
         }
-      },                      
+      },
       sort : function(event){
         var btn = $(event.target);
         this.sort_func =  btn.attr("sort-func-name");
         this.render();
       }
+
     });
+
+    //Returns a nested object identical to window.mins, but has an extra property for the ministry's name in language of choice.
+    var structureMinistries = function(language){
+
+      var ret = {};
+
+       _.each(mins,function(obj){
+        ret[obj[0].min[language]]={depts:obj};
+      });
+
+      return {mins:ret};
+
+    };
 
 })();
