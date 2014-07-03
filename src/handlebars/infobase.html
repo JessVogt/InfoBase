@@ -303,12 +303,12 @@
 <script type='text/plain' id='org_list_t'>
 
 <div class='org_list span-8 '>
-  <input id='auto-complete' type='text'/>
+  <input class='typeahead' type='text' autocomplete="off" placeholder='search'/>
   <ul class='list-bullet-none orgs'>
 
     {{#each mins}}
       <li>
-        <span style='font-size:2em;'>{{@key}}</span>
+        <h4>{{@key}}</h4>
         <ul>
           {{#each depts}}
             <li>

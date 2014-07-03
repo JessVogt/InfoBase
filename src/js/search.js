@@ -17,7 +17,6 @@
         "click .org_list .sort_buttons a" : "sort"
       },
       initialize: function(){
-        // Was never called! debugger;
         this.template = APP.t('#org_list_t');
       _.bindAll(this,"render");
         this.app = this.options.app;
@@ -28,13 +27,15 @@
 
         var lang = this.state.get('lang');
 
-        var suggestionsArray = _.map(window.depts,function(obj){
-          return obj.dept[lang];
+        this.simple_depts = _.map(window.depts,function(obj,key){
+          return {dept_name:obj.dept[lang],accr:obj.accronym};
         });
+
+        this.nested_depts = structureMinistries(lang);
 
         this.obtainer = function(query,cb){
 		        var filteredList = $.grep(suggestionsArray,function(item,index){
-			           return item.match(query);
+             return item.match(new RegExp(query, 'gi'));
 		    });
 
 		      var mapped = $.map(filteredList,function(item){return {value:item}; });
@@ -44,18 +45,18 @@
 
       },
       render : function(){
-        var lang = this.state.get('lang');
+        self = this;
 
-        var temp = structureMinistries(lang);
+
         // render the template and append to the container
         //old arg: { depts : this[this.sort_func].group_by(lang,this)  }
         var el = $($.trim(this.template(
-            temp
+            this.nested_depts
           )));
         this.container.append(el);
-
-        $('#auto-complete').typeahead({
-      		hint:true,
+/*
+        $('.typeahead').typeahead({
+          hint:false,
       		highlight:true,
       		minLength:1
       		},{
@@ -63,6 +64,40 @@
       		displayKey:'value',
       		source:this.obtainer
     	});
+*/
+
+        $('.typeahead').typeahead({
+          hint:true,
+          highlight:true,
+          minLength:3
+          },{
+           source: function(query, process) {
+
+             //RegExp for filtering
+              var re = new RegExp(query, 'gi');
+
+             //Filter the list
+              var filtered_depts = $.grep(self.simple_depts,function(item){
+                return (item.dept_name+item.accr).match(re);
+              });
+
+
+              process(filtered_depts);
+            },
+            /*
+            highlighter: function(item){
+              return "<div class='typeahead_wrapper'> <div class='typeahead_labels'> <div class='typeahead_primary'>" + item.dept[lang] + "</div> <div class='typeahead_secondary'>" + item.accronym + "</div> </div> </div>";
+              //return "<a href='#d-"+item.accronym+"'>"+item.dept[lang]+"("+item.accronym+")</a>";
+            },
+            */
+          templates: {
+            suggestion:Handlebars.compile('<a id="typeahead" href="#d-{{accr}}"><p>{{dept_name}} ({{accr}})</p></a>')
+          }
+        }).on('typeahead:selected',function( event, datum ) {
+          window.location.href ="#d-"+datum.accr;
+        });
+
+
 
       },
       min_sort : {
