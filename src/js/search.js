@@ -12,22 +12,22 @@
     });
 
     var searchOrg = Backbone.View.extend({
-      events : {
-        "click a.dept_sel_cancel" : "cancel",
-        "click .org_list .sort_buttons a" : "sort"
-      },
+      
       initialize: function(){
         this.template = APP.t('#org_list_t');
-      _.bindAll(this,"render");
+        _.bindAll(this,"render");
         this.app = this.options.app;
         this.container = this.options.container;
         this.state = this.app.state;
-        this.lookup = depts;
-        this.sort_func = 'min_sort';
 
         var lang = this.state.get('lang');
 
-        this.simple_depts = _.map(window.depts,function(obj,key){
+
+        //Get rid of ZGOC and the blank department
+        //proper_depts = _.reject(window.depts,function(item){ return !item.accronym || item.accronym == 'ZGOC';});
+        proper_depts = _.omit(window.depts,'','ZGOC');
+
+        this.simple_depts = _.map( proper_depts ,function(obj,key){
           return {dept_name:obj.dept[lang],accr:obj.accronym};
         });
 
@@ -54,17 +54,14 @@
             this.nested_depts
           )));
         this.container.append(el);
-/*
-        $('.typeahead').typeahead({
-          hint:false,
-      		highlight:true,
-      		minLength:1
-      		},{
-      		name:'noname',
-      		displayKey:'value',
-      		source:this.obtainer
-    	});
-*/
+
+         el.find('input.typeahead')
+          .attr("id","dept_search_filter")
+          .before($('<label>')
+                .attr("for","dept_search_filter")
+                .addClass("wb-invisible")
+                .html(this.app.get_text("search")));
+
 
         $('.typeahead').typeahead({
           hint:true,
@@ -99,79 +96,17 @@
 
 
 
-      },
-      min_sort : {
-        group_by : function(lang,view){
-          return _.sortBy(_.filter(_.values(depts),function(dept){
-            return dept.accronym !== 'ZGOC';
-          }),function(dept){
-            return   [dept.min[lang],dept.dept[lang]];
-          });
-        },
-        dividers_func : function(app){
-         return function(li){
-            return $(li).attr("min");
-          };
-       }
-      },
-      alpha_sort : {
-        group_by : function(lang,view){
-          return _.sortBy(_.filter(_.values(depts),function(dept){
-            return dept.accronym !== 'ZGOC';
-          }),function(dept){
-             return   dept.dept[lang];
-          });
-        },
-        dividers_func : function(view){
-          return function(li){
-            return $(li).text()[0];
-          };
-        }
-      },
-      fin_size_sort : {
-        group_by  : function(lang,view){
-          return _.sortBy(_.filter(_.values(depts),function(dept){
-            return dept.accronym !== 'ZGOC';
-          }),function(dept){
-             return  dept.fin_size;
-          }).reverse();
-        },
-        dividers_func : function(view){
-          var app = view.app;
-          return function(li){
-            var fin_size =  parseFloat($(li).attr("fin-size"));
-            var sizes = [ 10000000000,
-                          7500000000,
-                          5000000000,
-                          2500000000,
-                          1000000000,
-                          500000000,
-                          100000000,
-                          50000000,
-                          10000000];
-            for (var i=0;i<sizes.length;i++){
-              if (fin_size >= sizes[i]){
-                return app.get_text("greater_than") +app.formater("big-int",sizes[i]);
-              }
-            }
-            return  app.get_text("less_than") + app.formater("big-int",_.last(sizes));
-          };
-        }
-      },
-      sort : function(event){
-        var btn = $(event.target);
-        this.sort_func =  btn.attr("sort-func-name");
-        this.render();
       }
-
     });
+      
 
     //Returns a nested object identical to window.mins, but has an extra property for the ministry's name in language of choice.
     var structureMinistries = function(language){
 
       var ret = {};
-
-       _.each(mins,function(obj){
+      //Get rid of ZGOC
+      clean_mins = _.omit(window.mins, 'Government of Canada');
+       _.each(clean_mins,function(obj){
         ret[obj[0].min[language]]={depts:obj};
       });
 

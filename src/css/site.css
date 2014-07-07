@@ -334,7 +334,7 @@ table caption {
 .legend li{
   margin-top: 5px;
 }
-
+/* Typeahead */
 input.typeahead{
   width:396px;
 }
