@@ -130,12 +130,15 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-rsync');
+  grunt.loadTasks('./tasks'); //Loads tasks in the task directory (So far just the phantom one)
   // Default task(s).
   grunt.registerTask('default', ['jshint:full']);
 
   grunt.registerTask("line_count","print out the lines of the new file",function(){
     
   });
+
+  grunt.registerTask()
 
   grunt.event.on("watch", function(action,filepath){
     fs.unlink(grunt.config("concat.dist.dest"), function (err) {
@@ -147,7 +150,7 @@ module.exports = function(grunt) {
 
   grunt.event.on("concat",function(){
     console.log(arguments);
-  })
+  });
 
 };
 

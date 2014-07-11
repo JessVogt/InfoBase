@@ -1,0 +1,27 @@
+{
+  "name": "ExDB-LED",
+  "version": "1.1.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "lib": "src",
+    "test": "test"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "docco": "0.6.x",
+    "jshint": "2.1.x",
+    "uglifyjs": "2.3.x",
+    "grunt": "0.4.x",
+    "grunt-contrib-uglify": "0.2.x",
+    "grunt-contrib-concat": "0.3.x",
+    "grunt-contrib-jshint": "0.6.x",
+    "grunt-contrib-watch": "0.5.x",
+    "grunt-contrib-copy": "0.4.x"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Andrew Gibson",
+  "license": "BSD-2-Clause"
+}
