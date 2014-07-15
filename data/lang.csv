@@ -142,7 +142,7 @@
 "other_trsf_spend_type",,"Other Transfer Payments","Autres paiement de tansferts",,,
 "crown_spend_type",,"Crowns","Sociétés d'État",,,
 "op_spend_type",,"Other Operating Expenditures","Autres dépenses de fonctionnement",,,
-"gov_this_year_vote_stat_split","table8","The planned {{gov_this_year_auth}} spending is divided between <a class='router' href='#explore-v_s'>statutory (mandatory) and voted (discretionary)</a> spending.  This year, statutory spending is planned to be {{gov_this_year_stat_voted.stat}} and voted spending is planned at {{gov_this_year_stat_voted.voted}}.",,,,
+"gov_this_year_vote_stat_split","table8","The planned {{gov_this_year_auth}} spending is divided between <a class='router' href='#explore-v_s'>statutory (mandatory) and voted (discretionary)</a> spending.  This year, statutory spending is planned to be {{gov_this_year_stat_voted.stat}} and voted spending is planned at {{gov_this_year_stat_voted.voted}} which represent respectively  {{gov_this_year_stat_vote_pct.stat}} and {{gov_this_year_stat_vote_pct.voted}} of the total planned spending.",,,,
 "gov_estimates_split",,"The {{gov_this_year_auth}} was approved by parliament accordingly:
 <ul>{{#each gov_estimates_split}}<li>{{ this.[0]}} – {{this.[1] }} </li>{{/each}}</ul>","The {{this_year_auth}} was approved by parliament accordingly:
 <ul>{{#each gov_estimates_split}}<li>{{ this.[0]}} – {{this.[1] }} </li>{{/each}}</ul>",,,

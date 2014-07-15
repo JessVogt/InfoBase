@@ -33,7 +33,7 @@
             "fr": "Région géographique"
           }
         });
-        _.each(['{{last_year_3}}', '{{last_year_2}}', '{{last_year}}'],
+        _.each(years,
           function (header) {
             this.add_col({
               "type": "big-int-real",
@@ -78,8 +78,8 @@
           options = options || {};
           var lk = window.provinces,
             format = options.format || false,
-            fm1 = this.app.make_formater("big-int-real"),
-            fm2 = this.app.make_formater("percentage"),
+            fm1 = this.app["big-int-real"],
+            fm2 = this.app["percentage"],
             ncr = this.lang === 'en' ? "NCR" : "RCN",
             non_ncr = "Non-NCR",
             abroad = lk.Abroad[this.lang],
@@ -150,19 +150,20 @@
           "prov_split"
         ],
         "prov_split" : function(){
-          this.graph_area.classed("span-4",false);
-          this.graph_area.classed("span-8",true);
+
           var data;
+              graph_area = this.chapter.areas().graph;
+
+          this.chapter.change_span("span-8");
+
           if (this.dept){
           data = [this.data.dept_last_year_3_prov_split,
                   this.data.dept_last_year_2_prov_split,
                   this.data.dept_last_year_prov_split ];
-          formater = this.bigintreal
           } else {
           data = [this.data.gov_last_year_3_prov_split,
                   this.data.gov_last_year_2_prov_split,
                   this.data.gov_last_year_prov_split ];
-          formater = this.bigintreal
           }
 
           // reformat the data for display
@@ -187,8 +188,16 @@
             },
             data : data,
             ticks : _.last(this.data.last_years,3),
-            formater : formater
-          })(this.graph_area);
+            formater : app["big-int-real"]
+          })(graph_area);
+
+          return {
+            text : "",
+            title :"",
+            source : [this.create_links({
+              cols : _.last(years)
+            })]
+          };
         }
       }
     });

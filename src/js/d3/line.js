@@ -1,14 +1,16 @@
 (function() {
-
     var D3 = ns('D3');
     var LINE = ns('D3.LINE');
 
-
-    LINE.ordinal_on_legend_click = function(graph){
+    LINE.ordinal_on_legend_click = function(graph,_colors){
       return function(d,i,el,list){
         /*
          *  works with list which were bound using the 
          *  D3.create_list function
+         *  d = the data bound to the element
+         *  i = the index of the clicked item 
+         *  el = the actual clicked element
+         *  list = the collection of items
          *  each li is expected to have bound data in the following
          *  format
          *    { label : "label", data : [arrayofdata], active : true/false}
@@ -22,12 +24,13 @@
           total_active += d.active? 1 : 0;
         });
 
+        // bail if too many items are selected at once
         if (total_active > 10){
           d.active = !d.active;
           return;
         }
 
-        var colors = d3.scale.category10();
+        var colors = _colors || d3.scale.category10();
         var tags = list.selectAll(".color-tag");
         tags.style("background-color","transparent");
         // now check and see if nothing else is selected
@@ -243,6 +246,9 @@
 
           lines
             .each(function(d,i){
+              // d = the series name
+              // i = the index
+
               var g = d3.select(this);
               var data = series[d];
             

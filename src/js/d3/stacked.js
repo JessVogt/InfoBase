@@ -13,6 +13,7 @@
              "name1" : val,"name2" : val,"name3" : val}}]
       *  labels = ["name1", 'name2', "name3"]
       */
+
       var source_data = this.data;
       var normalized = this.normalized;
       var margin = {top: 20, right: 20, bottom: 30, left: 50};

@@ -250,6 +250,7 @@
         "qfr_spend_comparison" : function(){
 
             var this_year_data, last_year_data;
+
             if (this.dept){
               this_year_data = [
                 {name: 'x', value : this.data.dept_this_year_qfr_auth},
@@ -270,28 +271,33 @@
               ];
             }
 
-            this.text_area.html(app.get_text("gov_this_year_qfr_spend",this.written_data ));
-            this.graph_area.append("div").attr("class","first");
-            this.graph_area.append("div").attr("class","second");
-            this.graph_area.selectAll("div")
-              .style("position","relative")
-              .style("width","49%")
-              .style("float", "left");
+            this.chapter.split_graph();
 
             PACK.circle_pie_chart({
               data : this_year_data,
-              formater : this.compact1,
+              formater : app.compact1,
               height : this.height,
               title : TABLES.m("{{in_year}}")
-            })(this.graph_area.select(".first"));
+            })(this.chapter.areas().graph.select(".first"));
 
             PACK.circle_pie_chart({
               data : last_year_data,
-              formater : this.compact1,
+              formater : app.compact1,
               height : this.height,
               title : TABLES.m("{{qfr_last_year}}")
-            })(this.graph_area.select(".second"));
+            })(this.chapter.areas().graph.select(".second"));
 
+           return {
+             title : 'QFR Spending - translate',
+             source : [this.create_links({
+               cols : ["thisyearauthorities",
+                       "thisyearexpenditures",
+                       "lastyearauthorities",
+                       "lastyearexpenditures"
+             ]
+             })],
+             text : app.get_text("gov_this_year_qfr_spend",this.written_data )
+           };
         },
         "qfr_percentage_change" : function(){
           var data;
@@ -306,13 +312,22 @@
               {value: this.data.gov_spend_change, name : app.get_text("expenditures")},
              ];
           }
-           this.text_area.html(app.get_text("gov_this_year_qfr_spend_change",this.written_data ));
-
-           D3.arrows({
+          return {
+            title : "QFR spend change - translate this",
+            text : app.get_text("gov_this_year_qfr_spend_change",this.written_data ),
+             source : [this.create_links({
+               cols : ["thisyearauthorities",
+                       "thisyearexpenditures",
+                       "lastyearauthorities",
+                       "lastyearexpenditures"
+             ]
+             })],
+            graph : D3.arrows({
              data : data,
-             formater : this.percent,
+             formater : app.percentage,
              height : this.height,
-           })(this.graph_area);
+           })
+          };
         }
       }
     });

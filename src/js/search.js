@@ -1,6 +1,6 @@
 (function() {
     var APP = ns('APP');
- 
+
     // add the #search route
     APP.add_container_route("search","search",function(container){
       this.add_crumbs([this.home_crumb,{html: this.gt("search")}]);

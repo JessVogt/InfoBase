@@ -3,6 +3,7 @@
   var TABLES = ns('TABLES');
   var MAPPERS = ns('MAPPERS');
   var WAIT = ns('WAIT');
+  var LINKS = ns("TABLES.LINKS");
 
   TABLES.org_name = function(code,lang){
     return window.depts[code].dept[lang];
@@ -19,6 +20,7 @@
        }
        table.info(info,table.q());
      });
+     // TODO comment this
     APP.dispatcher.trigger("info_collection_cleanup",info);
     return  _.chain(info)
       .map(function(value,key){
@@ -29,6 +31,7 @@
   };
 
   TABLES.format_info = function(formater,info){
+     // TODO comment this
     var formated_data = _.chain(info)
        .map(function(v,k){return [k,formater(v)];})
        .object()
@@ -118,7 +121,7 @@
          //context : table,?
          xhrFields:{
            onprogress: function (e) {
-             if (e.lengthComputable && promise0.state() == 'resolved') {
+             if (e.lengthComputable && promise0.state() === 'resolved') {
                WAIT.w.update_item(table.id,e.loaded);
              }
            }
@@ -279,6 +282,46 @@
     return headers;
   };
 
+  var graph = function(key,context ){
+      var areas = context.chapter.areas();
+      var self = this;
+
+      context.create_links = function(args){
+        return LINKS.create_link(_.extend({
+          lang : context.lang,
+          table : self,
+          dept : context.dept
+        },args));
+      };
+      var temp_object = _.extend({render : this.graphics[key], table : this},context);
+      var render_rtn = temp_object.render();
+
+      // in the standard case where the graph, accompanying text, title
+      // and source link just need to be appened, the graph can return
+      // an object with the relevant properties and they will be appened
+      // using this code
+      // if the render function doesn't return anything, it will take
+      // care of all the appending itself
+      if (_.isObject(render_rtn)){
+        if (_.has(render_rtn, "graph") ){
+          render_rtn.graph(areas.graph);
+        }
+        if (_.has(render_rtn, "title") ){
+          areas.title.html(render_rtn.title);
+        }
+        if (_.has(render_rtn, "text") ){
+          context.chapter.add_text(render_rtn.text);
+        }
+        if (_.has(render_rtn, "source")){
+          context.chapter.add_source(render_rtn.source);
+        }
+      }
+      if (render_rtn === false ){
+        context.chapter.remove();
+      }
+      return render_rtn;
+    }; 
+
 
   APP.dispatcher.on("new_table", function(table){
     TABLES.tables.push(table);
@@ -302,9 +345,7 @@
 
     table.add_cols();
 
-    table.graph = function(key,context ){
-      return _.extend({render : this.graphics[key]},context);
-    };
+    table.graph = graph;
 
     // add useful attributes to each table
     // for all the nick names, how many levels of headers

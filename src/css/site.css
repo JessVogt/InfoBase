@@ -1,6 +1,18 @@
+
 #app a:visited{
   color: black;
 }
+#app a:*{
+  color: black;
+}
+.title {
+  font-size : 20px;
+}
+.chapter text{
+  font-size : 2em;
+}
+/* for wide tables */
+.sidescroll { overflow-x: auto;}
 
 /* start of home screen style section */
 .choose_adventure .row {
@@ -130,8 +142,7 @@
   text-align: center;
 }
 /* end of home screen style section */
-.sidescroll { overflow-x: auto;}
-.vertical_scroll { overflow-y: auto;}
+
 span.clickable:hover,
 p.clickable:hover {
   text-decoration: underline;
@@ -182,6 +193,7 @@ a.ui-link {
 
 div.int{width: 90px;text-align:center;}
 div.big-int{width: 100px;text-align:right;}
+div.big-int-real{width: 100px;text-align:right;}
 .table-medium th div.str {
   color: white;  /* overide the WET standard for .str */
 }

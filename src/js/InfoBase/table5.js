@@ -13,25 +13,22 @@
       "coverage": TABLES.coverage.historical,
       "data_type" :TABLES.data_types.financial,
       add_cols : function(){
-        this.add_col(
-          {
-            "type":"int",
-        "key" : true,
-        "hidden" : true,
-        "nick" : "dept",
-        "header":'',
-          });
-        this.add_col(
-          {
+        this.add_col( {
+           "type":"int",
+           "key" : true,
+           "hidden" : true,
+           "nick" : "dept",
+           "header":'',
+         });
+        this.add_col( {
             "key" : true,
           "type":"wide-str",
           "nick" : 'so',
           "header":{
             "en":"Standard Object",
-          "fr":"Article courtant"
-          }
-          }
-          );
+            "fr":"Article courtant"
+            }
+          });
         _.each(years, function(header){
               this.add_col(
                 { "type":"big-int",
@@ -110,6 +107,8 @@
         c.dept_last_year_so_spend =  this.horizontal("{{last_year}}",c.dept,true);
         c.dept_last_year_2_so_spend = this.horizontal("{{last_year_2}}",c.dept,true);
         c.dept_last_year_3_so_spend = this.horizontal("{{last_year_3}}",c.dept,true);
+        c.dept_last_year_4_so_spend = this.horizontal("{{last_year_4}}",c.dept,true);
+        c.dept_last_year_5_so_spend = this.horizontal("{{last_year_5}}",c.dept,true);
       },
       info : function(c,q){
         var personnel = window.sos[1][c.lang];
@@ -124,29 +123,62 @@
       },
       graphics : {
        "details_display_order" : [
-         "so_spending",
+         "type_spend",
        ],
-       "gov_type_spend" : function(){
-          var data = _.map(TABLES.spending_types,function(t){
-               return {
-                  label : app.get_text(t+"_spend_type"),
-                  data : [
-                      this.data.gov_last_year_type_spend[t],
-                      this.data.gov_last_year_2_type_spend[t],
-                      this.data.gov_last_year_3_type_spend[t],
-                      this.data.gov_last_year_4_type_spend[t],
-                      this.data.gov_last_year_5_type_spend[t]
-                   ],
-                   active : false
-               };
-            },this);
-          var ticks = this.data.last_years;
+       "type_spend" : function(){
 
-          // append an empty div
-          var legend = this.text_area.append("div");
+          var text = this.chapter.areas().text,
+              data;
+
+          if (this.dept){
+            data = _.chain(window.sos)
+              .sortBy(function(val, key){
+                return +key;
+              })
+              .map(function(en_fr){
+                 return en_fr[app.lang];
+              })
+              .map(function(so){
+                return {
+                    label : so,
+                    data : [
+                        this.data.dept_last_year_so_spend[so],
+                        this.data.dept_last_year_2_so_spend[so],
+                        this.data.dept_last_year_3_so_spend[so],
+                        this.data.dept_last_year_4_so_spend[so],
+                        this.data.dept_last_year_5_so_spend[so]
+                    ],
+                    active : false
+                };
+              },this)
+              .filter(function(d){
+                return d3.sum(d.data) !== 0;
+              })
+              .value();
+
+          } else {
+            data = _.chain(TABLES.spending_types)
+              .map(function(t){
+                return {
+                    label : app.get_text(t+"_spend_type"),
+                    data : [
+                        this.data.gov_last_year_type_spend[t],
+                        this.data.gov_last_year_2_type_spend[t],
+                        this.data.gov_last_year_3_type_spend[t],
+                        this.data.gov_last_year_4_type_spend[t],
+                        this.data.gov_last_year_5_type_spend[t]
+                    ],
+                    active : false
+                };
+              },this)
+              .sortBy(function(x){
+                return -d3.sum(x.data);
+              })
+              .value();
+          }
 
           // create the list as a dynamic graph legend
-          var list = D3.create_list(legend,data, {
+          var list = D3.create_list(text,data, {
             html : function(d){
               return d.label;
             },
@@ -163,73 +195,49 @@
             add_legend : false,
             add_xaxis : true,
             ticks : this.data.last_years,
-            formater : this.compact1
+            formater : app.compact1
             });
+          graph(this.chapter.areas().graph);
 
-          // run the graph once on empty data to establish the sizes
-          graph(this.graph_area);
           // hook the list dispatcher up to the graph
           list.dispatch.on("click", LINE.ordinal_on_legend_click(graph));
           // simulate the first item on the list being selected
           list.dispatch.click(data[0],0,list.first,list.list);
 
+          return {
+            title : "historical - translate",
+            source : [this.create_links({
+              cols : years
+            })]
+          };
        },
        "gov_personnel_spend" : function(){
-         this.text_area.html(app.get_text("personnel_spend"));
+         if (this.dept){
+           return false;
+         }
+         var text = document.createElement("div");
 
-         personnel_data =_.zip( this.data.last_years, this.written_data.gov_personnel ) ;
-         LINE.ordinal_line({
-           series :  {'':  _.clone(this.data.gov_personnel)},
-           ticks : this.data.last_years,
-           add_yaxis : true,
-           add_xaxis : true,
-           formater : this.compact1
-         })(this.graph_area);
-
+         text.innerHTML = app.get_text("personnel_spend");
          // add the personnel table
          TABLES.prepare_and_build_table({
            table_class : "table-condensed ",
            stripe : true,
-           rows : personnel_data,
+           rows : _.zip( this.data.last_years, this.written_data.gov_personnel ),
            headers : [['','']],
            row_class : ['left_text','right_number'],
-           node : this.text_area.node()
+           node : text
          });
-
-       },
-       "so_spending": function(){
-         var last_years = this.data.last_years;
-         var last_year_3 =  this.data.dept_last_year_2_so_spend;
-         var last_year_2 =  this.data.dept_last_year_3_so_spend;
-
-         // ensure the graph will always be span-8
-         this.graph_area.classed("span-4",false);
-         this.graph_area.classed("span-8",true);
-
-         D3.pack_and_bar({
-           "height" : 400,
-           "formater" : this.compact1,
-           "app" : this.app,
-           "graph_area": this.graph_area,
-           "pack_data" :  _.chain(this.data.dept_last_year_so_spend)
-                         .pairs()
-                         .map(function(x){ return {value:x[1],name:x[0]};})
-                         .value(),
-           "post_bar_render": function(bar_container,d){
-             bar_container.selectAll(".x.axis .tick text")
-               .style({ 'font-size' : "10px" });
-             bar_container.selectAll(".title")
-               .style({ 'font-size' : "14px","font-weight":"bold" });
-           },
-           "packed_data_to_bar" : function(d){
-              return [last_year_3[d.name],
-                      last_year_2[d.name],
-                      d.__value__ ];
-           },
-           "ticks" : function(d){
-             return last_years;
-           }
-         });
+        return {
+          graph : LINE.ordinal_line({
+           series :  {'':  _.clone(this.data.gov_personnel)},
+           ticks : this.data.last_years,
+           add_yaxis : true,
+           add_xaxis : true,
+           formater : app.compact1
+          }),
+          text : text,
+          title : "personnel spending - translate"
+        };
        }
       }
     });

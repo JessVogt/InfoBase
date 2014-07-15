@@ -1,10 +1,7 @@
 transition to-do:
 
-  details/infograhic
-    table1
-      stackable summaries
-    table7
-      line chart
+  graph
+    fix table 4 and 7
 
   d3
     me
@@ -15,13 +12,14 @@ transition to-do:
   infographic
     me
       add in appropriate links to more detailed pages section
+        for gov level
+        for dept level
       add table headers
     team
       wordsmithing
 
   general
     me
-      fix loading screen
       add more documentation for docco	
       create diagram of how site works
       add testing

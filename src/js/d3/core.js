@@ -73,7 +73,7 @@
     D3.create_list = function(container, data,options){
       /*
        *  container is html element
-       *  data is an array of data
+       *  data is an array of data objects
        *  options
        *    .html is funciton which extacts
        *     the relevant data to be displayed
@@ -86,15 +86,21 @@
        *    .ineractive - if set to true, will
        *     put all legend text in anchor elements
        *     and dispatch an event when they are clicked
+       *
+       *     the displayed html will be sent to the color
+       *     function to receive the color
+       *
        */
       options.key = options.key || function(d,i){return i;};
       options.colors = options.colors || function(d,i){ return "transparent";};
       options.width = options.width || 200;
       options.legend = options.legend || false;
+      options.html = options.html || function(d){return d;};
 
       var dispatch = d3.dispatch("click","hover");
 
-      container
+      container = container
+        .append("div")
         .style({
         "overflow-x" : "hidden",
         "max-height" : options.height + "px",
@@ -103,6 +109,7 @@
         "margin-left" : '10px',
         "width" : options.width + "px"
       })
+      .classed("d3-list",true)
       .classed("border-all", true)
       .classed("well", true);
 
@@ -119,7 +126,7 @@
 
       list.exit().remove();
       var lis = list.enter().append("li")
-        .attr("class","d3-list "+ options.li_classes)
+        .attr("class","d3-list "+ options.li_classes);
 
       if (options.legend) {
         lis
@@ -131,9 +138,11 @@
             "height" : "20px",
             "border": "1px solid grey",
             "margin-left" : "5px" ,
-            "margin-right" : "5px" ,
-            "background-color" : options.colors
-         });
+            "margin-right" : "5px"
+         })
+         .filter(function(d){return d.active;})
+         .style({ "background-color" : function(d,i){return options.colors(options.html(d));}});
+
       }
 
       var text = list
@@ -142,6 +151,7 @@
            "float" : "left",
            "width": options.width -10 - 50 + "px",
         });
+
       if (options.interactive){
        text = text.append("a")
         .attr("href",'#')
@@ -149,6 +159,7 @@
            dispatch.click(d,i,d3.select(this),list);
         });
       }
+
       text.html(options.html);
       list.append("div").attr("class","clear");
 

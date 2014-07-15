@@ -65,7 +65,7 @@
           nest.key(function(d){return d.dept;});
         }
         if (rollup) {
-            nest.rollup(function(leaves){
+            nest = nest.rollup(function(leaves){
                if (_.isArray(col)){
                   return _.map(col, function(_col){
                     return d3.sum(leaves,function(leaf){
