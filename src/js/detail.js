@@ -1,12 +1,12 @@
 (function() {
   var APP = ns('APP');
   var LANG = ns('LANG');
-  var HORIZONTAL = ns("D3.HORIZONTAL");
   var TABLES = ns('TABLES');
+  var LINKS = ns("TABLES.LINKS");
   var DETAILS = ns('DETAILS');
   var STORY = ns('D3.STORY');
 
-  // add the t-:org-:table" route, example:   #d-AGR or d-FO     
+  // add the t-:org-:table" route, example:   #d-AGR or d-FO
   APP.add_container_route("t-:org-:table","org_table_view",function(container, org,table){
     $(container).children().remove();
     org = window.depts[org];
@@ -28,7 +28,7 @@
           {html : org.dept[this.app.lang],href : "#d-"+org.accronym},
           {html: title}]);
       new DETAILS.OrgTabletView( this.app,table, container);
-    // if there aren't any data, redirect to the widget view 
+    // if there aren't any data, redirect to the widget view
     } else {
       this.navigate("#d-"+org.accronym,{trigger: true});
     }
@@ -66,15 +66,16 @@
 
     var chapter = STORY.chapter({
       toggles : [{
-         "toggle_text" : app.get_text("description_of_columns"), add_divider:true
+         "key" : "cols",
+         "off" : ["source","graph"],
+         span : "span-8"
       }],
-      header : "h4",
       target : container,
+      off : ["title","graph","source"],
       span : "span-8"
     });
 
-    chapter.graph_area().remove();
-    chapter.text_area().html(to_be_appended);
+    chapter.areas().text.html(to_be_appended);
 
     // now create the tabular description of the columns and their definitions
     var rows = _.chain(table.flat_headers)
@@ -88,9 +89,12 @@
 
     var headers =[[app.get_text("column_header"),app.get_text("column_description")]];
 
+    var hidden =  chapter.child("cols");
+    hidden.areas().title.html(app.get_text("description_of_columns"));
+
     TABLES.prepare_and_build_table({
       table_class : "table-condensed table-medium",
-      node : chapter.toggle_area().select(".text").node(),
+      node : hidden.areas().text.node(),
       headers : headers,
       rows : rows,
       rowseach : function(d,i){
@@ -105,27 +109,19 @@
       }
     });
 
-    chapter.el.selectAll(".toggle").classed("ui-screen-hidden",true);
-
+    hidden.el.selectAll(".togglee").classed("ui-screen-hidden",true);
   };
 
   make_graph_context = function(app,org){
-    var data = TABLES.Info({dept:org}),
-        written = app.make_formater("compact_written"),
-        compact = app.make_formater("compact");
+    var data = TABLES.Info({dept:org});
     return {
       app : app,
       dept : org,
       lang : app.lang,
       data : data,
       height : 400,
-      written_data : TABLES.format_info(written, data),
-      compact_data : TABLES.format_info(compact, data),
-      percent : app.make_formater("percentage"),
-      compact1 : app.make_formater("compact1"),
-      written : written,
-      compact : compact,
-      bigintreal : app.make_formater("big-int-real")
+      written_data : TABLES.format_info(app.compact_written, data),
+      compact_data : TABLES.format_info(app.compact, data)
     };
   };
 
@@ -135,18 +131,19 @@
     _.each(table.graphics.details_display_order, function(func_name){
 
        var chapter = STORY.chapter({
-         header : "h4",
          target : container,
+         off : "source",
          span : "span-4"
        });
 
-       graph_context.graph_area = chapter.graph_area();
-       graph_context.text_area =  chapter.text_area();
+       graph_context.chapter =  chapter;
 
-       var result = table.graph(func_name,graph_context).render();
+       var result = table.graph(func_name,graph_context);
+
        if (result === false){
          chapter.remove();
        }
+
     });
   };
 
@@ -162,19 +159,29 @@
         }),
         // tranform each column name back to it's column object
         col_objs = _.map(cols, table.col_from_nick),
+        table_width  = d3.sum(_.map(col_objs, function(col){
+          return {
+            "wide-str" : 90,
+            "big-int" : 100,
+            "big-int-real" : 100,
+            "str" : 150,
+            "percentage" : 90,
+            "int" : 90
+          }[col.type];
+        })),
         // get the breakout of the rows for this department
         // by the standard horizontal breakdown
         _map = get_key_to_horizontal(table,cols,org),
         // grab reference to the raw data for this table and department
         raw_data =table.depts[org.accronym],
-        // create a list of equal length to the number of rows containing 
+        // create a list of equal length to the number of rows containing
         // a row type as provided by the horizontal function
         map = _.map(raw_data, function(row ){
           return _.find(_map, function(row_tag){ return row_tag[0]=== row;})[1];
         }),
         // transform the data for presentation in the table
         data = _.chain(raw_data)
-          // transform the row object into an array whose values 
+          // transform the row object into an array whose values
           // line up with the columns
           .map(function(row){
             return _.map(cols,function(col){
@@ -190,13 +197,14 @@
               var col = col_objs[i];
               return {
                 val : d,
-                href : HORIZONTAL.create_analytics_link(table,
-                  col.nick || col.wcag,
-                  lang,
-                  {
-                    pres_level : "depts",
-                    data_type : table.data_type[app.lang],
-                    shown : row_type
+                href : LINKS.create_link({
+                  table : table,
+                  dept : false,
+                  cols : col.nick || col.wcag,
+                  lang : lang,
+                  pres_level : "depts",
+                  data_type : table.data_type[app.lang],
+                  shown : row_type
                   }).href
               };
             });
@@ -210,13 +218,16 @@
             val = d3.sum(_.map(data, function(row){
               return row[i].val;
             }));
-            href = HORIZONTAL.create_analytics_link(table,
-                  col.nick || col.wcag,
-                  lang,
-                  { pres_level : "depts", }).href;
+            href = LINKS.create_link({
+                   table : table,
+                   dept : false,
+                   cols : col.nick || col.wcag,
+                   lang : lang,
+                   pres_level : "depts"
+                  }).href;
           } else {
             val = '';
-          }            
+          }
           return { val : val, href : href };
         }),
         goc_rows = _.map(table.GOC, function(row){
@@ -227,9 +238,12 @@
                  href = '';
                } else {
                  val =  row[c];
-                 href =  HORIZONTAL.create_analytics_link(table,
-                  col.nick || col.wcag, lang,
-                  {  pres_level : "depts" }).href;
+                 href =  LINKS.create_link({
+                     table : table,
+                     cols : col.nick || col.wcag,
+                     lang : lang,
+                     pres_level : "depts"
+                  }).href;
                }
                return { val : val, href : href };
            });
@@ -239,12 +253,13 @@
     container.append("a")
       .attr("class","router")
       .attr("href", function(){
-        return  HORIZONTAL.create_analytics_link(
-                  table,
-                  _.difference(cols, table.keys),
-                  lang,
-                  { pres_level : "depts",
-                    display_as : "table" }).href;
+        return  LINKS.create_link({
+                    table : table,
+                    cols : _.difference(cols, table.keys),
+                    lang : lang,
+                    pres_level : "depts",
+                    display_as : "table"
+                  }).href;
       })
       .html(function(){
         return "Compare totals with all other organizations";
@@ -252,6 +267,9 @@
 
     TABLES.d3_build_table({
       table_class : "table-condensed table-medium",
+      table_css : {
+        width : table_width + "px"
+      },
       node : container.node(),
       theach : function(d,i){
         d3.select(this)

@@ -73,13 +73,13 @@
             // capture the negative and 0 values and return them as being
             // smaller than 100k
             if (val<=0){
-              return app.get_text("less_than")+ " " +app.formater("big-int2",Math.pow(10,5));
+              return app.get_text("less_than")+ " " +app["big-int-real"](Math.pow(10,5));
             }
             var floor = Math.floor(Math.log(val)/ Math.log(10));
             if (floor <= 5){
-              return app.get_text("less_than")+ " " +app.formater("big-int2",Math.pow(10,5));
+              return app.get_text("less_than")+ " " +app["big-int-real"](Math.pow(10,5));
             } else {
-              return app.get_text("greater_than")+ " " +app.formater("big-int2",Math.pow(10,floor));
+              return app.get_text("greater_than")+ " " +app["big-int-real"](Math.pow(10,floor));
             }
           };
           return func;
@@ -148,17 +148,22 @@
          "program_spending"
        ],
        "gov_internal_services" : function(){
-         this.text_area.html(app.get_text("internal_service_spend"));
+         // this is a GoC only graph
+         if (this.dept){
+            return false;
+         }
 
          data =_.zip( this.data.last_years, this.written_data.gov_is ) ;
-         LINE.ordinal_line({
+         var graph = LINE.ordinal_line({
            series :  {'':  _.clone(this.data.gov_is)},
            ticks : this.data.last_years,
            add_yaxis : true,
            add_xaxis : true,
-           formater : this.compact1
-         })(this.graph_area);
+           formater : app.compact1
+         });
 
+         var text_node = this.chapter.areas().text.node();
+         text_node.innerHTML = app.get_text("internal_service_spend");
          // add the  table
          TABLES.prepare_and_build_table({
            table_class : "table-condensed ",
@@ -166,9 +171,13 @@
            rows : data,
            headers : [['','']],
            row_class : ['left_text','right_number'],
-           node : this.text_area.node()
+           node : text_node
          });
 
+         return {
+           graph : graph,
+           title : "Internal Services - translate",
+         };
        },
        "program_spending": function(){
           var data = _.chain(this.data.dept_historical_program_spending)
@@ -184,11 +193,8 @@
             })
             .value();
 
-          // append an empty div
-          var legend = this.text_area.append("div");
-
           // create the list as a dynamic graph legend
-          var list = D3.create_list(legend,data, {
+          var list = D3.create_list(this.chapter.areas().text,data, {
             html : function(d){
               return d.label;
             },
@@ -205,15 +211,22 @@
             add_legend : false,
             add_xaxis : true,
             ticks : this.data.last_years,
-            formater : this.compact1
+            formater : app.compact1
             });
 
           // run the graph once on empty data to establish the sizes
-          graph(this.graph_area);
+          graph(this.chapter.areas().graph);
           // hook the list dispatcher up to the graph
           list.dispatch.on("click", LINE.ordinal_on_legend_click(graph));
           // simulate the first item on the list being selected
           list.dispatch.click(data[0],0,list.first,list.list);
+
+          return {
+            title : "Progam activity spending - translate",
+            source : [this.create_links({
+              cols : years
+            })]
+          };
         }
       }
     });

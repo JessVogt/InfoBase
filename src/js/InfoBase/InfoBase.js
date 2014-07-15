@@ -66,7 +66,7 @@
             url:obj.url,
             xhrFields: {
               onprogress: function (e) {
-                if (e.lengthComputable && promise0.state() == 'resolved') {
+                if (e.lengthComputable && promise0.state() === 'resolved') {
                   WAIT.w.update_item(key,e.loaded);
                 }
               }
@@ -115,6 +115,10 @@
   // object when new APP.APP() is called
   APP.APP = function(options) {
     //
+    _.each(APP.types_to_format, function(formater, key){
+      this[key] = function(val,options){return this.formater(key,val,options);};
+    },this);
+    
     _.bindAll.apply(this,[this].concat(_.functions(this)));
     this.state = new APP.stateModel(_.extend({app:this},options.state));
     this.lang = this.state.get("lang");
@@ -124,7 +128,7 @@
     this.router = new APP.AppRouter({app:this});
   };
 
-  APP.APP.prototype.formater = function(format,val){
+  APP.APP.prototype.formater = function(format,val,options){
     if (_.has(APP.types_to_format,format)){
       if (_.isArray(val)){
         return _.map(val, function(v){ return this.formater(format,v);},this);
@@ -136,7 +140,16 @@
       } else  if (_.isString(val)){
         return val;
       } else {
-        return APP.types_to_format[format](val,this.lang);
+        var val = APP.types_to_format[format](val,this.lang);
+        if (options && options.no_wrap === true){
+          var div =  d3.select(document.createElement("div"));
+          div
+            .append("span")
+            .html(val)
+            .attr("class","wrap-none");
+          val = div.html();
+        }
+        return val;
       }
     }
     return val;
@@ -151,11 +164,6 @@
       return _.map(formats, function(format,i){
         return this.formater(format,vals[i]);
       },this);
-    };
-
-   APP.APP.prototype.make_formater = function(format){
-      var that = this;
-      return function(d){ return that.formater(format,d);};
     };
 
    APP.APP.prototype.get_text = function(txt, context){

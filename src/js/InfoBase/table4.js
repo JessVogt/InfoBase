@@ -170,6 +170,7 @@
     dept_info : function(c, q){
       _.each(years, function(year){
         c["dept_"+year+"_auth"] = q.sum(year+"auth");
+        c["dept_"+year+"_exp"] = q.sum(year+"exp");
 
         var key = "dept_"+year+"_stat_voted";
         c[key] = this.voted_stat(year+'auth',c.dept,true);
@@ -183,6 +184,7 @@
     info : function(c,q){
       _.each(years, function(year){
         c["gov_"+year+"_auth"] = q.sum(year+"auth");
+        c["gov_"+year+"_exp"] = q.sum(year+"exp");
         c["gov_"+year+"_stat_voted"] = this.voted_stat(year+'auth',false);
       },this);
     },
@@ -193,97 +195,196 @@
          "voted_spending",
          "stat_spending"
        ],
-       "vote_stat_split": function(){
-          var graph = LINE.ordinal_line,
-              colors = D3.tbs_color(),
-              d=this.data,text,args={
-                height : this.height,
-                formater : this.compact1,
-                add_legend : false,
-                add_yaxis : true,
-                add_xaxis : true,
-                html_ticks : true,
-                ticks : this.data.last_years,
-                series : {}
-              },gt=app.get_text;
-
-          if (!this.data.dept){
-            text = "gov_historical_auth";
-            args.series[gt("stat")] = [
-              d.gov_last_year_5_stat_voted.stat,
-              d.gov_last_year_4_stat_voted.stat,
-              d.gov_last_year_3_stat_voted.stat,
-              d.gov_last_year_2_stat_voted.stat,
-              d.gov_last_year_stat_voted.stat ];
-            args.series[gt("voted")] = [
-              d.gov_last_year_5_stat_voted.voted,
-              d.gov_last_year_4_stat_voted.voted,
-              d.gov_last_year_3_stat_voted.voted,
-              d.gov_last_year_2_stat_voted.voted,
-              d.gov_last_year_stat_voted.voted ];
-          } else {
-            args.x_axis_line = true;
-            text = "dept_historical_auth";
-            args.series[gt("stat")] = [
-              d.dept_last_year_5_stat_voted.stat,
-              d.dept_last_year_4_stat_voted.stat,
-              d.dept_last_year_3_stat_voted.stat,
-              d.dept_last_year_2_stat_voted.stat,
-              d.dept_last_year_stat_voted.stat ];
-            args.series[gt("voted")] = [
-              d.dept_last_year_5_stat_voted.voted,
-              d.dept_last_year_4_stat_voted.voted,
-              d.dept_last_year_3_stat_voted.voted,
-              d.dept_last_year_2_stat_voted.voted,
-              d.dept_last_year_stat_voted.voted ];
-          }
-          graph(args)(this.graph_area);
-          this.text_area.html(m(app.get_text(text), this.written_data));
-
-       },
        "historical_auth" : function(){
-          var graph = LINE.ordinal_line,
-              d=this.data,text,args={
+         // ensure the graph can span the whole screen
+         // and then split the area for the legend and graph
+          this.chapter.change_span("span-8")
+                      .split_graph();
+
+          var text,
+              colors = D3.tbs_color(),
+              level,//will be either "dept" or "gov"
+              d = this.data, // shorthand
+              gt=app.get_text, //shorthand
+              args={
+                colors : colors,
                 add_xaxis : true,
+                x_axis_line : true,
                 add_labels : true,
                 add_yaxis : true,
-                add_legend : false,
-                add_under_area : true,
-                x_axis_line : true,
-                html_ticks : true,
                 height : this.height,
-                formater : this.compact1,
+                formater : app.compact1,
                 ticks : this.data.last_years,
-                series : {'':null}
-              };
+                series : {}
+              },
+              // get reference to different areas of the graph container
+              legend_area = this.chapter.areas().graph.select(".first"),
+              graph_area = this.chapter.areas().graph.select(".second");
 
-          if (!this.dept){
-
-            text = "gov_historical_auth";
-            args.series[''] = [
-              d.gov_last_year_5_auth,
-              d.gov_last_year_4_auth,
-              d.gov_last_year_3_auth,
-              d.gov_last_year_2_auth,
-              d.gov_last_year_auth ];
+          if (this.dept){
+            text = "dept_historical_auth";
+            level = "dept";
           } else {
-            this.graph_area.classed("span-4",true);
-            this.text_area.classed("span-4",true);
-            this.graph_area.classed("span-8",false);
-            this.text_area.classed("span-8",false);
+            text = "gov_historical_auth";
+            level = "dept";
+          }
+          data = _.chain(["authorities", "expenditures"])
+                  .map(function(type){
+                    var ending = type === "authorities"? "auth": "exp"
+                    return {
+                      label : gt(type),
+                      data : [ d[level+"_last_year_5_"+ending],
+                               d[level+"_last_year_4_"+ending],
+                               d[level+"_last_year_3_"+ending],
+                               d[level+"_last_year_2_"+ending],
+                               d[level+"_last_year_"+ending]],
+                      active : true
+                     };
+                  })
+                  .sortBy(function(d){return d3.sum(d.data);})
+                  .value();
+          
+          // create the list as a dynamic graph legend
+          var list = D3.create_list(legend_area,data, {
+            html : function(d){
+              return d.label;
+            },
+            height : this.height,
+            width : 300,
+            interactive : true,
+            title : app.get_text("legend"),
+            legend : true,
+            ul_classes : "legend",
+            colors : colors,
+            multi_select : true}
+          );
 
+          // create the graph
+          var graph = LINE.ordinal_line({
+            add_legend : false,
+            add_xaxis : true,
+            ticks : this.data.last_years,
+            formater : app.compact1,
+            colors : colors,
+            series : _.chain(data)
+                      .map(function(obj){ return [obj.label,obj.data];})
+                      .object()
+                      .value()
+          });
+          graph(graph_area);
+          // hook the list dispatcher up to the graph
+          list.dispatch.on("click", LINE.ordinal_on_legend_click(graph,colors));
+
+          return {
+            title : app.get_text("previous_year_fisc"),
+            text : app.get_text(text, this.written_data),
+            source : [this.create_links({
+              cols : ["{{last_year}}auth","{{last_year_2}}auth","{{last_year_3}}auth"]
+            })]
+          };
+       },
+       "vote_stat_split": function(){
+         // ensure the graph can span the whole screen
+         // and then split the area for the legend and graph
+          this.chapter.change_span("span-8")
+                      .split_graph();
+
+          var colors = D3.tbs_color(), // shared between legend and graph
+              text, // will be filled in depending on department
+              d = this.data, // shorthand
+              gt=app.get_text, //shorthand
+              args={       // default arguments for the line graph
+                          // irrespective of whehter it's for goc or dept
+                height : this.height,
+                formater : app.compact1,
+                add_legend : false,
+                add_yaxis : true,
+                add_xaxis : true,
+                html_ticks : true,
+                ticks : this.data.last_years,
+              },
+              // get reference to different areas of the graph container
+              legend_area = this.chapter.areas().graph.select(".first"),
+              graph_area = this.chapter.areas().graph.select(".second");
+
+          if (this.data.dept){
             args.x_axis_line = true;
             text = "dept_historical_auth";
-            args.series[''] = [
-              d.dept_last_year_5_auth,
-              d.dept_last_year_4_auth,
-              d.dept_last_year_3_auth,
-              d.dept_last_year_2_auth,
-              d.dept_last_year_auth ];
+            data = _.chain(["stat", "voted"])
+                    .map(function(type){
+                       return {
+                         label : gt(type),
+                         data : [ d.dept_last_year_5_stat_voted[type],
+                                  d.dept_last_year_4_stat_voted[type],
+                                  d.dept_last_year_3_stat_voted[type],
+                                  d.dept_last_year_2_stat_voted[type],
+                                  d.dept_last_year_stat_voted[type]],
+                         active : true
+                       };
+                    })
+                    .sortBy(function(d){return d3.sum(d.data);})
+                    .value();
+          } else {
+            text = "gov_historical_auth";
+            data = _.chain(["stat", "voted"])
+                    .map(function(type){
+                       return {
+                         label : gt(type),
+                         data : [ d.gov_last_year_5_stat_voted[type],
+                                  d.gov_last_year_4_stat_voted[type],
+                                  d.gov_last_year_3_stat_voted[type],
+                                  d.gov_last_year_2_stat_voted[type],
+                                  d.gov_last_year_stat_voted[type]],
+                         active : true
+                       };
+                    })
+                    .sortBy(function(d){return d3.sum(d.data);})
+                    .value();
           }
 
-          graph(args)(this.graph_area);
-          this.text_area.html(m(app.get_text(text), this.written_data));
+          // create the list as a dynamic graph legend
+          var list = D3.create_list(legend_area,data, {
+            html : function(d){
+              return d.label;
+            },
+            height : this.height,
+            width : 300,
+            interactive : true,
+            title : app.get_text("legend"),
+            legend : true,
+            ul_classes : "legend",
+            colors : colors,
+            multi_select : true}
+          );
+
+          // create the graph
+          var graph = LINE.ordinal_line({
+            add_legend : false,
+            add_xaxis : true,
+            ticks : this.data.last_years,
+            formater : app.compact1,
+            colors : colors,
+            series : _.chain(data)
+                      .map(function(obj){ return [obj.label,obj.data];})
+                      .object()
+                      .value()
+          });
+          graph(graph_area);
+          // hook the list dispatcher up to the graph
+          list.dispatch.on("click", LINE.ordinal_on_legend_click(graph,colors));
+
+          return {
+            text : app.get_text(text, this.written_data),
+            title : app.get_text("previous_year_fisc"),
+            source : [this.create_links({
+              cols : _.chain(years)
+                      .map(function(year){
+                        return [year+"auth",year+"exp"];
+                      })
+                      .flatten()
+                      .value()
+            })]
+          };
        },
        "voted_spending" :   function(){
          var func = _.bind(create_line_graph,this);
@@ -294,12 +395,6 @@
          var func = _.bind(create_line_graph,this);
          this.data_type = 'stat';
          return func();
-       },
-       "top_vote_items" : function(){
-
-       },
-       "top_stat_items" : function(){
-
        }
     }
     });
@@ -327,7 +422,11 @@
     };
 
     var create_line_graph = function(){
+      this.chapter
+        .change_span("span-8")
+        .split_graph();
       var data_type = "dept_historical_" + this.data_type;
+      var graph_area =  this.chapter.areas().graph;
 
       // transform the data
       var data = _.chain(this.data[data_type])
@@ -343,11 +442,8 @@
         })
         .value();
 
-      // append an empty div
-      var legend = this.text_area.append("div");
-
       // create the list as a dynamic graph legend
-      var list = D3.create_list(legend,data, {
+      var list = D3.create_list(graph_area.select(".first"),data, {
         html : function(d){
           return d.label;
         },
@@ -357,7 +453,7 @@
         title : app.get_text("legend"),
         legend : true,
         ul_classes : "legend",
-        multi_select : true} 
+        multi_select : true}
       );
 
       // create the graph
@@ -365,15 +461,18 @@
         add_legend : false,
         add_xaxis : true,
         ticks : this.data.last_years,
-        formater : this.compact1
-        });
+        formater : app.compact1
+      });
 
       // run the graph once on empty data to establish the sizes
-      graph(this.graph_area);
+      graph(graph_area.select(".second"));
       // hook the list dispatcher up to the graph
       list.dispatch.on("click", LINE.ordinal_on_legend_click(graph));
       // simulate the first item on the list being selected
       list.dispatch.click(data[0],0,list.first,list.list);
+      return {
+        title : this.data_type + " -translate",
+      };
     };
   });
 })();

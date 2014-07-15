@@ -11,11 +11,11 @@
     var graph_area = options.graph_area;
     var pack_data = options.pack_data;
     var packed_data_to_bar = options.packed_data_to_bar;
-    var app = options.app;
     var formater = options.formater;
     var post_bar_render = options.post_bar_render;
     var ticks = options.ticks;
-    var data =  PACK.pack_data(pack_data,app.get_text("other"), {
+    var text_fragments = options.text_fragments
+    var data =  PACK.pack_data(pack_data,text_fragments.other, {
       force_positive : true,
       filter_zeros : true
     });
@@ -47,7 +47,7 @@
       // remove the contents
       bar_container.selectAll("*").remove();
 
-      if (d.name === app.get_text("other") || d.name === ''){
+      if (d.name === text_fragments.other || d.name === ''){
         return;
       }
 

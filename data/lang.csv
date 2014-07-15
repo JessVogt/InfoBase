@@ -63,6 +63,7 @@
 "open_data_link",,"Open Data Link","Lien aux données ouvertes",,,
 "org",,"Organization","Organisation",,,
 "org_infograph",,"Organizational Infograph","Graphique pour l'organisation",,,
+"widget_view",,"Widget View",,,,
 "org_head",,"Institutional Head","Premier(ère) dirigeant(e)",,,
 "other",,"Other(s)","Autre(s)",,,
 "other_in_min",,"Other Organizations in same Ministry","Autre(s) organisations dans le portefeuille ministériel",,,
@@ -141,12 +142,12 @@
 "other_trsf_spend_type",,"Other Transfer Payments","Autres paiement de tansferts",,,
 "crown_spend_type",,"Crowns","Sociétés d'État",,,
 "op_spend_type",,"Other Operating Expenditures","Autres dépenses de fonctionnement",,,
-"gov_this_year_vote_stat_split","table8","The planned {{gov_this_year_auth}} spending is divided between <a class='router' href='#explore-v_s'>statutory (mandatory) and voted (discretionary)</a> spending.  This year, statutory spending is planned to be {{gov_this_year_stat_voted.stat}} and voted spending is planned at {{gov_this_year_stat_voted.voted}}.",,,,
+"gov_this_year_vote_stat_split","table8","The planned {{gov_this_year_auth}} spending is divided between <a class='router' href='#explore-v_s'>statutory (mandatory) and voted (discretionary)</a> spending.  This year, statutory spending is planned to be {{gov_this_year_stat_voted.stat}} and voted spending is planned at {{gov_this_year_stat_voted.voted}} which represent respectively  {{gov_this_year_stat_vote_pct.stat}} and {{gov_this_year_stat_vote_pct.voted}} of the total planned spending.",,,,
 "gov_estimates_split",,"The {{gov_this_year_auth}} was approved by parliament accordingly:
 <ul>{{#each gov_estimates_split}}<li>{{ this.[0]}} – {{this.[1] }} </li>{{/each}}</ul>","The {{this_year_auth}} was approved by parliament accordingly:
 <ul>{{#each gov_estimates_split}}<li>{{ this.[0]}} – {{this.[1] }} </li>{{/each}}</ul>",,,
-"gov_this_year_qfr_spend",,"Detailed spending information for this year is available from the Quarterly Financial Reports (QFRs).  However the QFRs only captures {{gov_this_year_qfr_auth}} of the {{gov_this_year_auth}} of the planned spending. As of the end of quarter {{q}}, the government has spent {{gov_this_year_qfr_spend}} or {{gov_this_qfr_spend_percent}} of the planned spending.",,,,
-"gov_this_year_qfr_spend_change",,"Comparing the planned spending and actual spending rates between this year and last, we see a {{gov_auth_change}} in planned spending and {{gov_spend_change}} in actual spending. ",,,,
+"gov_this_year_qfr_spend","table1","Detailed spending information for this year is available from the Quarterly Financial Reports (QFRs).  However the QFRs only captures {{gov_this_year_qfr_auth}} of the {{gov_this_year_auth}} of the planned spending. As of the end of quarter {{q}}, the government has spent {{gov_this_year_qfr_spend}} or {{gov_this_qfr_spend_percent}} of the planned spending.",,,,
+"gov_this_year_qfr_spend_change","table1","Comparing the planned spending and actual spending rates between this year and last, we see planned spending  {{changed_by  gov_auth_change}}  and actual spending {{changed_by gov_spend_change}}.",,,,
 "top_voted",,"Of the {{gov_this_yea_stat_voted.voted}} voted (discretionary) spending, the three largest approvals were:",,,,
 "top_stat",,"Of the {{gov_this_year_stat_voted.stat}} statutory (mandatory) spending, the three largest approvals were:",,,,
 "internal_service_spend",,"Spending on internal services over the past three years has been:",,,,

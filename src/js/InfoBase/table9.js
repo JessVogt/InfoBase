@@ -33,7 +33,7 @@
           "fr":"Période d'affectation"
           }
         });
-        _.each(['{{last_year_3}}','{{last_year_2}}','{{last_year}}'],
+        _.each(years,
           function(header){
             this.add_col(
               {
@@ -76,12 +76,16 @@
         c.dept_last_year_emp_types = this.horizontal("{{last_year}}",c.dept);
         c.dept_last_year_2_emp_types = this.horizontal("{{last_year_2}}",c.dept);
         c.dept_last_year_3_emp_types = this.horizontal("{{last_year_3}}",c.dept);
+        c.dept_last_year_4_emp_types = this.horizontal("{{last_year_4}}",c.dept);
+        c.dept_last_year_5_emp_types = this.horizontal("{{last_year_5}}",c.dept);
       },
       "info" : function(c,q){
         c.emp_types = _.uniq(q.get_col("employee_type"));
         c.gov_last_year_emp_types = this.horizontal("{{last_year}}",false);
         c.gov_last_year_2_emp_types = this.horizontal("{{last_year_2}}",false);
         c.gov_last_year_3_emp_types = this.horizontal("{{last_year_3}}",false);
+        c.gov_last_year_4_emp_types = this.horizontal("{{last_year_4}}",false);
+        c.gov_last_year_5_emp_types = this.horizontal("{{last_year_5}}",false);
       },
       "mini_view": {
         description: {
@@ -93,12 +97,12 @@
           {val:"{{last_year_2}}"},
           {val:"{{last_year_3}}"}
         ],
-        classes : [ 'left_text', 
-        'right_number', 
+        classes : [ 'left_text',
+        'right_number',
         'right_number'],
         prep_data: function () {
-          var fm1  = app.make_formater("big-int-real");
-          var fm2 = app.make_formater("percentage");
+          var fm1  = app["big-int-real"];
+          var fm2 = app.percentage;
           var year = this.option.val ;
           var ordered = this.da.get_top_x([year,'employee_type'],Infinity,
               {gross_percentage: true, format: false});
@@ -118,18 +122,21 @@
         ],
         "employee_type": function(){
           var data = this.data;
-          this.graph_area.style("max-width","700px");
+              graph_area = this.chapter.areas().graph;
+
            if (this.data.dept) {
             STACKED.stacked_series({
               labels : data.emp_types,
               height : this.height,
               colors : D3.tbs_color(),
               data : [
-                {tick :data.last_years[0], vals : data.dept_last_year_2_emp_types  },
-                {tick :data.last_years[1], vals : data.dept_last_year_2_emp_types  },
-                {tick :data.last_years[2], vals : data.dept_last_year_emp_types  },
+                {tick :data.last_years[0], vals : data.dept_last_year_5_emp_types  },
+                {tick :data.last_years[1], vals : data.dept_last_year_4_emp_types  },
+                {tick :data.last_years[2], vals : data.dept_last_year_3_emp_types  },
+                {tick :data.last_years[3], vals : data.dept_last_year_2_emp_types  },
+                {tick :data.last_years[4], vals : data.dept_last_year_emp_types  },
               ]
-            })(this.graph_area);
+            })(graph_area);
            } else {
             PIE.pie({
               labels : data.emp_types,
@@ -141,8 +148,15 @@
               data : _.chain(data.gov_last_year_emp_types)
                        .map(function(v,k){ return {val: v, label: k};})
                        .value(),
-            })(this.graph_area);
+            })(graph_area);
            }
+           return {
+             text : "",
+             title :"",
+             source : [this.create_links({
+               cols : _.last(years)
+             })]
+           };
         }
       }
      });

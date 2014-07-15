@@ -10,6 +10,7 @@
       *  ticks = ["tick1","tick2"."tick3"]
       */
       var series = d3.keys(this.series),
+          label_font_size = 12,
           add_xaxis = this.add_xaxis,
           add_yaxis = this.add_yaxis,
           x_axis_line = this.x_axis_line  === undefined ? true : this.x_axis_line,
@@ -58,7 +59,7 @@
           bar_width = Math.min(x1.rangeBand(), this.max_width || 100),
           y = d3.scale.linear()
             .domain([y_bottom, y_top])
-            .range([height, 0]),
+            .range([extent[1] >= 0 ? height : height -label_font_size, 0]),
           xAxis = d3.svg.axis()
             .scale(x0)
             .tickPadding(5)
@@ -143,52 +144,51 @@
                 .text(y_axis);
       }
 
-
       if (add_labels){
-        //html.selectAll("div.labels")
-        //  .data(data)
-        //  .enter()
-        //  .append("div")
-        //  .attr("class","labels")
-        //  .style({
-        //    "position" : "absolute",
-        //    "top" : "0px",
-        //    "height" : "10px",
-        //    "width": x0.rangeBand()+"px",
-        //    "left"  : function(d) {return x0(d.tick)+margin.left+"px" ; }
-        //  })
-        //  .selectAll("div.label")
-        //  .data(function(d){ return d.data;})
-        //  .enter()
-        //  .append("div")
-        //  .attr("class","label")
-        //  .html(function(d){ return label_formater(d.value);})
-        //  .style({
-        //    "text-align": "center",
-        //    "position" : "absolute",
-        //    "text-weight" : "bold",
-        //    "color": function(d) {
-        //      return d.value<0 ? "red" : "black" ;
-        //    },
-        //    "width" : bar_width+"px",
-        //    "font-size" : "12px",
-        //    "height" : "10px",
-        //    "top"  : function(d){
-        //      if (d.value === 0){
-        //        return  y(d.value)+"px";
-        //      }
-        //      else if (d.value > 0){
-        //        return margin.top - 12 + y(d.value) - 5+"px";
-        //      } else {
-        //        return y(d.value) +20+ "px";
-        //      }
-        //    },
-        //    "left"  : function(d) { return x1(d.name)+(x1.rangeBand()-bar_width)/2 +"px" ; }
-        //  });
-        //html.selectAll("div.labels")
-        //  .data(data)
-        //  .exit()
-        //  .remove();
+        html.selectAll("div.labels")
+          .data(data)
+          .enter()
+          .append("div")
+          .attr("class","labels")
+          .style({
+            "position" : "absolute",
+            "top" : "0px",
+            "height" : "10px",
+            "width": x0.rangeBand()+"px",
+            "left"  : function(d) {return x0(d.tick)+margin.left+"px" ; }
+          })
+          .selectAll("div.label")
+          .data(function(d){ return d.data;})
+          .enter()
+          .append("div")
+          .attr("class","label")
+          .html(function(d){ return label_formater(d.value);})
+          .style({
+            "text-align": "center",
+            "position" : "absolute",
+            "text-weight" : "bold",
+            "color": function(d) {
+              return d.value<0 ? "red" : "black" ;
+            },
+            "width" : bar_width+"px",
+            "font-size" : label_font_size + "px",
+            "height" : "10px",
+            "top"  : function(d){
+              if (d.value === 0){
+                return  y(d.value)+"px";
+              }
+              else if (d.value > 0){
+                return margin.top - 12 + y(d.value) - 5+"px";
+              } else {
+                return y(d.value) +20+ "px";
+              }
+            },
+            "left"  : function(d) { return x1(d.name)+(x1.rangeBand()-bar_width)/2 +"px" ; }
+          });
+        html.selectAll("div.labels")
+          .data(data)
+          .exit()
+          .remove();
       }
 
       var groups = graph_area.selectAll(".group")

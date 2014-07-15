@@ -29,7 +29,7 @@
             "fr":"Groupe d’âge"
           }
         });
-        _.each(['{{last_year_3}}','{{last_year_2}}','{{last_year}}'],
+        _.each(years,
             function(header){
               this.add_col(
                 {
@@ -58,19 +58,23 @@
        c.dept_last_year_emp_ages = q.high_level_age_split2("{{last_year}}",c.dept);
        c.dept_last_year_2_emp_ages = q.high_level_age_split2("{{last_year_2}}",c.dept);
        c.dept_last_year_3_emp_ages = q.high_level_age_split2("{{last_year_3}}",c.dept);
+       c.dept_last_year_4_emp_ages = q.high_level_age_split2("{{last_year_4}}",c.dept);
+       c.dept_last_year_5_emp_ages = q.high_level_age_split2("{{last_year_5}}",c.dept);
     },
     "info" : function(c,q){
        c.emp_ages = ['< 30','30-39','40-49','50-59','> 60'];
        c.gov_last_year_emp_ages = q.high_level_age_split2("{{last_year}}",false);
        c.gov_last_year_2_emp_ages = q.high_level_age_split2("{{last_year_2}}",false);
        c.gov_last_year_3_emp_ages = q.high_level_age_split2("{{last_year_3}}",false);
+       c.gov_last_year_4_emp_ages = q.high_level_age_split2("{{last_year_4}}",false);
+       c.gov_last_year_5_emp_ages = q.high_level_age_split2("{{last_year_5}}",false);
     },
     "queries" : {
        "high_level_age_split" : function(year,options){
          options = options || {};
          var format = options.format || false,
-             fm1 = this.app.make_formater("big-int-real"),
-             fm2 = this.app.make_formater("percentage"),
+             fm1 = this.app["big-int-real"],
+             fm2 = this.app["percentage"],
              column = _.pluck(this.data, year),
              dept_total = d3.sum(column),
              // breakdown the data into 4 individual groups, each of which will need to have it's
@@ -122,8 +126,8 @@
         {val:"{{last_year_2}}"},
         {val:"{{last_year_3}}"}
       ],
-      classes : [ 'left_text', 
-      'right_number', 
+      classes : [ 'left_text',
+      'right_number',
       'right_number'],
       prep_data: function () {
         var year = this.option.val ;
@@ -139,18 +143,22 @@
       ],
       "employee_age": function(){
         var data = this.data;
-        this.graph_area.style("max-width","700px");
+            graph_area = this.chapter.areas().graph;
+
+        graph_area.style("max-width","700px");
          if (this.data.dept) {
           STACKED.stacked_series({
             labels : data.emp_ages,
             height : this.height,
             colors : D3.tbs_color(),
             data : [
-              {tick :data.last_years[0], vals : data.dept_last_year_2_emp_ages  },
-              {tick :data.last_years[1], vals : data.dept_last_year_2_emp_ages  },
-              {tick :data.last_years[2], vals : data.dept_last_year_emp_ages  },
+              {tick :data.last_years[0], vals : data.dept_last_year_5_emp_ages  },
+              {tick :data.last_years[1], vals : data.dept_last_year_4_emp_ages  },
+              {tick :data.last_years[2], vals : data.dept_last_year_3_emp_ages  },
+              {tick :data.last_years[3], vals : data.dept_last_year_2_emp_ages  },
+              {tick :data.last_years[4], vals : data.dept_last_year_emp_ages  },
             ]
-          })(this.graph_area);
+          })(graph_area);
          } else {
             PIE.pie({
               labels : data.emp_types,
@@ -162,11 +170,17 @@
               data : _.chain(data.gov_last_year_emp_ages)
                        .map(function(v,k){ return {val: v, label: k};})
                        .value(),
-            })(this.graph_area);
-
+            })(graph_area);
          }
+         return {
+             text : "",
+             title :"",
+             source : [this.create_links({
+               cols : _.last(years)
+             })]
+         };
       }
-    } 
+    }
   });
   });
 })();

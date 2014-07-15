@@ -13,16 +13,18 @@
              "name1" : val,"name2" : val,"name3" : val}}]
       *  labels = ["name1", 'name2', "name3"]
       */
+
       var source_data = this.data;
       var normalized = this.normalized;
-      var labels = this.labels;
       var margin = {top: 20, right: 20, bottom: 30, left: 50};
       var legend_width = 150;
       var width = this.width - margin.left - margin.right;
       var height = this.height - margin.top - margin.bottom;
       var html = d3.select(D3.get_html_parent(svg));
-
-      var color = (this.colors || d3.scale.category10()).domain(labels);
+      var labels = _.map(this.labels, function(label){
+        return {label: label, active:true};
+      });
+      var color = (this.colors || d3.scale.category10()).domain(this.labels);
 
       svg = svg
           .attr("width", width + margin.left + margin.right)
@@ -30,17 +32,36 @@
         .append("g")
           .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+      var legend = D3.create_list(
+        html.append("div")
+        .style({"position": "absolute",
+                "right" : "10px",
+                "top" : "10px",
+        }),
+        labels,
+        {
+          html : function(d){ return d.label;},
+          colors : function(d){ return color(d.label);},
+          width : legend_width,
+          legend : true,
+          interactive : true,
+          height : color.domain().length * 20 + 40
+        });
+
       var render = function() {
 
         var data = _.map(source_data, function(row, i){
             var y0 = 0;
-            var stacked = _.map(labels, function(label){
-              return {
-                label : label,
-                y0 : y0,
-                y1 : y0 += row.vals[label]
-              };
-            });
+            var stacked = _.chain(labels)
+               .filter(function(label){return label.active;})
+               .map( function(label){
+                  return {
+                    label : label.label,
+                    y0 : y0,
+                    y1 : y0 += row.vals[label.label]
+                  };
+               })
+               .value();
             var total = y0;
             return {
               vals : stacked,
@@ -75,19 +96,6 @@
           y.domain([0,d3.max(data, function(d){return d.total;})]);
         }
 
-        D3.create_list(
-          html.append("div")
-          .style({"position": "absolute",
-                  "right" : "10px",
-                  "top" : "10px",
-          }),
-          color.domain().slice().reverse(),
-          {
-            html : _.identity,
-            colors : color,
-            width : legend_width,
-            height : color.domain().slice().reverse() * 20 + 40
-          });
 
         svg.selectAll(".axis").remove();
 
@@ -112,6 +120,8 @@
 
         var rects = bars.selectAll("rect")
           .data(function(d) { return d.vals; });
+
+        rects.exit().remove();
 
         rects.enter().append("rect");
 
@@ -145,7 +155,23 @@
         });
 
       render();
+
+      legend.dispatch.on("click", function(d){
+        d.active = !d.active;
+        if (_.filter(labels, function(label){return label.active;}).length === 0){
+           d.active = true;
+           return;
+        }
+        var tag = legend.list.selectAll(".color-tag")
+              .filter(function(_d){ return _d === d;});
+        if (d.active){
+          tag.style("background-color", color(d.label));
+        } else {
+          tag.style("background-color", "transparent");
+        }
+              
+        render();
+      });
     });
-
-
 })();
+

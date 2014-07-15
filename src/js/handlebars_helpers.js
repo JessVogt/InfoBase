@@ -1,6 +1,6 @@
 ns().APP.dispatcher.once("init", function(app){
 
-  Handlebars.registerHelper("change_by",function(context){
+  Handlebars.registerHelper("changed_by",function(context){
      if (_.head(context)==='-'){
       return "decreased by " + context;
      } else {
@@ -10,7 +10,7 @@ ns().APP.dispatcher.once("init", function(app){
 
   Handlebars.registerHelper("change_de_m",function(context){
      if (_.head(context)==='-'){
-      return "diminés de " + context;
+      return "diminués de " + context;
      } else {
       return "augmentés de " + context;
      }
@@ -18,7 +18,7 @@ ns().APP.dispatcher.once("init", function(app){
 
   Handlebars.registerHelper("change_de_f",function(context){
      if (_.head(context)==='-'){
-      return "diminées de " + context;
+      return "diminuées de " + context;
      } else {
       return "augmentées de " + context;
      }

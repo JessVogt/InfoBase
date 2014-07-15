@@ -9,48 +9,17 @@
         APP = ns("APP"),
         TABLES = ns('TABLES'),
         STORY = ns("D3.STORY");
-    
+
 
     APP.add_container_route("analysis-:config","analysis",function(container,config){
       if (config!== 'start') {
        config = $.parseParams(config);
-      } 
+      }
       this.add_crumbs([this.home_crumb,{html: "Horizontal Analysis"}]);
       this.add_title($('<h1>').html("Horizontal Analysis"));
       this.app.analysis =   new horizontal_gov(this.app,d3.select(container),config);
     });
 
-    HORIZONTAL.create_analytics_link = function(table,cols,lang,more_options){
-      var options,href;
-      more_options = more_options || {};
-
-      if (_.isArray(cols)){
-        
-        options =  {
-          table : table.id,
-          display_as : "table",
-          column_choice : _.map(cols, function(col){
-            return table.col_from_nick(col).fully_qualified_name;
-          }),
-          period : table.coverage[lang],
-          data_type : table.data_type[lang],
-          nu : true
-        };
-      } else {
-        options =  {
-          table : table.id,
-          column : table.col_from_nick(cols).fully_qualified_name,
-          data_type : table.data_type[lang],
-          period : table.coverage[lang],
-          nu : true
-        };
-      }
-      href = HORIZONTAL.Config.create_link(_.extend(more_options,options));
-      return {
-        html : table.name[lang],
-        href : href
-      };
-    };
 
     var Config = HORIZONTAL.Config = function(currently_selected){
       this._config = {};
@@ -104,10 +73,10 @@
     Config.prototype.to_url = function(){
       return $.param(this.currently_selected);
     };
-                                     
+
     var horizontal_gov = function(app,container,config){
       container.selectAll("*").remove();
-      container.html(d3.select('#horizontal_t').html());
+      container.html(Handlebars.compile(d3.select('#horizontal_t').html())());
       config = config || {};
       // ensure all functions on this object are always bound to this
       _.bindAll(this, _.functions(this));
@@ -120,15 +89,16 @@
 
       this._descriptions = [];
 
-      // create the span-8 contain and then the selections side bar and the 
+      // create the span-8 contain and then the selections side bar and the
       // main chart area
       this.selections  = container.select(".selections");
       this.chart_area  = container.select(".chart-area");
       this.description_area = container.select(".chart-description");
 
-      STORY.add_toggle_section(this.description_area,this.gt("report_details"));
-      container.selectAll(".toggle")
-        .style("padding-left","20px")
+      STORY.add_toggle_section(this.description_area.select(".title"),
+                               this.description_area.select(".content"));
+
+      container.selectAll(".togglee")
         .classed("ui-screen-hidden",true);
 
       // add the default option sections
@@ -140,7 +110,7 @@
 
       this.pres_level.attr("tabindex",0);
 
-      this.config = new Config(_.extend({org:['__all__']},config)); 
+      this.config = new Config(_.extend({org:['__all__']},config));
 
       this.orgs = _.chain(window.depts)
         .map(function(d){
@@ -149,7 +119,7 @@
         .sortBy(function(d){ return d.name;})
         .value();
       this.orgs.unshift({acronym :"__all__", name : lang === 'en'? "All" : "Tout"});
-      
+
       this.config.set_options("org",this.orgs);
       this.start_build();
     };
@@ -175,7 +145,7 @@
          })
          .value();
 
-     var descs = this.description_area.select(".toggle")
+     var descs = this.description_area.select(".content")
        .selectAll("p.description")
        .data(data);
 
@@ -204,7 +174,7 @@
        // because of late declaration, this function won't be bound to horizontal_gov
        // if the this in the funciton === horizontal_gov then it's during the setup
        // phbase
-       // otherwise, it's as the result of an event 
+       // otherwise, it's as the result of an event
        this[standard_func_name] = function(){
          // if d is indefined it's because it's from an event being fired from
          // a change event on a select element
@@ -224,7 +194,7 @@
 
    p.add_section = function(_class, span,element){
       this.wrap_on_click(_class);
-      
+
       element = element || "select";
       this[_class] = this.selections.append("div")
                     .attr("class"," well span-"+span+" border-all "+_class)
@@ -265,7 +235,7 @@
         });
 
      this[name].select("select").on("change",this["on_"+name+"_click"]);
-     
+
      return sel;
    };
 
@@ -310,12 +280,12 @@
       // setup the presentation level choice
       // the data
       var pres_levels = [
-        {name : this.gt("government_stats"), 
+        {name : this.gt("government_stats"),
          func: this.fetch_gov_data ,
          val : 'gov'
         },
-        {name : this.gt("org"), 
-         func : this.fetch_dept_data, 
+        {name : this.gt("org"),
+         func : this.fetch_dept_data,
          val : 'depts'
         }
       ];
@@ -361,15 +331,15 @@
 
       // setup the display as choice
       // the data
-      var display_as_data = [ { 
+      var display_as_data = [ {
         func:this.graph_data ,
-        name: this.gt("graphical"), 
+        name: this.gt("graphical"),
         data_style : 'map',
         val : 'graph'} ,
         { func:this.table_data ,
-          name: this.gt("tabular"), 
+          name: this.gt("tabular"),
           data_style : 'entries',
-          val : "table"} ]; 
+          val : "table"} ];
        this.config.set_options("display_as",display_as_data);
        // create the list
        this.make_select("display_as",display_as_data,{html : function(d){return d.name;}});
@@ -461,7 +431,7 @@
      var dimensions = _.map(table.dimensions, function(d){
            return {val: d, name : this.gt(d)};
          },this);
-    
+
      if (table.dimensions.length > 1){
        this.dimension.classed("ui-screen-hidden",false);
        this.config.set_options("dimension",dimensions);
@@ -514,7 +484,7 @@
          this.config.set_options("column",cols);
           if (this.config.currently_selected.sort_by){
               this.config.update_selection("column",this.config.currently_selected.sort_by);
-          } 
+          }
 
          this.make_select("column",cols,{
            html: function(d){return d.fully_qualified_name;},
@@ -545,7 +515,7 @@
    p.on_column_choice_click = function(d){
      // currently selected column choices are stored as just an
      // array of fully_qualified_names, accoordingly for the descriptions, the names will
-     // have to be used to extract the descriptions from the list of 
+     // have to be used to extract the descriptions from the list of
      // columns for the table
      var table = this.config.get_active("table");
      var lang = this.lang;
@@ -595,10 +565,10 @@
 
      // highlight the active departments
      this.column_choice.selectAll("li")
-       .classed("background-medium",function(d){ 
+       .classed("background-medium",function(d){
          return _.contains(currently_active,d.val);
        })
-       .classed("not-selected",function(d){ 
+       .classed("not-selected",function(d){
          return !_.contains(currently_active,d.val);
        });
 
@@ -613,7 +583,7 @@
        pres_level.func();
      }
    };
-   
+
    p.build_shown_and_orgs  = function(){
      if (_.has(this, 'shown')){ this.shown.remove();}
      if (_.has(this, 'org')){ this.org.remove();}
@@ -633,7 +603,7 @@
                     return {val :x};
                   })
                   .value();
-         
+
      // add the All option
      shown.unshift({val : this.gt("all")});
 
@@ -655,7 +625,7 @@
      return _.chain(this.orgs)
              .filter(function(d){return d.active;})
              .pluck(attr_to_pluck)
-             .value();         
+             .value();
    };
 
    p.on_org_click = function(d){
@@ -694,7 +664,7 @@
        .classed("background-medium",function(d){ return d.active;})
        .classed("not-selected",function(d){ return !d.active;});
      if (d3.event) {
-       d3.event.target.focus(); 
+       d3.event.target.focus();
      }
 
      pres_level.func();
@@ -800,7 +770,7 @@
            return _.contains(active_depts,d.dept.accronym);
          });
        }
-      
+
        this.data = data.value();
 
        if (_.isArray(to_get)){
@@ -834,7 +804,7 @@
       var types = _.pluck(cols, "type"),
           href = this.href,
           formater = this.formater,
-          formaters = _.map(types, function(type){ 
+          formaters = _.map(types, function(type){
             return function(d){ return formater(type,d);};
           }),
           pres_level = this.config.get_active("pres_level"),
@@ -893,7 +863,7 @@
       delete this.config.currently_selected.nu;
      } else {
       this.update_url();
-     } 
+     }
    };
 
    p.graph_data = function(){
@@ -904,7 +874,7 @@
 
      if (!this.chart) {
       this.chart_area.selectAll("*").remove();
-      this.chart = D3.BAR.hbar({ 
+      this.chart = D3.BAR.hbar({
         x_scale : d3.scale.pow().exponent(0.5),
         axisFormater : function(d){ return formater("compact",d);}
       })(this.chart_area);
@@ -920,8 +890,8 @@
       delete this.config.currently_selected.nu;
      } else {
       this.update_url();
-     } 
+     }
    } ;
-      
+
 
 })();

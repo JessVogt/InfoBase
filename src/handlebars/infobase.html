@@ -174,6 +174,9 @@
 <div class='clear'></div>
 </script>
 <script type='text/plain' id='widgets_layout_t'>
+  <div style='padding-top: 10px;padding-left: 10px'>
+    <a class='router' href='#infograph-{{code}}'>{{gt "org_infograph"}}</a>
+  </div>
   <div class='span-8'>
     <h2 class='font-xlarge border-bottom'
         style='padding: 15px;'>
@@ -720,8 +723,12 @@
   </div>
   <div class ='span-6 chart margin-none'>
     <div class='chart-description border-all margin-bottom-medium' style='margin-left: 20px; width:100%'>
-     </div>
-    <div class='chart-area border-all' style='margin-left: 20px;position:relative;width:100%'>
+      <div class='title' style='padding: 10px'>
+         <a href="#">{{gt "report_details"}}</a>
+      </div>
+     <div class='content' style="padding-left: 10px"></div>
+    </div>
+    <div class='chart-area border-all ' style='margin-left: 20px;position:relative;width:100%;'>
     </div>
   </div>
 </div>
@@ -731,6 +738,22 @@
   <div class="breadcrumb well border-all span-2" style='margin:0px; padding:0px'>
   </div>
   <div class="svg-container well span-6 border-all" style="margin : 0px;padding: 0px;">
+  </div>
+</div>
+</script>
+<script type='text/plain' id='chapter_t'>
+<div class="span-8 margin-bottom-none">
+  <div class="title {{title_class}}" style='padding: 15px'>
+  </iv>
+</div>
+<div class='content'>
+  <div class='{{span}} {{text_class}} text margin-bottom-none margin-left-none margin-bottom-large'>
+    <div class= "inner margin-top-large margin-left-large">
+    </div>
+  </div>
+  <div class='{{span}} {{graphic_class}} graphic margin-bottom-none margin-left-none margin-bottom-large'>
+  </div>
+  <div class='{{source_class}} source margin-left-none margin-bottom-small'>
   </div>
 </div>
 </script>

@@ -166,64 +166,71 @@
       },
       info : function(c){
         c.gov_this_year_type_spend =  this.spending_type("plannedexp",false);
+        c.goc_qfr_transfer_payments_planned = this.horizontal("plannedexp", false);
       },
       graphics : {
        "details_display_order" : [
-         "so_spending",
+         "type_spend",
        ],
-       "so_spending": function(){
-          var last_year_data =  this.data.dept_last_year_qfr_so_spend;
-          // ensure the graph will always be span-8
-          this.graph_area.classed("span-4",false);
-          this.graph_area.classed("span-8",true);
+       "type_spend" : function() {
+          var args = {
+                width : this.height*1.7,
+                formater : app.compact,
+                invisible_grand_parent : false,
+                top_font_size : 14,
+                text_func : function(d){
+                  var val = app.compact(d.value,{no_wrap : true});
+                  if (d.zoom_r > 60) {
+                    return d.name ;
+                  } else if (d.zoom_r > 40) {
+                    return _.first(d.name.split(" "),2).join(" ")+ " - "+ val;
+                  } else  {
+                    return val;
+                  }
+                }
+            },
+            table_data,
+            packing_data;
 
-          D3.pack_and_bar({
-            "height" : 400,
-            "formater" : this.compact1,
-            "app" : this.app,
-            "graph_area": this.graph_area,
-            "pack_data" :  _.chain(this.data.dept_in_year_qfr_so_spend)
+          if (this.dept){
+            args.zoomable = true;
+            var pre_packing_data = _.chain(this.data.dept_in_year_qfr_so_spend)
                           .pairs()
                           .map(function(x){ return {value:x[1],name:x[0]};})
-                          .value(),
-            "post_bar_render": function(bar_container){
-              bar_container.selectAll(".x.axis .tick text")
-                .style({ 'font-size' : "10px" });
-              bar_container.selectAll(".title")
-                .style({ 'font-size' : "14px","font-weight":"bold" });
-            },
-            "packed_data_to_bar" : function(d){
-               return [
-                 last_year_data[d.name] || 0,
-                 d.__value__
-                ];
-            },
-            "ticks" : function(){
-              return [
-                  m("{{qfr_last_year}}"),
-                  m("{{in_year}}")
-                ];
-            }
-          });
-       },
-       "goc_type_spend" : function() {
+                          .value();
+            args.data = PACK.pack_data(pre_packing_data,app.get_text("other"), {
+              force_positive : true,
+              filter_zeros : true
+            });
+            args.hover_text_func = function(d){
+              return d.name;
+            };
+            table_data = _.chain(this.data.dept_in_year_qfr_so_spend)
+                          .pairs()
+                          .sortBy(function(x){return -x[1];})
+                          .map(function(x){
+                             return [x[0],this.written_data.dept_in_year_qfr_so_spend[x[0]]];
+                          },this)
+                          .value();
 
-          var formater = this.compact,
-              table_data = _.sortBy(_.map(this.written_data.gov_this_year_type_spend,function(value,key){
-                    var label =  app.get_text(key+"_spend_type");
-                    return [label,value];
-                  }),1),
-              packing_data = {
-                name : '',
-                children : _.map(this.data.gov_this_year_type_spend,function(value,key){
-                    var label =  app.get_text(key+"_spend_type");
-                    return {
-                      children : null,
-                      name :  label + " (" + this.compact(value)+")",
-                      value : value
-                    };
-                  },this)
-              };
+          } else {
+            args.cycle_colours = true;
+            table_data = _.sortBy(_.map(this.written_data.gov_this_year_type_spend,function(value,key){
+                  var label =  app.get_text(key+"_spend_type");
+                  return [label,value];
+                }),1);
+            args.data = {
+              name : '',
+              children : _.map(this.data.gov_this_year_type_spend,function(value,key){
+                  var label =  app.get_text(key+"_spend_type");
+                  return {
+                    children : null,
+                    name :  label + " (" + this.compact(value)+")",
+                    value : value
+                  };
+                },this)
+            };
+          }
 
           TABLES.prepare_and_build_table({
             rows : table_data,
@@ -231,27 +238,13 @@
             table_class : "table-condensed table-medium",
             stripe : true,
             row_class : ['left_text','right_number'],
-            node : this.text_area.node()
+            node : this.chapter.areas().text.node()
           });
 
-          PACK.pack({
-            width : this.height*1.7,
-            formater : formater,
-            invisible_grand_parent : false,
-            top_font_size : 14,
-            data : packing_data,
-            cycle_colours : true,
-            text_func : function(d){
-              var val = formater(d.value);
-              if (d.zoom_r > 60) {
-                return d.name ; 
-              } else if (d.zoom_r > 40) {
-                return _.first(d.name.split(" "),2).join(" ")+ " - "+ val;  
-              } else  {
-                return val;
-              }
-            }
-          })(this.graph_area);
+          return {
+            graph : PACK.pack(args),
+            title : app.get_text("fin_spending_type")
+          };
        }
       }
     });
