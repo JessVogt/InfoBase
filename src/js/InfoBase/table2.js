@@ -225,10 +225,10 @@
                   var label =  app.get_text(key+"_spend_type");
                   return {
                     children : null,
-                    name :  label + " (" + this.compact(value)+")",
+                    name :  label + " (" + app.compact(value)+")",
                     value : value
                   };
-                },this)
+                })
             };
           }
 
