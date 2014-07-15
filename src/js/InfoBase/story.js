@@ -104,8 +104,8 @@
 
     p.data_prep = function(dept){
        this.data = T.Info({dept:dept});
-       this.written_data = T.format_info(this.written, this.data);
-       this.compact_data = T.format_info(this.compact, this.data);
+       this.written_data = T.format_info(this.app.compact_written, this.data);
+       this.compact_data = T.format_info(this.app.compact, this.data);
     };
 
     p.auth = function(){

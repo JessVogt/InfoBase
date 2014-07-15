@@ -473,7 +473,7 @@
           },this),
           total = [ "Total",
                      '',
-                     this.written(d3.sum(data, function(d){
+                     app.compact_written(d3.sum(data, function(d){
                        return d.total_net_auth;
                      }))
           ],
