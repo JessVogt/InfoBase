@@ -1,0 +1,479 @@
+"DeptCode","VoteNumberModified","VoteStatType","DescriptionE","DescriptionF","TotalAuthorityCurrent","ExpenditureatquarterendCurrent","TotalExpenditureCurrent","TotalAuthorityPrevious","ExpenditureatquarterendPrevious","TotalExpenditurePrevious"
+"ACOA",1,1,"Operating/Program","Fonctionnement/Programme",74515000,15240000,47707000,79703000,16869000,49445000
+"ACOA",5,3,"Grants & Contributions","Subventions et Contributions",231352000,44544000,109916000,240751000,49297000,109983000
+"ACOA","S",999,"Budgetary statutory authorities","Autorisations législatives budgétaires",6970000,1735000,5211000,7938000,1977000,5932000
+"AECB",20,1,"Operating/Program","Fonctionnement/Programme",48020000,9849000,33381000,39783000,5528000,23119000
+"AECB","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",4399000,1089000,3268000,3841000,960000,2881000
+"AECB","S",999,"Expenditures pursuant to paragraph 29.1(1) of the Financial Administration Act","Dépenses en vertu du paragraphe 29.1(1) de la Loi sur la gestion des finances publiques",87251000,22669000,61087000,86250000,22084000,55907000
+"AGR",1,1,"Operating/Program","Fonctionnement/Programme",679175000,139785000,439289000,721432000,141484000,438715000
+"AGR",5,2,"Capital","Capital",34849000,8599000,13666000,32066000,6585000,12666000
+"AGR",10,3,"Grants & Contributions","Subventions et Contributions",447925000,40393000,90478000,632129000,47440000,116836000
+"AGR","S",999,"Canadian Cattlemen's Association Legacy Fund","Fonds pour l'avenir de la Canadian Cattlemen's Association",2500000,0,0,5000000,0,0
+"AGR","S",999,"Canadian Pari-Mutuel Agency Revolving Fund","Fonds renouvelable de l'Agence canadienne du pari mutuel",-421000,-668000,-2315000,-48000,-196000,-1464000
+"AGR","S",999,"Class grant payments for the Farm Income program","Paiements de subvention par catégorie pour le programme de revenu agricole",0,0,-3000,0,-4000,-13000
+"AGR","S",999,"Class grant payments for the Transitional Industry Support program","Paiements de subvention par catégorie pour le programme d'aide transitoire à l'industrie",0,-2000,-8000,0,0,-36000
+"AGR","S",999,"Contribution payments for the AgriInsurance program","Paiements de contributions pour le programme Agri-protection",640800000,284608000,390167000,410000000,250348000,334088000
+"AGR","S",999,"Contribution payments for the AgriInvest Kickstart program","Paiements de contributions pour le programme de démarrage d'Agri-investissement",0,0,0,0,0,-10000
+"AGR","S",999,"Contribution payments for the AgriInvest program","Paiements de contributions pour le programme Agri­investissement",17500000,14863000,21223000,29000000,498000,713000
+"AGR","S",999,"Contribution payments for the AgriStability program","Paiements de contributions pour le programme Agri-stabilité",219300000,-1873000,-10332000,500000000,6095000,143000
+"AGR","S",999,"Contribution payments for the Agricultural Disaster Relief Program (ADRP)/AgriRecovery","Paiements de contributions pour le Programme d'aide en cas de catastrophe agricole - Agri-relance",110800000,58000,197000,110870000,4695000,9880000
+"AGR","S",999,"Contribution payments for the Canadian Agricultural Income Stabilization program Inventory Transition Initiative","Paiements de contributions pour l'Initiative de transition du programme canadien de stabilisation du revenu agricole pour l'évaluation des stocks",0,-46000,-202000,0,0,-26000
+"AGR","S",999,"Contributions for agricultural risk management - Enhanced Spring Credit Advance program Business Risk Management","Contributions pour la gestion des risques agricoles - Gestion des risques de l'entreprise du programme d'avances printanières bonifié",0,-213000,-553000,0,-238000,-758000
+"AGR","S",999,"Contributions in support of Business Risk Management programs under the Agricultural Policy Framework - Province-Based programs","Contributions à l'appui des programmes de gestion des risques de l'entreprise en vertu du Cadre stratégique pour l'agriculture - Programmes provinciaux",0,0,0,0,-8000,-8000
+"AGR","S",999,"Contributions in support of the Assistance to the Pork Industry Initiative","Contributions à l'appui de l'initiative d'aide à l'industrie porcine",635000,-3686000,-3686000,405000,0,0
+"AGR","S",999,"Contributions in support of the Grain and Oilseed Payment program","Contributions à l'appui du programme de paiements relatifs aux céréales et oléagineux",0,0,0,0,0,-15000
+"AGR","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",81836000,19159000,57476000,75462000,18865000,56597000
+"AGR","S",999,"Grant payments for the AgriInvest Kickstart program","Paiements de subventions pour le programme de démarrage d'Agri-investissement",0,0,-3000,0,-2000,-12000
+"AGR","S",999,"Grant payments for the AgriInvest program","Paiements de subventions pour le programme Agri­investissement",126200000,57760000,174961000,131400000,-465000,-1557000
+"AGR","S",999,"Grant payments for the AgriStability program","Paiements de subventions pour le programme Agri­-stabilité",41000000,-3463000,-7142000,90000000,15185000,16922000
+"AGR","S",999,"Grant payments for the Agricultural Disaster Relief Program (ADRP)/AgriRecovery","Paiements de subventions pour le Programme d'aide en cas de catastrophe agricole – Agri-relance",0,0,13000,0,0,0
+"AGR","S",999,"Grant payments for the Canadian Agricultural Income Stabilization program Inventory Transition Initiative","Paiements de subventions pour l'Initiative de transition du programme canadien de stabilisation du revenu agricole pour l'évaluation des stocks",0,-31000,-129000,0,-305000,-444000
+"AGR","S",999,"Grants in support of the Cost of Production Benefit","Subventions à l'appui de l'Indemnité pour coûts de production",0,-5000,-6000,0,-1000,-3000
+"AGR","S",999,"Grants in support of the Grain and Oilseed Payment program","Subventions à l'appui du programme de paiements relatifs aux céréales et oléagineux",0,-16000,-26000,0,-2000,-15000
+"AGR","S",999,"Grants to agencies established under the Farm Products Agencies Act (R.S.C., 1985, c. F-4)","Subventions aux offices établis conformément à la Loi sur les offices des produits agricoles (L.R.C. (1985), ch. F-4)",100000,0,0,100000,0,0
+"AGR","S",999,"Loan guarantees under the Canadian Agricultural Loans Act","Prêts garantis en vertu de la Loi canadienne sur les prêts agricoles",13111000,-7000,-26000,13111000,57000,221000
+"AGR","S",999,"Minister of Agriculture and Agri-Food and Minister for the Canadian Wheat Board - Salary and motor car allowance","Ministre de l'Agriculture et de l'Agroalimentaire et ministre de la Commission canadienne du blé - Traitement et allocation pour automobile",79000,20000,59000,78000,20000,58000
+"AGR","S",999,"Payments in connection with the Agricultural Marketing Programs Act (S.C., 1997, c. C-34)","Paiements relatifs à la Loi sur les programmes de commercialisation agricole (L.C. (1997), ch. C-34)",94000000,13587000,49937000,94000000,14342000,45802000
+"AGR","S",999,"Refunds of amounts credited to revenues in previous years","Remboursements de montants portés aux revenus d'exercices antérieurs",0,0,4000,0,1000,46000
+"AGR","S",999,"Spending of Amounts Equivalent to Proceeds from Disposal of Surplus Moveable Crown Assets","Dépenses des produits de l'aliénation des biens meubles en surplus de la Couronne",7808000,1087000,2291000,5726000,843000,2285000
+"CAS",30,1,"Operating/Program","Fonctionnement/Programme",65033000,14319000,42313000,63906000,14547000,42440000
+"CAS","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",7165000,1792000,5374000,6972000,1743000,5229000
+"CAS","S",999,"Refunds of amounts credited to revenues in previous years","Remboursements de montants portés aux revenus d'exercices antérieurs",4000,1000,4000,3000,0,3000
+"CAS","S",999,"Spending of proceeds from the disposal of surplus Crown assets","Dépenses des produits de la vente de biens excédentaires de l’État",15000,0,0,11000,0,0
+"CAT",55,1,"Operating/Program","Fonctionnement/Programme",1357266,369222,996520,1284898,317720,961326
+"CAT","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",126850,31713,95138,126878,31720,95160
+"CB",45,1,"Operating/Program","Fonctionnement/Programme",2825000,667000,1881000,2956000,579000,1561000
+"CB","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",303000,75000,226000,303000,76000,227000
+"CBSA",10,1,"Operating/Program","Fonctionnement/Programme",1727513000,332067000,984094000,1676482000,338251000,994739000
+"CBSA",15,2,"Capital","Capital",261247000,36583000,76449000,202162000,15989000,39839000
+"CBSA","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",185933000,44791000,134373000,181490000,45373000,136119000
+"CBSA","S",999,"Court Awards","Montants adjugés par une cour",0,-14000,0,0,1000,66000
+"CBSA","S",999,"Refunds of amounts credited to revenues in previous years","Remboursements de montants portés aux revenus d'exercices antérieurs",0,0,24000,0,4000,63000
+"CBSA","S",999,"Spending of proceeds from the disposal of surplus Crown assets","Dépenses des produits de la vente de biens excédentaires de l'État",0,56000,319000,0,72000,292000
+"CCMD",40,1,"Operating/Program","Fonctionnement/Programme",42472000,11191000,39218000,45159000,16038000,41799000
+"CCMD","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",6233000,1558000,4675000,6446000,1613000,4837000
+"CCMD","S",999,"Spending of revenues pursuant to subsection 18(2) of the Canada School of Public Service Act","Dépense des revenus conformément au paragraphe 18(2) de la Loi sur l'École de la fonction publique du Canada",81391000,5330000,11339000,77752000,7243000,19955000
+"CCRA",1,1,"Operating/Program","Fonctionnement/Programme",3309228000,734715000,2269871000,3363551000,778572000,2337717000
+"CCRA",5,2,"Capital","Capital",110012000,18127000,43016000,83433000,12807000,28275000
+"CCRA","S",999,"Children's Special Allowance payments (Children's Special Allowances Act)","Versements d'allocations spéciales pour enfants (Loi sur les allocations spéciales pour enfants)",238000000,58288000,177763000,233000000,58950000,178031000
+"CCRA","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",442552000,110638000,331914000,456440000,114110000,342330000
+"CCRA","S",999,"Court awards - Supreme Court","Montants adjugés par une cour -- Cour canadienne de l'impôt",0,24000,24000,0,0,0
+"CCRA","S",999,"Court awards - Tax Court of Canada","Montants adjugés par une cour -- Cour canadienne de l'impôt",0,52000,490000,0,838000,1421000
+"CCRA","S",999,"Disbursements to provinces under the Softwood Lumber Products Export Charge Act, 2006","Versements aux provinces en vertu de la Loi de 2006 sur les droits d'exportation de produits de bois d'oeuvre",283000000,26011000,32082000,280000000,43578000,154794000
+"CCRA","S",999,"Energy Cost Benefit","Paiements en vertu de la Loi sur les mesures d'aide liées au coût de l'énergie",0,0,1000,0,0,1000
+"CCRA","S",999,"Minister's Salary and Motor Car Allowan","Traitement et allocation pour automobile du ministre",79000,20000,59000,78000,19000,58000
+"CCRA","S",999,"Payments to private collection agencies pursuant to section 17.1 of the Financial Administration Act","Paiements aux agences privées de recouvrement en vertu de l'article 17.1 de la Loi sur la gestion des finances publiques",0,0,0,0,-1000,-2000
+"CCRA","S",999,"Spending of proceeds from the disposal of surplus Crown assets","Dépenses des produits de la vente de biens excédentaires de l'État",0,28000,134000,0,12000,56000
+"CCRA","S",999,"Spending of revenues received through the conduct of its operations pursuant to section 60 of the Canada Revenue Agency Act","Dépense des recettes résultant de la poursuite des opérations en vertu de l'article 60 de la Loi sur l'Agence du revenu du Canada",193779000,48678000,106051000,206769000,46296000,95205000
+"CEAA",15,1,"Operating/Program","Fonctionnement/Programme",30230829,7749110,18725594,29411331,6150035,16456516
+"CEAA","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",2863886,715971,2147915,1776941,444235,1184627
+"CEO",15,1,"Operating/Program","Fonctionnement/Programme",31556000,7491000,22735000,31174000,7140000,21146000
+"CEO","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",4969000,1656000,4969000,3894000,1298000,3894000
+"CEO","S",999,"Electoral expenditures","Dépenses électorales",48290000,24306000,48290000,43088000,18418000,43088000
+"CEO","S",999,"Expenses underElectoral Boundaries Reajustment Act","Dépenses en vertu de la Loi sur révision des limites des circonscriptions électorales",981000,239000,981000,5515000,2328000,5515000
+"CEO","S",999,"Salary of Chief Electoral Officer","Traitement du directeur général des élections",224000,76000,224000,216000,73000,216000
+"CEO","S",999,"Spending of Amounts Equivalent to Proceeds from Disposal of Surplus Moveable Crown Assets","Dépenses des produits de l'aliénation des biens meubles en surplus de la Couronne",4000,2000,4000,5000,0,5000
+"CFGB",15,1,"Operating/Program","Fonctionnement/Programme",6333080,1254012,3769527,6407257,1307307,3683759
+"CFGB","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",607519,151880,455639,610029,152507,457522
+"CFIA",20,1,"Operating/Program","Fonctionnement/Programme",599853000,143321000,412302000,594159000,142036000,413111000
+"CFIA",25,2,"Capital","Capital",28553000,3598000,7093000,41859000,4095000,9778000
+"CFIA","S",999,"Refunds of previous years revenue","Remboursements de montant portés aux revenus d'exercices antérieur",0,1000,1000,0,0,0
+"CFIA","S",999,"Collection Agency fees","Droits des agences de recouvrement",0,1000,2000,0,3000,4000
+"CFIA","S",999,"Compensation payments","Paiements d'indemnisation",3500000,8445000,34407000,1500000,8451000,24601000
+"CFIA","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",83067000,19756000,59269000,79424000,19856000,59568000
+"CFIA","S",999,"Spending of proceeds from the disposal of surplus Crown assets","Dépenses des produits de la vente de biens excédentaires de l'État",0,5000,105000,0,4000,34000
+"CFIA","S",999,"Spending of revenues","Dépense des recettes",53161000,14802000,29623000,53161000,14369000,24864000
+"CGC",30,1,"Operating/Program","Fonctionnement/Programme",34062000,1038000,30010000,31626000,8523000,24517000
+"CGC","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",3544000,393000,2567000,622000,156000,467000
+"CGC","S",999,"Revolving fund net expenditures","Dépenses nettes du Fonds renouvelable",3200000,-2015000,-9129000,15452000,0,0
+"CH",1,1,"Operating/Program","Fonctionnement/Programme",176754000,45901000,127574000,184516000,45516000,130262000
+"CH",5,3,"Grants & Contributions","Subventions et Contributions",1131941000,169909000,698427000,1055824000,172132000,693222000
+"CH","S",999,"Spending of proceeds from the disposal of Crown Assets","Dépense des produits de la vente de biens de l'État",0,10000,10000,0,11000,11000
+"CH","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",20709000,5163000,15487000,21473000,3577000,14315000
+"CH","S",999,"Minister of Canadian Heritage and Official Languages - Salary and motor car allowance","Ministre du Patrimoine canadien et des Langues officielles - Traitement et allocation pour automobile",79000,20000,59000,78000,19000,58000
+"CH","S",999,"Minister of State (Sport) – Motor car allowance","Ministre d’État (Sports) - Allocation pour automobile",2000,1000,2000,2000,1000,2000
+"CH","S",999,"Payments under the Lieutenant Governors Superannuation Act (R.S.C., 1985, c. L-8)","Paiements en vertu de la Loi sur la pension de retraite des lieutenants-gouverneurs (L.R.C. (1985), ch. L-8)",637000,0,294000,637000,0,228000
+"CH","S",999,"Salaries of the Lieutenant-Governors","Traitements des lieutenants-gouverneurs",1196000,333000,999000,1196000,325000,987000
+"CH","S",999,"Supplementary Retirement Benefits – Former Lieutenant-Governors","Prestations de retraite supplémentaires - lieutenants?gouverneurs précédents",182000,0,60000,182000,0,51000
+"CHRC",10,1,"Operating/Program","Fonctionnement/Programme",21042938,4829834,14392501,22121474,5081969,14737775
+"CHRC","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",2600171,650042,1950128,2649295,662324,1986971
+"CHRT",15,1,"Operating/Program","Fonctionnement/Programme",4344000,964000,2413000,4105000,1054000,2510000
+"CHRT","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",404000,101000,303000,406000,102000,306000
+"CI",1,1,"Operating/Program","Fonctionnement/Programme",605640000,123077000,355056000,576002000,122826000,351007000
+"CI",5,3,"Grants & Contributions","Subventions et Contributions",952946000,208048000,686353000,961604000,211570000,691920000
+"CI",9,4,"Debt Forgiveness","Debt Forgiveness",0,0,0,442000,0,0
+"CI","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d'avantages sociaux des employés",58210000,14340000,43020000,56839000,14202000,42621000
+"CI","S",999,"Court Awards","Montants adjugés par une cour",18000,2000,19000,30000,15000,30000
+"CI","S",999,"Fees Returned in Connection with a Terminated Application","Remboursement de frais à l'égard de demande terminée",63800000,9521000,21070000,0,0,0
+"CI","S",999,"Minister's Salary and Motor Car Allowan","Traitement et allocation pour automobile du ministre",79000,11000,60000,78000,19000,58000
+"CI","S",999,"Passport Office Revolving Fund","Fonds renouvelable du Bureau des passeports",70373000,-54764000,-118579000,0,0,0
+"CI","S",999,"Refunds of Previous Years Revenue","Remboursements de montants portés au revenus d’exercices antérieurs",5701000,-531000,5701000,7753000,1902000,7753000
+"CI","S",999,"Spending of Amounts Equivalent to Proceeds from Disposal of Surplus Moveable Crown Assets","Dépenses des produits de l'aliénation des biens meubles en surplus de la Couronne",36000,4000,5000,36000,2000,2000
+"CICS",5,1,"Operating/Program","Fonctionnement/Programme",5598960,1314143,3737598,6144362,1302587,3608619
+"CICS","S",999,"Budgetary statutory authorities","Autorisations législatives budgétaires",437917,72986,291945,470367,117592,352775
+"CIHR",15,1,"Operating/Program","Fonctionnement/Programme",50168000,11251000,32315000,52370000,11399000,34781000
+"CIHR",20,3,"Grants & Contributions","Subventions et Contributions",941782000,179469000,622146000,928197000,170843000,612706000
+"CIHR","S",999,"Budgetary statutory authorities","Autorisations législatives",6013000,1480000,4426000,6618000,1642000,4948000
+"CIRB",10,1,"Operating/Program","Fonctionnement/Programme",12539254,2776556,8484314,12090786,2754313,7893266
+"CIRB","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",1637433,409358,1228075,1569617,392404,1177213
+"CITT",25,1,"Operating/Program","Fonctionnement/Programme",9179000,2450000,6685000,10634000,2015000,5851000
+"CITT","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",1250000,309000,925000,1240000,207000,827000
+"CNEDA",25,1,"Operating/Program","Fonctionnement/Programme",12746000,2783000,7713000,13784000,2687000,7277000
+"CNEDA",30,3,"Grants & Contributions","Subventions et Contributions",38664000,4246000,8212000,39862000,8010000,10710000
+"CNEDA","S",999,"Budgetary Statutory Authorities","Autorisations législatives budgétaires",1024000,256000,768000,1172000,293000,879000
+"CRTC",50,1,"Operating/Program","Fonctionnement/Programme",6764000,10273000,-11533000,10663000,11157000,-9273000
+"CRTC","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",6959000,1701000,5103000,6311000,1578000,4734000
+"CSA",25,1,"Operating/Program","Fonctionnement/Programme",171180000,41332000,95767000,175082000,39213000,105222000
+"CSA",30,2,"Capital","Capital",294607000,54277000,156163000,162228000,22793000,46579000
+"CSA",35,3,"Grants & Contributions","Subventions et Contributions",33630000,989000,18678000,37599000,487000,19372000
+"CSA","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",10748000,2687000,8061000,11033000,2759000,8275000
+"CSA","S",999,"Spending of proceeds from the disposal of surplus Crown assets","Dépenses des produits de la vente de biens excédentaires de l'État",20000,11000,13000,17000,0,16000
+"CSC",25,1,"Operating/Program","Fonctionnement/Programme",2143426000,481611000,1409539000,2396525000,465701000,1384756000
+"CSC",30,2,"Capital","Capital",456921000,101965000,227138000,547554000,108579000,228785000
+"CSC","S",999,"CORCAN Net Expenditures (Revenues)","CORCAN Dépenses nettes (Revenus)",0,4515000,6791000,0,5142000,5993000
+"CSC","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",233117000,58279000,174837000,262737000,65684000,197053000
+"CSC","S",999,"Spending of proceeds from the disposal of surplus Crown assets","Dépenses des produits de la vente de biens excédentaires de l’État",1564000,552000,552000,2009000,89000,89000
+"CT",85,1,"Operating/Program","Fonctionnement/Programme",2274948,248518,859818,2268770,433904,1205882
+"CT","S",999,"Budgetary statutory authorities","Autorisations législatives budgétaires",164414,27402,109609,165225,41306,123919
+"CTA",25,1,"Operating/Program","Fonctionnement/Programme",26616000,6257000,18602000,25428000,5921000,17141000
+"CTA","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",3507000,877000,2631000,3484000,871000,2613000
+"CTAIB",10,1,"Operating/Program","Fonctionnement/Programme",27754000,7100000,19378000,27933000,7162000,20242000
+"CTAIB","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",3588000,860000,2652000,3519000,908000,2696000
+"CTAIB","S",999,"Expenditures Re: Paragraph 29.1(1) of the Financial Administration Act","Dépenses paragraphe 29.1(1) de la Loi sur la gestion des finances publiques",18000,8000,8000,36000,20000,20000
+"CTAIB","S",999,"Spending of proceeds from the disposal of surplus Crown assets","Dépenses des produits de l'aliénation des biens meubles en surplus de la Couronne",45000,42000,45000,45000,45000,45000
+"EA",1,1,"Operating/Program","Fonctionnement/Programme",1488828000,354574000,975832000,1418964000,310332000,893676000
+"EA",15,1,"Operating/Program","Fonctionnement/Programme",65380000,11914000,34941000,72668000,13516000,35610000
+"EA",5,2,"Capital","Capital",229268000,25406000,64304000,289994000,147882000,198622000
+"EA",10,3,"Grants & Contributions","Subventions et Contributions",3256390000,697647000,1282228000,855477000,156603000,321657000
+"EA","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",101920000,26257000,73316000,83589000,21088000,63626000
+"EA","S",999,"Court Awards - Crown Liability and Proceedings Act","Montants adjugés par une cour - Loi sur la responsabilité civile de l'État et le contentieux administratif",0,0,0,16000,0,16000
+"EA","S",999,"DFATD Ministers' salary and motor car allowance","MAECD traitement et allocation pour automobile des ministres",219000,53000,139000,157000,39000,118000
+"EA","S",999,"Encashment of notes issued to the development assistance funds of the International Financial Institutions","Encaissement de billets délivrés aux fonds d'aide des institutions financières internationales",30744000,0,16705000,0,0,0
+"EA","S",999,"Passport Office Revolving Fund","Fonds renouvelable du Bureau des passeports",0,0,13578000,67654000,13740000,13753000
+"EA","S",999,"Payment to the World Bank for the Advance Market Commitment for Pneumococcal Vaccines","Paiement à la Banque mondiale pour la garantie de marchés pour le vaccin contre le pneumocoque",17000000,0,17000000,0,0,0
+"EA","S",999,"Payments under the Diplomatic Service (Special) Superannuation Act","Paiements en vertu de la Loi sur la pension spéciale du service diplomatique",250000,32000,72000,250000,16000,44000
+"EA","S",999,"Refunds of amounts credited to revenues in previous years","Remboursements de montants portés aux revenus d'exercices antérieurs",50000,25000,50000,2000,0,2000
+"EA","S",999,"Spending of proceeds form the disposal of surplus Crown assets","Dépenses des produits de l'aliénation des biens meubles en surplus de la Couronne",2319000,1573000,1573000,1650000,0,0
+"EC",1,1,"Operating/Program","Fonctionnement/Programme",738160000,182380000,511696000,765545000,172482000,486594000
+"EC",5,2,"Capital","Capital",63789000,9363000,19902000,60795000,6707000,14302000
+"EC",10,3,"Grants & Contributions","Subventions et Contributions",119745000,13575000,35581000,151530000,20019000,33483000
+"EC","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",91233000,22187000,66562000,88599000,29533000,66449000
+"EC","S",999,"Minister's Salary and Motor Car Allowan","Traitement et allocation pour automobile du ministre",79000,20000,59000,78000,20000,58000
+"EC","S",999,"Refund of previous years revenue","Remboursements de montants portés aux revenus d’exercices antérieurs",0,28000,407000,0,0,0
+"EC","S",999,"Spending of proceeds from the disposal of surplus Crown assets","Dépense des gains provenant de la disposition des biens excédentaires de la Couronne",0,114000,334000,0,190000,410000
+"ERC",60,1,"Operating/Program","Fonctionnement/Programme",1632496,270672,912008,1617117,405448,986598
+"ERC","S",999,"Budgetary statutory authorities","Autorisations législatives budgétaires",103639,25910,77729,105170,26292,78877
+"FEDSO",50,1,"Operating/Program","Fonctionnement/Programme",27469000,8540000,19793000,27171000,7324000,18011000
+"FEDSO",55,3,"Grants & Contributions","Subventions et Contributions",214718000,36336000,74318000,231948000,20384000,50868000
+"FEDSO","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",3323000,787000,2362000,3289000,823000,2467000
+"FIN",1,1,"Operating/Program","Fonctionnement/Programme",117630000,28127000,74064000,119283000,28393000,74152000
+"FIN",5,3,"Grants & Contributions","Subventions et Contributions",11435000,500000,7210000,224987000,672000,3177000
+"FIN","S",999,"Additional Fiscal Equalization Payment - Total Transfer Protection (Part 1 — Federal-Provincial Fiscal Arrangements Act)","Paiement de péréquation supplémentaire - Protection sur les transferts totaux (Partie I - Loi sur les arrangements fiscaux entre le gouvernement fédéral et les provinces)",55806000,0,55806000,679660000,0,679660000
+"FIN","S",999,"Additional Fiscal Equalization to Nova Scotia (Part I - Federal-Provincial Fiscal Arrangements Act)","Paiement de péréquation supplémentaire - Nouvelle-Écosse (Partie I - Loi sur les arrangements fiscaux entre le gouvernement fédéral et les provinces)",245785000,0,0,312308000,0,0
+"FIN","S",999,"Addtional Fiscal Equalization Offset Payment to Nova Scotia (Nova Scotia and Newfoundland and Labrador Additional Fiscal Equalization Offset Payments Act)","Paiment de péréquation supplémentaire - Nouvelle-Écosse (Loi sur les paiements de péréquation compensatoires supplémentaires à la Nouvelle-Écosse et à Terre-Neuve-et-Labrador)",89461000,0,0,146059000,0,0
+"FIN","S",999,"Alternative Payments for Standing Programs (Part VI - Federal-Provincial Fiscal Arrangements Act)","Paiements de remplacement au titre des programmes permanents (Partie VI – Loi sur les arrangements fiscaux entre le gouvernement fédéral et les provinces)",-3531960000,-897351000,-2663331000,-3366415000,-832691000,-2515898000
+"FIN","S",999,"Canada Health Transfer (Part V.1 - Federal-Provincial Fiscal Arrangements Act)","Transfert canadien en matière de santé (Partie V.1 – Loi sur les arrangements fiscaux entre le gouvernement fédéral et les provinces)",30283114000,7570779000,22712336000,28568975000,7142244000,21426731000
+"FIN","S",999,"Canada Social Transfer (Part V.1 - Federal-Provincial Fiscal Arrangements Act)","Transfert canadien en matière de programmes sociaux (Partie V.1 – Loi sur les arrangements fiscaux entre le gouvernement fédéral et les provinces)",12215271000,3053818000,9161453000,11859486000,2964872000,8894615000
+"FIN","S",999,"Canadian Millenium Scholarship Foundation (Budget Implementation Act, 1998)","Fondation canadienne des bourses d'études du millénaire (Loi d’exécution du budget de 1998)",0,0,-11000,0,0,0
+"FIN","S",999,"Canadian Securities Regulation Regime Transition Office (Canadian Securities Regulation Regime Transition Office Act)","Bureau de transition vers un régime canadien de réglementation des valeurs mobilières (Loi sur le Bureau de transition vers un régime canadien de réglementation des valeurs mobilières)",5800000,0,0,0,0,0
+"FIN","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d'avantages sociaux des employés",12203000,3051000,9153000,13143000,3286000,9857000
+"FIN","S",999,"Debt payments on behalf of poor countries to International Organizations pursuant to section 18(1) of the Economic Recovery Act","Paiements de dettes à des organisations internationales au nom des pays pauvres en vertu du paragraphe 18(1) de la Loi sur la reprise économique",51200000,0,0,51200000,0,0
+"FIN","S",999,"Fiscal Equalization (Part I - Federal-Provincial Fiscal Arrangements Act)","Péréquation fiscale (Partie I – Loi sur les arrangements fiscaux entre le gouvernement fédéral et les provinces)",16105194000,4026299000,12078896000,15422503000,3855626000,11566877000
+"FIN","S",999,"Incentive for Provinces to Eliminate Taxes on Capital (Part IV — Federal-Provincial Fiscal Arrangements Act)","Incitatif pour l'élimination des impôts provinciaux sur le capital (Partie I - Loi sur les arrangments fiscaux entre le grouvernement fédéral et les provinces)",34780000,0,1405000,0,0,15000
+"FIN","S",999,"Interest on Other Liabilities","Intérêts sur autres passifs",8677000000,2136262000,6455048000,9131000000,2255512000,6804765000
+"FIN","S",999,"Interest on Unmatured Debt and Other Public Debt Costs","Frais d'intérêt relatifs à la dette non échue et autres coûts liés à la dette publique",17845000000,4034158000,13088917000,18537000000,4408461000,13115775000
+"FIN","S",999,"Losses on Foreign Exchange","Pertes de change",0,71013000,190225000,0,-108827000,25618000
+"FIN","S",999,"Minister of Finance - Salary and motor car allowance","Ministre des Finances – Traitement et allocation pour automobile",79000,20000,58000,78000,19000,58000
+"FIN","S",999,"Minister of State – Motor car allowance","Ministre d'État (Finances) - Allocation pour automobile",2000,0,2000,0,1000,2000
+"FIN","S",999,"Payment of Liabilities Previously Recorded as Revenue","Paiement d'éléments de passif enregistrés précédemment comme recettes",0,623000,4150000,0,700000,1571000
+"FIN","S",999,"Payment to the International Bank for Reconstruction and Development for the Agriculture Advance Market Commitment (Bretton Woods and Related Agreements Act, section 8)","Paiement à la Banque internationale pour la reconstruction et le développement pour les garanties de marché en matière d’agriculture (Loi sur les accords de Bretton Woods et des accords connexes, article 8)",10000000,0,0,0,0,0
+"FIN","S",999,"Payments to International Development Association","Paiements à l'Association internationale pour le développement",441610000,0,441610000,441620000,0,441620000
+"FIN","S",999,"Payments to Ontario related to the Canada Health Transfer (Part V.1- Federal-Provincial Fiscal Arrangements Act)","Paiement du transfert canadien en matière de santé à l'Ontario (Partie IV - Loi sur les arrangements fiscaux entre le gouvernement fédéral et les provinces)",0,10052000,10052000,0,46855000,46855000
+"FIN","S",999,"Payments to Provinces Regarding Sales Tax Harmonization (Part III.1 — Federal-Provincial Fiscal Arrangements Act)","Paiements aux provinces relatifs à l’harmonisation des taxes de vente (Partie III.1 — Loi sur les arrangements fiscaux entre le gouvernement fédéral et les provinces)",1481000000,0,14000000,733000000,25000000,25000000
+"FIN","S",999,"Purchase of Domestic Coinage","Achat de la monnaie canadienne",126500000,25330000,84611000,120000000,28997000,85262000
+"FIN","S",999,"Statutory Subsidies (Constitution Acts, 1867-1982, and Other Statutory Authorities)","Subventions législatives (Lois constitutionnelles de 1867 à 1982, et autres autorisations législatives)",32149000,1237000,17312000,32149000,1100000,17312000
+"FIN","S",999,"Territorial Financing (Part I.1 - Federal-Provincial Fiscal Arrangement Act)","Financement des territoires (Partie I.1 – Loi sur les arrangements fiscaux entre le gouvernement fédéral et les provinces)",3288282000,670809000,2617472000,3110680000,634578000,2476101000
+"FIN","S",999,"Wait Times Reduction Transfer (Part V.1 - Federal-Provincial Fiscal Arrangements Act)","Transfert visant la réduction des temps d’attente (Partie V.1 – Loi sur les arrangements fiscaux entre le gouvernement fédéral et les provinces)",250000000,62500000,187500000,250000000,62500000,187500000
+"FIN","S",999,"Youth Allowances Recovery (Federal-Provincial Fiscal Revision Act, 1964)","Recouvrement ayant trait aux allocations aux jeunes (Loi de 1964 sur la révision des arrangements fiscaux entre le gouvernement fédéral et les provinces)",-776742000,0,-388371000,-743232000,0,-371616000
+"FJA",20,1,"Operating/Program","Fonctionnement/Programme",8518000,2058000,5963000,8212000,1913000,5715000
+"FJA",25,1,"Operating/Program","Fonctionnement/Programme",1615000,326000,1063000,1579000,308000,985000
+"FJA","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",786000,196000,589000,982000,245000,736000
+"FJA","S",999,"Judges salaries, allowances and annuities","Traitement, indemnités et pensions des juges",487534000,122751000,364590000,474685000,118618000,352657000
+"FO",1,1,"Operating/Program","Fonctionnement/Programme",1241177000,304057000,854004000,1283110000,320220000,865768000
+"FO",5,2,"Capital","Capital",439086000,62181000,149656000,400801000,83518000,166176000
+"FO",10,3,"Grants & Contributions","Subventions et Contributions",88314000,12554000,36403000,88988000,13776000,37906000
+"FO","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",129898000,32480000,97429000,132589000,33148000,99442000
+"FO","S",999,"Minister of Fisheries and Oceans – Salary and motor car allowance","Ministre des Pêches et des Océans – Traitement et allocation pour automobile",79000,20000,59000,78000,21000,61000
+"FO","S",999,"Refunds of amounts credited to revenues in previous years","Remboursements de montants portés aux revenus d’exercices antérieurs",0,1000,78000,0,0,33000
+"FO","S",999,"Spending of proceeds from the disposal of surplus Crown assets","Dépense des produits de la vente de biens excédentaires de l’État",0,145000,607000,0,479000,832000
+"FORDQ",1,1,"Operating/Program","Fonctionnement/Programme",41993000,10180000,28250000,44560000,8872000,29000000
+"FORDQ",5,3,"Grants & Contributions","Subventions et Contributions",260896000,49693000,93382000,261638000,44025000,94475000
+"FORDQ","S",999,"Total Budgetary Statutory Authorities","Autorisations législatives bugétaires totales",5119000,1232000,3697000,5529000,1382000,4147000
+"FTRAC",30,1,"Operating/Program","Fonctionnement/Programme",47705000,10583000,31357000,50723000,10426000,32145000
+"FTRAC","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",5659000,1415000,4244000,5698000,1424000,4273000
+"GG",1,1,"Operating/Program","Fonctionnement/Programme",17443000,4682000,12861000,17953000,3971000,12706000
+"GG","S",999,"Annuities payable under the Governor General's Act","Pensions payables en vertu de la Loi sur le gouverneur général",545000,136000,408000,520000,134000,400000
+"GG","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",2106000,527000,1580000,2109000,528000,1582000
+"GG","S",999,"Salary of the Governor General","Traitement du Gouverneur général",271000,68000,203000,138000,35000,103000
+"GSC",1,1,"Operating/Program","Fonctionnement/Programme",2036736000,479101000,1511131000,2048751000,437952000,1419656000
+"GSC",5,2,"Capital","Capital",707778000,147784000,390953000,518241000,137286000,319082000
+"GSC",10,3,"Grants & Contributions","Subventions et Contributions",0,0,0,5497000,1028000,3323000
+"GSC","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",116947000,28684000,86054000,92626000,23156000,69469000
+"GSC","S",999,"Minister of PWGSC Salary and motor car allowance","Ministre de TPSGC - Traitement et allocation pour automobile",79000,20000,59000,78000,19000,58000
+"GSC","S",999,"Optional Services Revolving Fund","Fonds renouvelable des services optionnels",12484000,-1739000,1941000,6500000,-1546000,-2869000
+"GSC","S",999,"Payment in lieu of taxes to municipalities and other taxing authorities","Paiement en remplacement d'impôts fonciers versées aux municipalités et à d'autres autorités taxatrices",0,-16890000,43126000,0,-17303000,35301000
+"GSC","S",999,"Real Property Disposition Revolving Fund","Fonds renouvelable d'aliénation des biens immobiliers",0,0,0,-4707000,-2366000,-8929000
+"GSC","S",999,"Real Property Services Revolving Fund","Fonds renouvelable d'aliénation des biens immobiliers",10000000,2414000,48375000,13094000,15635000,44464000
+"GSC","S",999,"Refunds of amounts credited to revenues in previous years","Remboursements de montants portés aux revenus d'exercices antérieurs",73000,71000,73000,91000,45000,91000
+"GSC","S",999,"Spending of proceeds from the disposal of surplus Crown assets","Dépenses des produits de la vente de biens excédentaires de l'État",529000,26000,56000,535000,116000,167000
+"GSC","S",999,"Translation Bureau Revolving Fund","Fonds renouvelable du Bureau de la traduction",7022000,-5465000,4515000,7555000,6296000,5794000
+"H",1,1,"Operating/Program","Fonctionnement/Programme",1980500000,454439000,1292808000,2078419000,474391000,1330543000
+"H",5,2,"Capital","Capital",26177000,6076000,9199000,30778000,3908000,7608000
+"H",10,3,"Grants & Contributions","Subventions et Contributions",1625791000,393530000,1327117000,1484614000,354593000,1099137000
+"H","S",999,"Canada Health Infoway Inc.","Inforoute Santé du Canada Inc.",88548000,0,88548000,89361000,0,89361000
+"H","S",999,"Collection agency fees","Droits des agences de recouvrement",11000,9000,11000,5000,1000,5000
+"H","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",127916000,31665000,94994000,134948000,33737000,101211000
+"H","S",999,"Court Awards","Montants adjugés par une cour",,,,10000,0,10000
+"H","S",999,"Minister of Health - Salary and motor car allowance","Ministre de la Santé - Traitement et allocation pour automobile",79000,20000,59000,78000,19000,58000
+"H","S",999,"Refunds of amounts credited to revenues in previous years","Remboursements de montants portés aux revenus d'exercices antérieurs",879000,244000,879000,120000,76000,120000
+"H","S",999,"Spending of Revenues pursuant to section 4.2 of the Department of Health Act","Dépenses des recettes conformément au paragraphe 4.2 de la Loi sur le ministère de la Santé",58860000,21593000,21593000,,,
+"H","S",999,"Spending of proceeds from the disposal of surplus Crown assets","Dépenses des produits de la vente de biens excédentaires de l'État",676000,55000,118000,421000,35000,89000
+"HRSD",1,1,"Operating/Program","Fonctionnement/Programme",681791000,87148000,354735000,675627000,66284000,282520000
+"HRSD",5,3,"Grants & Contributions","Subventions et Contributions",1821358000,542119000,1325097000,1853746000,423848000,1354235000
+"HRSD","S",999,"Allowance Payments (Old Age Security Act)","Versements d'allocations (Loi sur la sécurité de la vieillesse)",546850000,131848000,389984000,563030000,138767000,412728000
+"HRSD","S",999,"Canada Disability Savings Bond payments to Registered Disability Savings Plan (RDSP) issuers on behalf of RDSP beneficiaries to encourage long-term financial security of eligible individuals with disabilities","Paiements de Bons canadiens pour l'épargne-invalidité aux émetteurs de régimes enregistrés d'épargne-invalidité (REEI) au nom des bénéficiaires du REEI afin d'encourager la sécurité financière à long terme des personnes handicapées admissibles",76900000,9965000,29584000,51600000,6980000,25702000
+"HRSD","S",999,"Canada Disability Savings Grant payments to Registered Disability Savings Plan (RDSP) issuers on behalf of RDSP beneficiaries to encourage long-term financial security of eligible individuals with disabilities","Paiements de Subventions canadiennes pour l'épargne-invalidité aux émetteurs de régimes enregistrés d'épargne-invalidité (REEI) au nom des bénéficiaires du REEI afin d'encourager la sécurité financière à long terme des personnes handicapées admissibles",222600000,37740000,113896000,63800000,30446000,98369000
+"HRSD","S",999,"Canada Education Savings grant payments to Registered Education Savings Plan (RESP) trustees on behalf of RESP beneficiaries to encourage Canadians to save for post-secondary education for their children","Paiements de Subventions canadiennes pour l'épargne-études aux fiduciaires de régimes enregistrés d'épargne-études (REEE) au nom des bénéficiaires des REEE afin d'encourager les Canadiens à épargner pour les études postsecondaires de leurs enfants",754000000,164031000,488576000,730000000,153901000,455942000
+"HRSD","S",999,"Canada Learning Bond payments to Registered Education Savings Plan (RESP) trustees on behalf of RESP beneficiaries to support access to post-secondary education for children from low-income families","Paiements de Bons d'études canadiens aux fiduciaires de régimes enregistrés d'épargne-études (REEE) au nom des bénéficiaires des REEE afin d'appuyer l'accès à l'éducation postsecondaire des enfants de familles à faible revenu",128000000,21035000,85704000,91000000,16184000,78696000
+"HRSD","S",999,"Canada Student Grants to qualifying full and part-time students pursuant to the Canada Student Financial Assistance Act","Bourses canadiennes aux fins d'études destinées aux étudiants à temps plein et à temps partiel admissibles aux termes de la Loi fédérale sur l'aide financière aux étudiants",645325000,86492000,365111000,591274000,54548000,346081000
+"HRSD","S",999,"Civil Service Insurance actuarial liability adjustments","Redressements du passif actuariel de l'assurance de la fonction publique",145000,0,0,145000,0,0
+"HRSD","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",268776000,56148000,168444000,243910000,60978000,182933000
+"HRSD","S",999,"Energy Cost Benefit","Prestation liée au coût de l'énergie",-2000,-2000,-2000,-1000,0,-1000
+"HRSD","S",999,"Guaranteed Income Supplement Payments (Old Age Security Act)","Versements du Supplément de revenu garanti (Loi sur la sécurité de la vieillesse)",9735348000,2372687000,6954599000,9003580000,2321093000,6752569000
+"HRSD","S",999,"Minister of Employment and Social Development—Salary and motor car allowance","Ministre d'Emploi et Développement social Canada—Traitement et allocation pour automobile",79000,2000,59000,78000,8000,58000
+"HRSD","S",999,"Minister of Labour—Salary and motor car allowance","Ministre du Travail—Traitement et allocation pour automobile",79000,33000,59000,78000,26000,58000
+"HRSD","S",999,"Minister of State (Seniors)—Motor car allowance","Ministre d'État (Aînés)—Allocation pour automobile",2000,1000,2000,2000,1000,2000
+"HRSD","S",999,"Minister of State (Social Development) - Motor car allowance","Ministre d'État (Développement social) - Allocation pour automobile",2000,1000,1000,0,0,0
+"HRSD","S",999,"Old Age Security Payments (Old Age Security Act)","Versements de la Sécurité de la vieillesse (Loi sur la sécurité de la vieillesse)",32351574000,8390865000,24818789000,30574304000,8017271000,23730198000
+"HRSD","S",999,"Pathways to Education Canada upfront multi-year funding to support their community-based early intervention programs which will help disadvantaged youth access post-secondary education in Canada","Financement pluriannuel initial à Passeport pour ma réussite Canada afin d'appuyer ses programmes d'intervention précoce communautaires qui aideront les jeunes défavorisés à accéder aux études postsecondaires au Canada",6000000,6000000,6000000,6000000,0,6000000
+"HRSD","S",999,"Payment to the Canadian National Institute for the Blind for a national digital hub to improve library services for persons with a print disability","Paiements à l'Institut national canadien pour les aveugles afin d'améliorer les services de bibliothèque pour les personnes ayant une déficience de lecture des imprimés",3000000,0,0,0,0,0
+"HRSD","S",999,"Payments of compensation respecting government employees (Government Employees Compensation Act) and merchant seamen (Merchant Seamen Compensation Act)","Paiements d'indemnités à des agents de l'État (Loi sur l'indemnisation des agents de l'État) et à des marins marchands (Loi sur l'indemnisation des marins marchands)",40000000,14913000,37664000,42000000,-5735000,57433000
+"HRSD","S",999,"Payments related to the direct financing arrangement under the Canada Student Financial Assistance Act","Paiements liés aux modalités de financement direct accordés en vertu de la Loi fédérale sur l'aide financière aux étudiants",566746000,53479000,151148000,509079000,41506000,125486000
+"HRSD","S",999,"Refunds of amounts credited to revenues in previous years","Remboursements de montants portés aux revenus d'exercices antérieurs",301000,196000,301000,2000,0,2000
+"HRSD","S",999,"Spending of proceeds from the disposal of surplus Crown assets","Dépenses des produits de la vente de biens excédentaires de l'État",172000,2000,2000,219000,12000,24000
+"HRSD","S",999,"Spending pursuant to section 12(4) of the Canada Education Saving Act","Dépenses en vertu du paragraphe 12(4) de la Loi canadienne sur l'épargne-études",914000,409000,914000,435000,163000,388000
+"HRSD","S",999,"Supplementary Retirement Benefits—Annuities agents' pensions","Prestations de retraite supplémentaires—Pensions pour les agents des rentes sur l'État",35000,1000,3000,35000,1000,3000
+"HRSD","S",999,"The provision of funds for interest and other payments to lending institutions and liabilities under the Canada Student Financial Assistance Act","Paiements d'intérêts et autres obligations aux institutions de crédit en vertu de la Loi fédérale sur l'aide financière aux étudiants",10628000,4031000,6203000,11330000,1242000,6582000
+"HRSD","S",999,"The provision of funds for interest payments to lending institutions under the Canada Student Loans Act","Paiements d'intérêts aux institutions de crédit en vertu de la Loi fédérale sur les prêts aux étudiants",2000,2000,3000,4000,2000,7000
+"HRSD","S",999,"The provision of funds for liabilities including liabilities in the form of guaranteed loans under the Canada Student Loans Act","Paiements relatifs aux obligations contractées sous forme de prêts garantis en vertu de la Loi fédérale sur les prêts aux étudiants",-9497000,-1201000,-4793000,-13139000,-6509000,-5603000
+"HRSD","S",999,"Universal Child Care Benefit (Universal Child Care Benefit Act)","Prestation universelle pour la garde d'enfants (Loi sur la prestation universelle pour la garde d'enfants)",2788000000,683887000,2051019000,2747000000,678214000,2029026000
+"HRSD","S",999,"Wage Earner Protection Program payments to eligible applicants owed wages and vacation pay, severance pay and termination pay from employers who are either bankrupt or in receivership as well as payments to trustees and receivers who will provide the nece","Paiements en vertu du Programme de protection des salariés aux personnes admissibles pour les salaires et les indemnités de vacances, les indemnités de départ et les indemnités de cessation d'emploi qui sont dus par les employeurs en faillite ou mis sous",49250000,9052000,21748000,54200000,7347000,20147000
+"INAC",1,1,"Operating/Program","Fonctionnement/Programme",1548475000,385156000,893162000,1464755000,354929000,835401000
+"INAC",5,2,"Capital","Capital",19166000,1437000,2886000,22973000,5948000,6763000
+"INAC",10,3,"Grants & Contributions","Subventions et Contributions",6989503000,1699524000,4535880000,6785068000,1707855000,4571199000
+"INAC","S",999,"Contributions to Indspire (Budget 2013)","Contributions à Indspire (Budget fédérale de 2013)",5000000,3994000,3994000,0,0,0
+"INAC","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",71426000,17576000,52728000,65049000,16262000,48787000
+"INAC","S",999,"Grant to the Nunatsiavut Government for the implementation of the Labrador Inuit Land Claims Agreement pursuant to the Labrador Inuit Land Claims Agreement Act","Subvention au gouvernement du Nunatsiavut pour la mise en oeuvre de l'Accord sur les revendications territoriales des Inuits du Labrador en vertu de la Loi sur l'Accord sur les revendications territoriales des Inuits du Labrador",8994000,18358000,18358000,17987000,27343000,27343000
+"INAC","S",999,"Grants to Aboriginal organizations designated to receive claim settlement payments pursuant to Comprehensive Land Claim Settlement Acts","Subventions aux organismes autochtones identifiés pour recevoir des paiements à l'égard des revendications en vertu des lois sur le règlement des revendications territoriales globales",73762000,4055000,55801000,75576000,4055000,57624000
+"INAC","S",999,"Grassy Narrows and Islington Bands Mercury Disability Board","Comité chargé des cas d'invalidité dus au mercure dans les bandes indiennes de Grassy Narrows et d'Islington",15000,0,0,15000,0,0
+"INAC","S",999,"Indian Annuities Treaty payments","Rentes versées aux Indiens – Paiements en vertu de traités",1400000,-113000,1670000,1400000,37000,1874000
+"INAC","S",999,"Liabilities in respect of loan guarantees made to Indians for Housing and Economic Development","Obligations relatives aux garanties de prêts accordés aux Indiens pour le logement et le développement économique",2000000,0,0,2000000,0,6000
+"INAC","S",999,"Minister of Aboriginal Affairs and Northern Development – Salary and motor car allowance","Ministre des Affaires autochtones et du développement du Nord canadien – Traitement et allocation pour automobile",79000,25000,61000,78000,20000,58000
+"INAC","S",999,"Other","Autres",0,85000,2040000,0,3797000,5143000
+"INAC","S",999,"Payments to comprehensive claim beneficiaries in compensation for resource royalties","Paiements d'indemnités aux bénéficiaires des revendications territoriales globales pour des redevances sur les ressources",2606000,792000,1466000,2591000,68000,3444000
+"IPC",40,1,"Operating/Program","Fonctionnement/Programme",13171000,2938000,7637000,11284000,2692000,7569000
+"IPC",45,1,"Operating/Program","Fonctionnement/Programme",26628000,5500000,15521000,22131000,5031000,15004000
+"IPC","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",1359000,340000,1019000,1434000,340000,1019000
+"IPC","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",2471000,618000,1854000,2474000,619000,1856000
+"IRB",10,1,"Operating/Program","Fonctionnement/Programme",114954000,25450000,77654000,129685000,29044000,79839000
+"IRB","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",14493000,3623000,9661000,16467000,4117000,12350000
+"IRB","S",999,"Spending of proceeds from the disposal of surplus Crown assets","Dépenses des produits de la vente de biens excédentaires de l'État",1000,0,1000,2000,1000,2000
+"ISC",1,1,"Operating/Program","Fonctionnement/Programme",353640000,77588000,253869000,424542000,81827000,284677000
+"ISC",5,2,"Capital","Capital",27486000,6601000,13901000,16400000,3810000,7482000
+"ISC",10,3,"Grants & Contributions","Subventions et Contributions",706443000,117369000,381782000,794947000,96784000,468553000
+"ISC","S",999,"Canadian Youth Business Foundation","Fondation canadienne des jeunes entrepreneurs",9000000,9000000,9000000,10000000,0,10000000
+"ISC","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",53656000,13405000,40214000,54081000,13520000,40561000
+"ISC","S",999,"Genome Canada","Génome Canada",57100000,0,35400000,74600000,0,58100000
+"ISC","S",999,"Knowledge Infrastructure Program","Programme d'infrastructure du savoir",0,0,0,52460000,0,23887000
+"ISC","S",999,"Liabilities under theCanada Small Business Financing Act & theSmall Business Loans Act","Obligations contractées en vertu de la Loi sur le financement des petites entreprises du Canada et la Loi sur les prêts aux petites entreprises",86386000,11198000,32535000,103467000,11519000,34613000
+"ISC","S",999,"Minister's Salary and Motor Car Allowan","Traitement et allocation pour automobile du ministre",83000,21000,62000,82000,20000,61000
+"ISC","S",999,"Other statutory grants and contributions","Autres subventions et contributions",0,0,8000,0,31000,1459000
+"ISC","S",999,"Proceeds for Crown Asset Disposals","Dépenses des produits de la vente de biens excédentaires de l'État",420000,40000,40000,415000,46000,75000
+"ISC","S",999,"Refunds of Previous Years Revenue","Remboursements de montants portés aux revenus d'exercices antérieurs",0,81000,312000,0,69000,285000
+"ISC","S",999,"Revolving Fund","Fonds renouvelable",17604000,-386000,7109000,10862000,-2542000,-1628000
+"JUS",1,1,"Operating/Program","Fonctionnement/Programme",327044000,72304000,256082000,284954000,-14045000,191658000
+"JUS",5,3,"Grants & Contributions","Subventions et Contributions",351435000,66943000,92446000,390429000,23067000,42983000
+"JUS","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",79924000,19945000,59833000,80089000,20022000,60067000
+"JUS","S",999,"Minister of Justice and Attorney General of Canada - Salary and motor car allowance","Ministre de Justice et procureur général du Canada - Traitement et allocation pour automobile",79000,19000,59000,78000,19000,58000
+"JUS","S",999,"Refunds of amounts credited to revenues in previous years","Remboursements de montants portés aux revenues d'exercices antérieurs",0,5000,29000,0,8000,113000
+"JUS","S",999,"Spending of proceeds from the disposal of surplus Crown assets","Dépenses des produits de la vente de biens excédentaires de l'État",3000,0,0,3000,0,0
+"LAC",55,1,"Operating/Program","Fonctionnement/Programme",90082056,20075426,54622773,92198847,21021381,60287847
+"LAC",60,2,"Capital","Capital",3943615,369858,414903,19352500,5536915,13735475
+"LAC","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",10177677,2545900,7633258,11275573,2818893,8456680
+"LAC","S",999,"Spending of proceeds from the disposal of surplus Crown assets","Dépenses des produits de la vente de biens excédentaires de l'État",229274,0,0,308582,0,0
+"MPCC",25,1,"Operating/Program","Fonctionnement/Programme",9936000,1289000,3491000,8507000,1216000,3993000
+"MPCC","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",345000,83000,259000,302000,76000,227000
+"NBC",70,1,"Operating/Program","Fonctionnement/Programme",7488000,972000,4955000,7504000,1247000,5032000
+"NBC","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",371000,93000,278000,398000,100000,298000
+"NBC","S",999,"Expenditures pursuant to subsection 29.1(1) of the Financial Administration Act","Dépenses aux termes du paragraphe 29.1(1) de la Loi sur la gestion des finances publiques",1847000,403000,1464000,1763000,392000,1263000
+"ND",1,1,"Operating/Program","Fonctionnement/Programme",14118250000,3393534000,10095925000,14493092000,3614772000,10003473000
+"ND",5,2,"Capital","Capital",3563928000,821529000,1804567000,3970767000,841152000,1887689000
+"ND",10,3,"Grants & Contributions","Subventions et Contributions",184691000,73054000,91265000,265368000,77703000,101372000
+"ND","S",999,"Collection Agency Fees under Section 17.1 of the FAA","Droits des agences de recouvrement en vertu de l’article 17.1 de la LGFP",2000,0,2000,3000,1000,3000
+"ND","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",310174000,77524000,232420000,306931000,76733000,230198000
+"ND","S",999,"Contributions to employee benefit plans - Members of the Military","Contributions aux régimes d’avantages sociaux des employés – Membres militaires",1025910000,260169000,769331000,1057036000,267947000,770179000
+"ND","S",999,"Minister and Associate Minister of National Defence - Salary and Motor Car Allowance","Ministre et Ministre associé de la Défense nationale – Traitement et allocation pour automobile",158000,20000,85000,155000,0,78000
+"ND","S",999,"Payments to dependants of certain members of the Royal Canadian Air Force killed while serving as instructors under the British Commonwealth Air Training Plan (Appropriation Act No. 4, 1968)","Versements aux ayants droit de certains membres de l’Aviation royale du Canada tués dans l’exercice de leurs fonctions alors qu’ils servaient à titre d’instructeurs dans le cadre du Plan d’entraînement des aviateurs du Commonwealth britannique (Loi nº4 de",24000,6000,18000,47000,6000,17000
+"ND","S",999,"Payments under Parts I-IV of the Defence Services Pension Continuation Act (R.S.C., 1970, c. D-3 )","Versements en vertu des parties I à IV de la Loi sur la continuation de la pension des services de défense (L.R.C. (1970), ch. D-3)",930000,148000,465000,930000,175000,546000
+"ND","S",999,"Payments under the Supplementary Retirement Benefits Act","Versement en vertu de la Loi sur les prestations de retraite supplémentaires",4493000,736000,2300000,4493000,812000,2621000
+"ND","S",999,"Spending of Amounts Equivalent to Proceeds from Disposal of Surplus Moveable Crown Assets","Dépenses des produits de l’aliénation des biens meubles en surplus de la Couronne",19395000,3306000,9001000,51541000,6424000,12043000
+"NEB",25,1,"Operating/Program","Fonctionnement/Programme",74026000,15160000,46189000,66459000,15175000,42589000
+"NEB","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",7195000,1799000,5396000,6520000,1624000,4871000
+"NFB",75,1,"Operating/Program","Fonctionnement/Programme",68752596,14580848,45770050,69641560,15838039,47319717
+"NPA",30,1,"Operating/Program","Fonctionnement/Programme",3003000,214457,721358,3163150,-71480,587324
+"NPA","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",120930,30233,90698,122320,30580,91740
+"NPB",35,1,"Operating/Program","Fonctionnement/Programme",44635000,10150000,31277000,48567000,10007000,28136000
+"NPB","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",6241000,1560000,4680000,5938000,1485000,4454000
+"NR",1,1,"Operating/Program","Fonctionnement/Programme",869623000,179162000,538069000,845878000,169692000,485811000
+"NR",5,2,"Capital","Capital",28795000,4579000,10858000,31357000,6871000,11406000
+"NR",10,3,"Grants & Contributions","Subventions et Contributions",608828000,93131000,196771000,742019000,79673000,196026000
+"NR","S",999,"Canada Foundation for Sustainable Development Technology Grant","Subvention accordée à la Fondation du Canada pour l’appui technologique au développement durable",0,0,0,59338000,0,0
+"NR","S",999,"Collection agency fees under sec 17.1 of the Financial Administration Act","Honoraires des agences de recouvrement aux termes de l’article 17,1 de la Loi sur la gestion des finances publiques",0,4000,5000,0,0,19000
+"NR","S",999,"Contribution to the Canada/Newfoundland Offshore Petroleum Board","Contribution accordée à l’Office Canada-Terre-Neuve des hydrocarbures extracôtiers",7756000,-1030000,2796000,7756000,441000,4259000
+"NR","S",999,"Contribution to the Canada/Nova Scotia Offshore Petroleum Board","Contribution à l’Office Canada/ Nouvelle-Écosse des hydrocarbures extracôtiers",3550000,111000,1987000,3450000,889000,2663000
+"NR","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",60181000,14926000,44780000,59716000,14929000,44787000
+"NR","S",999,"Crown Share Adjustment Payments for Nova Scotia Offshore Petroleum Resources","Paiements de rajustement à l’égard de la part de la Couronne pour les ressources pétrolières extracôtières de la Nouvelle-Écosse",22460000,,12856000,,,57775000
+"NR","S",999,"Minister of Natural Resources - Salary and motor car allowance","Ministre des Ressources naturelles – Traitement et allocation pour automobile",79000,19000,59000,78000,18000,58000
+"NR","S",999,"Payments to the Newfoundland Offshore Petroleum Resource Revenue Fund","Paiements au Fonds terre-neuvien des recettes provenant des ressources en hydrocarbures extracôtières",1142062000,167592000,375601000,987902000,30150000,309288000
+"NR","S",999,"Payments to the Nova Scotia Offshore Revenue Account","Paiements au Compte des recettes extracôtières de la Nouvelle-Écosse",79339000,3392000,14227000,135846000,10327000,42665000
+"NR","S",999,"Spending of amounts equivalent to proceeds from disposal of surplus crown assets","Dépenses des produits de l’aliénation des biens en surplus de la Couronne",0,0,28000,0,6000,8000
+"NRC",60,1,"Operating/Program","Fonctionnement/Programme",377684000,96464000,286644000,404647000,76422000,276882000
+"NRC",65,2,"Capital","Capital",31299000,9891000,18630000,42089000,7655000,15371000
+"NRC",70,3,"Grants & Contributions","Subventions et Contributions",291482000,72589000,179676000,259566000,51440000,109854000
+"NRC","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",47106000,10060000,30179000,40514000,10128000,30385000
+"NRC","S",999,"Revenue","Revenus",284539000,10011000,32608000,228367000,20674000,40132000
+"NSERC",75,1,"Operating/Program","Fonctionnement/Programme",44761000,10388000,29587000,49815000,10463000,32493000
+"NSERC",80,3,"Grants & Contributions","Subventions et Contributions",1015686000,282100000,785611000,1023738000,278187000,779112000
+"NSERC","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",5176000,1280000,3840000,5338000,1332000,3998000
+"OAG",20,1,"Operating/Program","Fonctionnement/Programme",78140000,17001000,51886000,80790000,18166000,53709000
+"OAG","S",999,"Budgetary statutory authorities","Autorisations législatives budgétaires",10233000,2558000,7674000,10331000,2582000,7748000
+"OCI",40,1,"Operating/Program","Fonctionnement/Programme",4320140,947120,2785307,4179922,1115148,2804562
+"OCI","S",999,"Budgetary statutory authorities","Autorisations législatives budgétaires",566948,141737,425211,570098,142524,427573
+"OCOL",20,1,"Operating/Program","Fonctionnement/Programme",22758000,4717000,13955000,19348000,4777000,12994000
+"OCOL","S",999,"Budgetary statutory authorities","Autorisations législatives budgétaires",2250000,563000,1688000,2250000,563000,1688000
+"OCSEC",30,1,"Operating/Program","Fonctionnement/Programme",2097000,409000,1235000,2260000,368000,1246000
+"OCSEC","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",134000,33000,100000,134000,45000,112000
+"ODPP",35,1,"Operating/Program","Fonctionnement/Programme",170763000,36277000,109629000,165196000,33960000,95738000
+"ODPP","S",999,"Statutory authority","Autorisations législative",18248000,4562000,13686000,18790000,4698000,14093000
+"OICC",35,1,"Operating/Program","Fonctionnement/Programme",45848000,9511000,26667000,53861000,10940000,31111000
+"OICC",40,3,"Grants & Contributions","Subventions et Contributions",4102031000,1415700000,2902193000,5153951000,1062716000,2560588000
+"OICC","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",4986000,1247000,3740000,4973000,1243000,3730000
+"OICC","S",999,"Green Infrastructure Fund","Fonds pour l'infrastructure verte",0,0,0,99418000,2607000,3419000
+"OPSIC",50,1,"Operating/Program","Fonctionnement/Programme",5450002,1317871,3618193,5565572,1249242,3465663
+"OPSIC","S",999,"Statutory Authorities","Autorisations législatives",520799,130199,390599,523072,130768,392304
+"ORL",45,1,"Operating/Program","Fonctionnement/Programme",4177000,878000,2540000,4468000,1204000,2918000
+"ORL","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d'avantages sociaux des employés",435000,109000,326000,435000,109000,326000
+"PCA",20,1,"Operating/Program","Fonctionnement/Programme",655685000,139252000,348526000,604018000,107630000,328252000
+"PCA",25,9,"Other","Autre",500000,0,0,500000,0,0
+"PCA","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",48987000,16198000,40494000,51763000,12941000,38823000
+"PCA","S",999,"Expenditures equivalent to revenues resulting from the conduct of operations pursuant to section 20 of the Parks Canada Agency Act","Dépenses qui équivalent aux revenus résultant de la poursuite des opérations en vertu de l'article 20 de la Loi sur l'Agence Parcs Canada",111000000,31084000,96283000,111000000,26460000,98104000
+"PCC",65,1,"Operating/Program","Fonctionnement/Programme",9396000,1425000,4346000,7883000,1862000,4858000
+"PCC","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",1006000,144000,432000,576000,288000,432000
+"PCO",1,1,"Operating/Program","Fonctionnement/Programme",115563000,26242000,74375000,126297000,28093000,77619000
+"PCO","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",14085000,3500000,10498000,14578000,3645000,10934000
+"PCO","S",999,"Leader of the Government in the Senate - Salary and motor car allowance","Leader du gouvernement au Sénat - Traitement et allocation pour automobile",79000,0,22000,78000,20000,58000
+"PCO","S",999,"Leader of the Govertnment in he House of Commons - Salary and motor car allowance","Leader du gouvernement à la Chambre des communes - Traitement et allocation pour automobile",79000,20000,59000,78000,19000,57000
+"PCO","S",999,"Minister of Infrastructure, Communities and Intergovernmental Affairs and Minister of the Economic Development Agency of Canada for the Regions of Quebec - Salary and motor car allowance","Ministre de l'Infrastructure, des Collectivités et des Affaires intergouvernementales et ministre de l'Agence de développement économique du Canada pour les régions du Québec - Traitement et allocation pour automobile",79000,0,1000,78000,20000,58000
+"PCO","S",999,"Minister of State (Democratic Reform) - Motor car allowance","Ministre d'État (Réforme démocratique) - Allocation pour automobile",2000,1000,2000,2000,0,2000
+"PCO","S",999,"Minister of State and Chief Government Whip - Motor car allowance","Ministre d'État et whip en chef du gouvernement - Allocation pour automobile",2000,1000,2000,2000,0,2000
+"PCO","S",999,"Prime Minister - Salary and motor car allowance","Premier ministre - Traitement et allocation pour automobile",163000,39000,121000,160000,40000,120000
+"PCO","S",999,"Spending of proceeds from the disposal of surplus Crown assets","Dépenses des produits de la vente de biens excédentaires de l’État",23000,0,0,0,0,0
+"PHAC",45,1,"Operating/Program","Fonctionnement/Programme",374823000,119829000,241115000,384871000,68924000,200145000
+"PHAC",50,2,"Capital","Capital",13849000,834000,3181000,18755000,1552000,7060000
+"PHAC",55,3,"Grants & Contributions","Subventions et Contributions",209742000,19669000,164172000,202435000,60122000,154824000
+"PHAC","S",999,"Collection agency fees","Droits des agences de recouvrement",0,0,0,0,-1000,0
+"PHAC","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",33341000,8030000,24091000,32838000,8209000,24628000
+"PHAC","S",999,"Refunds of amounts credited to revenues in previous years","Remboursements de montants portés aux revenus d'exercices antérieurs",0,0,0,3000,0,3000
+"PHAC","S",999,"Spending of Revenues pursuant to section 4.2 of the Department of Health Act","Dépense des recettes conformément au paragraphe 4.2 de la Loi sur le ministère de la Santé",14027000,8703000,8703000,0,0,0
+"PHAC","S",999,"Spending of proceeds from the disposal of surplus Crown assets","Dépenses des produits de la vente de biens excédentaires de l'État",59000,4000,46000,24000,4000,22000
+"PMPRB",40,1,"Operating/Program","Fonctionnement/Programme",10491000,1809000,4689000,11163000,1680000,4684000
+"PMPRB","S",999,"Collection agency fees","Honoraires – Agence de recouvrements",0,0,0,0,0,0
+"PMPRB","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",1026000,256000,769000,1053000,264000,789000
+"PMPRB","S",999,"Court Awards","Montants adjugés par une cour",71000,0,71000,0,0,0
+"PMPRB","S",999,"Refunds of amounts credited to revenues in previous years","Remboursement de montants portés aux revenus d´exercices antérieurs",2801000,0,2801000,0,0,0
+"PMPRB","S",999,"Spending of proceeds from the disposal of surplus Crown assets","Dépenses des produits de la vente de biens excédentaires de l´État",0,0,0,0,0,0
+"PSC",95,1,"Operating/Program","Fonctionnement/Programme",81754000,20381000,56345000,85847000,20846000,59776000
+"PSC","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",13171000,2195000,8781000,13620000,3405000,10215000
+"PSC","S",999,"Proceeds from Crown Asset Disposal","Produit de l’aliénation des biens de la Couronne",0,0,0,1000,1000,1000
+"PSC","S",999,"Refund of Previous Year Revenue","Remboursement de recettes de l’exercice antérieur",0,-2000,0,0,-2000,1000
+"PSEP",1,1,"Operating/Program","Fonctionnement/Programme",132334000,30475000,87073000,136790000,31956000,84304000
+"PSEP",5,3,"Grants & Contributions","Subventions et Contributions",1219531000,40251000,326280000,479441000,38199000,164225000
+"PSEP","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",15916000,3965000,11896000,15056000,3764000,11292000
+"PSEP","S",999,"Minister's Salary and Motor Car Allowan","Traitement et allocation pour automobile du ministre",79000,20000,54000,78000,19000,58000
+"PSSRB",100,1,"Operating/Program","Fonctionnement/Programme",13110704,3023798,8214029,13119344,3126752,8296048
+"PSSRB","S",999,"Statutory authorities","Autorisations budgétaires législatives",1304347,326087,978260,1310757,327689,983068
+"PSST",105,1,"Operating/Program","Fonctionnement/Programme",5107905,1018904,3131801,5130313,1001519,3169893
+"PSST","S",999,"Budgetary statutory authorities","Autorisations législatives budgétaires",611000,152750,458250,614407,153602,460805
+"RCMP",45,1,"Operating/Program","Fonctionnement/Programme",2043496000,585595000,1519508000,2343340000,348227000,1598714000
+"RCMP",50,2,"Capital","Capital",336172000,50117000,105131000,340895000,38214000,96161000
+"RCMP",55,3,"Grants & Contributions","Subventions et Contributions",153072000,33209000,98550000,140454000,29146000,86596000
+"RCMP","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",92921000,23220000,69660000,83198000,20799000,62398000
+"RCMP","S",999,"Court Awards","Montants adjugés par une cour",0,17000,20000,0,-12000,550000
+"RCMP","S",999,"Pensions and other employee benefits — Members of the Force","Pensions et autres prestations des employés - Membres de la GRC",371520000,97112000,277355000,332791000,88449000,262717000
+"RCMP","S",999,"Pensions under the Royal Canadian Mounted Police Pension Continuation Act","Pensions aux termes de la Loi sur la continuation des pensions de la Gendarmerie royale du Canada",14000000,3040000,9292000,17500000,3412000,10650000
+"RCMP","S",999,"Proceeds from the Disposal of Crown Assets under the Surplus Crown Assets Act","Produits de la vente des biens de l'État en vertu de la Loi sur les biens de surplus de la Couronne",9342000,1510000,3459000,10114000,2958000,5393000
+"RCMP","S",999,"Refunds of amounts credited to revenues in previous years","Remboursements de montants portés aux revenus d'exercices antérieurs",0,111000,476000,0,36000,137000
+"RPSDP",110,1,"Operating/Program","Fonctionnement/Programme",1744000,346000,725000,1726000,495000,978000
+"RPSDP","S",999,"Budgetary statutory authorities","Autorisations législatives budgétaires",188000,47000,141000,190000,32000,127000
+"RSCT",35,1,"Operating/Program","Fonctionnement/Programme",2788098,490562,1330387,2644830,437789,1240872
+"RSCT","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",203756,206,618,202226,50557,151670
+"SC",105,1,"Operating/Program","Fonctionnement/Programme",432557000,86348000,303470000,439016000,106603000,325150000
+"SC","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",62167000,15542000,46626000,69158000,17290000,51870000
+"SCC",50,1,"Operating/Program","Fonctionnement/Programme",23576422,5410075,15919476,23000955,5356338,15730019
+"SCC","S",999,"Budgetary statutory authorities","Autorisations législatives budgétaires",8753475,2147134,5737028,8095845,2069751,5550003
+"SHARE",15,1,"Operating/Program","Fonctionnement/Programme",1212383000,309501000,893332000,1376597000,283531000,685694000
+"SHARE",20,2,"Capital","Capital",184951000,19713000,47100000,87891000,11320000,15141000
+"SHARE","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",100053000,24988000,74965000,101520000,25375000,76140000
+"SIRC",25,1,"Operating/Program","Fonctionnement/Programme",2694000,674000,1691000,2740000,754000,1697000
+"SIRC","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",320000,80000,240000,293000,73000,220000
+"SSHRC",90,1,"Operating/Program","Fonctionnement/Programme",23898000,5248000,15276000,25552000,6193000,17325000
+"SSHRC",95,3,"Grants & Contributions","Subventions et Contributions",667396000,188088000,506709000,664339000,188152000,501222000
+"SSHRC","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",2630000,653000,1958000,2696000,700000,2100000
+"SWC",25,1,"Operating/Program","Fonctionnement/Programme",11404000,3162000,7775000,10037000,2388000,6395000
+"SWC",30,3,"Grants & Contributions","Subventions et Contributions",19033000,3581000,8580000,18950000,2046000,9176000
+"SWC","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",1245000,318000,934000,1226000,306000,913000
+"TBC",1,1,"Operating/Program","Fonctionnement/Programme",228709442,57189877,161169308,252419064,52801516,154591815
+"TBC",20,6,"Treasury Board Central","Crédit du Conseil du Trésor",2268179661,459553377,1543148723,2277219568,523626721,1457120013
+"TBC","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",28309137,7000373,21001118,30481520,7620380,22861140
+"TBC","S",999,"Payments for the pay equity settlement pursuant to section 30 of the Crown Liability and Proceedings Act","Versements liés à l'exécution de l'entente sur la parité salariale en vertu de l'article 30 de la Loi sur la responsabilité civile et le contentieux administratif",,26072,80099,,16744,21605
+"TBC","S",999,"Payments under the Public Service Pension Adjustment Act","Versements en vertu de la Loi sur la mise au point des pensions du service public",20000,2,3,20000,310,943
+"TBC","S",999,"President of the Treasury Board - Salary and motor car allowance","Président du Conseil du Trésor - Traitement et allocation pour automobile",79102,19675,59025,77516,19379,58137
+"TBC","S",999,"Unallocated employer contributions made under the PSSA and other retirement acts and the Employment Act (EI)","Contributions de l'employeur non affectées et versées en vertu de la LPFP, d'autres lois concernant la retraite et la Loi sur l'assurance-emploi",443000000,-130057669,-286350575,,-135118300,-357183484
+"TC",1,1,"Operating/Program","Fonctionnement/Programme",576340000,125149000,352805000,600134000,125062000,355484000
+"TC",5,2,"Capital","Capital",232461000,16042000,27679000,110801000,12965000,29373000
+"TC",10,3,"Grants & Contributions","Subventions et Contributions",555591000,165054000,200177000,1189132000,156332000,262983000
+"TC","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",73215000,18142000,54427000,73816000,18454000,55362000
+"TC","S",999,"Minister of State – Motor car allowance","Ministre d’État – Allocation pour automobile",2000,0,0,2000,1000,2000
+"TC","S",999,"Minister of Transport – Salary and motor car allowance","Ministre des Transports – Traitement et allocation pour automobile",79000,39000,92000,78000,19000,58000
+"TC","S",999,"Northumberland Strait Crossing Subsidy Payment","Paiement de subvention pour l’ouvrage de franchissement du détroit de Northumberland",61582000,0,60830000,60530000,0,60529000
+"TC","S",999,"Payments in respect of St. Lawrence Seaway Agreements","Paiements versés conformément aux ententes de la Voie maritime du Saint Laurent",95700000,80505000,112586000,83371000,43668000,68804000
+"TC","S",999,"Payments to the Canadian National Railway Company – Victoria Bridge, Montreal","Versements à la Compagnie des chemins de fer nationaux du Canada – le pont Victoria, Montréal",3300000,0,611000,3300000,0,582000
+"VAC",1,1,"Operating/Program","Fonctionnement/Programme",890734000,211495000,602870000,903977000,212947000,615824000
+"VAC",5,3,"Grants & Contributions","Subventions et Contributions",2738141000,683015000,2009062000,2660687000,638772000,1908086000
+"VAC","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",39395000,9849000,29547000,40387000,10097000,30290000
+"VAC","S",999,"Court Awards","Montants adjugés par une cour",0,0,9000,0,10000,5000
+"VAC","S",999,"Minister's Salary and Motor Car Allowan","Traitement et allocation pour automobile du ministre",79000,20000,59000,77000,19000,58000
+"VAC","S",999,"Re-establishment credits under Section 8 of the War Services Grants Act","Crédits de réadaptation en vertu de l’article 8 de la Loi sur les indemnités de service de guerre",2000,0,0,2000,0,0
+"VAC","S",999,"Refunds of Previous Years Revenue","Remboursement de montants portés aux recettes d’exercices antérieurs",0,1000,118000,0,0,56000
+"VAC","S",999,"Repayments under Section 15 of the War Services Grants Act","Remboursements en vertu de l'article 15 de la Loi sur les indemnités de service de guerre",10000,0,0,10000,0,0
+"VAC","S",999,"Returned Soldiers Insurance Actuarial Liability Adjustment","Redressement de la provision actuarielle de l’assurance des soldats de retour au pays",10000,0,0,10000,0,10000
+"VAC","S",999,"Statutory Authority - Spending of Amounts Equivalent to Proceeds from Disposal of Surplus Moveable Crown Assets","Autorisation législative – Dépenses des produits de l’aliénation des biens meubles en surplus de la Couronne",0,0,0,0,9000,9000
+"VAC","S",999,"Veterans Insurance Actuarial Liability Adjustment","Redressement de la provision actuarielle de l’assurance des anciens combattants",175000,0,0,175000,0,0
+"VRAB",10,1,"Operating/Program","Fonctionnement/Programme",10437000,2684000,7496000,10569000,2811000,7402000
+"VRAB","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",1562000,391000,1171000,1569000,392000,1176000
+"WDO",1,1,"Operating/Program","Fonctionnement/Programme",42626000,9687000,28206000,45766000,9399000,28727000
+"WDO",5,3,"Grants & Contributions","Subventions et Contributions",147134000,22315000,51298000,142148000,18698000,45389000
+"WDO","S",999,"Contributions to Employee Benefit Plans","Contributions aux régimes d’avantages sociaux des employés",4889000,1223000,3667000,5086000,1271000,3814000
+"WDO","S",999,"Minister's Salary and Motor Car Allowan","Traitement et allocation pour automobile du ministre",2000,1000,2000,2000,1000,2000
+"WDO","S",999,"Spending of proceeds from the disposal of surplus Crown assets","Dépenses des sommes issues de la vente des biens excédentaires de l'État",1000,0,0,15000,4000,15000
+"WDO","S",999,"Transfer payments in connection with the Budget Implementation Act, 2010 – Rick Hansen Foundation","Paiement de transfert lié à la Loi d'exécution du budget, 2010 – Fondation Rick Hansen",0,0,0,4500000,0,2017000
