@@ -41,7 +41,7 @@
         labels,
         {
           html : function(d){ return d.label;},
-          colors : function(d){ return color(d.label);},
+          colors : color,
           width : legend_width,
           legend : true,
           interactive : true,
@@ -51,6 +51,7 @@
       var render = function() {
 
         var data = _.map(source_data, function(row, i){
+          //
             var y0 = 0;
             var stacked = _.chain(labels)
                .filter(function(label){return label.active;})
