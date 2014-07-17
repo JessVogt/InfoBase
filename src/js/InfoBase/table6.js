@@ -10,6 +10,7 @@
     APP.dispatcher.trigger("new_table",
       {
         id: "table6",
+      "csv_url" : "../InfoBase/data/table6.csv",
       "coverage": TABLES.coverage.historical,
       "data_type" :TABLES.data_types.financial,
       add_cols : function(){

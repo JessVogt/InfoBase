@@ -10,6 +10,7 @@
     var years = TABLES.years;
     APP.dispatcher.trigger("new_table",
     {"id": "table11",
+      "csv_url" : "../InfoBase/data/table11.csv",
       "coverage": TABLES.coverage.historical,
       "data_type" :TABLES.data_types.people,
      "add_cols" : function(){

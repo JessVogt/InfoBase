@@ -38,6 +38,7 @@
     // download initialization data files and when that's done,
     // parse the data and create a new app
 
+
     WAIT.w = WAIT.waitscreen(lang,"Application");
 
     var setup_material = {

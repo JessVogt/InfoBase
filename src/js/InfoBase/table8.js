@@ -10,6 +10,7 @@
     APP.dispatcher.trigger("new_table",
       {
       "id": "table8",
+      "csv_url" : "../InfoBase/data/table8.csv",
       "coverage": TABLES.coverage.in_year,
       "data_type" :TABLES.data_types.financial,
       "link": {

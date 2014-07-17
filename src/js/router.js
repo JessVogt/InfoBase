@@ -53,8 +53,10 @@
 
       this.home_crumb = {html : this.app.get_text("home"), href : "#home"};
 
-      $(document).on("click", "a.router",function(e){
-        that.navigate($(e.target).attr("href"),{trigger:true});
+      $(document).on("click", "#app a",function(e){
+        if ($(e.target).attr("href") === "#"){
+          e.preventDefault();
+        }
       });
 
       $(document).on("click", "a.scroll",function(e){
@@ -103,6 +105,7 @@
     },
 
     default : function(route){
+     if (!route){ return; }
      this.containers.start.html("");
      this.navigate("start",{trigger:true});
     },

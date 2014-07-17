@@ -16,8 +16,6 @@
       this.add_title("welcome");
     });
 
-    //// START the application
-
     // parse the file name of the html file to figure out if the
     // language is en or fr  TODO fix how awkwardly this is done
     var lang = _.last(location.pathname.replace(".html",""),3).join("")==='eng' ? 'en' : 'fr';

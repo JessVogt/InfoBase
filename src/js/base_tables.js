@@ -94,9 +94,17 @@
   APP.dispatcher.once("init", setup_tables);
 
   var load_data = function(app){
+    // determine if this is operating in the GCDOCS 
+    // environment
+    if (window.gc_docs){
+        var url_attr = "gcdocs_url";
+      } else {
+        var url_attr = "csv_url";
+    }
+
     var setup_material = {};
-    _.each(TABLES.tables,function(item){
-      setup_material[item.id] = {url:"data/"+item.id+".csv"};
+    _.each(TABLES.tables,function(table){
+      setup_material[table.id] = {url:table[url_attr]};
     });
     var sizes = [];
     var promise0 = $.Deferred();
@@ -117,7 +125,7 @@
       // sent signal to indicate the files is being downloaded
       //WAIT.w.update_item(key,"download");
        var req = $.ajax({
-         url: "data/"+table.id+".csv",
+         url: table[url_attr],
          //context : table,?
          xhrFields:{
            onprogress: function (e) {

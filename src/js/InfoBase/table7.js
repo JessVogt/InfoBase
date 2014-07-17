@@ -11,6 +11,7 @@
     APP.dispatcher.trigger("new_table",
     {
      "id": "table7",
+      "csv_url" : "../InfoBase/data/table7.csv",
      "coverage": TABLES.coverage.historical,
      "data_type" :TABLES.data_types.financial,
      "link": {
