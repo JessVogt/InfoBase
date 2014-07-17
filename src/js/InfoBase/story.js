@@ -110,7 +110,7 @@
 
     p.auth = function(){
       var chapter = new STORY.chapter({
-        toggles :[{ key : "historical_auth" }],
+        toggles :[{ key : "historical_auth_exp" }],
         target : this.container
       });
       this.t.table8.graph("this_year_auth",this.make_graph_context({
@@ -118,9 +118,9 @@
         chapter : chapter,
       }));
 
-      this.t.table4.graph("historical_auth",this.make_graph_context({
+      this.t.table4.graph("historical_auth_exp",this.make_graph_context({
         height : height,
-        chapter : chapter.child("historical_auth")
+        chapter : chapter.child("historical_auth_exp")
       }));
     };
 

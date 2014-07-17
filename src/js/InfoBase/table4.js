@@ -191,12 +191,12 @@
     },
     "graphics": {
        "details_display_order" : [
-         "historical_auth",
+         "historical_auth_exp",
          "vote_stat_split",
          "voted_spending",
          "stat_spending"
        ],
-       "historical_auth" : function(){
+       "historical_auth_exp" : function(){
          // ensure the graph can span the whole screen
          // and then split the area for the legend and graph
           this.chapter.change_span("span-8")
@@ -227,7 +227,7 @@
             level = "dept";
           } else {
             text = "gov_historical_auth";
-            level = "dept";
+            level = "gov";
           }
           data = _.chain(["authorities", "expenditures"])
                   .map(function(type){
