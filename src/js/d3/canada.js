@@ -74,18 +74,18 @@
            "left" : "10px",
            "top" : "10px",
        }),
-      color_scale.ticks(5).reverse(),
-      {html : function(d){
-         return formater(d) +"+";
-       },
+      _.map(color_scale.ticks(5).reverse(), function(tick){
+         return {label : tick, active : true};
+      }),
+      {html : function(d){ return formater(d.label) +"+"; },
        legend : true,
        title : text_fragments.legend,
        height : color_scale.ticks(5).length*30+30,
        width : 100,
        ul_classes : "legend",
        interactive : false,
-       colors : function(d){
-         return "rgba(31, 119, 180,"+color_scale(d) +")";
+       colors : function(label){
+         return "rgba(31, 119, 180,"+color_scale(accounting.unformat(label)) +")";
        }
       });
 
