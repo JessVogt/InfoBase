@@ -47,22 +47,16 @@
 
               process(filtered_depts);
             },
-            /*
-            highlighter: function(item){
-              return "<div class='typeahead_wrapper'> <div class='typeahead_labels'> <div class='typeahead_primary'>" + item.dept[lang] + "</div> <div class='typeahead_secondary'>" + item.accronym + "</div> </div> </div>";
-              //return "<a href='#d-"+item.accronym+"'>"+item.dept[lang]+"("+item.accronym+")</a>";
-            },
-            */
-          templates: {
-            suggestion:Handlebars.compile('<a class="typeahead" href="{{href}}"><p>{{label}}</p></a>')
-          }
+            templates: {
+              suggestion:Handlebars.compile('<a class="typeahead" href="{{href}}"><p>{{label}}</p></a>')
+            }
         }).on('typeahead:selected',function( event, datum ) {
           app.router.navigate(datum.href,{trigger:true});
         });
 
     };
 
-    //Returns a nested object identical to window.mins, but has an extra property for the ministry's name in language of choice.
+    //sets up the departments for alphabetical separators
     var structureDepartments = function(lang){
       return  _.chain(_.values(window.depts))
                     .filter(function(dept){
@@ -87,4 +81,50 @@
                     })
                     .value();
     };
+
+    /*phantom-only*/ 
+    window.index_page = {
+      scrape : function(lang){
+
+        var clone = $('html').clone();
+
+        var links = clone.find(".org_select");
+          links.each(function() {
+            //For each link, find the department matching the text (in english or french)
+            var acronym = _.find(window.depts, function(d) {return d.dept.en == this.innerHTML || d.dept.fr == this.innerHTML;}, this).accronym;
+            var address =  "nojs"+acronym;
+            this.href = address + "-" + lang + ".html";
+          });
+
+
+        clone.find('script').remove();
+        clone.find('noscript').remove();
+        clone.find('base').remove();
+        clone.find('.twitter-typeahead').remove();
+        clone.find("a.dept_sel").attr("href", "nojsindex-" + lang + ".html");
+        clone.find("#gcwu-gcnb-lang a").attr("href", "nojslanding-" + (lang == "eng" ? "fra" : "eng") + ".html");
+        clone.find("a.dept_sel:first").remove();
+
+        clone.find(".ui-li.ui-li-divider").remove();
+        clone.find("a.dept_sel_cancel").remove();
+        clone.find("ul.list-view").removeClass("list-view");
+        clone.find("li.ui-li").removeClass("ui-li ui-li-divider ui-bar-b ui-first-child");
+        clone.find("div.ui-btn-text").removeClass("ui-btn-text");
+        clone.find("div.ui-li").removeClass("ui-btn-inner ui-li");
+        clone.find("li.ui-btn").removeClass("ui-btn ui-btn-icon-right ui-li-has-arrow ui-btn-up-c");
+        clone.find("span").removeClass("ui-icon ui-icon-arrow-r ui-icon-shadow");
+        clone.find(".button").remove();
+        clone.find("div .ui-input-search").remove();
+
+        var body = clone[0].outerHTML;
+
+        return body.replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gm, "");
+        
+
+
+    }
+  };
+
+/*phantom-only*/
+
 })();
