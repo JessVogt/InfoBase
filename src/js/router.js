@@ -61,7 +61,8 @@
 
       $(document).on("click", "a.scroll",function(e){
         var el = $($(e.target).attr("href"));
-        window.scrollTo(0,el.posiiton().top);
+        scrollTo(0,el.position().top);
+        e.preventDefault();
       });
 
       // when this number is larger than 0, a back button can be clicked

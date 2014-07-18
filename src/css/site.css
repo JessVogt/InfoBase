@@ -61,6 +61,10 @@
   text-decoration: none;
 }
 /* Icons - TBS Docs */
+.icon.graph-explore{
+  background-image: url(icons/graph-explore.png);
+}
+
 .icon.mains-15{
   background-image: url(icons/mains-15.png);
 }

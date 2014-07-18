@@ -46,6 +46,7 @@
       "Templates" :  {url:"../src/handlebars/infobase.html", onload:template_load},
       "Organizations" :  {url:"data/orgs.csv", onload:org_load},
       "Lookups" :  {url:"data/lookups.csv", onload:sos_load},
+      "QFR Links" :  {url:"data/QFRLinks.csv", onload:qfr_links_load}
     };
 
     var promise0 = $.Deferred();
