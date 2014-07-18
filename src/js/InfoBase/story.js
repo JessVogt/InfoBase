@@ -68,6 +68,8 @@
         .value();
 
       this.data_prep(dept);
+      this.intro();
+      this.financial_data();
       this.auth();
       this.vote_stat_spend();
       this.type_spend();
@@ -76,6 +78,7 @@
       this.qfr_spend();
       this.qfr_spend_change();
 
+      this.people_data();
       this.by_province();
       this.by_employee_type();
       this.by_age_band();
@@ -106,6 +109,26 @@
        this.data = T.Info({dept:dept});
        this.written_data = T.format_info(this.app.compact_written, this.data);
        this.compact_data = T.format_info(this.app.compact, this.data);
+    };
+
+    p.intro = function(){
+      var chapter = new STORY.chapter({
+        off : ["graph", "source"],
+        target : this.container,
+      });
+      chapter.areas().title.html("Introduction");
+      chapter.areas().text.html("Introduce the kinds of data being presented - develop and translate this");
+    
+    };
+
+    p.financial_data = function(){
+      var chapter = new STORY.chapter({
+        off : ["graph", "source"],
+        target : this.container,
+      });
+      chapter.areas().title.html("Financial Data - translate");
+      chapter.areas().text.html("Introduce financial data and universe covered - develop and translate this");
+    
     };
 
     p.auth = function(){
@@ -230,6 +253,15 @@
         target : this.container
       })
       }));
+    };
+
+    p.people_data = function(){
+      var chapter = new STORY.chapter({
+        off : ["graph", "source"],
+        target : this.container,
+      });
+      chapter.areas().title.html("People data");
+      chapter.areas().text.html("Introduce people data and the universe covered - develop and translate this");
     };
 
     p.by_province = function(){
