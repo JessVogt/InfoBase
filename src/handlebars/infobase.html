@@ -305,17 +305,19 @@
 </script>
 <script type='text/plain' id='org_list_t'>
 
-<div class='org_list span-8 '>
-  <input class='typeahead' type='text' autocomplete="off" placeholder='search'/>
-
+<div class='org_list span-4 offset-2'>
+  <div class='margin-bottom-large'>
+    <input class='typeahead' type='text' autocomplete="off" placeholder='search'/>
+  </div>
+  <div style='margin: auto'>{{#each depts}}<a class='scroll' href="#__{{this.[0]}}">{{this.[0]}}</a> {{/each}}</div>
   <ul class='list-bullet-none orgs'>
-    {{#each mins}}
+    {{#each depts}}
       <li class='min-expansion'>
-        <h4>{{@key}}</h4>
-        <ul>
-          {{#each depts}}
+        <h4>{{this.[0]}}</h4>
+        <ul id="__{{this.[0]}}" class="list-bullet-none">
+          {{#each this.[1]}}
             <li>
-              <a class='org_select router' href='#d-{{accronym}}'>{{lang this.dept}}</a>
+              <a class='org_select router' href='{{this.href}}'>{{this.label}}</a>
             </li>
           {{/each}}
         </ul>

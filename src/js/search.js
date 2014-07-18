@@ -6,62 +6,28 @@
       this.add_crumbs([this.home_crumb,{html: this.gt("search")}]);
       this.add_title("search");
       if (!this.app.full_org_list){
-        this.app.full_org_list = new searchOrg({ app: this.app, container : $(container)});
-        this.app.full_org_list.render();
+        this.app.full_org_list = new searchOrg( this.app, $(container));
       }
     });
 
-    var searchOrg = Backbone.View.extend({
+    var searchOrg = function(app, container){
       
-      initialize: function(){
-        this.template = APP.t('#org_list_t');
-        _.bindAll(this,"render");
-        this.app = this.options.app;
-        this.container = this.options.container;
-        this.state = this.app.state;
+        var template = APP.t('#org_list_t');
+        var lang = app.lang;
 
-        var lang = this.state.get('lang');
-
-
-        //Get rid of ZGOC and the blank department
-        //proper_depts = _.reject(window.depts,function(item){ return !item.accronym || item.accronym == 'ZGOC';});
-        proper_depts = _.omit(window.depts,'','ZGOC');
-
-        this.simple_depts = _.map( proper_depts ,function(obj,key){
-          return {dept_name:obj.dept[lang],accr:obj.accronym};
-        });
-
-        this.nested_depts = structureMinistries(lang);
-
-        this.obtainer = function(query,cb){
-		        var filteredList = $.grep(suggestionsArray,function(item,index){
-             return item.match(new RegExp(query, 'gi'));
-		    });
-
-		      var mapped = $.map(filteredList,function(item){return {value:item}; });
-		      cb(mapped);
-	      };
-
-
-      },
-      render : function(){
-        self = this;
-
-
+        var nested_depts = structureDepartments(lang);
+        var flattened_depts = _.flatten(_.pluck(nested_depts,1));
         // render the template and append to the container
         //old arg: { depts : this[this.sort_func].group_by(lang,this)  }
-        var el = $($.trim(this.template(
-            this.nested_depts
-          )));
-        this.container.append(el);
+        var el = $($.trim(template( {depts : nested_depts})));
+        container.append(el);
 
-         el.find('input.typeahead')
-          .attr("id","dept_search_filter")
-          .before($('<label>')
-                .attr("for","dept_search_filter")
-                .addClass("wb-invisible")
-                .html(this.app.get_text("search")));
-
+        el.find('input.typeahead')
+         .attr("id","dept_search_filter")
+         .before($('<label>')
+               .attr("for","dept_search_filter")
+               .addClass("wb-invisible")
+               .html(app.get_text("search")));
 
         $('.typeahead').typeahead({
           hint:true,
@@ -74,8 +40,8 @@
               var re = new RegExp(query, 'gi');
 
              //Filter the list
-              var filtered_depts = $.grep(self.simple_depts,function(item){
-                return (item.dept_name+item.accr).match(re);
+              var filtered_depts = _.filter(flattened_depts,function(dept){
+                return dept.label.match(re);
               });
 
 
@@ -88,30 +54,37 @@
             },
             */
           templates: {
-            suggestion:Handlebars.compile('<a id="typeahead" href="#d-{{accr}}"><p>{{dept_name}} ({{accr}})</p></a>')
+            suggestion:Handlebars.compile('<a class="typeahead" href="{{href}}"><p>{{label}}</p></a>')
           }
         }).on('typeahead:selected',function( event, datum ) {
-          window.location.href ="#d-"+datum.accr;
+          app.router.navigate(datum.href,{trigger:true});
         });
-
-
-
-      }
-    });
-      
-
-    //Returns a nested object identical to window.mins, but has an extra property for the ministry's name in language of choice.
-    var structureMinistries = function(language){
-
-      var ret = {};
-      //Get rid of ZGOC
-      clean_mins = _.omit(window.mins, 'Government of Canada');
-       _.each(clean_mins,function(obj){
-        ret[obj[0].min[language]]={depts:obj};
-      });
-
-      return {mins:ret};
 
     };
 
+    //Returns a nested object identical to window.mins, but has an extra property for the ministry's name in language of choice.
+    var structureDepartments = function(lang){
+      return  _.chain(_.values(window.depts))
+                    .filter(function(dept){
+                       return dept.accronym !== 'ZGOC' && dept.accronym !== "";
+                    })
+                    .map(function(dept){
+                      return {
+                        label : dept.dept[lang],
+                        href : "#d-"+dept.accronym
+                      };
+                    })
+                    .groupBy(function(dept){
+                       return dept.label[0];
+                    })
+                    .map(function(depts, letter){
+                      return [letter, _.sortBy(depts,function(dept){
+                        return dept.label;
+                      })];
+                    })
+                    .sortBy(function(collection){
+                      return collection[0];
+                    })
+                    .value();
+    };
 })();
