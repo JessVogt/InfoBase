@@ -4,6 +4,7 @@
   var STACKED = ns('D3.STACKED');
   var PIE = ns("D3.PIE");
   var APP = ns('APP');
+  var PACK = ns("D3.PACK");
 
   APP.dispatcher.on("load_tables", function (app) {
     var m = TABLES.m;
@@ -74,6 +75,7 @@
       "queries" : {
       },
       "dept_info" : function(c,q){
+        c.dept_this_year_total_employment = q.sum("{{last_year}}");
         c.dept_last_year_emp_types = this.horizontal("{{last_year}}",c.dept);
         c.dept_last_year_2_emp_types = this.horizontal("{{last_year_2}}",c.dept);
         c.dept_last_year_3_emp_types = this.horizontal("{{last_year_3}}",c.dept);
@@ -82,6 +84,7 @@
       },
       "info" : function(c,q){
         c.emp_types = _.uniq(q.get_col("employee_type"));
+        c.gov_this_year_total_employment = q.sum("{{last_year}}");
         c.gov_last_year_emp_types = this.horizontal("{{last_year}}",false);
         c.gov_last_year_2_emp_types = this.horizontal("{{last_year_2}}",false);
         c.gov_last_year_3_emp_types = this.horizontal("{{last_year_3}}",false);
@@ -121,6 +124,34 @@
         "details_display_order" :[
           "employee_type"
         ],
+        "total_employment" : function(){
+          var data,text,args={
+            height : this.height,
+            formater : app.compact1
+          };
+
+          if (this.dept){
+            text = "dept_this_year_total_employment";
+            args.data = [
+              {name:"this_year_auth",value: this.data.gov_this_year_total_employment},
+              {name:"dept_this_year_auth",value: this.data.dept_this_year_total_employment}
+            ];
+            args.center = true;
+          } else {
+            args.data = [ {name : "this_year_auth",value: this.data.gov_this_year_total_employment} ];
+            text = "gov_this_year_total_employment";
+            args.font_size = "24";
+          }
+
+          return {
+            graph : PACK.circle_pie_chart(args),
+            text : app.get_text(text, this.written_data),
+            title : app.get_text("people_data"),
+            source : [this.create_links({
+              cols : "{{last_year}}"
+            })],
+          };
+        },
         "employee_type": function(){
           var data = this.data;
               graph_area = this.chapter.areas().graph;

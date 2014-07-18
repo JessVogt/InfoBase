@@ -68,6 +68,7 @@
         .value();
 
       this.data_prep(dept);
+
       this.intro();
       this.financial_data();
       this.auth();
@@ -256,12 +257,10 @@
     };
 
     p.people_data = function(){
-      var chapter = new STORY.chapter({
-        off : ["graph", "source"],
-        target : this.container,
-      });
-      chapter.areas().title.html("People data");
-      chapter.areas().text.html("Introduce people data and the universe covered - develop and translate this");
+      this.t.table9.graph("total_employment",this.make_graph_context({
+        height : height,
+        chapter : new STORY.chapter({ target : this.container })
+      }));
     };
 
     p.by_province = function(){

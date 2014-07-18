@@ -229,3 +229,5 @@ The data is being presented for the following orgainzations:
 "describe_pres_level","horizontal","The data is <strong>being presented</strong> at the {{name}} level.",,,,
 "report_details","horizontal","Report Details",,,,
 "legend","graphs","Legend","Légende",,,
+"dept_this_year_total_employment","table9",,,,,
+"gov_this_year_total_employment","table9",,,,,
