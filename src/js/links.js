@@ -22,8 +22,8 @@
     table = options.table;
     lang = options.lang;
     return {
-      href : "t-"+dept+"-"+table.id.replace("table",""),
-      html : table.name[app.lang]
+      href : "#t-"+dept+"-"+table.id.replace("table",""),
+      html : table.name[lang]
     };
   };
 
