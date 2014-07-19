@@ -23,15 +23,11 @@
         .exponent(0.5)
         .domain([1,d3.max(this.data, function(d){return d.value;})])
         .range([1,min_dim/2]);
-
-      height = min_dim;
-      width = min_dim;
-
-      var x_offset = margin.left + min_dim/2;
+      var x_offset = margin.left + width/2;
 
       svg  = svg
-        .attr("width", min_dim+margin.left+margin.right)
-        .attr("height", min_dim+margin.bottom+margin.top)
+        .attr("width", width+margin.left+margin.right)
+        .attr("height", height+margin.bottom+margin.top)
         .append("g")
         .attr("transform", "translate(" + x_offset + "," + margin.top + ")");
 
@@ -48,9 +44,7 @@
             "width" : width+margin.left+margin.right+"px",
           })
           .html(title);
-      
       }
-
 
       // join the filtered data to the circles
       var circle = svg.selectAll("circle")
@@ -105,7 +99,7 @@
           "top"  : function(d,i){
             if (i === 0 && data.length === 2) {
               // the containing circle, the text should be located below
-              return margin.top +height+"px";
+              return margin.top +min_dim+"px";
             } else if (centre ||( i === 0 && data.length === 1)){
               return margin.top + scale(data[0].value)-font_size+"px";
             } else {
