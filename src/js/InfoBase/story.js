@@ -70,7 +70,6 @@
       this.data_prep(dept);
 
       this.intro();
-      this.financial_data();
       this.auth();
       this.vote_stat_spend();
       this.type_spend();
@@ -119,16 +118,6 @@
       });
       chapter.areas().title.html("Introduction");
       chapter.areas().text.html("Introduce the kinds of data being presented - develop and translate this");
-    
-    };
-
-    p.financial_data = function(){
-      var chapter = new STORY.chapter({
-        off : ["graph", "source"],
-        target : this.container,
-      });
-      chapter.areas().title.html("Financial Data - translate");
-      chapter.areas().text.html("Introduce financial data and universe covered - develop and translate this");
     
     };
 
