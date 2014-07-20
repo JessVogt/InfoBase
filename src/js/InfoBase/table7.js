@@ -255,7 +255,11 @@
           list.dispatch.click(data[0],0,list.first,list.list);
           return {
             "title" : "grants and contributions - translate",
-            //"source" : ,
+            "source" : [this.create_links({
+              cols : _.map(years, function(year){
+                return year+"auth";
+              })
+            })],
           };
         },
         "payments": function(){
