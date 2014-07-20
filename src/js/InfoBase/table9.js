@@ -127,7 +127,7 @@
         "total_employment" : function(){
           var data,text,args={
             height : this.height,
-            formater : app.compact1
+            formater : app.compact
           };
 
           if (this.dept){
