@@ -301,13 +301,15 @@
            };
         },
         "qfr_percentage_change" : function(){
-          var data;
+          var data,text;
           if (this.dept) {
+            text = "dept_this_year_qfr_spend_change";
             data = [
               {value: this.data.dept_auth_change, name : app.get_text("authorities")},
               {value: this.data.dept_spend_change, name : app.get_text("expenditures")},
              ];
           } else {
+            text = "gov_this_year_qfr_spend_change";
             data = [
               {value: this.data.gov_auth_change, name : app.get_text("authorities")},
               {value: this.data.gov_spend_change, name : app.get_text("expenditures")},
@@ -315,7 +317,7 @@
           }
           return {
             title : "QFR spend change - translate this",
-            text : app.get_text("gov_this_year_qfr_spend_change",this.written_data ),
+            text : app.get_text(text,this.written_data ),
              source : [this.create_links({
                cols : ["thisyearauthorities",
                        "thisyearexpenditures",
