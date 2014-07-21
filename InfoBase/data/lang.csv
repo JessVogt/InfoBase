@@ -148,6 +148,7 @@
 <ul>{{#each gov_estimates_split}}<li>{{ this.[0]}} – {{this.[1] }} </li>{{/each}}</ul>",,,
 "gov_this_year_qfr_spend","table1","Detailed spending information for this year is available from the Quarterly Financial Reports (QFRs).  However the QFRs only captures {{gov_this_year_qfr_auth}} of the {{gov_this_year_auth}} of the planned spending. As of the end of quarter {{q}}, the government has spent {{gov_this_year_qfr_spend}} or {{gov_this_qfr_spend_percent}} of the planned spending.",,,,
 "gov_this_year_qfr_spend_change","table1","Comparing the planned spending and actual spending rates between this year and last, we see planned spending  {{changed_by  gov_auth_change}}  and actual spending {{changed_by gov_spend_change}}.",,,,
+"dept_this_year_qfr_spend_change","table1","Comparing the planned spending and actual spending rates between this year and last, we see planned spending  {{changed_by  dept_auth_change}}  and actual spending {{changed_by dept_spend_change}}.",,,,
 "top_voted",,"Of the {{gov_this_yea_stat_voted.voted}} voted (discretionary) spending, the three largest approvals were:",,,,
 "top_stat",,"Of the {{gov_this_year_stat_voted.stat}} statutory (mandatory) spending, the three largest approvals were:",,,,
 "internal_service_spend",,"Spending on internal services over the past three years has been:",,,,
