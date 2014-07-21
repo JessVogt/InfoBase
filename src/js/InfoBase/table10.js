@@ -194,7 +194,7 @@
 
           return {
             text : "",
-            title :"",
+             title :this.table.title[app.lang],
             source : [this.create_links({
               cols : _.last(years)
             })]

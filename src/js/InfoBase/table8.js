@@ -259,8 +259,10 @@
       dept_info : function(c,q){
         c.dept_this_year_auth = q.sum("total_net_auth");
         c.dept_this_year_stat_voted =  this.voted_stat("total_net_auth",c.dept,true);
-        c.dept_this_year_voted_num = this.voted_stat("total_net_auth",c.dept,false).voted.length;
-        c.dept_this_year_stat_num = this.voted_stat("total_net_auth",c.dept,false).stat.length;
+        c.dept_this_year_stat_voted.voted = c.dept_this_year_stat_voted.voted || 0;
+        c.dept_this_year_stat_voted.stat = c.dept_this_year_stat_voted.stat || 0;
+        c.dept_this_year_voted_num = c.dept_this_year_stat_voted.voted.length ;
+        c.dept_this_year_stat_num = c.dept_this_year_stat_voted.stat.length;
         c.dept_this_year_stat_vote_pct = {
           voted : c.dept_this_year_stat_voted.voted/c.dept_this_year_auth ,
           stat :  c.dept_this_year_stat_voted.stat/c.dept_this_year_auth
@@ -342,7 +344,6 @@
           var title = "Voted",
               written_data = this.written_data.gov_this_year_voted,
               data = this.data.gov_this_year_voted;
-
           return this.graph(data,written_data, title);
         },
         "planned_stat" : function(){
@@ -351,7 +352,6 @@
           var title = "Stat",
               written_data = this.written_data.gov_this_year_stat,
               data = this.data.gov_this_year_stat;
-
           return this.graph(data,written_data, title);
         },
         "this_year_auth": function(){
@@ -381,6 +381,7 @@
               cols : "total_net_auth"
             })],
           };
+
         },
         "voted_stat_split": function(options){
           var d=this.data,
@@ -414,7 +415,13 @@
               {value:d.gov_this_year_stat_voted.voted, name :gt("voted") }
             ];
           }
-          _.each(args.data.children, function(d){ d.__value__ = d.value;});
+          // remove 0 sized amounts for cases where a department doesn't
+          // have either stat or voted
+          args.data.children = _.filter(args.data.children, function(child){
+            return child.value !== 0;
+          });
+
+         // _.each(args.data.children, function(d){ d.__value__ = d.value;});
           //PACK.soften_spread(args.data.children);
 
           return {
@@ -460,8 +467,9 @@
     });
 
     graph_top = function(data,written_data,title){
-      if (this.dept){
+      if (this.dept || this.data.length===0){
         // this graph should not be drawn for departments
+        // or for an empty data set
         return false;
       }
 

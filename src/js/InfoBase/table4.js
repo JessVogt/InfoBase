@@ -178,7 +178,6 @@
         c[key].voted = c[key].voted || 0;
         c[key].stat = c[key].stat || 0;
       },this);
-
       c.dept_historical_voted = q.voted_items();
       c.dept_historical_stat = q.stat_items();
     },
@@ -229,6 +228,7 @@
             text = "gov_historical_auth";
             level = "gov";
           }
+
           data = _.chain(["authorities", "expenditures"])
                   .map(function(type){
                     var ending = type === "authorities"? "auth": "exp"
@@ -242,9 +242,10 @@
                       active : true
                      };
                   })
+                  //.filter(function(d){ return d3.sum(d.data) !})
                   .sortBy(function(d){return d3.sum(d.data);})
                   .value();
-          
+
           // create the list as a dynamic graph legend
           var list = D3.create_list(legend_area,data, {
             html : function(d){
@@ -323,6 +324,11 @@
                          active : true
                        };
                     })
+                    .filter(function(d){
+                        return !_.all(d.data, function(val){
+                           val === 0;
+                        });
+                    })   
                     .sortBy(function(d){return d3.sum(d.data);})
                     .value();
           } else {
@@ -343,6 +349,8 @@
                     .value();
           }
 
+
+
           // create the list as a dynamic graph legend
           var list = D3.create_list(legend_area,data, {
             html : function(d){
@@ -355,8 +363,8 @@
             legend : true,
             ul_classes : "legend",
             colors : colors,
-            multi_select : true}
-          );
+            multi_select : true
+          });
 
           // create the graph
           var graph = LINE.ordinal_line({
@@ -423,14 +431,20 @@
     };
 
     var create_line_graph = function(){
+
       this.chapter
         .change_span("span-8")
         .split_graph();
       var data_type = "dept_historical_" + this.data_type;
       var graph_area =  this.chapter.areas().graph;
+      var data =  this.data[data_type] ;
+
+      if (data.length === 0 ){
+        return false;
+      }
 
       // transform the data
-      var data = _.chain(this.data[data_type])
+      var data = _.chain(data)
         .map(function(row){
           return {label : row.desc,
                   data : _.map(years, function(year){
