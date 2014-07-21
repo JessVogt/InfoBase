@@ -291,44 +291,50 @@
   };
 
   var graph = function(key,context ){
-      var areas = context.chapter.areas();
-      var self = this;
 
-      context.create_links = function(args){
-        return LINKS.create_link(_.extend({
-          lang : context.lang,
-          table : self,
-          dept : context.dept
-        },args));
-      };
-      var temp_object = _.extend({render : this.graphics[key], table : this},context);
-      var render_rtn = temp_object.render();
+    if (context.dept && !_.has(this.depts,context.dept)){
+      context.chapter.remove();
+      return;
+    }
 
-      // in the standard case where the graph, accompanying text, title
-      // and source link just need to be appened, the graph can return
-      // an object with the relevant properties and they will be appened
-      // using this code
-      // if the render function doesn't return anything, it will take
-      // care of all the appending itself
-      if (_.isObject(render_rtn)){
-        if (_.has(render_rtn, "graph") ){
-          render_rtn.graph(areas.graph);
-        }
-        if (_.has(render_rtn, "title") ){
-          areas.title.html(render_rtn.title);
-        }
-        if (_.has(render_rtn, "text") ){
-          context.chapter.add_text(render_rtn.text);
-        }
-        if (_.has(render_rtn, "source")){
-          context.chapter.add_source(render_rtn.source);
-        }
+    var areas = context.chapter.areas();
+    var self = this;
+
+    context.create_links = function(args){
+      return LINKS.create_link(_.extend({
+        lang : context.lang,
+        table : self,
+        dept : context.dept
+      },args));
+    };
+    var temp_object = _.extend({render : this.graphics[key], table : this},context);
+    var render_rtn = temp_object.render();
+
+    // in the standard case where the graph, accompanying text, title
+    // and source link just need to be appened, the graph can return
+    // an object with the relevant properties and they will be appened
+    // using this code
+    // if the render function doesn't return anything, it will take
+    // care of all the appending itself
+    if (_.isObject(render_rtn)){
+      if (_.has(render_rtn, "graph") ){
+        render_rtn.graph(areas.graph);
       }
-      if (render_rtn === false ){
-        context.chapter.remove();
+      if (_.has(render_rtn, "title") ){
+        areas.title.html(render_rtn.title);
       }
-      return render_rtn;
-    }; 
+      if (_.has(render_rtn, "text") ){
+        context.chapter.add_text(render_rtn.text);
+      }
+      if (_.has(render_rtn, "source")){
+        context.chapter.add_source(render_rtn.source);
+      }
+    }
+    if (render_rtn === false ){
+      context.chapter.remove();
+    }
+    return render_rtn;
+  }; 
 
 
   APP.dispatcher.on("new_table", function(table){
