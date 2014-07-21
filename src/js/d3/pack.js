@@ -204,6 +204,7 @@
             .html("Zoom Out")
             .on("click",function(d){
               that.dispatch.dataClick(d.parent);
+              d3.event.preventDefault();
             });
         } else if (_.isUndefined(node.parent)){
           html.selectAll(".zoom").remove();
@@ -365,7 +366,10 @@
               "width" : function(d){ return d.zoom_r*1.5+"px";},
             })
             .html(text_func)  
-            .on("click", dispatch.dataClick)
+            .on("click", function(d){
+               d3.event.preventDefault();
+               dispatch.dataClick(d);
+            })
             .on("focusout", dispatch.dataFocusOut)
             .on("focusin", dispatch.dataFocusIn)
             .transition()
