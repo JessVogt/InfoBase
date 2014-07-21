@@ -12,7 +12,72 @@
   font-size : 2em;
 }
 /* for wide tables */
-.sidescroll { overflow-x: auto;}
+.sidescroll { 
+  overflow-x: auto;
+}
+
+#app .chapter .title-out:hover{
+  background-color : rgba(62,151,171,0.2);
+}
+#app .title-out {
+  background-color:rgba(62,151,171,0.1);
+  font-weight: bold;
+  color: rgb(62,151,171);
+}
+#app .chapter {
+ border: 2px #3e97ab solid;
+ border-radius : 10px;
+}
+#app .widget-row > div{
+ border-top: 5px #3e97ab solid;
+ border-bottom: 3px #3e97ab solid;
+
+}
+#app .section-header {
+  padding-bottom : 5px;
+  width: 100%;
+}
+#app .section-header h3{
+  margin-top : 0px;
+  padding-top : 20px;
+  color: rgb(62,151,171);
+}
+#app .mini_t div.description {
+  padding: 10px;
+  color: rgb(62,151,171);
+  background-color:rgba(62,151,171,0.1);
+  border-bottom: 1px solid rgb(62,151,171);
+  line-height: 200%;
+  font-weight: 800;
+}
+
+#app .section-footer {
+  padding-top : 5px;
+  border-top: 1px solid rgb(62,151,171);
+  width: 100%;
+  background-color:rgba(62,151,171,0.1);
+  color: rgb(62,151,171);
+  font-weight: bold;
+  height: 100%
+}
+#app .section-footer a{
+  color: rgb(62,151,171);
+  padding : 5px;
+}
+#app .mini_t .mini_payload{
+  margin-top : 10px;
+  padding-bottom : 10px;
+  /*background-color: rgba(207,199,169,0.9);*/
+}
+#app .mini_t .mini_payload table{
+  margin : 0px;
+  padding: 0px;
+}
+#app .mini_t .mini_payload th{
+  color : white;
+  background-color : #595959;
+}
+
 
 /* start of home screen style section */
 .choose_adventure .row {
@@ -153,17 +218,6 @@ p.clickable:hover {
 }
 a.ui-link {
   text-decoration: underline;
-}
-.section-header {
-  padding-bottom : 5px;
-  margin-bottom : 10px;
-  border-bottom: 1px solid #CCC;
-  width: 100%
-}
-.section-footer {
-  padding-top : 5px;
-  border-top: 1px solid #CCC;
-  width: 100%;
 }
 /* horizontal css selection */
 .horizontal_gov .selections ul {

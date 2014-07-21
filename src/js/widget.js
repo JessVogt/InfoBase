@@ -202,19 +202,22 @@
      var panels =  $('.mini_t',row);
      var width = $(window).width();
      if ( width >= 1400){
-      panels.width( (container.width() - 60)/3  - 1);
+      panels.width( (container.width() - 60)/3  - 10);
      } else if (width >= 1000){
-      panels.width( (container.width() - 50)/2  - 1);
+      panels.width( (container.width() - 50)/2  - 10);
      } else {
-      panels.width( (container.width() - 20 - 1));
+      panels.width( (container.width() - 20 - 10));
      }
-     _.each(['.section-header', 'p.description','th','.mini_payload'],
+     _.each(['.section-header', '.description','th','.mini_payload'],
          function(selector){
             $(selector,row)
             .css("height","")
             .height(_.max($(selector,row).map(function(x,y){
               return $(y).height();
             })));
+     });
+     $('.section-footer').each(function(){
+        $(this).height( $(this).find("a")[0].offsetHeight );
      });
   };
 

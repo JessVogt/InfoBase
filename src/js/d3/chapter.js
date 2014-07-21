@@ -44,10 +44,13 @@
     var classes = options.classes || "";
     var toggles = options.toggles || [];
     var span = options.span || (is_mobile ? "span-8" : "span-4");
+    // track if this is a parent, in case it's removed, the first child
+    // can be promoted to parent
+    this.is_parent = toggles.length > 0;
 
-    this.el = options.target.append("div").attr("class","chapter span-8 border-all "+classes );
+    this.el = options.target.append("div");
 
-    this.el.append("div").html(APP.t("#chapter_t")({ span:span }));
+    this.el.html(APP.t("#chapter_t")({ span:span }));
 
     if (options.is_toggle){
        STORY.add_toggle_section(this.el.select(".title"), this.el.select(".content"));
@@ -58,7 +61,7 @@
         toggle.target = options.target;
         toggle.is_toggle = true;
         return [toggle.key, STORY.chapter(toggle)];
-      })
+      },this)
       .object()
       .value();
 
@@ -92,6 +95,22 @@
   };
 
   chapterp.remove = function(){
+     if (this.is_parent){
+
+       var new_parent = this.toggle_sections[this.ordered_toggle_sections[0]];
+       var toggle_sections = _.tail(this.toggle_sections);
+       var ordered_toggle_sections = _.tail(ordered_toggle_sections);
+       delete toggle_sections[new_parent.key];
+
+       new_parent.el.select(".togglee").classed("togglee",false);
+
+       if (ordered_toggle_sections.length > 0){
+         new_parent.is_parent = true;
+         new_parent.toggle_sections =  toggle_sections;
+         new_parent.ordered_toggle_sections =  ordered_toggle_sections;
+       }
+
+     }
      this.el.remove();
   };
 
@@ -134,7 +153,7 @@
       .style("width","49%")
       .style("float", "left");
     return this;
-  }
+  };
 
   chapterp.areas = function(){
     return {
@@ -149,12 +168,14 @@
     toggler.classed("toggler",true).on("click", function (e){
       //toggle the hidden state
       var closed = !togglee.classed("ui-screen-hidden");
-       togglee.classed("ui-screen-hidden",closed);
-       if (!closed){
-         toggler.style({"background-color":"#f5f5f5", "border-bottom": " 1px solid #CCC"});
-       } else {
-         toggler.style({"background-color":"#FFF", "border-bottom": " 0px solid #CCC"});
-       }
+      togglee.classed("ui-screen-hidden",closed);
+      //if (!closed){
+      //  toggler.style({"background-color":"rgba(62,151,171,0.1)", "border-bottom": " 1px solid #CCC"})
+      //         .select('.title').style("font-weight","normal");
+      //} else {
+      //  toggler.style({"background-color":"rgba(62,151,171,0.2)", "border-bottom": " 0px solid #CCC"})
+      //         .select('.title').style("font-weight","bold");
+      //}
     });
     togglee.classed("togglee",true);
   };
