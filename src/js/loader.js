@@ -2,6 +2,8 @@
   var PARSER = ns('PARSER');
 
   PARSER.parse_orgs = function(org_rows){
+    // parses the downloaded igoc data, not all is kept
+    // Jess will change this
     function make_bilingual(line,en,fr,force_array,join){
       line = _.map(line, function(x){
         // strip out the NULLs
@@ -58,10 +60,10 @@
       key = line[0];
       line = _.map(line,each_item);
       return [key,{
-        "accronym" : key,
-        "dept" : make_bilingual(line, 1,2),
+        "accronym" : key,                 // can't change
+        "dept" : make_bilingual(line, 1,2),   // can't change
         "legal_name" : make_bilingual(line,5,6,false,true),
-        'min':  make_bilingual(line, 7,8),
+        'min':  make_bilingual(line, 7,8), // can't change
         "type" : make_bilingual(line,25,26),
         "website" : make_bilingual(line,29,30,true),
         "minister" : make_bilingual(line,[10,12,14],[16,18,20]),

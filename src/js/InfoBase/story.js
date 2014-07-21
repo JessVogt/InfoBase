@@ -27,12 +27,9 @@
       this.add_title($('<h1>').html(title));
       $(container).children().remove();
 
-      APP.OrgHeader(this.app,org,container);
-      d3.select(container)
-        .append("div")
-        .style({"padding": "10px"})
-        .append("a")
-        .classed("router",true)
+      APP.OrgHeader(this.app,org,true,container);
+
+      d3.select(container).select(".alternative-view ul li a")
         .attr("href","#d-"+org.accronym)
         .html(this.app.get_text("widget_view"));
 

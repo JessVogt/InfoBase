@@ -169,13 +169,6 @@
       //toggle the hidden state
       var closed = !togglee.classed("ui-screen-hidden");
       togglee.classed("ui-screen-hidden",closed);
-      //if (!closed){
-      //  toggler.style({"background-color":"rgba(62,151,171,0.1)", "border-bottom": " 1px solid #CCC"})
-      //         .select('.title').style("font-weight","normal");
-      //} else {
-      //  toggler.style({"background-color":"rgba(62,151,171,0.2)", "border-bottom": " 0px solid #CCC"})
-      //         .select('.title').style("font-weight","bold");
-      //}
     });
     togglee.classed("togglee",true);
   };

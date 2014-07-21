@@ -112,26 +112,24 @@
 <script type='text/plain' id='org_header'>
 <div class='span-6 margin-bottom-none '>
 
-  <div class='module-menu-section border-top border-left border-right' style='width: 100%'>
-    <h2>
+  <div class='title-out' style='width: 100%'>
+    <h2 class='igoc-header'>
         {{gt "supplementary_data"}} {{lang org.dept}}
-        <a href='{{{gt "IGOC_site"}}}'  class='ui-link' target='_new' style='color: white'>
-          {{gt "igoc_from"}}
-        </a>
+        <a href='{{{gt "IGOC_site"}}}'  target='_new'> {{gt "igoc_from"}} </a>
     </h2>
   </div>
-  <div class='border-all'>
-    <table class='well-table table-medium margin-top-none margin-bottom-none'>
+  <div class='igoc-data'>
+    <table class='margin-top-none margin-bottom-none'>
       <tbody>
-        <tr class='well'>
+        <tr >
           <th id='legal_name__'> {{gt "legal_name"}} </th>
           <td headers='legal_name__'> {{lang org.legal_name }}  </td>
         </tr>
-        <tr class='well'>
+        <tr >
           <th id='dept_type__'> {{gt "type"}} </th>
           <td headers='dept_type__'> {{lang org.type }}  </td>
         </tr>
-        <tr class='well'>
+        <tr >
           <th id='website__'> {{gt "website"}} </th>
           <td headers='website__'>
             {{#org.website}}
@@ -139,11 +137,11 @@
             {{/org.website}}
           </td>
         </tr>
-        <tr class='well'>
+        <tr >
           <th id='minister__'> {{gt "minister" }} </th>
           <td headers='minister__'> {{lang org.minister}}  </td>
         </tr>
-        <tr class='well'>
+        <tr >
           <th id='mandate__'> {{gt "mandate"}} </th>
           <td headers='mandate__'>
             {{#org.mandate}}
@@ -151,7 +149,7 @@
             {{/org.mandate}}
           </td>
         </tr>
-        <tr class='well'>
+        <tr >
           <th id='legislation__'> {{{gt "legislation"}}} </th>
           <td headers='legislation__'>
             {{#org.legislation}}
@@ -167,23 +165,37 @@
     </table>
   </div>
 </div>
-<div class='span-2 margin-bottom-none'>
-  <div class='module-menu-section border-all other_in_min'>
+{{#if alternative}}
+<div class='span-2 '>
+  <div class='alternative-view '>
+      <div class='title-out'>
+        <h2 class='other-in-min-header'>{{gt "alternate_view"}}</h2>
+     </div>
+     <ul class='list-bullet-none' style='margin: 0px'>
+      <li><a></a></li>
+    </ul>
   </div>
 </div>
-<div class='clear'></div>
+{{/if}}
+
+<div class='span-2 {{#if alternative}}margin-top-large{{/if}}'>
+  <div class='other-in-min '>
+      <div class='title-out'>
+        <h2 class='other-in-min-header'>{{gt "other_in_min"}}</h2>
+     </div>
+     <ul class='list-bullet-none' style='margin: 0px'>
+    </ul>
+  </div>
+</div>
+<div class='clear margin-bottom-large'></div>
 </script>
 <script type='text/plain' id='widgets_layout_t'>
-  <div style='padding-top: 10px;padding-left: 10px'>
-    <a class='router' href='#infograph-{{code}}'>{{gt "org_infograph"}}</a>
-  </div>
-  <div class='span-8'>
-    <h2 class='font-xlarge border-bottom'
-        style='padding: 15px;'>
+  <div class='span-8 title-out details-header margin-top-xlarge'>
+    <h2 class='font-xlarge' style='padding: 15px;'>
       {{gt 'current_year_fisc'}}
     </h2>
   </div>
-  <div class="row widget-row margin-top-large" >
+  <div class="row widget-row " >
       <div class="float-left margin-left-large" id='table8'>
       </div>
       <div class="float-left margin-left-large" id='table1'>
@@ -195,28 +207,27 @@
       </div>
       -->
   </div>
-  <div class="clear"></div>
-  <div class='span-8'>
-    <h2 class='font-xlarge border-bottom'
-        style='padding: 15px;'>
+
+  <div class='span-8 title-out details-header margin-top-xlarge'>
+    <h2 class='font-xlarge ' style='padding: 15px;'>
       {{gt 'previous_year_people'}} </h2>
+  </div> 
+
+  <div class="row widget-row " >
+      <div class="float-left margin-left-large" id='table9'>
+      </div>
+      <div class="float-left margin-left-large" id='table10'>
+      </div>
+      <div class="float-left margin-left-large" id='table11'>
+      </div>
   </div>
-  <div class="row widget-row margin-top-large" >
-      <div class="float-left  margin-right-large margin-left-large" id='table9'>
-      </div>
-      <div class="float-left  margin-right-large" id='table10'>
-      </div>
-      <div class="float-left  " id='table11'>
-      </div>
-  </div>
-  <div class="clear"></div>
-  <div class='span-8'>
-    <h2 class='font-xlarge border-bottom'
-        style='padding: 15px;'>
+
+  <div class='span-8  title-out details-header margin-top-xlarge'>
+    <h2 class='font-xlarge' style='padding: 15px;'>
       {{gt 'previous_year_fisc'}} </h2>
-  </div>
-  <div class="clear"></div>
-  <div class='row widget-row margin-top-large'>
+  </div> 
+
+  <div class='row widget-row'>
       <div class="float-left margin-left-large" id='table4'>
       </div>
       <div class="float-left margin-left-large" id='table5'>
@@ -224,14 +235,13 @@
       <div class="float-left margin-left-large"  id='table6'>
       </div>
   </div>
-  <div class='span-8'>
-    <h2 class='font-xlarge border-bottom'
-        style='padding: 15px;'>
+
+  <div class='span-8  title-out details-header margin-top-xlarge'>
+    <h2 class='font-xlarge' style='padding: 15px;'>
     {{gt 'previous_year_fisc_targeted'}} </h2>
   </div>
 
-  <div class="clear"></div>
-  <div class='row widget-row margin-top-large'>
+  <div class='row widget-row '>
       <div class="float-left margin-left-large"  id='table7'>
       </div>
   </div>
@@ -256,23 +266,13 @@
     </div>
   </div>
 </script>
-
-<script type='text/plain' id='nav_li'>
-<li><a href='#d{{accronym}}' class='ui-link router'>{{text}}</a></li>
-</script>
-
 <script type='text/plain' id='details_t'>
 <div class='tables margin-top-large'>
 
-  <div id='desc__' class='table_description span-8 margin-right-none'>
-    <h3 class='border-bottom margin-bottom-none' style='width:100%'> Description </h3>
+  <div class='table_description'>
   </div>
-  <div class='clear'></div>
 
-  <div id='graph__' class='span-8'>
-    <h3 class='border-bottom margin-bottom-none' style='width:100%'> {{gt "graphs"}} </h3>
-    <div class='graph_payload'>
-    </div>
+  <div class='graph_payload'>
   </div>
 
   <div id='data__' class='span-8 '>
@@ -288,22 +288,7 @@
   </div>
 </div>
 </script>
-<script type='text/plain' id='footnotes_t'>
-<div class='footnotes well well-small'>
-  <table class="table-condensed">
-    <tbody>
-    {{#each fns}}
-      <tr>
-        <td> {{this.symbol}} </td>
-        <td>{{lang this.note }} </td>
-      </tr>
-    {{/each}}
-    </tbody>
-  </table>
-</div>
-</script>
 <script type='text/plain' id='org_list_t'>
-
 <div class='org_list span-4 offset-2'>
   <div class='margin-bottom-large'>
     <input class='typeahead' type='text' autocomplete="off" placeholder='search'/>
@@ -324,74 +309,6 @@
     {{/each}}
   </ul>
 </div>
-</script>
-<script type='text/plain' id='list_t'>
-  <table class='{{extra_table_classes}} table well-table table-condensed '>
-    {{#title}} <caption>{{.}}</caption> {{/title}}
-    <thead></thead>
-    {{#tfoot}}<tfoot></tfoot>{{/tfoot}}
-    <tbody></tbody>
-  </table>
-</script>
-<script type='text/plain' id='graph_grid_t'>
-  <p class='margin-left-medium'>{{description}}</p>
-
-  {{#if items}}
-
-  <div class='span-2 well sidebar border-all margin-right-none'
-    id='{{id}}_sidebar' style='height:450px;'>
-    <p class='margin-bottom-none margin-top-none nav-header'>{{header}}</p>
-    {{#filter}}
-    <label for='{{id}}_search' class='wb-invisible'>{{gt "search"}}</label>
-    <input id='{{id}}_search' class='filter' placeholder='{{gt "search"}}'>
-    {{/filter}}
-    <div style='
-      height:{{#if filter}}377{{else}}410{{/if}}px;
-      overflow-y:auto'>
-      <ul class='list-bullet-none margin-bottom-none margin-top-none margin-left-small hover'>
-        {{#items}}
-        <li><a href='#{{id}}'>{{.}}</a></li>
-        {{/items}}
-      </ul>
-    </div>
-  </div>
-
-  {{else}}
-  <div class='span-1 margin-right-none'  >
-  </div>
-  {{/if}}
-
-  <div class='span-6 border-all margin-left-none'>
-    <div class='well graph'
-    style='padding-left : 20px'>
-      <div style='height:450px' id="{{id}}">
-      </div>
-    </div>
-  </div>
-  <div class='clear'></div>
-</script>
-<script type='text/plain' id='analytics_t'>
-<div>
-    <div class='table_div'>
-
-    </div>
-</div>
-</script>
-<script type='text/plain' id='stat_tr'>
-  <tr class='{{#active_dept}}info{{/active_dept}}'>
-    <td>
-      {{ index }}
-    </td>
-    <td>
-      <a href='#'>{{dept_name}} </a>
-    </td>
-    <td>
-      {{ col }}
-    </td>
-    </tr>
-</script>
-<script type='text/plain' id='header_t'>
-  <{{el}} colspan='{{colspan}}'><div class='{{class_}}'> {{header}} </div></{{el}}>
 </script>
 <script type='text/plain' id='home_t'>
 <div class='span-8 choose_adventure'>
@@ -753,7 +670,7 @@
 <script type='text/plain' id='chapter_t'>
 <div class='chapter span-8' >
   <div class="span-8 margin-bottom-none title-out" >
-    <div class="title {{title_class}}" style='padding: 15px; color: #3e97ab'>
+    <div class="title {{title_class}}" style='padding: 15px;'>
     </div>
   </div>
   <div class='content'>
