@@ -12,26 +12,36 @@
 
 /* for top header */
 #app h1 {
-  background-color : rgba(62,151,171,0.1);
+  background-color : rgb(245, 245, 245);
   font-weight: bold;
-  color: rgb(62,151,171);
+  font-color: white;
+  color: rgb(35, 68, 126);
   padding: 15px;
-  border-top: 5px rgb(62,151,171) solid;
-  border-bottom: 5px rgb(62,151,171) solid;
+  border-top: 5px rgb(35, 64, 111) solid;
+  border-bottom: 5px rgb(35, 64, 111) solid;
   border-radius : 5px;
 }
 
 /* for the chapters used in the story and details sections
  *                     62,151,171
+Border: 35, 64, 111 
+Font: 35, 68, 126
+Background: 245, 245, 245
  * */
 .chapter text{
   font-size : 2em;
 }
 #app .chapter {
- border-top: 5px rgb(62,151,171) solid;
- border-bottom: 2px rgb(62,151,171) solid;
+ border-top: 5px rgb(35, 64, 111) solid;
+ border-bottom: 2px rgb(35, 64, 111) solid;
  border-radius : 5px;
 }
+<<<<<<< HEAD
+=======
+#app .chapter .title-out:hover{
+  background-color : rgba(245, 245, 245, 1);
+}
+>>>>>>> 26710470b9b015c6b0d99ad328e515a26702e689
 #app .chapter .title{
   font-size: 20px;
 }
@@ -39,33 +49,33 @@
   background-color : rgba(62,151,171,0.1);
 }
 #app .title-out {
-  background-color:rgba(62,151,171,0.05);
+  background-color:rgba(245, 245, 245, 0.4) ;
   font-weight: bold;
-  color: rgb(62,151,171);
+  color: rgb(35, 68, 126);
 }
 #app .title-out a{
   color: rgb(62,151,171);
 }
 
 #app .title-out h2{
-  color: rgb(62,151,171);
+  color: rgb(35, 68, 126);
 }
 /* deatils, widget view and infrograph view header */
 #app .title-out .other-in-min-header,
 #app .title-out .igoc-header{
-  border-top: 3px rgb(62,151,171) solid;
+  border-top: 3px rgb(35, 64, 111) solid;
   font-size : 1.5em;
   margin: 0px;
   padding: 10px;
-  border-bottom: 3px rgb(62,151,171) solid;
+  border-bottom: 3px rgb(35, 64, 111) solid;
 }
 #app .title-out .igoc-header a{
-  color: rgb(62,151,171);
+  color: rgb(35, 68, 126);
 }
 #app .igoc-data th,
 #app .igoc-data td{
  border: none;
- border-bottom: 1px rgba(62,151,171,0.2) solid;
+ border-bottom: 1px rgba(35, 64, 111,0.2) solid;
 }
 #app .igoc-data th{
   font-weight: bold;
@@ -76,7 +86,7 @@
 }
 #app .alternative-view li,
 #app .other-in-min li{
- border-bottom: 1px rgba(62,151,171,0.2) solid;
+ border-bottom: 1px rgba(35, 64,111 ,0.2) solid;
  padding: 8px 10px;
 }
 #app .alternative-view li,
@@ -84,8 +94,8 @@
   color: black;
 }
 #app .details-header{
- border-top: 3px rgb(62,151,171) solid;
- border-bottom: 3px rgb(62,151,171) solid;
+ border-top: 3px rgb(35, 64, 111) solid;
+ border-bottom: 3px rgb(35, 64, 111) solid;
  margin-bottom: 20px;
 }
 #app .details-header h2{
@@ -93,18 +103,18 @@
 }
 /* for the widgets */
 #app .widget-row > div{
- border-top: 3px rgb(62,151,171) solid;
- border-bottom: 3px rgb(62,151,171) solid;
+ border-top: 3px rgb(35, 64, 111) solid;
+ border-bottom: 3px rgb(35, 64, 111) solid;
 }
 #app .section-header {
   padding-bottom : 5px;
   width: 100%;
-  border-bottom: 1px solid rgb(62,151,171);
+  border-bottom: 1px solid rgb(35, 64, 111);
 }
 #app .section-header h3{
   margin-top : 0px;
   padding-top : 20px;
-  color: rgb(62,151,171);
+  color: rgb(35, 64, 111);
 }
 #app .mini_t div.description {
   padding: 10px;
@@ -114,15 +124,15 @@
 
 #app .section-footer {
   padding-top : 5px;
-  border-top: 1px solid rgb(62,151,171);
+  border-top: 1px solid rgb(35, 64, 111);
   width: 100%;
-  background-color:rgba(62,151,171,0.1);
-  color: rgb(62,151,171);
+  background-color:rgba(245, 245, 245, 1);
+  color: rgb(35, 68, 126);
   font-weight: bold;
   height: 100%
 }
 #app .section-footer a{
-  color: rgb(62,151,171);
+  color: rgb(35, 68, 126);
   padding : 5px;
 }
 #app .mini_t .mini_payload{
@@ -151,15 +161,26 @@
 .choose_adventure div.row.header-options div.inner {
   margin: auto;
 }
+.choose_adventure .label h3 {
+  text-indent: .8em;
+  font-size: 17px;
+}
 .choose_adventure .label {
   font-size: 16px;
   font-weight: bold;
+<<<<<<< HEAD
   color: rgb(62,151,171);
 }
 .choose_adventure .header-options{
   border-bottom : 3px solid rgb(62,151,171);
+=======
+  color: rgb(35, 68, 126);
+}
+.choose_adventure .header-options{
+  background: none ;
+>>>>>>> 26710470b9b015c6b0d99ad328e515a26702e689
   margin:0 auto;
-  height: 225px;
+  border-bottom: none; 
 }
 .netflix-panel{
   float: left;
@@ -185,22 +206,29 @@
   text-align: center;
   font-size: 14px;
 }
-.netflix-panel .top-menu{
- height: 80%;
-}
+
 .no-underline {
   text-decoration: none;
 }
 /* Icons - TBS Docs */
 .icon.graph-explore{
-  background-image: url(icons/graph-explore.png);
+  background-image: url(icons/explore-graphically.png);
 }
 
 .icon.mains-15{
   background-image: url(icons/mains-15.png);
 }
+.icon.search{
+  background-image: url(icons/search.png);
+}
 .icon.public-accounts-13{
   background-image: url(icons/public-accounts-13.png);
+}
+.icon.public-accounts-12{
+  background-image: url(icons/public-accounts-12.png);
+}
+.icon.public-accounts-11{
+  background-image: url(icons/public-accounts-11.png);
 }
 .icon.supps-a-14{
   background-image: url(icons/supps-a-14.png);
@@ -275,6 +303,10 @@
 .icon.label {
   display: inline-block;
   text-align: center;
+}
+.inner.first{
+ margin: auto;
+ overflow: hidden;
 }
 /* end of home screen style section */
 
