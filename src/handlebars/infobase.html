@@ -697,3 +697,66 @@
   </div>
 </div>
 </script>
+
+<!-- Inventory Templates -->
+
+<script id='profileTemplate' type='text/handlebars-x-template'>
+	<div id='profile' class= 'span-9'>
+		<h1>{{{ langify 'legalTitle' }}}</h1>
+			{{#if ( langVar 'appTitle') }}
+				<h2>{{ gt 'applied_title' }}</h2>
+					<p>{{{ langify 'appTitle'  }}}</p>
+			{{/if}}
+			{{ #if (langVar 'acronym') }}
+				<h2>{{ gt 'abbr_title' }}</h2>
+					<p>{{{ langify 'acronym' }}}</p>
+			{{/if}}
+				<h2>{{ gt 'portfolio'}}</h2>
+					<p>{{ langify 'minPortfolio'  }}</p>
+				<h2>{{{ gt 'minister' }}}</h2>
+
+<!-- creates minister title dynamically based on # of titles -->
+
+					<p>{{ langify  'min1' }}
+			{{#if (langVar 'min2') }}, {{ langify 'min3' }}{{/if}}
+			{{#if (langVar 'min3') }} and {{ (langify 'min3')  }}{{/if}}
+					</p>
+
+			{{#if (langVar 'head')}}
+				<h2>{{gt 'head'}}</h2>
+					<p>{{ (langify 'instHead') }}</p>
+			{{/if}}
+			{{#if (langVar 'head')}}
+				<h2>{{{gt 'inst_type'}}}</h2>
+					<p>{{ (langify 'instForm') }}</p>
+			{{/if}}
+			{{#if (langVar 'head')}}
+				<h2>{{{gt 'inst_start'}}}</h2>
+					<p>{{ (langify 'incYear') }}</p>
+			{{/if}}
+  			{{#if (langVar 'head')}}
+				<h2>{{{gt 'mandate'}}} </h2>
+					<p>{{{ (langify 'mandate') }}}</p>
+			{{/if}}
+	<!--head office addr-->
+			{{#if (langVar 'head')}}
+				<h2>{{{gt 'enabling_act'}}}</h2>
+					<p>{{{ (langify 'legislation') }}}</p>
+			{{/if}}
+			{{#if (langVar 'head')}}
+				<h2>{{{gt 'head_office'}}}</h2>
+					<p>{{ (langify 'addr1') }}<br>
+				{{#if (langVar 'head')}} {{ (langify 'addr2') }}<br>{{/if}}
+				{{#if (langVar 'head')}}{{ (langify 'addr3') }}<br>{{/if}}			
+				{{ (langify 'city') }}, {{ (langify 'province') }}<br>{{ (langify 'postCode') }}  {{ (langify 'country') }}
+</p>
+			{{/if}}
+	<!--head office post addr-->
+			{{#if (langVar 'head')}}
+				<h2>{{ gt 'addrPost' }}</h2>
+					<p>{{ (langify 'addr1Post') }}<br>
+					{{#if (langVar 'head')}}{{ (langify 'addr2Post') }}<br>{{/if}}
+					{{#if (langVar 'head')}}{{ (langify 'addr3Post') }}<br>{{/if}}
+					</p>
+			{{/if}}
+	</script>
