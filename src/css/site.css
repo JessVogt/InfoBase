@@ -33,19 +33,26 @@ Background: 245, 245, 245
  border-bottom: 2px rgb(35, 64, 111) solid;
  border-radius : 5px;
 }
-#app .chapter .title-out:hover{
-  background-color : rgba(245, 245, 245, 1);
-}
 #app .chapter .title{
   font-size: 20px;
 }
 #app .chapter .title-out:hover{
-  background-color : rgba(62,151,171,0.1);
+  background-color : rgba(245, 245, 245, 1);
 }
 #app .title-out {
   background-color:rgba(245, 245, 245, 0.4) ;
   font-weight: bold;
   color: rgb(35, 68, 126);
+}
+/* deatils, widget view and infrograph view header */
+#app .title-out .other-in-min-header,
+#app .choose_adventure .title-out .row-header,
+#app .title-out .igoc-header{
+  border-top: 3px rgb(35, 64, 111) solid;
+  font-size : 1.5em;
+  margin: 0px;
+  padding: 10px;
+  border-bottom: 3px rgb(35, 64, 111) solid;
 }
 #app .title-out a{
   color: rgb(62,151,171);
@@ -53,15 +60,6 @@ Background: 245, 245, 245
 
 #app .title-out h2{
   color: rgb(35, 68, 126);
-}
-/* deatils, widget view and infrograph view header */
-#app .title-out .other-in-min-header,
-#app .title-out .igoc-header{
-  border-top: 3px rgb(35, 64, 111) solid;
-  font-size : 1.5em;
-  margin: 0px;
-  padding: 10px;
-  border-bottom: 3px rgb(35, 64, 111) solid;
 }
 #app .title-out .igoc-header a{
   color: rgb(35, 68, 126);
@@ -115,7 +113,6 @@ Background: 245, 245, 245
   line-height: 200%;
   font-weight: 600;
 }
-
 #app .section-footer {
   padding-top : 5px;
   border-top: 1px solid rgb(35, 64, 111);
@@ -146,14 +143,11 @@ Background: 245, 245, 245
 }
 /* start of home screen style section */
 .choose_adventure .row {
-  border-bottom : 3px solid rgb(35,64,111);
   height : 175px;
   overflow-x: auto;
-  /*background-color:rgba(62,151,171,0.1);
-   */
 }
-.choose_adventure div.row.header-options div.inner {
-  margin: auto;
+.choose_adventure .row-header {
+  background-color : rgba(62,151,171,0.05);
 }
 .choose_adventure .label h3 {
   text-indent: .8em;
@@ -164,21 +158,20 @@ Background: 245, 245, 245
   font-weight: bold;
 }
 .choose_adventure .header-options{
-  border-bottom : 3px solid rgb(62,151,171);
-  color: rgb(35, 68, 126);
-}
-.choose_adventure .header-options{
   background: none ;
   margin:0 auto;
   border-bottom: none; 
 }
-.netflix-panel{
+.choose_adventure div.row.header-options div.inner {
+  margin: auto;
+}
+.choose_adventure .netflix-panel{
   float: left;
   width: 130px;
   margin-left: 15px;
   margin-top: 10px;
 }
-.netflix-panel .icon {
+.choose_adventure .netflix-panel .icon {
   height: 100px;
   margin: auto;
   width: 65%;
@@ -191,7 +184,7 @@ Background: 245, 245, 245
   text-indent: 100%;
   white-space: nowrap;
 }
-.netflix-panel .label {
+.choose_adventure .netflix-panel .label {
   width: 100%;
   text-align: center;
   font-size: 14px;
