@@ -277,6 +277,10 @@
   display: inline-block;
   text-align: center;
 }
+.inner.first{
+ margin: auto;
+ overflow: hidden;
+}
 /* end of home screen style section */
 
 a.ui-link {
