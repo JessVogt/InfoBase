@@ -106,7 +106,7 @@
     },
 
     default : function(route){
-     if (!route){ return; }
+     //if (!route){ return; }
      this.containers.start.html("");
      this.navigate("start",{trigger:true});
     },

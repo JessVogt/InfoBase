@@ -13,7 +13,13 @@
       var title = org.dept[this.app.lang];
       this.add_crumbs([this.home_crumb,{html: title}]);
       this.add_title($('<h1>').html(title));
-      OrgWidgetView(this.app, container);
+      OrgWidgetView(this.app,container);
+
+      container.find(".alternative-view ul li a")
+        .attr("href","#infograph-"+org.accronym)
+        .html(this.app.get_text("org_infograph"));
+
+
     // if the wrong department code is sent, redirect to the home page
     } else {
       this.navigate("#adv",{trigger: true});
@@ -24,7 +30,8 @@
     var dept = app.state.get("dept"),
         lang = app.lang;
 
-    APP.OrgHeader(app,dept,container[0]);
+    APP.OrgHeader(app,dept,true,container[0]);
+
     var template = APP.t('#widgets_layout_t');
 
     $(template({code : dept.accronym})).appendTo(container);
@@ -158,9 +165,7 @@
             headers : this.headers,
             rows : this.rows
           });
-          this.content.find("table")
-            .addClass("well-table")
-            .css({"width" : "100%"});
+          this.content.find("table").css({"width" : "95%"});
         }
       } else {
         this.set_no_content();
@@ -201,9 +206,9 @@
   var size_widget_row = function(container, i,row)   {
      var panels =  $('.mini_t',row);
      var width = $(window).width();
-     if ( width >= 1400){
+     if ( width >= 1200){
       panels.width( (container.width() - 60)/3  - 10);
-     } else if (width >= 1000){
+     } else if (width >= 900){
       panels.width( (container.width() - 50)/2  - 10);
      } else {
       panels.width( (container.width() - 20 - 10));

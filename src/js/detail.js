@@ -22,7 +22,7 @@
     }
     // check to see if the selected table has data for the department
     if (table.depts[org.accronym]) {
-      var title =  table.name[this.app.lang];
+      var title =  table.name[this.app.lang] + " - "+ org.dept[this.app.lang];
       this.add_title($('<h1>').html(title));
       this.add_crumbs([this.home_crumb,
           {html : org.dept[this.app.lang],href : "#d-"+org.accronym},
@@ -38,9 +38,10 @@
     container = d3.select(container);
     var template = APP.t("#details_t");
     var org = app.state.get("dept");
-    APP.OrgHeader(app,org,container.node());
+    APP.OrgHeader(app,org,false,container.node());
 
     container.append("div").html(template({org:org}));
+
     add_text(app,org,table, container);
     add_graph(app,org,table,container);
     add_table(app,org,table,container);
@@ -71,11 +72,12 @@
          span : "span-8"
       }],
       target : container,
-      off : ["title","graph","source"],
+      off : ["graph","source"],
       span : "span-8"
     });
 
     chapter.areas().text.html(to_be_appended);
+    chapter.areas().title.html(app.get_text("description"));
 
     // now create the tabular description of the columns and their definitions
     var rows = _.chain(table.flat_headers)

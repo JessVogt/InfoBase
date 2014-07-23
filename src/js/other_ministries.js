@@ -8,15 +8,10 @@
     };
 
     APP.other_mins = function(app,org,container){
-      var el = d3.select(container).select(".other_in_min");
+      var el = d3.select(container).select(".other-in-min");
       var table = app.state.get("table");
       var lang = app.state.get("lang");
-      el.append("h2")
-        .html(app.get_text("other_in_min"));
-      el.append("ul")
-        .attr("class","list-bullet-none")
-        .style("margin-top","0px")
-        .selectAll("li")
+      el.select("ul").selectAll("li")
         .data(APP.find_other_in_min(org))
         .enter()
         .append("li")
