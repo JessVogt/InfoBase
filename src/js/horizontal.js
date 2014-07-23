@@ -849,11 +849,12 @@
         },
         node : this.chart_area
                     .append("div")
+                    .attr("class","table-container sidescroll")
+                    .append("div")
                     .style({
                       "width": 300 + cols.length*100+"px",
                       "margin" : "auto"
                     })
-                    .attr("class","table-container")
                     .node()
       });
 
