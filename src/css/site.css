@@ -127,14 +127,23 @@
 }
 /* Icons - TBS Docs */
 .icon.graph-explore{
-  background-image: url(icons/graph-explore.png);
+  background-image: url(icons/explore-graphically.png);
 }
 
 .icon.mains-15{
   background-image: url(icons/mains-15.png);
 }
+.icon.search{
+  background-image: url(icons/search.png);
+}
 .icon.public-accounts-13{
   background-image: url(icons/public-accounts-13.png);
+}
+.icon.public-accounts-12{
+  background-image: url(icons/public-accounts-12.png);
+}
+.icon.public-accounts-11{
+  background-image: url(icons/public-accounts-11.png);
 }
 .icon.supps-a-14{
   background-image: url(icons/supps-a-14.png);
