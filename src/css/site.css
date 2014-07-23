@@ -28,20 +28,14 @@ Border: 35, 64, 111
 Font: 35, 68, 126
 Background: 245, 245, 245
  * */
-.chapter text{
-  font-size : 2em;
-}
 #app .chapter {
  border-top: 5px rgb(35, 64, 111) solid;
  border-bottom: 2px rgb(35, 64, 111) solid;
  border-radius : 5px;
 }
-<<<<<<< HEAD
-=======
 #app .chapter .title-out:hover{
   background-color : rgba(245, 245, 245, 1);
 }
->>>>>>> 26710470b9b015c6b0d99ad328e515a26702e689
 #app .chapter .title{
   font-size: 20px;
 }
@@ -152,7 +146,7 @@ Background: 245, 245, 245
 }
 /* start of home screen style section */
 .choose_adventure .row {
-  border-bottom : 3px solid rgb(62,151,171);
+  border-bottom : 3px solid rgb(35,64,111);
   height : 175px;
   overflow-x: auto;
   /*background-color:rgba(62,151,171,0.1);
@@ -168,17 +162,13 @@ Background: 245, 245, 245
 .choose_adventure .label {
   font-size: 16px;
   font-weight: bold;
-<<<<<<< HEAD
-  color: rgb(62,151,171);
 }
 .choose_adventure .header-options{
   border-bottom : 3px solid rgb(62,151,171);
-=======
   color: rgb(35, 68, 126);
 }
 .choose_adventure .header-options{
   background: none ;
->>>>>>> 26710470b9b015c6b0d99ad328e515a26702e689
   margin:0 auto;
   border-bottom: none; 
 }
