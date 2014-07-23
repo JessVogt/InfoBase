@@ -50,10 +50,14 @@
 
     this.el = options.target.append("div");
 
+    if (options.id) {
+      this.el.attr("id",options.id);
+    }
+
     this.el.html(APP.t("#chapter_t")({ span:span }));
 
     if (options.is_toggle){
-       STORY.add_toggle_section(this.el.select(".title"), this.el.select(".content"));
+       STORY.add_toggle_section(this.el.select(".title-out"), this.el.select(".content"));
     }
 
     this.toggle_sections = _.chain(toggles)
@@ -128,7 +132,7 @@
   };
 
 
-  chapterp.add_source = function (sources){
+  chapterp.add_source = function(sources){
     // sources = [
     //  { href: "", html : ""},
     //  { href: "", html : ""},
@@ -137,7 +141,6 @@
            .html("Source: ")
            .data(sources)
            .append("a")
-           .attr("class","router")
            .attr("href",function(d){return d.href;})
            .html(function(d){return d.html;});
     return this;

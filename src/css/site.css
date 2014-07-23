@@ -5,9 +5,6 @@
 #app a:*{
   color: black;
 }
-.chapter text{
-  font-size : 2em;
-}
 /* for wide tables */
 .sidescroll { 
   overflow-x: auto;
@@ -27,23 +24,29 @@
 /* for the chapters used in the story and details sections
  *                     62,151,171
  * */
+.chapter text{
+  font-size : 2em;
+}
 #app .chapter {
  border-top: 5px rgb(62,151,171) solid;
  border-bottom: 2px rgb(62,151,171) solid;
  border-radius : 5px;
 }
-#app .chapter .title-out:hover{
-  background-color : rgba(62,151,171,0.1);
-}
 #app .chapter .title{
   font-size: 20px;
 }
-
+#app .chapter .title-out:hover{
+  background-color : rgba(62,151,171,0.1);
+}
 #app .title-out {
   background-color:rgba(62,151,171,0.05);
   font-weight: bold;
   color: rgb(62,151,171);
 }
+#app .title-out a{
+  color: rgb(62,151,171);
+}
+
 #app .title-out h2{
   color: rgb(62,151,171);
 }
@@ -139,17 +142,22 @@
 }
 /* start of home screen style section */
 .choose_adventure .row {
-  border-bottom : 1px solid #CCC;
+  border-bottom : 3px solid rgb(62,151,171);
   height : 175px;
   overflow-x: auto;
+  /*background-color:rgba(62,151,171,0.1);
+   */
+}
+.choose_adventure div.row.header-options div.inner {
+  margin: auto;
 }
 .choose_adventure .label {
   font-size: 16px;
-  font-color: grey;
   font-weight: bold;
+  color: rgb(62,151,171);
 }
 .choose_adventure .header-options{
-  border-bottom : 1px solid #CCC;
+  border-bottom : 3px solid rgb(62,151,171);
   margin:0 auto;
   height: 225px;
 }

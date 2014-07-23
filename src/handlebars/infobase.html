@@ -289,31 +289,37 @@
 </div>
 </script>
 <script type='text/plain' id='org_list_t'>
-<div class='org_list span-4 offset-2'>
+<div class='org_list span-4 offset-2 font-xlarge'>
   <div class='margin-bottom-large'>
     <input class='typeahead' type='text' autocomplete="off" placeholder='search'/>
   </div>
-  <div style='margin: auto'>{{#each depts}}<a class='scroll' href="#__{{this.[0]}}">{{this.[0]}}</a> {{/each}}</div>
-  <ul class='list-bullet-none orgs'>
-    {{#each depts}}
-      <li class='min-expansion'>
-        <h4>{{this.[0]}}</h4>
-        <ul id="__{{this.[0]}}" class="list-bullet-none">
-          {{#each this.[1]}}
-            <li>
-              <a class='org_select router' href='{{this.href}}'>{{this.label}}</a>
-            </li>
-          {{/each}}
-        </ul>
-      </li>
-    {{/each}}
-  </ul>
+  <div style='margin: auto' id="search_top">{{#each depts}}<a class='scroll' href="#__{{this.[0]}}">{{this.[0]}}</a> {{/each}}</div>
+  <div style='margin: auto; line-height: 200%' >
+    <ul class='list-bullet-none orgs'>
+      {{#each depts}}
+        <li class='min-expansion'>
+         <div style='height: 30px;margin:20px 0;'>
+          <div class='float-left'>{{this.[0]}} </div>
+          <div class='float-right'><a class='scroll' href='#search_top'>↑</a></div>
+         </div>
+         
+          <ul id="__{{this.[0]}}" class="list-bullet-none">
+            {{#each this.[1]}}
+              <li>
+                <a class='org_select router' href='{{this.href}}'>{{this.label}}</a>
+              </li>
+            {{/each}}
+          </ul>
+        </li>
+      {{/each}}
+    </ul>
+  </div>
 </div>
 </script>
 <script type='text/plain' id='home_t'>
 <div class='span-8 choose_adventure'>
   <div class='span-8 label'></div>
-	<div class='span-8 well header-options row {{_lang}}'>
+	<div class='span-8 header-options row {{_lang}}'>
     <div class='inner'>
         <div class='netflix-panel'>
           <div class='icon lightbulb'><a class='icon' href='#infograph'>{{gt "learn_and_explore"}}</a></div>
@@ -339,7 +345,7 @@
  </div>
 
   <div class='span-8 label'>{{gt "Analyze_Data_by_Subject_Area"}}</div>
-  <div class='span-8  well row {{_lang}}'>
+  <div class='span-8   row {{_lang}}'>
     <div class='inner'>
     <div class='netflix-panel'>
       <div class='icon dollar'><a class=' icon' href='#analysis-org%5B%5D=__all__&data_type=Financial+Data&pres_level=depts&period=Historical&display_as=graph&table=table6&dimension=horizontal&column=2012-13&shown=Internal+Services&nu=true'>{{gt 'internal_services_expenditures'}}</a></div>
@@ -365,7 +371,7 @@
   </div>
 
  <div class='span-8  label'>{{gt "Explore_Government_of_Canada_Management_Data"}}</div>
-      <div class='span-8  well row {{_lang}}'>
+      <div class='span-8  row {{_lang}}'>
         <div class='inner'>
         <div class='netflix-panel'>
           <div class='icon dollar'></div>
@@ -383,7 +389,7 @@
   </div>
 
   <div class='span-8 label'>{{gt "Analyze_Gov_Canada_Publications"}}</div>
-  <div class='span-8  well row {{_lang}}'>
+  <div class='span-8  row {{_lang}}'>
     <div class='inner'>
     <div class='netflix-panel'>
       <div class='icon mains-15'><a class=' icon' href='#analysis-org%5B%5D=__all__&data_type=Financial+Data&pres_level=depts&period=Current+Year&display_as=table&table=table8&dimension=horizontal&shown=All&column_choice%5B%5D=Estimates+-+Main+Estimates&sort_by=Estimates+-+Main+Estimates&nu=true'>{{gt "main_estimates"}}</a></div>
@@ -670,17 +676,21 @@
 <script type='text/plain' id='chapter_t'>
 <div class='chapter span-8' >
   <div class="span-8 margin-bottom-none title-out" >
-    <div class="title {{title_class}}" style='padding: 15px;'>
+    <div class="title {{title_class}} float-left" style='padding: 15px;'>
     </div>
+    <div class='title-right float-right' style='padding: 15px;'></div>
   </div>
   <div class='content'>
-    <div class='{{span}} {{text_class}} text margin-bottom-none margin-left-none margin-bottom-large'>
-      <div class= "inner margin-top-large margin-left-large">
+    <div>
+      <div class='{{span}} {{text_class}} text margin-bottom-none margin-left-none margin-bottom-large'>
+        <div class= "inner margin-top-large margin-left-large">
+        </div>
+      </div>
+      <div class='{{span}} {{graphic_class}} graphic margin-bottom-none margin-left-none margin-bottom-large'>
       </div>
     </div>
-    <div class='{{span}} {{graphic_class}} graphic margin-bottom-none margin-left-none margin-bottom-large'>
-    </div>
-    <div class='{{source_class}} source margin-left-none margin-bottom-small'>
+    <div class='clear'></div>
+    <div class='{{span}} {{source_class}} source margin-left-none margin-bottom-small'>
     </div>
   </div>
 </div>

@@ -104,6 +104,7 @@
 
   APP.dispatcher.on("app_ready",function(app){
     Backbone.history.start();
+    APP.app.started.resolve(true);
   });
 
 
@@ -111,6 +112,7 @@
   // object when new APP.APP() is called
   APP.APP = function(options) {
     //
+    this.started = $.Deferred();
     _.each(APP.types_to_format, function(formater, key){
       this[key] = function(val,options){return this.formater(key,val,options);};
     },this);

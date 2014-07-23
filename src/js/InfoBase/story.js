@@ -82,7 +82,14 @@
 
       // psas DOM object instead of wrapped
       STORY.center_text(container);
+      // hide all the containers which are meant to be toggled
       this.container.selectAll(".togglee").classed("ui-screen-hidden",true);
+      // add in return to top arrows
+      this.container.selectAll(".title-right")
+        .append("a")
+        .attr("href","#story_top")
+        .attr("class","scroll")
+        .html(app.get_text("top"));
     };
 
     var p = STORYBOARD.prototype;
@@ -112,6 +119,7 @@
       var chapter = new STORY.chapter({
         off : ["graph", "source"],
         target : this.container,
+        id: "story_top"
       });
       chapter.areas().title.html("Introduction");
       chapter.areas().text.html("Introduce the kinds of data being presented - develop and translate this");
