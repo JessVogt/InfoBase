@@ -55,9 +55,8 @@ Background: 245, 245, 245
   border-bottom: 3px rgb(35, 64, 111) solid;
 }
 #app .title-out a{
-  color: rgb(62,151,171);
+  color: rgb(35, 64, 111);
 }
-
 #app .title-out h2{
   color: rgb(35, 68, 126);
 }
