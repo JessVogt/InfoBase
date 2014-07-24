@@ -1,3 +1,4 @@
+,,,,,,
 "data",,"Data","Données",,,
 "three_year_history","graphs","Three year history for ","Trois année historiques pour ",,,
 "in_year","main","In Year","Courantes",,,
@@ -132,7 +133,11 @@
 "this_time_last_year",,"At this point in the previous fiscal year, {{last_year}}",,,,
 "gov_this_year_auth","table8","<p>In {{in_year}}, the government plans to spend {{gov_this_year_auth}}. <a class='router' href='#explore-dept'>{{gov_dept_number}} government departments and agencies</a> will be responsible for spending these funds.</p>
 <p>The {{gov_this_year_auth}} can be broken out in different groupings:<p> 
-<ul><li>by the respective <a class='scroll' href='#'>parliamentary approvals</a>,</li> <li><a class='scroll' href='#'> by the split </a> between voted and statutory amounts and,</li> <li>by the <a class='scroll' href='#'> different areas of spending</a>.</li></ul></p>",,,,
+<ul>
+<li><a class='scroll' href='#__voted_stat__'> by the split </a> between voted and statutory amounts, </li> 
+<li>by the <a class='scroll' href='#__spending_areas__'> different areas of spending</a> and,</li>
+<li>by the respective <a class='scroll' href='#__estimates_split__'>parliamentary approvals</a>.</li>
+</ul></p>",,,,
 "compare_orgs",,"Compare to other organizations","Comparer à d'autres organisations",,,
 "gov_type_spending",,"Of the {{this_year_auth}} planned spending, <a class='router' href='#explore-type'>approximately:</a> ",,,,
 "prov_spend_type",,"Transfers to Other Levels of Government","Principaux transferts aux autres administrations",,,
@@ -174,16 +179,14 @@
 "dept_type_spending",,"Of the {{dept_this_year_auth}} planned spending, approximately: ","Des {{dept_this_year_auth}} en dépenses prévues, approximatevement: ",,,
 "home","main","Home","Accueil",,,
 "title","main","InfoBase","InfoBase",,,
-"horizontal","dimension","Horizontal","Horizontal",,,
+"horizontal","dimension","Standard","Standard",,,
 "voted_stat","dimension","Vote / Statutory","Crédit / Législatif",,,
 "employee_type","widget","Employee Type","Période d'affectation",,,
-"info_tree_text","explore","The graph below presents all available data in an easily navigable format. Exploring through this graph will dynamically filter the descriptive panels below.  Clicking on “All Available Data” will unfilter the panels and reset the graph to its initial state.",,,,
-"info_tree_title","explore","Explore Available Data","Exployer les données disponibles",,,
-"vote_stat_split","story","Voted and Statutory Split","Partage entre les postes votés et législatifs",,,
-"fin_spending_type","story","Planned Expenditures by Area of Spending","Dépenses prévues par type de dépenses",,,
-"all_other_stat_items","story","All Other Statutory Items","Tout autres éléments législatifs",,,
-"all_other_voted_items","story","All Other Voted Items","Tout autres éléments votés",,,
-"planned_spending","story","Planned Spending","Dépenses prévues",,,
+"vote_stat_split","infograph","Voted and Statutory Split","Partage entre les postes votés et législatifs",,,
+"fin_spending_type","infograph","Planned Expenditures by Area of Spending","Dépenses prévues par type de dépenses",,,
+"all_other_stat_items","infograph","All Other Statutory Items","Tout autres éléments législatifs",,,
+"all_other_voted_items","infograph","All Other Voted Items","Tout autres éléments votés",,,
+"planned_spending","infograph","Planned Spending","Dépenses prévues",,,
 "learn_and_explore","home","Learn and Explore","Apprendre et découvrir",,,
 "analyze_and_compare","home","<a class='router no-underline' href='#analysis-nu=true'>In-Depth Analysis</a>",,,,
 "analyze_and_compare_icon","home","<a class='router icon' href='#analysis-nu=true'>In-Depth Analysis</a>",,,,
@@ -232,3 +235,7 @@ The data is being presented for the following orgainzations:
 "dept_this_year_total_employment","table9",,,,,
 "gov_this_year_total_employment","table9",,,,,
 "alternate_view","details","Alternate View",,,,
+"infograph_introduction","infograph","<ul class='list-bullet-none'>
+  <li><a href='#__financial__' class='scroll'>Financial Data</a>   </li>
+  <li><a href='#__people__' class='scroll'>People Management Data</a>   </li>
+</ul>",,,,

@@ -86,6 +86,7 @@
       this.container.selectAll(".togglee").classed("ui-screen-hidden",true);
       // add in return to top arrows
       this.container.selectAll(".title-right")
+        .filter(function(d,i){ return i >1;})
         .append("a")
         .attr("href","#story_top")
         .attr("class","scroll")
@@ -122,20 +123,20 @@
         id: "story_top"
       });
       chapter.areas().title.html("Introduction");
-      chapter.areas().text.html("Introduce the kinds of data being presented - develop and translate this");
+      chapter.areas().text.html(this.gt("infograph_introduction"));
     
     };
 
     p.auth = function(){
       var chapter = new STORY.chapter({
         toggles :[{ key : "historical_auth_exp" }],
-        target : this.container
+        target : this.container,
+        id : "__financial__"
       });
       this.t.table8.graph("this_year_auth",this.make_graph_context({
         height : height*1.5,
         chapter : chapter,
       }));
-
       this.t.table4.graph("historical_auth_exp",this.make_graph_context({
         height : height,
         chapter : chapter.child("historical_auth_exp")
@@ -148,7 +149,8 @@
                    { key : "planned_stat" },
                    { key : "planned_voted" }
         ],
-        target : this.container
+        target : this.container,
+        id : "__voted_stat__"
       });
 
       this.t.table8.graph("voted_stat_split",this.make_graph_context({
@@ -189,6 +191,7 @@
                    { key : "so_personnel"},
                    { key : "pa_type"}],
          target : this.container,
+          id : "__spending_areas__"
       });
 
       this.t.table2.graph("type_spend",this.make_graph_context({
@@ -227,9 +230,8 @@
     p.estimates_split = function(){
       this.t.table8.graph("estimates_split",this.make_graph_context({
         height : height*1.5,
-        chapter : new STORY.chapter({ target : this.container })
+        chapter : new STORY.chapter({ target : this.container,id : "__estimates_split__" }),
       }));
-
     };
 
     p.qfr_spend = function(){
@@ -253,7 +255,7 @@
     p.people_data = function(){
       this.t.table9.graph("total_employment",this.make_graph_context({
         height : height,
-        chapter : new STORY.chapter({ target : this.container })
+        chapter : new STORY.chapter({ target : this.container,id : "__people__" })
       }));
     };
 
