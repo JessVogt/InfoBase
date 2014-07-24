@@ -208,7 +208,8 @@
           };
         },
         "g_and_c_history" : function(){
-          var data;
+          var data,
+              colors = D3.tbs_color();
           if (this.dept){
              data = this.data.dept_g_and_c_summary;
           } else {
@@ -219,7 +220,7 @@
                return {
                  label : key,
                  data : values,
-                 active : false
+                 active : true
                };
             })
             .sortBy(function(x){ return -d3.sum(x.data);})
@@ -235,24 +236,28 @@
             interactive : true,
             title : app.get_text("legend"),
             legend : true,
+            colors : colors,
             ul_classes : "legend",
-            multi_select : true}
-          );
+            multi_select : true
+          });
 
           // create the graph
           var graph = LINE.ordinal_line({
+            colors : colors,
             add_legend : false,
             add_xaxis : true,
             ticks : this.data.last_years,
-            formater : app.compact1
+            formater : app.compact1,
+            series : _.chain(data)
+                      .map(function(obj){ return [obj.label,obj.data];})
+                      .object().value()
           });
 
           // run the graph once on empty data to establish the sizes
           graph(this.chapter.areas().graph);
           // hook the list dispatcher up to the graph
-          list.dispatch.on("click", LINE.ordinal_on_legend_click(graph));
+          list.dispatch.on("click", LINE.ordinal_on_legend_click(graph,colors));
           // simulate the first item on the list being selected
-          list.dispatch.click(data[0],0,list.first,list.list);
           return {
             "title" : "grants and contributions - translate",
             "source" : [this.create_links({
