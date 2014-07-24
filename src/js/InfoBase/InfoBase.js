@@ -104,6 +104,9 @@
 
   APP.dispatcher.on("app_ready",function(app){
     Backbone.history.start();
+    /*phantom-only*/ 
+    $('body').addClass('app-ready');
+    /*phantom-only*/
     APP.app.started.resolve(true);
   });
 
