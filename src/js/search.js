@@ -82,48 +82,54 @@
                     .value();
     };
 
-    /*phantom-only*/ 
-    window.index_page = {
-      scrape : function(lang){
+  /*phantom-only*/ 
+  window.phantom_funcs.push(
+    function(){
 
-        var clone = $('html').clone();
+      var ret = $.Deferred();
 
-        var links = clone.find(".org_select");
-          links.each(function() {
-            //For each link, find the department matching the text (in english or french)
-            var acronym = _.find(window.depts, function(d) {return d.dept.en == this.innerHTML || d.dept.fr == this.innerHTML;}, this).accronym;
-            var address =  "nojs"+acronym;
-            this.href = address + "-" + lang + ".html";
-          });
+      ns('APP').app.router.navigate('#search', {trigger:true});
 
+      var lang = 'eng';
+      var clone = $('html').clone();
 
-        clone.find('script').remove();
-        clone.find('noscript').remove();
-        clone.find('base').remove();
-        clone.find('.twitter-typeahead').remove();
-        clone.find("a.dept_sel").attr("href", "nojsindex-" + lang + ".html");
-        clone.find("#gcwu-gcnb-lang a").attr("href", "nojslanding-" + (lang == "eng" ? "fra" : "eng") + ".html");
-        clone.find("a.dept_sel:first").remove();
-
-        clone.find(".ui-li.ui-li-divider").remove();
-        clone.find("a.dept_sel_cancel").remove();
-        clone.find("ul.list-view").removeClass("list-view");
-        clone.find("li.ui-li").removeClass("ui-li ui-li-divider ui-bar-b ui-first-child");
-        clone.find("div.ui-btn-text").removeClass("ui-btn-text");
-        clone.find("div.ui-li").removeClass("ui-btn-inner ui-li");
-        clone.find("li.ui-btn").removeClass("ui-btn ui-btn-icon-right ui-li-has-arrow ui-btn-up-c");
-        clone.find("span").removeClass("ui-icon ui-icon-arrow-r ui-icon-shadow");
-        clone.find(".button").remove();
-        clone.find("div .ui-input-search").remove();
-
-        var body = clone[0].outerHTML;
-
-        return body.replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gm, "");
-        
+      var links = clone.find(".org_select");
+        links.each(function() {
+          //For each link, find the department matching the text (in english or french)
+          var acronym = _.find(window.depts, function(d) {return d.dept.en == this.innerHTML || d.dept.fr == this.innerHTML;}, this).accronym;
+          var address =  "nojs"+acronym;
+          this.href = address + "-" + lang + ".html";
+        });
 
 
-    }
-  };
+      clone.find('script').remove();
+      clone.find('noscript').remove();
+      clone.find('base').remove();
+      clone.find('.twitter-typeahead').remove();
+      clone.find("a.dept_sel").attr("href", "nojsindex-" + lang + ".html");
+      clone.find("#gcwu-gcnb-lang a").attr("href", "nojslanding-" + (lang == "eng" ? "fra" : "eng") + ".html");
+      clone.find("a.dept_sel:first").remove();
+
+      clone.find(".ui-li.ui-li-divider").remove();
+      clone.find("a.dept_sel_cancel").remove();
+      clone.find("ul.list-view").removeClass("list-view");
+      clone.find("li.ui-li").removeClass("ui-li ui-li-divider ui-bar-b ui-first-child");
+      clone.find("div.ui-btn-text").removeClass("ui-btn-text");
+      clone.find("div.ui-li").removeClass("ui-btn-inner ui-li");
+      clone.find("li.ui-btn").removeClass("ui-btn ui-btn-icon-right ui-li-has-arrow ui-btn-up-c");
+      clone.find("span").removeClass("ui-icon ui-icon-arrow-r ui-icon-shadow");
+      clone.find(".button").remove();
+      clone.find("div .ui-input-search").remove();
+
+      var body = clone[0].outerHTML;
+
+      ret.resolve({
+        url: 'nojsindex-'+lang+'.html',
+        scraping: body.replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gm, "")
+      });
+
+      return ret.promise();
+    });
 
 /*phantom-only*/
 
