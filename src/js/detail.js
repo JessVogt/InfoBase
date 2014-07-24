@@ -268,7 +268,7 @@
       });
 
     TABLES.d3_build_table({
-      table_class : "table-condensed table-medium",
+      table_class : "table-condensed table-blue",
       table_css : {
         width : table_width + "px"
       },
@@ -282,10 +282,7 @@
       headers : table.presentation_ready_headers,
       rowseach : function(d,i){
         if (_.contains(total_rows, d)){
-          d3.select(this).classed("background-medium",true);
-        }
-        if (i % 2 === 1 ){
-          d3.select(this).classed("odd",true);
+          d3.select(this).classed("background-blue",true);
         }
       },
       tdseach : function(d,i){

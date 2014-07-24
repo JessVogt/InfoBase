@@ -76,7 +76,7 @@
 
     var horizontal_gov = function(app,container,config){
       container.selectAll("*").remove();
-      container.html(Handlebars.compile(d3.select('#horizontal_t').html())());
+      container.html(Handlebars.compile(d3.select('#horizontal_t').html())({mobile:is_mobile}));
       config = config || {};
       // ensure all functions on this object are always bound to this
       _.bindAll(this, _.functions(this));
@@ -565,7 +565,7 @@
 
      // highlight the active departments
      this.column_choice.selectAll("li")
-       .classed("background-medium",function(d){
+       .classed("background-blue",function(d){
          return _.contains(currently_active,d.val);
        })
        .classed("not-selected",function(d){
@@ -661,7 +661,7 @@
 
      // highlight the active departments
      this.org.selectAll("li")
-       .classed("background-medium",function(d){ return d.active;})
+       .classed("background-blue",function(d){ return d.active;})
        .classed("not-selected",function(d){ return !d.active;});
      if (d3.event) {
        d3.event.target.focus();
@@ -827,13 +827,11 @@
         headers : [headers],
         rows : rows,
         row_class : row_classes,
-        table_class : "wet-boew-zebra table-condensed ",
+        table_class : "table-condensed table-blue",
+        stripe : true,
         rowseach : function(d,i){
           if (d === _.last(rows)){
-            d3.select(this).classed("background-medium",true);
-          }
-          if (i % 2 === 1 ){
-            d3.select(this).classed("odd",true);
+            d3.select(this).classed("background-blue",true);
           }
         },
         tdseach : function(d,i){
@@ -857,8 +855,6 @@
                     })
                     .node()
       });
-
-     d3.select(table).style({"margin-top":"0px"});
 
      if (this.config.currently_selected.nu){
       delete this.config.currently_selected.nu;

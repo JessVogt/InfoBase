@@ -659,16 +659,17 @@
 </script>
 <script type='text/plain' id='horizontal_t'>
 <div class='span-8 horizontal_gov' style='min-height:800px; margin-left:0px'>
-  <div class='span-2 selections border-all margin-none' style='margin-left:10px'>
+  <div class='span-2 selections border-all margin-none' style='margin-left:{{#if mobile}}0{{else}}10{{/if}}px'>
   </div>
-  <div class ='span-6 chart margin-none'>
-    <div class='chart-description border-all margin-bottom-medium' style='margin-left: 20px; width:100%'>
-      <div class='title' style='padding: 10px'>
-         <a href="#">{{gt "report_details"}}</a>
-      </div>
+  <div class ='span-6 chart margin-none' style=''>
+    <div class='chart-description margin-bottom-medium' style='margin-left: {{#if mobile}}0{{else}}10{{/if}}px'>
+     <div class='title-out'><div class='title' style='padding: 10px'>
+          <a href="#">{{gt "report_details"}}</a>
+     </div> </div>
      <div class='content' style="padding-left: 10px"></div>
     </div>
-    <div class='chart-area border-all ' style='margin-left: 20px;position:relative;width:100%;'>
+    <div class='chart-area border-all ' 
+          style='margin-left: {{#if mobile}}0{{else}}10{{/if}}px;position:relative;width:100%;'>
     </div>
   </div>
 </div>

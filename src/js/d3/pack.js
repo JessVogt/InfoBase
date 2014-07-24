@@ -298,8 +298,9 @@
               if (d.__value__ && d.__value__ <0){
                 return "red";
               }
-              return  "steelblue";
+              return  "rgb(43,108,123)";
             },
+            "stoke-width" : "2px",
             "stroke-opacity" : function(d){
               if (d.depth === 0 && invisible_grand_parent){
                 return 0;
@@ -307,20 +308,19 @@
               return 1;
             },
             "fill" : function(d){
-
               if (d.__value__ && d.__value__ <0){
                 return "red";
               } 
-              return  "#1f77b4";
+              return  "rgb(43,108,123)";
             },
             "fill-opacity" : function(d){
               if (d.depth === 0 && invisible_grand_parent){
                 return 0;
               } else if ((d.depth === 0 && !invisible_grand_parent) || 
                           d.depth <=  depth+1 ){
-                return 0.05;
+                return 0.1;
               } else {
-                return 0.2;
+                return 0.6;
               }
             }
           })
@@ -360,6 +360,7 @@
               "color" : "#000",
               "text-align": "center",
               "text-decoration" : "none",
+              "font-weight" : "bold",
               "left" : function(d) { return translate[0]+d.zoom_pos.x-d.zoom_r*1.5/2+"px"; },
               "font-size" : function(d){ return font_scale(d.zoom_r)+"px";},
               "position" : "absolute",

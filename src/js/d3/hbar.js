@@ -174,10 +174,8 @@
              "width": Math.abs(x_scale(d.value) - x_scale(0))
            })
            .style({
-             "fill" : d.value > 0 ?  "#1f77b4" : '#A52A2A'
+             "fill" : d.value > 0 ?  "rgb(35, 68, 126)" : '#A52A2A'
            });
-
-         //single .transition() .duration(2000) .text( d.name + " - "+ formater(d.value)); 
        });
 
     }
