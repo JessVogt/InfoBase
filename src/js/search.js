@@ -11,7 +11,7 @@
     });
 
     var searchOrg = function(app, container){
-      
+
         var template = APP.t('#org_list_t');
         var lang = app.lang;
 
@@ -82,7 +82,40 @@
                     .value();
     };
 
-  /*phantom-only*/ 
+  /*phantom-only*/
+
+  window.test_funcs.push(function(){
+
+    var ret = $.Deferred();
+
+    ns('APP').app.router.navigate('#search', {trigger:true});
+
+    var lang = 'eng';
+
+    var msg = 'it should have a .typeahead selector';
+
+    var cond = ($('.typeahead').length > 0);
+    
+    ret.resolve({module:'search',pass:cond, msg:msg});
+
+    return ret.promise();
+
+  });
+
+  window.test_funcs.push(function(){
+
+    var ret = $.Deferred();
+
+    var msg = "it should contain exactly 146 department links";
+    var val = $(".org_select").length === 146;
+
+    ret.resolve({module:'search',pass:val, msg:msg});
+
+    return ret.promise();
+
+  });
+
+
   window.phantom_funcs.push(
     function(){
 
