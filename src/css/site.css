@@ -112,6 +112,7 @@ Background: 245, 245, 245
 #app .widget-row > div{
  border-top: 3px rgb(35, 64, 111) solid;
  border-bottom: 3px rgb(35, 64, 111) solid;
+  margin-top: 20px;
 }
 #app .section-header {
   padding-bottom : 5px;

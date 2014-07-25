@@ -208,7 +208,7 @@
      var width = $(window).width();
      if ( width >= 1200){
       panels.width( (container.width() - 60)/3  - 10);
-     } else if (width >= 900){
+     } else if (width >= 800){
       panels.width( (container.width() - 50)/2  - 10);
      } else {
       panels.width( (container.width() - 20 - 10));
