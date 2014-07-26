@@ -12,7 +12,7 @@
 
     var searchOrg = function(app, container){
       
-        var template = APP.t('#org_list_t');
+        var template = APP.t('#search_t');
         var lang = app.lang;
 
         var nested_depts = structureDepartments(lang);
