@@ -30,10 +30,10 @@ window.dev_helpers = {
 //Promise chaining, where an array of functions that return promises are passed 
 //And this function executes them in order, 
 //returns a promise that is resolved once all functions are completed and resolved.
-//betweenCB is an optional synchronous callback
+//afterCB is an optional synchronous callback
 //to be called after each resolve, with the resolver data.
 
-	chain_promises :  function(funcs,betweenCB){ 
+	chain_promises :  function(funcs,afterCB){ 
 
 		var ret = $.Deferred();
 
@@ -44,15 +44,15 @@ window.dev_helpers = {
 		for(i=1;i<funcs.length;i++){
 
 			proms[i-1].then(function(data){
-				if(betweenCB)
-					betweenCB(data);
+				if(afterCB)
+					afterCB(data);
 				proms[i] = funcs[i]();//Call the function only once the last one has resolved.
 			});
 		}
 
 		proms[funcs.length-1].then(function(data){
-			if(betweenCB)
-				betweenCB(data);
+			if(afterCB)
+				afterCB(data);
 				ret.resolve();
 		});
 

@@ -3,11 +3,7 @@ fs = require('fs'),
 system = require('system'),
 Q = require('q'),
 START_TIME = new Date().getTime(),
-url = "http://localhost:8080/InfoBase/index-eng.html",
-my_exit = function(){
-  console.log("All done! All of this took: "+ (new Date().getTime()-START_TIME)+"ms");
-  phantom.exit();
-};
+url = "http://localhost:8080/InfoBase/index-eng.html";
 
 page.onConsoleMessage = function (msg) {
     console.log('From page: ' + msg);
