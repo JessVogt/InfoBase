@@ -24,4 +24,24 @@
     var APP = ns('APP');
     APP.start(lang);
 
+
+/*phantom-only*/
+
+  window.test_funcs.push(function(){
+
+    var ret = $.Deferred();
+
+    ns('APP').app.router.navigate('#start:window', {trigger:true});
+
+    var cond = !!($('[href=#home]'));
+    
+    ret.resolve({module:'start',pass:cond, msg:'It should link to #home'});
+
+    return ret.promise();
+
+  });
+
+/*phantom-only*/
+
+
 })();

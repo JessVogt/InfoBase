@@ -33,7 +33,7 @@ window.dev_helpers = {
 //afterCB is an optional synchronous callback
 //to be called after each resolve, with the resolver data.
 
-	chain_promises :  function(funcs,afterCB){ 
+	chain_promises :  function(funcs,afterCB){
 
 		var ret = $.Deferred();
 

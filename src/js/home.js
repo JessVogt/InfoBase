@@ -22,7 +22,21 @@
 
 
 
- /*phantom-only*/ 
+/*phantom-only*/ 
+  window.test_funcs.push(function(){
+
+    var ret = $.Deferred();
+
+    ns('APP').app.router.navigate('#home', {trigger:true});
+
+    var cond = ($('.typeahead').length > 0);
+    
+    ret.resolve({module:'home',pass:cond, msg:'it should have a .typeahead selector'});
+
+    return ret.promise();
+
+  });
+
   window.phantom_funcs.push(
     function(){
 
@@ -58,7 +72,6 @@
 
       return ret.promise();
     });
-
 /*phantom-only*/
 
 

@@ -90,13 +90,9 @@
 
     ns('APP').app.router.navigate('#search', {trigger:true});
 
-    var lang = 'eng';
-
-    var msg = 'it should have a .typeahead selector';
-
     var cond = ($('.typeahead').length > 0);
     
-    ret.resolve({module:'search',pass:cond, msg:msg});
+    ret.resolve({module:'search',pass:cond, msg:'it should have a .typeahead selector'});
 
     return ret.promise();
 
@@ -106,10 +102,11 @@
 
     var ret = $.Deferred();
 
-    var msg = "it should contain exactly 146 department links";
+    ns('APP').app.router.navigate('#search', {trigger:true});
+
     var val = $(".org_select").length === 146;
 
-    ret.resolve({module:'search',pass:val, msg:msg});
+    ret.resolve({module:'search',pass:val, msg:"it should contain exactly 146 department links"});
 
     return ret.promise();
 
@@ -127,12 +124,12 @@
       var clone = $('html').clone();
 
       var links = clone.find(".org_select");
-        links.each(function() {
+      links.each(function() {
           //For each link, find the department matching the text (in english or french)
           var acronym = _.find(window.depts, function(d) {return d.dept.en == this.innerHTML || d.dept.fr == this.innerHTML;}, this).accronym;
           var address =  "nojs"+acronym;
           this.href = address + "-" + lang + ".html";
-        });
+      });
 
 
       clone.find('script').remove();
