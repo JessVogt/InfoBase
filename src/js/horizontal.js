@@ -8,7 +8,7 @@
         HORIZONTAL = ns("D3.HORIZONTAL"),
         APP = ns("APP"),
         TABLES = ns('TABLES'),
-        STORY = ns("D3.STORY");
+        PANEL = ns("D3.PANEL");
 
 
     APP.add_container_route("analysis-:config","analysis",function(container,config){
@@ -95,7 +95,7 @@
       this.chart_area  = container.select(".chart-area");
       this.description_area = container.select(".chart-description");
 
-      STORY.add_toggle_section(this.description_area.select(".title"),
+      PANEL.add_toggle_section(this.description_area.select(".title"),
                                this.description_area.select(".content"));
 
       container.selectAll(".togglee")

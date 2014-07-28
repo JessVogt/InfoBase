@@ -1,5 +1,9 @@
 transition to-do:
 
+
+  fix table footer shading
+  fix organizations with not planned spending (FCAC)
+
   d3
     me
       refactor the width calculation

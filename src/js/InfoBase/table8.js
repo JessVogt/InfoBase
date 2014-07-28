@@ -502,7 +502,7 @@
        rows :  shown,
        headers : headers,
        row_class : ["left_text",'left_text','right_number'],
-       node : this.chapter.areas().text.node()
+       node : this.panel.areas().text.node()
       });
       
       return {

@@ -94,12 +94,13 @@
   APP.dispatcher.once("init", setup_tables);
 
   var load_data = function(app){
+    var url_attr;
     // determine if this is operating in the GCDOCS 
     // environment
     if (window.gc_docs){
-        var url_attr = "gcdocs_url";
+        url_attr = "gcdocs_url";
       } else {
-        var url_attr = "csv_url";
+        url_attr = "csv_url";
     }
 
     var setup_material = {};
@@ -293,11 +294,11 @@
   var graph = function(key,context ){
 
     if (context.dept && !_.has(this.depts,context.dept)){
-      context.chapter.remove();
+      context.panel.remove();
       return;
     }
 
-    var areas = context.chapter.areas();
+    var areas = context.panel.areas();
     var self = this;
 
     context.create_links = function(args){
@@ -307,7 +308,8 @@
         dept : context.dept
       },args));
     };
-    var temp_object = _.extend({render : this.graphics[key], table : this},context);
+
+    var temp_object = _.extend({render : self.graphics[key], table : self},context);
     var render_rtn = temp_object.render();
 
     // in the standard case where the graph, accompanying text, title
@@ -324,16 +326,17 @@
         areas.title.html(render_rtn.title);
       }
       if (_.has(render_rtn, "text") ){
-        context.chapter.add_text(render_rtn.text);
+        context.panel.add_text(render_rtn.text);
       }
       if (_.has(render_rtn, "source")){
-        context.chapter.add_source(render_rtn.source);
+        context.panel.add_source(render_rtn.source);
       }
     }
     if (render_rtn === false ){
-      context.chapter.remove();
+      setTimeout(function(){
+        context.panel.remove();
+      },1);
     }
-    return render_rtn;
   }; 
 
 

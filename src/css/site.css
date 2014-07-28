@@ -42,16 +42,16 @@ Border: 35, 64, 111
 Font: 35, 68, 126
 Background: 245, 245, 245
  * */
-#app .chapter {
+#app .panel {
  border-top: 5px rgb(35, 64, 111) solid;
  border-bottom: 2px rgb(35, 64, 111) solid;
  border-radius : 5px;
 }
-#app .chapter .title{
+#app .panel .title{
   font-size: 20px;
 }
 #app .horizontal_gov .title-out:hover,
-#app .chapter .title-out:hover{
+#app .panel .title-out:hover{
   background-color : rgba(245, 245, 245, 1);
 }
 #app .title-out {

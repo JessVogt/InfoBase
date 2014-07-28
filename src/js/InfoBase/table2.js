@@ -239,7 +239,7 @@
             table_class : "table-condensed table-medium",
             stripe : true,
             row_class : ['left_text','right_number'],
-            node : this.chapter.areas().text.node()
+            node : this.panel.areas().text.node()
           });
 
           return {

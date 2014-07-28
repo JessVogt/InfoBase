@@ -144,7 +144,7 @@
       ],
       "employee_age": function(){
         var data = this.data;
-            graph_area = this.chapter.areas().graph;
+            graph_area = this.panel.areas().graph;
 
         graph_area.style("max-width","700px");
          if (this.data.dept) {

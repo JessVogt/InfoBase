@@ -4,7 +4,7 @@
     var T = ns('TABLES');
     var D3 = ns('D3');
     var HORIZONTAL = ns("D3.HORIZONTAL");
-    var STORY = ns('D3.STORY');
+    var PANEL = ns('D3.PANEL');
     var BAR = ns('D3.BAR');
 
     APP.add_container_route("infograph","infographic",function(container){
@@ -53,8 +53,9 @@
     };
 
     var STORYBOARD = function(container,app,dept){
-      this.dept = dept;
+
       this.container = d3.select(container);
+      this.dept = dept;
       this.app = app;
       this.gt = app.get_text;
       this.calculated_values = {};
@@ -65,25 +66,16 @@
         .value();
 
       this.data_prep(dept);
+      _.each(["intro", "financial_data","vote_stat_spend","type_spend","estimates_split",
+              "qfr_spend", "qfr_spend_change", "people_data","by_province","by_employee_type",
+              "by_age_band"],function(func_name){
+        this[func_name](new PANEL.panel_collection({
+          target : this.container,
+          center_text : true,
+          auto_hide:true
+        }));
+      },this);
 
-      this.intro();
-      this.auth();
-      this.vote_stat_spend();
-      this.type_spend();
-      this.estimates_split();
-
-      this.qfr_spend();
-      this.qfr_spend_change();
-
-      this.people_data();
-      this.by_province();
-      this.by_employee_type();
-      this.by_age_band();
-
-      // psas DOM object instead of wrapped
-      STORY.center_text(container);
-      // hide all the containers which are meant to be toggled
-      this.container.selectAll(".togglee").classed("ui-screen-hidden",true);
       // add in return to top arrows
       this.container.selectAll(".title-right")
         .filter(function(d,i){ return i >1;})
@@ -116,177 +108,133 @@
        this.compact_data = T.format_info(this.app.compact, this.data);
     };
 
-    p.intro = function(){
-      var chapter = new STORY.chapter({
+    p.intro = function(collection){
+      var panel = collection.add_panel({
         off : ["graph", "source"],
-        target : this.container,
         id: "story_top"
       });
-      chapter.areas().title.html("Introduction");
-      chapter.areas().text.html(this.gt("infograph_introduction"));
-    
+      panel.areas().title.html("Introduction");
+      panel.areas().text.html(this.gt("infograph_introduction"));
     };
 
-    p.auth = function(){
-      var chapter = new STORY.chapter({
-        toggles :[{ key : "historical_auth_exp" }],
-        target : this.container,
-        id : "__financial__"
-      });
+    p.financial_data = function(collection){
       this.t.table8.graph("this_year_auth",this.make_graph_context({
         height : height*1.5,
-        chapter : chapter,
+        panel : collection.add_panel({ id : "__financial__"}),
+
       }));
       this.t.table4.graph("historical_auth_exp",this.make_graph_context({
         height : height,
-        chapter : chapter.child("historical_auth_exp")
+        panel : collection.add_panel()
       }));
     };
 
-    p.vote_stat_spend = function(){
-      var chapter = new STORY.chapter({
-        toggles : [{ key: "vote_stat_split" },
-                   { key : "planned_stat" },
-                   { key : "planned_voted" }
-        ],
-        target : this.container,
-        id : "__voted_stat__"
-      });
+    p.vote_stat_spend = function(collection){
 
       this.t.table8.graph("voted_stat_split",this.make_graph_context({
         height : 1.5*height,
-        chapter : chapter
+        panel : collection.add_panel({id : "__voted_stat__"}),
       }));
 
       this.t.table4.graph("vote_stat_split",this.make_graph_context({
         height : height*1.10,
-        chapter : chapter.child("vote_stat_split")
+        panel : collection.add_panel()
       }));
 
       this.t.table8.graph("planned_stat",this.make_graph_context({
         height : 1.6*height,
         to_show : 10,
-        chapter : chapter.child("planned_stat")
+        panel : collection.add_panel()
       }));
 
       this.t.table8.graph("planned_voted",this.make_graph_context({
         height : 1.6*height,
         to_show : 10,
-        chapter : chapter.child("planned_voted")
+        panel :  collection.add_panel()
       }));
 
     };
 
-    p.type_spend = function(){
+    p.type_spend = function(collection){
       // in year standard objects/spending type
       // historical standard objects/spending type
       // g_and_c history
       // for GoC a personnel graph which will be removed for a 
       // department 
       // a program activity graph
-
-      var chapter = new STORY.chapter({
-         toggles :[{ key : "type_spend" },
-                   { key : "g_and_c_type"},
-                   { key : "so_personnel"},
-                   { key : "pa_type"}],
-         target : this.container,
-          id : "__spending_areas__"
-      });
+      var  program_graph;
 
       this.t.table2.graph("type_spend",this.make_graph_context({
         height : 1.5*height,
-        chapter: chapter
+        panel: collection.add_panel({id : "__spending_areas__" })
       }));
 
       this.t.table5.graph("type_spend",this.make_graph_context({
         height : 1.5*height,
-        chapter: chapter.child("type_spend")
+        panel: collection.add_panel()
       }));
 
       this.t.table7.graph("g_and_c_history",this.make_graph_context({
         height : 1.5*height,
-        chapter: chapter.child("g_and_c_type")
+        panel: collection.add_panel()
       }));
 
       this.t.table5.graph("gov_personnel_spend",this.make_graph_context({
         height : 1.5*height,
-        chapter: chapter.child("so_personnel")
+        panel: collection.add_panel()
       }));
 
-      if (this.dept) {
-        this.t.table6.graph("program_spending",this.make_graph_context({
-          height : 1.5*height,
-          chapter: chapter.child("pa_type")
-        }));
-      }else {
-        this.t.table6.graph("gov_internal_services",this.make_graph_context({
-          height : 1.5*height,
-          chapter: chapter.child("pa_type")
-        }));
-      }
+      program_graph  = this.dept ? "program_spending" :  "gov_internal_services";
+      this.t.table6.graph(program_graph,this.make_graph_context({
+        height : 1.5*height,
+        panel: collection.add_panel()
+      }));
     };
 
-    p.estimates_split = function(){
+    p.estimates_split = function(collection){
       this.t.table8.graph("estimates_split",this.make_graph_context({
         height : height*1.5,
-        chapter : new STORY.chapter({ target : this.container,id : "__estimates_split__" }),
+        panel : collection.add_panel({id : "__estimates_split__" }),
       }));
     };
 
-    p.qfr_spend = function(){
+    p.qfr_spend = function(collection){
       this.t.table1.graph("qfr_spend_comparison",this.make_graph_context({
         height : height,
-        chapter : new STORY.chapter({
-                    target : this.container
-                  })
+        panel : collection.add_panel()
       }));
     };
 
-    p.qfr_spend_change = function(){
+    p.qfr_spend_change = function(collection){
       this.t.table1.graph("qfr_percentage_change",this.make_graph_context({
         height : height,
-        chapter : new STORY.chapter({
-        target : this.container
-      })
+        panel : collection.add_panel()
       }));
     };
 
-    p.people_data = function(){
+    p.people_data = function(collection){
       this.t.table9.graph("total_employment",this.make_graph_context({
         height : height,
-        chapter : new STORY.chapter({ target : this.container,id : "__people__" })
+        panel : collection.add_panel({ id : "__people__"  })
       }));
     };
 
-    p.by_province = function(){
+    p.by_province = function(collection){
       this.t.table10.graph("prov_split",this.make_graph_context({
         bigintreal : this.bigintreal,
-        chapter : new STORY.chapter({
-                    span : "span-8",
-                    target : this.container,
-                    title : this.t.table10.name[this.lang]
-                  })
+        panel : collection.add_panel({ span : "span-8",})
       }));
     };
 
-    p.by_employee_type = function(){
+    p.by_employee_type = function(collection){
       this.t.table9.graph("employee_type",this.make_graph_context({
-          chapter : new STORY.chapter({
-                        span : "span-4",
-                        target : this.container,
-                        title : this.t.table9.name[this.lang]
-                      })
+          panel : collection.add_panel()
       }));
     };
 
-    p.by_age_band = function() {
+    p.by_age_band = function(collection) {
       this.t.table11.graph("employee_age",this.make_graph_context({
-        chapter : new STORY.chapter({
-                    span : "span-4",
-                    target : this.container,
-                    title : this.t.table11.name[this.lang]
-                  })
+        panel : collection.add_panel()
       }));
     };
 
