@@ -178,9 +178,9 @@
           // g&c spend of this department with the govenrment
           // and with the rest of the it's budget using
           // two circle charts
-          var graph = this.chapter.areas().graph;
+          var graph = this.panel.areas().graph;
 
-          this.chapter.split_graph();
+          this.panel.split_graph();
 
           PACK.circle_pie_chart( {
             height : this.height,
@@ -227,7 +227,7 @@
             .value();
 
           // create the list as a dynamic graph legend
-          var list = D3.create_list(this.chapter.areas().text,data, {
+          var list = D3.create_list(this.panel.areas().text,data, {
             html : function(d){
               return d.label;
             },
@@ -254,7 +254,7 @@
           });
 
           // run the graph once on empty data to establish the sizes
-          graph(this.chapter.areas().graph);
+          graph(this.panel.areas().graph);
           // hook the list dispatcher up to the graph
           list.dispatch.on("click", LINE.ordinal_on_legend_click(graph,colors));
           // simulate the first item on the list being selected
@@ -271,7 +271,7 @@
           var self = this;
           var data = d3.keys(this.data.dept_g_and_cs);
           // split the graph area for the legend + graph
-          var _graph_area = this.chapter
+          var _graph_area = this.panel
                                 .change_span("span-8")
                                 .split_graph()
                                 .areas()

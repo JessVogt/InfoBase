@@ -4,7 +4,7 @@
   var TABLES = ns('TABLES');
   var LINKS = ns("TABLES.LINKS");
   var DETAILS = ns('DETAILS');
-  var STORY = ns('D3.STORY');
+  var PANEL = ns('D3.PANEL');
 
   // add the t-:org-:table" route, example:   #d-AGR or d-FO
   APP.add_container_route("t-:org-:table","org_table_view",function(container, org,table){
@@ -65,16 +65,7 @@
         to_be_appended = $(selector).html();
     container = container.select(".table_description");
 
-    var chapter = STORY.chapter({
-      toggles : [{
-         "key" : "cols",
-         "off" : ["source","graph"],
-         span : "span-8"
-      }],
-      target : container,
-      off : ["graph","source"],
-      span : "span-8"
-    });
+    var chapter = new PANEL.panel({ target : container, off : ["graph","source"], span : "span-8" });
 
     chapter.areas().text.html(to_be_appended);
     chapter.areas().title.html(app.get_text("description"));
@@ -91,7 +82,7 @@
 
     var headers =[[app.get_text("column_header"),app.get_text("column_description")]];
 
-    var hidden =  chapter.child("cols");
+    var hidden = new PANEL.panel({ target : container, "off" : ["source","graph"], toggle : true, span : "span-8" });
     hidden.areas().title.html(app.get_text("description_of_columns"));
 
     TABLES.prepare_and_build_table({
@@ -132,7 +123,7 @@
     container = container.select(".graph_payload");
     _.each(table.graphics.details_display_order, function(func_name){
 
-       var chapter = STORY.chapter({
+       var chapter = PANEL.panel({
          target : container,
          off : "source",
          span : "span-4"

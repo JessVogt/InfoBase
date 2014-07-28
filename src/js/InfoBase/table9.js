@@ -154,7 +154,7 @@
         },
         "employee_type": function(){
           var data = this.data;
-              graph_area = this.chapter.areas().graph;
+              graph_area = this.panel.areas().graph;
 
            if (this.data.dept) {
             STACKED.stacked_series({

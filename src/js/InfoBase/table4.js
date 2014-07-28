@@ -198,7 +198,7 @@
        "historical_auth_exp" : function(){
          // ensure the graph can span the whole screen
          // and then split the area for the legend and graph
-          this.chapter.change_span("span-8")
+          this.panel.change_span("span-8")
                       .split_graph();
 
           var text,
@@ -218,8 +218,8 @@
                 series : {}
               },
               // get reference to different areas of the graph container
-              legend_area = this.chapter.areas().graph.select(".first"),
-              graph_area = this.chapter.areas().graph.select(".second");
+              legend_area = this.panel.areas().graph.select(".first"),
+              graph_area = this.panel.areas().graph.select(".second");
 
           if (this.dept){
             text = "dept_historical_auth";
@@ -288,7 +288,7 @@
        "vote_stat_split": function(){
          // ensure the graph can span the whole screen
          // and then split the area for the legend and graph
-          this.chapter.change_span("span-8")
+          this.panel.change_span("span-8")
                       .split_graph();
 
           var colors = D3.tbs_color(), // shared between legend and graph
@@ -306,8 +306,8 @@
                 ticks : this.data.last_years,
               },
               // get reference to different areas of the graph container
-              legend_area = this.chapter.areas().graph.select(".first"),
-              graph_area = this.chapter.areas().graph.select(".second");
+              legend_area = this.panel.areas().graph.select(".first"),
+              graph_area = this.panel.areas().graph.select(".second");
 
           if (this.data.dept){
             args.x_axis_line = true;
@@ -432,11 +432,11 @@
 
     var create_line_graph = function(){
 
-      this.chapter
+      this.panel
         .change_span("span-8")
         .split_graph();
       var data_type = "dept_historical_" + this.data_type;
-      var graph_area =  this.chapter.areas().graph;
+      var graph_area =  this.panel.areas().graph;
       var data =  this.data[data_type] ;
 
       if (data.length === 0 ){

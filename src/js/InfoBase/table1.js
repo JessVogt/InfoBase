@@ -272,21 +272,21 @@
               ];
             }
 
-            this.chapter.split_graph();
+            this.panel.split_graph();
 
             PACK.circle_pie_chart({
               data : this_year_data,
               formater : app.compact1,
               height : this.height,
               title : TABLES.m("{{in_year}}")
-            })(this.chapter.areas().graph.select(".first"));
+            })(this.panel.areas().graph.select(".first"));
 
             PACK.circle_pie_chart({
               data : last_year_data,
               formater : app.compact1,
               height : this.height,
               title : TABLES.m("{{qfr_last_year}}")
-            })(this.chapter.areas().graph.select(".second"));
+            })(this.panel.areas().graph.select(".second"));
 
            return {
              title : 'QFR Spending - translate',

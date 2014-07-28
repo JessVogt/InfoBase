@@ -163,7 +163,7 @@
            formater : app.compact1
          });
 
-         var text_node = this.chapter.areas().text.node();
+         var text_node = this.panel.areas().text.node();
          text_node.innerHTML = app.get_text("internal_service_spend");
          // add the  table
          TABLES.prepare_and_build_table({
@@ -195,7 +195,7 @@
             .value();
 
           // create the list as a dynamic graph legend
-          var list = D3.create_list(this.chapter.areas().text,data, {
+          var list = D3.create_list(this.panel.areas().text,data, {
             html : function(d){
               return d.label;
             },
@@ -216,7 +216,7 @@
             });
 
           // run the graph once on empty data to establish the sizes
-          graph(this.chapter.areas().graph);
+          graph(this.panel.areas().graph);
           // hook the list dispatcher up to the graph
           list.dispatch.on("click", LINE.ordinal_on_legend_click(graph));
           // simulate the first item on the list being selected

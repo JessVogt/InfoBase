@@ -153,9 +153,9 @@
         "prov_split" : function(){
 
           var data;
-              graph_area = this.chapter.areas().graph;
+              graph_area = this.panel.areas().graph;
 
-          this.chapter.change_span("span-8");
+          this.panel.change_span("span-8");
 
           if (this.dept){
           data = [this.data.dept_last_year_3_prov_split,

@@ -127,9 +127,15 @@
          "type_spend",
        ],
        "type_spend" : function(){
+         // ensure the graph can span the whole screen
+         // and then split the area for the legend and graph
+          this.panel.change_span("span-8")
+                      .split_graph();
 
-          var text = this.chapter.areas().text,
-              data;
+          var data,
+              // get reference to different areas of the graph container
+              legend_area = this.panel.areas().graph.select(".first"),
+              graph_area = this.panel.areas().graph.select(".second");
 
           if (this.dept){
             data = _.chain(window.sos)
@@ -179,7 +185,7 @@
           }
 
           // create the list as a dynamic graph legend
-          var list = D3.create_list(text,data, {
+          var list = D3.create_list(legend_area,data, {
             html : function(d){
               return d.label;
             },
@@ -198,7 +204,7 @@
             ticks : this.data.last_years,
             formater : app.compact1
             });
-          graph(this.chapter.areas().graph);
+          graph(graph_area);
 
           // hook the list dispatcher up to the graph
           list.dispatch.on("click", LINE.ordinal_on_legend_click(graph));
@@ -207,6 +213,7 @@
 
           return {
             title : "historical - translate",
+            text : "",
             source : [this.create_links({
               cols : years
             })]

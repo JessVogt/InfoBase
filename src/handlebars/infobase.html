@@ -190,7 +190,7 @@
 <div class='clear margin-bottom-large'></div>
 </script>
 <script type='text/plain' id='widgets_layout_t'>
-  <div class='span-8 title-out details-header margin-top-xlarge'>
+  <div class='span-8 title-out details-header margin-top-xlarge margin-bottom-none'>
     <h2 class='font-xlarge' style='padding: 15px;'>
       {{gt 'current_year_fisc'}}
     </h2>
@@ -208,7 +208,7 @@
       -->
   </div>
 
-  <div class='span-8 title-out details-header margin-top-xlarge'>
+  <div class='span-8 title-out details-header margin-top-xlarge  margin-bottom-none'>
     <h2 class='font-xlarge ' style='padding: 15px;'>
       {{gt 'previous_year_people'}} </h2>
   </div> 
@@ -222,7 +222,7 @@
       </div>
   </div>
 
-  <div class='span-8  title-out details-header margin-top-xlarge'>
+  <div class='span-8  title-out details-header margin-top-xlarge  margin-bottom-none'>
     <h2 class='font-xlarge' style='padding: 15px;'>
       {{gt 'previous_year_fisc'}} </h2>
   </div> 
@@ -236,7 +236,7 @@
       </div>
   </div>
 
-  <div class='span-8  title-out details-header margin-top-xlarge'>
+  <div class='span-8  title-out details-header margin-top-xlarge  margin-bottom-none'>
     <h2 class='font-xlarge' style='padding: 15px;'>
     {{gt 'previous_year_fisc_targeted'}} </h2>
   </div>
@@ -288,19 +288,19 @@
   </div>
 </div>
 </script>
-<script type='text/plain' id='org_list_t'>
-<div class='org_list span-4 offset-2 font-xlarge'>
+<script type='text/plain' id='search_t'>
+<div class='org_list font-xlarge' style='margin: 0px auto; width: 500px' >
   <div class='margin-bottom-large'>
     <input class='typeahead' type='text' autocomplete="off" placeholder='search'/>
   </div>
-  <div style='margin: auto' id="search_top">{{#each depts}}<a class='scroll' href="#__{{this.[0]}}">{{this.[0]}}</a> {{/each}}</div>
-  <div style='margin: auto; line-height: 200%' >
+  <div id="search_top">{{#each depts}}<a class='scroll' href="#__{{this.[0]}}">{{this.[0]}}</a> {{/each}}</div>
+  <div style='line-height: 200%' >
     <ul class='list-bullet-none orgs'>
       {{#each depts}}
         <li class='min-expansion'>
          <div style='height: 30px;margin:20px 0;'>
-          <div class='float-left'>{{this.[0]}} </div>
-          <div class='float-right'><a class='scroll' href='#search_top'>↑</a></div>
+          <div class='float-left' style='text-decoration: underline'>{{this.[0]}} </div>
+          <div class='float-right' ><a class='scroll' href='#search_top'>{{gt "top"}}</a></div>
          </div>
          
           <ul id="__{{this.[0]}}" class="list-bullet-none">
@@ -315,6 +315,7 @@
     </ul>
   </div>
 </div>
+<div class='clear'></div>
 </script>
 <script type='text/plain' id='home_t'>
 <div class='span-8 choose_adventure'>
@@ -682,8 +683,8 @@
   </div>
 </div>
 </script>
-<script type='text/plain' id='chapter_t'>
-<div class='chapter span-8' >
+<script type='text/plain' id='panel_t'>
+<div class='panel span-8' >
   <div class="span-8 margin-bottom-none title-out" >
     <div class="title {{title_class}} float-left" style='padding: 15px;'>
     </div>
@@ -703,4 +704,6 @@
     </div>
   </div>
 </div>
+<div class='clear'></div>
+
 </script>
